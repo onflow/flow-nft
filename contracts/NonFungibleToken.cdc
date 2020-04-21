@@ -1,11 +1,6 @@
 /**
 
-# The Flow Non-Fungible Token standard
-
-Authors:
-- Joshua Hannan <joshua.hannan@dapperlabs.com>
-- Dieter Shirley <dete@dapperlabs.com>
-- Bastian Mueller <bastian@dapperlabs.com>
+## The Flow Non-Fungible Token standard
 
 ## `NonFungibleToken` contract interface
 

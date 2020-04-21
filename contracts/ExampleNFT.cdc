@@ -1,4 +1,6 @@
-// This is an example implementation of the NFT Standard
+// This is an example implementation of a Flow Non-Fungible Token
+// It is not part of the official standard but it assumed to be
+// very similar to how many NFTs would implement the core functionality.
 
 import NonFungibleToken from 0x01
 
