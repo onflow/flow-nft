@@ -14,6 +14,7 @@ If you believe you may have found a security vulnerability in our project, to be
 
 To encrypt messages to us, we encourage you to use our PGP key:
 
+```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 mQINBF1J1mABEADX/mVq3Fn1/7+V/fc5UMOlShtQ0n3lTxUkYsKHsQIp4IuDrCZy
 XbHayQ9DaoLPOQtXqG0Vosz/KuxQyW5GQ0dL/DwCs+23BAV8ZpTxHQ3RFIfYfjXk
@@ -65,3 +66,4 @@ JzzM+MXfvr96TuBQO40fIBb8Vb5AY/I+ICVSBnH4D9d43k9Hp3dyJdFabg8stEQ7
 hfVklUOf8O2ZoQZLML11OKkZWXxSMg==
 =HvU0
 -----END PGP PUBLIC KEY BLOCK-----
+```
