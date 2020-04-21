@@ -184,3 +184,12 @@ or even write your own.
 14 - Pausing Token transfers (maybe a way to prevent the contract from being imported? probably not a good idea)
 
 15 - Cloning the token to create a new token with the same distribution
+
+## License 
+
+The works in these folders 
+/onflow/flow-NFT/blob/master/contracts/ExampleNFT.cdc 
+/onflow/flow-NFT/blob/master/contracts/NonFungibleToken.cdc
+
+are under the Unlicense
+https://github.com/onflow/flow-NFT/blob/master/LICENSE
