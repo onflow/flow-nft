@@ -2,7 +2,7 @@
 // It is not part of the official standard but it assumed to be
 // very similar to how many NFTs would implement the core functionality.
 
-import NonFungibleToken from 0x01
+import NonFungibleToken from 0x02
 
 pub contract ExampleNFT: NonFungibleToken {
 
@@ -20,6 +20,10 @@ pub contract ExampleNFT: NonFungibleToken {
         init(initID: UInt64) {
             self.id = initID
             self.metadata = {}
+        }
+
+        destroy() {
+            ExampleNFT.totalSupply = ExampleNFT.totalSupply - UInt64(1)
         }
     }
 
@@ -48,20 +52,11 @@ pub contract ExampleNFT: NonFungibleToken {
             return <-token
         }
 
-        pub fun batchWithdraw(ids: [UInt64]): @Collection {
-            let batchCollection <- create Collection()
-
-            for id in ids {
-                let nft <- self.withdraw(withdrawID: id)
-                batchCollection.deposit(token: <-nft)
-            }
-
-            return <-batchCollection
-        }
-
         // deposit takes a NFT and adds it to the collections dictionary
         // and adds the ID to the id array
         pub fun deposit(token: @NFT) {
+            let token <- token as! @ExampleNFT.NFT
+
             let id: UInt64 = token.id
 
             // add the new token to the dictionary which removes the old one
@@ -70,14 +65,6 @@ pub contract ExampleNFT: NonFungibleToken {
             emit Deposit(id: id, to: self.owner?.address)
 
             destroy oldToken
-        }
-
-        pub fun batchDeposit(tokens: @Collection) {
-            for id in tokens.getIDs() {
-                let nft <- tokens.withdraw(withdrawID: id)
-                self.deposit(token: <-nft)
-            }
-            destroy tokens
         }
 
         // getIDs returns an array of the IDs that are in the collection
@@ -97,7 +84,7 @@ pub contract ExampleNFT: NonFungibleToken {
     }
 
     // public function that anyone can call to create a new empty collection
-    pub fun createEmptyCollection(): @Collection {
+    pub fun createEmptyCollection(): @ExampleNFT.Collection {
         return <- create Collection()
     }
 

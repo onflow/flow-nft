@@ -124,20 +124,20 @@ pub contract interface NonFungibleToken {
         // withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @NFT
 
-        pub fun batchWithdraw(ids: [UInt64]): @Collection
-
         // deposit takes a NFT and adds it to the collections dictionary
         // and adds the ID to the id array
         pub fun deposit(token: @NFT)
-
-        pub fun batchDeposit(tokens: @Collection)
 
         // getIDs returns an array of the IDs that are in the collection
         pub fun getIDs(): [UInt64]
 
         // Returns a borrowed reference to an NFT in the collection
         // so that the caller can read data and call methods from it
-        pub fun borrowNFT(id: UInt64): &NFT
+        pub fun borrowNFT(id: UInt64): &NFT {
+            pre {
+                self.ownedNFTs[id] != nil: "NFT does not exist in the collection!"
+            }
+        }
     }
 
     // createEmptyCollection creates an empty Collection
