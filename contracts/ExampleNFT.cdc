@@ -27,14 +27,7 @@ pub contract ExampleNFT: NonFungibleToken {
         }
     }
 
-    // This interface would be if someone wanted to expose the borrowNFT
-    // function in their collection so that others could read the metadata
-    // of specific NFTs in the Collection
-    pub resource interface CollectionBorrow {
-        pub fun borrowNFT(id: UInt64): &NFT
-    }
-
-    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver {
+    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
         pub var ownedNFTs: @{UInt64: NFT}
@@ -116,8 +109,8 @@ pub contract ExampleNFT: NonFungibleToken {
         self.account.save(<-collection, to: /storage/NFTCollection)
 
         // create a public capability for the collection
-        self.account.link<&{NonFungibleToken.Receiver, CollectionBorrow}>(
-            /public/NFTReceiver,
+        self.account.link<&{NonFungibleToken.CollectionPublic}>(
+            /public/NFTCollection,
             target: /storage/NFTCollection
         )
 

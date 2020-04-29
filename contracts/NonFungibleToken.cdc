@@ -89,14 +89,6 @@ pub contract interface NonFungibleToken {
                 result.id == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
             }
         }
-
-        // batchWithdraw takes a list of IDs and returns then
-        pub fun batchWithdraw(ids: [UInt64]): @Collection {
-            post {
-                // Need to be able to compare the IDs themselves
-                result.getIDs().length == ids.length: "Withdrawn collection does not match the requested IDs"
-            }
-        }
     }
 
     // Interface to mediate deposits to the Collection
@@ -106,17 +98,20 @@ pub contract interface NonFungibleToken {
         // deposit takes an NFT as an argument and adds it to the Collection
         //
 		pub fun deposit(token: @NFT)
+    }
 
-        // batchDeposit takes an NFT Collection as an argument
-        // and deposits it to the collection
-        //
-        pub fun batchDeposit(tokens: @Collection)
+    // Interface that an account would commonly 
+    // publish for their collection
+    pub resource interface CollectionPublic {
+        pub fun deposit(token: @NFT)
+        pub fun getIDs(): [UInt64]
+        pub fun borrowNFT(id: UInt64): &NFT
     }
 
     // Requirement for the the concrete resource type
     // to be declared in the implementing contract
     //
-    pub resource Collection: Provider, Receiver {
+    pub resource Collection: Provider, Receiver, CollectionPublic {
 
         // Dictionary to hold the NFTs in the Collection
         pub var ownedNFTs: @{UInt64: NFT}

@@ -9,9 +9,10 @@ import (
 // GenerateCreateCollectionScript Creates a script that instantiates a new
 // NFT collection instance, stores the collection in memory, then stores a
 // reference to the collection.
-func GenerateCreateCollectionScript(tokenAddr flow.Address) []byte {
+func GenerateCreateCollectionScript(nftAddr, tokenAddr flow.Address) []byte {
 	template := `
-		import NonFungibleToken, ExampleNFT from 0x%s
+		import NonFungibleToken from 0x%s
+		import ExampleNFT from 0x%s
 
 		transaction {
 		  prepare(acct: AuthAccount) {
@@ -25,14 +26,15 @@ func GenerateCreateCollectionScript(tokenAddr flow.Address) []byte {
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, tokenAddr))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenAddr))
 }
 
 // GenerateMintNFTScript Creates a script that uses the admin resource
 // to mint a new NFT and deposit it into a user's collection
-func GenerateMintNFTScript(tokenAddr, receiverAddr flow.Address) []byte {
+func GenerateMintNFTScript(nftAddr, tokenAddr, receiverAddr flow.Address) []byte {
 	template := `
-		import NonFungibleToken, ExampleNFT from 0x%s
+		import NonFungibleToken from 0x%s
+		import ExampleNFT from 0x%s
 
 		transaction {
 			let minter: &ExampleNFT.NFTMinter
@@ -55,14 +57,15 @@ func GenerateMintNFTScript(tokenAddr, receiverAddr flow.Address) []byte {
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, tokenAddr, receiverAddr))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenAddr, receiverAddr))
 }
 
 // GenerateTransferScript creates a script that withdraws an NFT token
 // from a collection and deposits it to another collection
-func GenerateTransferScript(tokenCodeAddr flow.Address, receiverAddr flow.Address, transferNFTID int) []byte {
+func GenerateTransferScript(nftAddr, tokenAddr flow.Address, receiverAddr flow.Address, transferNFTID int) []byte {
 	template := `
-		import NonFungibleToken, ExampleNFT from 0x%s
+		import NonFungibleToken from 0x%s
+		import ExampleNFT from 0x%s
 
 		transaction {
 		  prepare(acct: AuthAccount) {
@@ -78,14 +81,15 @@ func GenerateTransferScript(tokenCodeAddr flow.Address, receiverAddr flow.Addres
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, tokenCodeAddr.String(), receiverAddr.String(), transferNFTID))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenAddr, receiverAddr.String(), transferNFTID))
 }
 
 // GenerateDestroyScript creates a script that withdraws an NFT token
 // from a collection and destroys it
-func GenerateDestroyScript(tokenCodeAddr flow.Address, destroyNFTID int) []byte {
+func GenerateDestroyScript(nftAddr, tokenAddr flow.Address, destroyNFTID int) []byte {
 	template := `
-		import NonFungibleToken, ExampleNFT from 0x%s
+		import NonFungibleToken from 0x%s
+		import ExampleNFT from 0x%s
 
 		transaction {
 		  prepare(acct: AuthAccount) {
@@ -99,15 +103,16 @@ func GenerateDestroyScript(tokenCodeAddr flow.Address, destroyNFTID int) []byte 
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, tokenCodeAddr.String(), destroyNFTID))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenAddr.String(), destroyNFTID))
 }
 
 // GenerateInspectCollectionScript creates a script that retrieves an NFT collection
 // from storage and tries to borrow a reference for an NFT that it owns.
 // If it owns it, it will not fail.
-func GenerateInspectCollectionScript(nftCodeAddr, userAddr flow.Address, nftID int) []byte {
+func GenerateInspectCollectionScript(nftAddr, tokenAddr, userAddr flow.Address, nftID int) []byte {
 	template := `
-		import NonFungibleToken, ExampleNFT from 0x%s
+		import NonFungibleToken from 0x%s
+		import ExampleNFT from 0x%s
 
 		pub fun main() {
 			let acct = getAccount(0x%s)
@@ -118,15 +123,16 @@ func GenerateInspectCollectionScript(nftCodeAddr, userAddr flow.Address, nftID i
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, nftCodeAddr, userAddr, nftID))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenAddr, userAddr, nftID))
 }
 
 // GenerateInspectCollectionLenScript creates a script that retrieves an NFT collection
 // from storage and tries to borrow a reference for an NFT that it owns.
 // If it owns it, it will not fail.
-func GenerateInspectCollectionLenScript(nftCodeAddr, userAddr flow.Address, length int) []byte {
+func GenerateInspectCollectionLenScript(nftAddr, tokenAddr, userAddr flow.Address, length int) []byte {
 	template := `
-		import NonFungibleToken, ExampleNFT from 0x%s
+		import NonFungibleToken from 0x%s
+		import ExampleNFT from 0x%s
 
 		pub fun main() {
 			let acct = getAccount(0x%s)
@@ -139,15 +145,16 @@ func GenerateInspectCollectionLenScript(nftCodeAddr, userAddr flow.Address, leng
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, nftCodeAddr, userAddr, length))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenAddr, userAddr, length))
 }
 
 // GenerateInspectNFTSupplyScript creates a script that reads
 // the total supply of tokens in existence
 // and makes assertions about the number
-func GenerateInspectNFTSupplyScript(tokenCodeAddr flow.Address, expectedSupply int) []byte {
+func GenerateInspectNFTSupplyScript(nftAddr, tokenAddr flow.Address, expectedSupply int) []byte {
 	template := `
-		import NonFungibleToken, ExampleNFT from 0x%s
+		import NonFungibleToken from 0x%s
+		import ExampleNFT from 0x%s
 
 		pub fun main() {
 			assert(
@@ -157,5 +164,5 @@ func GenerateInspectNFTSupplyScript(tokenCodeAddr flow.Address, expectedSupply i
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, tokenCodeAddr, expectedSupply))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenAddr, expectedSupply))
 }
