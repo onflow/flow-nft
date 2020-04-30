@@ -21,8 +21,8 @@ func TestNFTDeployment(t *testing.T) {
 	b := NewEmulator()
 
 	// Should be able to deploy a contract as a new account with no keys.
-	tokenCode := ReadFile(NonFungibleTokenInterfaceFile)
-	_, err := b.CreateAccount(nil, tokenCode)
+	nftCode := ReadFile(NonFungibleTokenInterfaceFile)
+	_, err := b.CreateAccount(nil, nftCode)
 	if !assert.NoError(t, err) {
 		t.Log(err.Error())
 	}
@@ -31,7 +31,7 @@ func TestNFTDeployment(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	tokenCode := ReadFile(NFTContractFile)
-	_, err := b.CreateAccount(nil, tokenCode)
+	_, err = b.CreateAccount(nil, tokenCode)
 	if !assert.NoError(t, err) {
 		t.Log(err.Error())
 	}
@@ -45,8 +45,8 @@ func TestCreateNFT(t *testing.T) {
 	accountKeys := test.AccountKeyGenerator()
 
 	// Should be able to deploy a contract as a new account with no keys.
-	tokenCode := ReadFile(NonFungibleTokenInterfaceFile)
-	nftAddr, err := b.CreateAccount(nil, tokenCode)
+	nftCode := ReadFile(NonFungibleTokenInterfaceFile)
+	nftAddr, err := b.CreateAccount(nil, nftCode)
 	assert.NoError(t, err)
 
 	// First, deploy the contract
@@ -77,9 +77,7 @@ func TestCreateNFT(t *testing.T) {
 		// Assert that the account's collection is correct
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, 0))
 
-
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 1))
-
 
 		ExecuteScriptAndCheck(t, b, GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, 1))
 
@@ -87,7 +85,7 @@ func TestCreateNFT(t *testing.T) {
 
 	t.Run("Shouldn't be able to borrow a reference to an NFT that doesn't exist", func(t *testing.T) {
 		// Assert that the account's collection is correct
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, 5))
+		result, err := b.ExecuteScript(GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, 5))
 		require.NoError(t, err)
 		assert.True(t, result.Reverted())
 	})
@@ -100,8 +98,8 @@ func TestTransferNFT(t *testing.T) {
 	accountKeys := test.AccountKeyGenerator()
 
 	// Should be able to deploy a contract as a new account with no keys.
-	tokenCode := ReadFile(NonFungibleTokenInterfaceFile)
-	_, err := b.CreateAccount(nil, tokenCode)
+	nftCode := ReadFile(NonFungibleTokenInterfaceFile)
+	nftAddr, err := b.CreateAccount(nil, nftCode)
 	assert.NoError(t, err)
 
 	// First, deploy the contract
@@ -164,7 +162,6 @@ func TestTransferNFT(t *testing.T) {
 
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, 0))
 
-
 		// Assert that the account's collection is correct
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 1))
 
@@ -189,9 +186,7 @@ func TestTransferNFT(t *testing.T) {
 		// Assert that the account's collection is correct
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionScript(nftAddr, tokenAddr, joshAddress, 0))
 
-
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, 1))
-
 
 		// Assert that the account's collection is correct
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 0))
@@ -216,10 +211,8 @@ func TestTransferNFT(t *testing.T) {
 
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, 0))
 
-
 		// Assert that the account's collection is correct
 		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 0))
-
 
 		ExecuteScriptAndCheck(t, b, GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, 0))
 

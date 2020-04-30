@@ -88,7 +88,7 @@ pub contract ExampleNFT: NonFungibleToken {
 
 		// mintNFT mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
-		pub fun mintNFT(recipient: &{NonFungibleToken.Receiver}) {
+		pub fun mintNFT(recipient: &{NonFungibleToken.CollectionPublic}) {
 
 			// create a new NFT
 			var newNFT <- create NFT(initID: ExampleNFT.totalSupply)
