@@ -21,10 +21,6 @@ pub contract ExampleNFT: NonFungibleToken {
             self.id = initID
             self.metadata = {}
         }
-
-        destroy() {
-            ExampleNFT.totalSupply = ExampleNFT.totalSupply - UInt64(1)
-        }
     }
 
     pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
