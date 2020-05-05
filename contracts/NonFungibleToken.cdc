@@ -19,10 +19,9 @@ The core resource type that represents an NFT in the smart contract.
 
 The resource that stores a user's NFT collection.
 It includes a few functions to allow the owner to easily
-move tokens in and out of the collection, as well as get
-metadata about the stored tokens.
+move tokens in and out of the collection.
 
-## `Provider`, `Receiver`, `MetaData` resource interfaces
+## `Provider` and `Receiver` resource interfaces
 
 These interfaces declare functions with some pre and post conditions
 that require the Collection to follow certain naming and behavior standards.
