@@ -154,6 +154,10 @@ The steps to follow are:
 Then you can experiment with some of the other transactions and scripts
 or even write your own.
 
+# Running Automated Tests
+
+You can find automated tests in the `nft_test.go` file. It uses the transaction templates that are contained in the `nft_templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
+
 ## Bonus Features 
 
 **(These could each be defined as a separate interface and standard and are probably not part of the main standard) They are not implemented in this repository yet**

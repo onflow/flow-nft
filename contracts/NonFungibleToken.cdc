@@ -88,14 +88,6 @@ pub contract interface NonFungibleToken {
                 result.id == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
             }
         }
-
-        // batchWithdraw takes a list of IDs and returns then
-        pub fun batchWithdraw(ids: [UInt64]): @Collection {
-            post {
-                // Need to be able to compare the IDs themselves
-                result.getIDs().length == ids.length: "Withdrawn collection does not match the requested IDs"
-            }
-        }
     }
 
     // Interface to mediate deposits to the Collection
@@ -105,17 +97,20 @@ pub contract interface NonFungibleToken {
         // deposit takes an NFT as an argument and adds it to the Collection
         //
 		pub fun deposit(token: @NFT)
+    }
 
-        // batchDeposit takes an NFT Collection as an argument
-        // and deposits it to the collection
-        //
-        pub fun batchDeposit(tokens: @Collection)
+    // Interface that an account would commonly 
+    // publish for their collection
+    pub resource interface CollectionPublic {
+        pub fun deposit(token: @NFT)
+        pub fun getIDs(): [UInt64]
+        pub fun borrowNFT(id: UInt64): &NFT
     }
 
     // Requirement for the the concrete resource type
     // to be declared in the implementing contract
     //
-    pub resource Collection: Provider, Receiver {
+    pub resource Collection: Provider, Receiver, CollectionPublic {
 
         // Dictionary to hold the NFTs in the Collection
         pub var ownedNFTs: @{UInt64: NFT}
@@ -123,20 +118,20 @@ pub contract interface NonFungibleToken {
         // withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @NFT
 
-        pub fun batchWithdraw(ids: [UInt64]): @Collection
-
         // deposit takes a NFT and adds it to the collections dictionary
         // and adds the ID to the id array
         pub fun deposit(token: @NFT)
-
-        pub fun batchDeposit(tokens: @Collection)
 
         // getIDs returns an array of the IDs that are in the collection
         pub fun getIDs(): [UInt64]
 
         // Returns a borrowed reference to an NFT in the collection
         // so that the caller can read data and call methods from it
-        pub fun borrowNFT(id: UInt64): &NFT
+        pub fun borrowNFT(id: UInt64): &NFT {
+            pre {
+                self.ownedNFTs[id] != nil: "NFT does not exist in the collection!"
+            }
+        }
     }
 
     // createEmptyCollection creates an empty Collection
