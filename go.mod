@@ -1,4 +1,4 @@
-module github.com/onflow/flow-nft/tests
+module github.com/onflow/flow-nft
 
 go 1.13
 

@@ -1,4 +1,4 @@
-package tests
+package nfttests
 
 import (
 	"testing"
@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	NonFungibleTokenInterfaceFile = "./contracts/NonFungibleToken.cdc"
-	NFTContractFile               = "./contracts/ExampleNFT.cdc"
+	NonFungibleTokenInterfaceFile = "../contracts/NonFungibleToken.cdc"
+	NFTContractFile               = "../contracts/ExampleNFT.cdc"
 )
 
 func TestNFTDeployment(t *testing.T) {
