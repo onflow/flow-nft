@@ -86,15 +86,15 @@ func GenerateTransferScript(nftAddr, tokenAddr flow.Address, tokenContractName, 
 
 // GenerateDestroyScript creates a script that withdraws an NFT token
 // from a collection and destroys it
-func GenerateDestroyScript(nftAddr, tokenAddr flow.Address, destroyNFTID int) []byte {
+func GenerateDestroyScript(nftAddr, tokenAddr flow.Address, tokenContractName, storageLocation string, destroyNFTID int) []byte {
 	template := `
 		import NonFungibleToken from 0x%s
-		import ExampleNFT from 0x%s
+		import %s from 0x%s
 
 		transaction {
 		  prepare(acct: AuthAccount) {
 
-			let collectionRef = acct.borrow<&NonFungibleToken.Collection>(from: /storage/NFTCollection)!
+			let collectionRef = acct.borrow<&%s.Collection>(from: /storage/%s)!
 
 			let nft <- collectionRef.withdraw(withdrawID: %d)
 
@@ -103,7 +103,7 @@ func GenerateDestroyScript(nftAddr, tokenAddr flow.Address, destroyNFTID int) []
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, nftAddr, tokenAddr.String(), destroyNFTID))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenContractName, tokenAddr.String(), tokenContractName, storageLocation, destroyNFTID))
 }
 
 // GenerateInspectCollectionScript creates a script that retrieves an NFT collection

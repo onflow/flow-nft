@@ -196,7 +196,7 @@ func TestTransferNFT(t *testing.T) {
 	// transfer an NFT
 	t.Run("Should be able to withdraw an NFT and destroy it, not reducing the supply", func(t *testing.T) {
 		tx := flow.NewTransaction().
-			SetScript(GenerateDestroyScript(nftAddr, tokenAddr, 0)).
+			SetScript(GenerateDestroyScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", 0)).
 			SetGasLimit(20).
 			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
 			SetPayer(b.RootKey().Address).
