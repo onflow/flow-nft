@@ -1,5 +1,5 @@
-import NonFungibleToken from 0x01
-import ExampleNFT from 0x02
+import NonFungibleToken from 0x02
+import ExampleNFT from 0x03
 
 // This script reads metadata about an NFT in a user's collection
 pub fun main() {

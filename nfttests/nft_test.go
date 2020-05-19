@@ -1,4 +1,4 @@
-package tests
+package nfttests
 
 import (
 	"testing"
@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	NonFungibleTokenInterfaceFile = "./contracts/NonFungibleToken.cdc"
-	NFTContractFile               = "./contracts/ExampleNFT.cdc"
+	NonFungibleTokenInterfaceFile = "../contracts/NonFungibleToken.cdc"
+	NFTContractFile               = "../contracts/ExampleNFT.cdc"
 )
 
 func TestNFTDeployment(t *testing.T) {
@@ -55,9 +55,9 @@ func TestCreateNFT(t *testing.T) {
 	tokenAddr, err := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, tokenCode)
 	assert.NoError(t, err)
 
-	ExecuteScriptAndCheck(t, b, GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, 0))
+	ExecuteScriptAndCheck(t, b, GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, "ExampleNFT", 0))
 
-	ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 0))
+	ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 0))
 
 	t.Run("Should be able to mint a token", func(t *testing.T) {
 		tx := flow.NewTransaction().
@@ -75,17 +75,17 @@ func TestCreateNFT(t *testing.T) {
 		)
 
 		// Assert that the account's collection is correct
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, 0))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 0))
 
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 1))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 1))
 
-		ExecuteScriptAndCheck(t, b, GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, 1))
+		ExecuteScriptAndCheck(t, b, GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, "ExampleNFT", 1))
 
 	})
 
 	t.Run("Shouldn't be able to borrow a reference to an NFT that doesn't exist", func(t *testing.T) {
 		// Assert that the account's collection is correct
-		result, err := b.ExecuteScript(GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, 5))
+		result, err := b.ExecuteScript(GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 5))
 		require.NoError(t, err)
 		assert.True(t, result.Reverted())
 	})
@@ -128,7 +128,7 @@ func TestTransferNFT(t *testing.T) {
 	// create a new Collection
 	t.Run("Should be able to create a new empty NFT Collection", func(t *testing.T) {
 		tx := flow.NewTransaction().
-			SetScript(GenerateCreateCollectionScript(nftAddr, tokenAddr)).
+			SetScript(GenerateCreateCollectionScript(nftAddr, "ExampleNFT", tokenAddr, "NFTCollection")).
 			SetGasLimit(20).
 			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
 			SetPayer(b.RootKey().Address).
@@ -141,13 +141,13 @@ func TestTransferNFT(t *testing.T) {
 			false,
 		)
 
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, 0))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, "ExampleNFT", "NFTCollection", 0))
 
 	})
 
 	t.Run("Shouldn't be able to withdraw an NFT that doesn't exist in a collection", func(t *testing.T) {
 		tx := flow.NewTransaction().
-			SetScript(GenerateTransferScript(nftAddr, tokenAddr, joshAddress, 3)).
+			SetScript(GenerateTransferScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", joshAddress, 3)).
 			SetGasLimit(20).
 			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
 			SetPayer(b.RootKey().Address).
@@ -160,17 +160,17 @@ func TestTransferNFT(t *testing.T) {
 			true,
 		)
 
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, 0))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, "ExampleNFT", "NFTCollection", 0))
 
 		// Assert that the account's collection is correct
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 1))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 1))
 
 	})
 
 	// transfer an NFT
 	t.Run("Should be able to withdraw an NFT and deposit to another accounts collection", func(t *testing.T) {
 		tx := flow.NewTransaction().
-			SetScript(GenerateTransferScript(nftAddr, tokenAddr, joshAddress, 0)).
+			SetScript(GenerateTransferScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", joshAddress, 0)).
 			SetGasLimit(20).
 			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
 			SetPayer(b.RootKey().Address).
@@ -184,19 +184,19 @@ func TestTransferNFT(t *testing.T) {
 		)
 
 		// Assert that the account's collection is correct
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionScript(nftAddr, tokenAddr, joshAddress, 0))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionScript(nftAddr, tokenAddr, joshAddress, "ExampleNFT", "NFTCollection", 0))
 
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, 1))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, "ExampleNFT", "NFTCollection", 1))
 
 		// Assert that the account's collection is correct
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 0))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 0))
 
 	})
 
 	// transfer an NFT
 	t.Run("Should be able to withdraw an NFT and destroy it, not reducing the supply", func(t *testing.T) {
 		tx := flow.NewTransaction().
-			SetScript(GenerateDestroyScript(nftAddr, tokenAddr, 0)).
+			SetScript(GenerateDestroyScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", 0)).
 			SetGasLimit(20).
 			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
 			SetPayer(b.RootKey().Address).
@@ -209,12 +209,12 @@ func TestTransferNFT(t *testing.T) {
 			false,
 		)
 
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, 0))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, joshAddress, "ExampleNFT", "NFTCollection", 0))
 
 		// Assert that the account's collection is correct
-		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, 0))
+		ExecuteScriptAndCheck(t, b, GenerateInspectCollectionLenScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 0))
 
-		ExecuteScriptAndCheck(t, b, GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, 1))
+		ExecuteScriptAndCheck(t, b, GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, "ExampleNFT", 1))
 
 	})
 }

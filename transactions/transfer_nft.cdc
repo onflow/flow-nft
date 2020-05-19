@@ -1,5 +1,5 @@
-import NonFungibleToken from 0x01
-import ExampleNFT from 0x02
+import NonFungibleToken from 0x02
+import ExampleNFT from 0x03
 
 // This transaction transfers an NFT from one user's collection
 // to another user's collection.

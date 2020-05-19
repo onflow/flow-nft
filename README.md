@@ -127,7 +127,7 @@ and a `Collection` resource that contains and manages these NFTs.
 
 ## Comparison to other Standards on Ethereum
 
-This covers much of the same ground that a spec like ERC-721 covers, but without most of the downsides.  
+This covers much of the same ground that a spec like ERC-721 or ERC-1155 covers, but without most of the downsides.  
 
 - Tokens cannot be sent to contracts that don't understand how to use them, because an account has to have a `Receiver` or `Collection` in its storage to receive tokens.
 - If the recipient is a contract that has a stored `Collection`, the tokens can just be deposited to that Collection without having to do a clunky `approve`, `transferFrom`
@@ -148,8 +148,8 @@ with the [Flow Playground](play.onflow.org)
 or with the [Visual Studio Code Extension](https://github.com/onflow/cadence/tree/master/tools/vscode-extension).
 
 The steps to follow are:
-1. Deploy `NonFungibleToken.cdc` to account 1
-2. Deploy `ExampleNFT.cdc` to account 2
+1. Deploy `NonFungibleToken.cdc` to account 2
+2. Deploy `ExampleNFT.cdc` to account 3
 
 Then you can experiment with some of the other transactions and scripts
 or even write your own.
