@@ -17,16 +17,19 @@ func GenerateCreateCollectionScript(nftAddr flow.Address, tokenContractName stri
 		transaction {
 		  prepare(acct: AuthAccount) {
 
-			let collection <- %s.createEmptyCollection()
-			
-			acct.save(<-collection, to: /storage/%s)
+			if acct.borrow<&%s.Collection>(from: /storage/%s) == nil {
 
-			acct.link<&{NonFungibleToken.CollectionPublic}>(/public/%s, target: /storage/%s)
+				let collection <- %s.createEmptyCollection() as! @%s.Collection
+				
+				acct.save(<-collection, to: /storage/%s)
+
+				acct.link<&{NonFungibleToken.CollectionPublic}>(/public/%s, target: /storage/%s)
+			}
 		  }
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, nftAddr, tokenContractName, tokenAddr, tokenContractName, storageName, storageName, storageName))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenContractName, tokenAddr, tokenContractName, storageName, tokenContractName, tokenContractName, storageName, storageName, storageName))
 }
 
 // GenerateMintNFTScript Creates a script that uses the admin resource
