@@ -26,14 +26,14 @@ pub contract ExampleNFT: NonFungibleToken {
     pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
-        pub var ownedNFTs: @{UInt64: NFT}
+        pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         init () {
             self.ownedNFTs <- {}
         }
 
         // withdraw removes an NFT from the collection and moves it to the caller
-        pub fun withdraw(withdrawID: UInt64): @NFT {
+        pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
             let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
 
             emit Withdraw(id: token.id, from: self.owner?.address)
@@ -43,7 +43,7 @@ pub contract ExampleNFT: NonFungibleToken {
 
         // deposit takes a NFT and adds it to the collections dictionary
         // and adds the ID to the id array
-        pub fun deposit(token: @NFT) {
+        pub fun deposit(token: @NonFungibleToken.NFT) {
             let token <- token as! @ExampleNFT.NFT
 
             let id: UInt64 = token.id
@@ -63,8 +63,8 @@ pub contract ExampleNFT: NonFungibleToken {
 
         // borrowNFT gets a reference to an NFT in the collection
         // so that the caller can read its metadata and call its methods
-        pub fun borrowNFT(id: UInt64): &NFT {
-            return &self.ownedNFTs[id] as &NFT
+        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
+            return &self.ownedNFTs[id] as &NonFungibleToken.NFT
         }
 
         destroy() {
@@ -73,7 +73,7 @@ pub contract ExampleNFT: NonFungibleToken {
     }
 
     // public function that anyone can call to create a new empty collection
-    pub fun createEmptyCollection(): @ExampleNFT.Collection {
+    pub fun createEmptyCollection(): @NonFungibleToken.Collection {
         return <- create Collection()
     }
 
