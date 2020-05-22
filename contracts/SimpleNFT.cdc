@@ -14,6 +14,12 @@ pub contract ExampleNFT {
             return <-token
         }
 
+        pub fun deposit(token: @NFT) {
+            let token <- token as! @NFT
+            let oldToken <- self.ownedNFTs[UInt64(1)] <- token
+            destroy oldToken
+        }
+
         destroy() {
             destroy self.ownedNFTs
         }
@@ -21,6 +27,10 @@ pub contract ExampleNFT {
 
 	init() {
         let collection <- create Collection()
+
+        let token <- collection.withdraw(withdrawID: 1)
+        collection.deposit(token: <-token)
+
         self.account.save(<-collection, to: /storage/NFTCollection)
 	}
 }

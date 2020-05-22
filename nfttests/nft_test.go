@@ -54,7 +54,7 @@ func TestCreateNFT(t *testing.T) {
 	tokenAddr, _ := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, tokenCode)
 
 	// transfer an NFT
-	t.Run("Should be able to withdraw an NFT and destroy it, not reducing the supply", func(t *testing.T) {
+	t.Run("Should be able to withdraw an NFT and destroy it, reducing the supply", func(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(GenerateDestroyScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", 1)).
 			SetGasLimit(20).

@@ -97,11 +97,14 @@ func GenerateDestroyScript(nftAddr, tokenAddr flow.Address, tokenContractName, s
 		transaction {
 		  prepare(acct: AuthAccount) {
 
-			let collectionRef = acct.borrow<&%s.Collection>(from: /storage/%s)!
+			//let collectionRef = acct.borrow<&s.Collection>(from: /storage/s)!
 
-			let nft <- collectionRef.withdraw(withdrawID: %d)
+			let collection <- acct.load<@%s.Collection>(from:/storage/%s)!
+
+			let nft <- collection.withdraw(withdrawID: %d)
 
 			destroy nft
+			destroy collection
 		  }
 		}
 	`
