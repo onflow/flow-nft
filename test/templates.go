@@ -1,4 +1,4 @@
-package nfttests
+package test
 
 import (
 	"fmt"
@@ -124,7 +124,7 @@ func GenerateInspectCollectionScript(nftAddr, tokenAddr, userAddr flow.Address, 
 			let collectionRef = acct.getCapability(/public/%s)!.borrow<&{NonFungibleToken.CollectionPublic}>()
 				?? panic("Could not borrow capability from public collection")
 			
-			//let tokenRef = collectionRef.borrowNFT(id: UInt64(%d))
+			let tokenRef = collectionRef.borrowNFT(id: UInt64(%d))
 		}
 	`
 
