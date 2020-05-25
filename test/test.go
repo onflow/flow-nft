@@ -1,4 +1,4 @@
-package nfttests
+package test
 
 import (
 	"io/ioutil"
@@ -14,17 +14,8 @@ import (
 	emulator "github.com/dapperlabs/flow-emulator"
 )
 
-// ReadFile reads a file from the file system
-func ReadFile(path string) []byte {
-	contents, err := ioutil.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-	return contents
-}
-
-// NewEmulator returns a emulator object for testing
-func NewEmulator() *emulator.Blockchain {
+// newEmulator returns a emulator object for testing
+func newEmulator() *emulator.Blockchain {
 	b, err := emulator.NewBlockchain()
 	if err != nil {
 		panic(err)
@@ -32,12 +23,12 @@ func NewEmulator() *emulator.Blockchain {
 	return b
 }
 
-// SignAndSubmit signs a transaction with an array of signers and adds their signatures to the transaction
+// signAndSubmit signs a transaction with an array of signers and adds their signatures to the transaction
 // Then submits the transaction to the emulator. If the private keys don't match up with the addresses,
 // the transaction will not succeed.
 // shouldRevert parameter indicates whether the transaction should fail or not
 // This function asserts the correct result and commits the block if it passed
-func SignAndSubmit(
+func signAndSubmit(
 	t *testing.T,
 	b *emulator.Blockchain,
 	tx *flow.Transaction,
@@ -59,12 +50,12 @@ func SignAndSubmit(
 		}
 	}
 
-	Submit(t, b, tx, shouldRevert)
+	submit(t, b, tx, shouldRevert)
 }
 
-// Submit submits a transaction and checks
+// submit submits a transaction and checks
 // if it fails or not
-func Submit(
+func submit(
 	t *testing.T,
 	b *emulator.Blockchain,
 	tx *flow.Transaction,
@@ -90,12 +81,22 @@ func Submit(
 	assert.NoError(t, err)
 }
 
-// ExecuteScriptAndCheck executes a script and checks to make sure
+// executeScriptAndCheck executes a script and checks to make sure
 // that it succeeded
-func ExecuteScriptAndCheck(t *testing.T, b *emulator.Blockchain, script []byte) {
+func executeScriptAndCheck(t *testing.T, b *emulator.Blockchain, script []byte) {
 	result, err := b.ExecuteScript(script)
 	require.NoError(t, err)
 	if !assert.True(t, result.Succeeded()) {
 		t.Log(result.Error.Error())
 	}
+}
+
+// readFile reads a file from the file system
+// and returns its contents
+func readFile(path string) []byte {
+	contents, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	return contents
 }

@@ -1,4 +1,4 @@
-package nfttests
+package test
 
 import (
 	"fmt"
@@ -97,16 +97,18 @@ func GenerateDestroyScript(nftAddr, tokenAddr flow.Address, tokenContractName, s
 		transaction {
 		  prepare(acct: AuthAccount) {
 
-			let collectionRef = acct.borrow<&%s.Collection>(from: /storage/%s)!
+			let collection <- acct.load<@%s.Collection>(from:/storage/%s)!
 
-			let nft <- collectionRef.withdraw(withdrawID: %d)
+			let nft <- collection.withdraw(withdrawID: %d)
 
 			destroy nft
+			
+			acct.save(<-collection, to: /storage/%s)
 		  }
 		}
 	`
 
-	return []byte(fmt.Sprintf(template, nftAddr, tokenContractName, tokenAddr.String(), tokenContractName, storageLocation, destroyNFTID))
+	return []byte(fmt.Sprintf(template, nftAddr, tokenContractName, tokenAddr.String(), tokenContractName, storageLocation, destroyNFTID, storageLocation))
 }
 
 // GenerateInspectCollectionScript creates a script that retrieves an NFT collection
