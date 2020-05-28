@@ -6,6 +6,8 @@ import (
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/onflow/flow-go-sdk/test"
 
+	"github.com/onflow/flow-nft/contracts"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -22,7 +24,7 @@ func TestNFTDeployment(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	nftCode := readFile(NonFungibleTokenInterfaceFile)
-	_, err := b.CreateAccount(nil, nftCode)
+	nftAddr, err := b.CreateAccount(nil, nftCode)
 	if !assert.NoError(t, err) {
 		t.Log(err.Error())
 	}
@@ -30,7 +32,7 @@ func TestNFTDeployment(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Should be able to deploy a contract as a new account with no keys.
-	tokenCode := readFile(NFTContractFile)
+	tokenCode := contracts.ExampleNFT(nftAddr.String())
 	_, err = b.CreateAccount(nil, tokenCode)
 	if !assert.NoError(t, err) {
 		t.Log(err.Error())
@@ -50,7 +52,7 @@ func TestCreateNFT(t *testing.T) {
 	nftAddr, _ := b.CreateAccount(nil, nftCode)
 
 	// First, deploy the contract
-	tokenCode := readFile(NFTContractFile)
+	tokenCode := contracts.ExampleNFT(nftAddr.String())
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
 	tokenAddr, _ := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, tokenCode)
 
@@ -62,14 +64,14 @@ func TestCreateNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(GenerateMintNFTScript(nftAddr, tokenAddr, tokenAddr)).
 			SetGasLimit(100).
-			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
-			SetPayer(b.RootKey().Address).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(tokenAddr)
 
 		signAndSubmit(
 			t, b, tx,
-			[]flow.Address{b.RootKey().Address, tokenAddr},
-			[]crypto.Signer{b.RootKey().Signer(), tokenSigner},
+			[]flow.Address{b.ServiceKey().Address, tokenAddr},
+			[]crypto.Signer{b.ServiceKey().Signer(), tokenSigner},
 			false,
 		)
 
@@ -102,7 +104,7 @@ func TestTransferNFT(t *testing.T) {
 	assert.NoError(t, err)
 
 	// First, deploy the contract
-	tokenCode := readFile(NFTContractFile)
+	tokenCode := contracts.ExampleNFT(nftAddr.String())
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
 	tokenAddr, err := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, tokenCode)
 	assert.NoError(t, err)
@@ -113,14 +115,14 @@ func TestTransferNFT(t *testing.T) {
 	tx := flow.NewTransaction().
 		SetScript(GenerateMintNFTScript(nftAddr, tokenAddr, tokenAddr)).
 		SetGasLimit(100).
-		SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
-		SetPayer(b.RootKey().Address).
+		SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+		SetPayer(b.ServiceKey().Address).
 		AddAuthorizer(tokenAddr)
 
 	signAndSubmit(
 		t, b, tx,
-		[]flow.Address{b.RootKey().Address, tokenAddr},
-		[]crypto.Signer{b.RootKey().Signer(), tokenSigner},
+		[]flow.Address{b.ServiceKey().Address, tokenAddr},
+		[]crypto.Signer{b.ServiceKey().Signer(), tokenSigner},
 		false,
 	)
 
@@ -129,14 +131,14 @@ func TestTransferNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(GenerateCreateCollectionScript(nftAddr, "ExampleNFT", tokenAddr, "NFTCollection")).
 			SetGasLimit(100).
-			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
-			SetPayer(b.RootKey().Address).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(joshAddress)
 
 		signAndSubmit(
 			t, b, tx,
-			[]flow.Address{b.RootKey().Address, joshAddress},
-			[]crypto.Signer{b.RootKey().Signer(), joshSigner},
+			[]flow.Address{b.ServiceKey().Address, joshAddress},
+			[]crypto.Signer{b.ServiceKey().Signer(), joshSigner},
 			false,
 		)
 
@@ -148,14 +150,14 @@ func TestTransferNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(GenerateTransferScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", joshAddress, 3)).
 			SetGasLimit(100).
-			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
-			SetPayer(b.RootKey().Address).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(tokenAddr)
 
 		signAndSubmit(
 			t, b, tx,
-			[]flow.Address{b.RootKey().Address, tokenAddr},
-			[]crypto.Signer{b.RootKey().Signer(), tokenSigner},
+			[]flow.Address{b.ServiceKey().Address, tokenAddr},
+			[]crypto.Signer{b.ServiceKey().Signer(), tokenSigner},
 			true,
 		)
 
@@ -171,14 +173,14 @@ func TestTransferNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(GenerateTransferScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", joshAddress, 0)).
 			SetGasLimit(100).
-			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
-			SetPayer(b.RootKey().Address).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(tokenAddr)
 
 		signAndSubmit(
 			t, b, tx,
-			[]flow.Address{b.RootKey().Address, tokenAddr},
-			[]crypto.Signer{b.RootKey().Signer(), tokenSigner},
+			[]flow.Address{b.ServiceKey().Address, tokenAddr},
+			[]crypto.Signer{b.ServiceKey().Signer(), tokenSigner},
 			false,
 		)
 
@@ -197,14 +199,14 @@ func TestTransferNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(GenerateDestroyScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", 0)).
 			SetGasLimit(100).
-			SetProposalKey(b.RootKey().Address, b.RootKey().ID, b.RootKey().SequenceNumber).
-			SetPayer(b.RootKey().Address).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(joshAddress)
 
 		signAndSubmit(
 			t, b, tx,
-			[]flow.Address{b.RootKey().Address, joshAddress},
-			[]crypto.Signer{b.RootKey().Signer(), joshSigner},
+			[]flow.Address{b.ServiceKey().Address, joshAddress},
+			[]crypto.Signer{b.ServiceKey().Signer(), joshSigner},
 			false,
 		)
 
