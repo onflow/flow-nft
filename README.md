@@ -70,9 +70,8 @@ and a `Collection` resource that contains and manages these NFTs.
 
 - unique identifier
     - `pub let id: UInt64`
-    - Should it be an `UInt64`? or something else?
 - function to borrow a reference to a specific NFT in the collection
-    - `pub fun borrowNFT(id: UInt64): &NFT`
+    - `pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT`
         - the caller can read fields and call functions on the NFT with
           the reference
 
@@ -81,49 +80,31 @@ and a `Collection` resource that contains and manages these NFTs.
 - withdraw event
     - `event Withdraw(id: UInt64, from: Address?)`
 - Provider interface
-    - `pub fun withdraw(withdrawID: UInt64): @NFT`
-
-#### 4 - Withdrawing Multiple tokens from a Collection at the same time.
-
-- No event, but each `withdraw` emits an event.
-- Provider Interface
-    - `pub fun batchWithdraw(ids: [UInt64]): @Collection`
-    - Returns a `Collection`
+    - `pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT`
 
 #### 5 - Depositing a single token id using the recipient's *deposit function*
 
 - deposit event
     - `event Deposit(id: UInt64, to: Address?)`
 - Receiver interface
-    - `pub fun deposit(token: @NFT)`
-
-#### 6 - Depositing a Collection into another Collection
-
-- No event, but each `deposit` emits an event.
-- Receiver Interface
-    - `pub fun batchDeposit(tokens: @Collection)`
-    - Takes a `Collection` as an argument.
+    - `pub fun deposit(token: @NonFungibleToken.NFT)`
+    - **IMPORTANT**: In order to comply with the deposit function in the interface, an implementation MUST take a `@NonFungibleToken.NFT` resource as an argument. This means that anyone can send a resource object that conforms to `@NonFungibleToken.NFT` to a deposit function. In an implementation, you MUST cast the `token` as your specific token type before depositing it or you will deposit another token type into your collection:
+    `let token <- token as! @ExampleNFT.NFT`
 
 #### 7 - Retrieving a list of the token IDs in the collection
 
-- `getIDs(): [Int]` returns an array of all the tokens in the collection
+- `getIDs(): [UInt64]` returns an array of all the tokens in the collection
 
 #### 8 - Creating an empty collection resource
 
-- `pub fun createEmptyCollection(): @NFTCollection`
+- `pub fun createEmptyCollection(): @NonFungibleToken.NFTCollection`
 - no event
-- defined in the contract, but not in the NFTCollection resource
+- defined in the contract
 - the returned collection must not contain any NFTs
 
 #### 8 - NFTCollection Resource Destructor
 
-- the Collection must be empty? Not possible to enforce this right now,
-  but it could be useful.
 - no event
-
-#### 9 - NFT Resource Destructor
-
-- Should this be possible?
 
 ## Comparison to other Standards on Ethereum
 
@@ -132,7 +113,7 @@ This covers much of the same ground that a spec like ERC-721 or ERC-1155 covers,
 - Tokens cannot be sent to contracts that don't understand how to use them, because an account has to have a `Receiver` or `Collection` in its storage to receive tokens.
 - If the recipient is a contract that has a stored `Collection`, the tokens can just be deposited to that Collection without having to do a clunky `approve`, `transferFrom`
 - Events are defined in the contract for withdrawing and depositing, so a recipient will always be notified that someone has sent them tokens with their own deposit event.
-- This version can support batch transfers of NFTs
+- This version can support batch transfers of NFTs. Even though it isn't explicitly defined in the contract, a batch transfer can be done within a transaction by just withdrawing all the tokens to transfer, then depositing them wherever they need to be, all atomically.
 - Transfers can trigger actions because users can define custom `Receivers` to execute certain code when a token is sent.
 - Easy ownership indexing:  Instead of having to iterate through all tokens to find which ones you own, you have them all stored in your account's collection and can get the list of the ones you own instantly
 
@@ -156,7 +137,7 @@ or even write your own.
 
 # Running Automated Tests
 
-You can find automated tests in the `nft_test.go` file. It uses the transaction templates that are contained in the `nft_templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
+You can find automated tests in the `test/nft_test.go` file. It uses the transaction templates that are contained in the `test/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
 
 ## Bonus Features 
 
