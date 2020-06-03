@@ -8,17 +8,20 @@ transaction {
 
     prepare(signer: AuthAccount) {
 
-        // Create a new empty NFT Collection resource and save it in storage
-        let collection <- ExampleNFT.createEmptyCollection()
-        signer.save(<-collection, to: /storage/NFTCollection)
+        if signer.borrow<&ExampleNFT.Collection>(from: /storage/NFTCollection) == nil {
 
-        // Create a public capability for the stored collection.
-        // Including the CollectionBorrow interface is optional,
-        // in case a user doesn't want to expose their metadata
-        //
-        signer.link<&{NonFungibleToken.Receiver, ExampleNFT.CollectionBorrow}>(
-            /public/NFTReceiver,
-            target: /storage/NFTCollection
-        )
+            // Create a new empty NFT Collection resource and save it in storage
+            let collection <- ExampleNFT.createEmptyCollection()
+            signer.save(<-collection, to: /storage/NFTCollection)
+
+            // Create a public capability for the stored collection.
+            // Including the CollectionBorrow interface is optional,
+            // in case a user doesn't want to expose their metadata
+            //
+            signer.link<&{NonFungibleToken.Receiver, ExampleNFT.CollectionBorrow}>(
+                /public/NFTReceiver,
+                target: /storage/NFTCollection
+            )
+        }
     }
 }

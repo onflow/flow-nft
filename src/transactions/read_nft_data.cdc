@@ -20,5 +20,4 @@ pub fun main() {
 
     // Log the metadata of the token
     log(nft.id)
-    log(nft.metadata)
 }
