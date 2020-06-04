@@ -14,16 +14,11 @@ import (
 	"github.com/onflow/flow-go-sdk"
 )
 
-const (
-	NonFungibleTokenInterfaceFile = "../src/contracts/NonFungibleToken.cdc"
-	NFTContractFile               = "../src/contracts/ExampleNFT.cdc"
-)
-
 func TestNFTDeployment(t *testing.T) {
 	b := newEmulator()
 
 	// Should be able to deploy a contract as a new account with no keys.
-	nftCode := readFile(NonFungibleTokenInterfaceFile)
+	nftCode := contracts.NonFungibleToken()
 	nftAddr, err := b.CreateAccount(nil, nftCode)
 	if !assert.NoError(t, err) {
 		t.Log(err.Error())
@@ -48,7 +43,7 @@ func TestCreateNFT(t *testing.T) {
 	accountKeys := test.AccountKeyGenerator()
 
 	// Should be able to deploy a contract as a new account with no keys.
-	nftCode := readFile(NonFungibleTokenInterfaceFile)
+	nftCode := contracts.NonFungibleToken()
 	nftAddr, _ := b.CreateAccount(nil, nftCode)
 
 	// First, deploy the contract
@@ -99,7 +94,7 @@ func TestTransferNFT(t *testing.T) {
 	accountKeys := test.AccountKeyGenerator()
 
 	// Should be able to deploy a contract as a new account with no keys.
-	nftCode := readFile(NonFungibleTokenInterfaceFile)
+	nftCode := contracts.NonFungibleToken()
 	nftAddr, err := b.CreateAccount(nil, nftCode)
 	assert.NoError(t, err)
 
