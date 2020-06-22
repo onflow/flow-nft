@@ -6,7 +6,7 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/onflow/flow-nft/contracts"
+	"github.com/onflow/flow-nft/lib/go/contracts"
 )
 
 var addrA = flow.HexToAddress("0A")

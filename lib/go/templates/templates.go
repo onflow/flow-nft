@@ -1,35 +1,54 @@
-package test
+package templates
+
+//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../transactions -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../transactions
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/onflow/flow-go-sdk"
+	"github.com/onflow/flow-nft/lib/go/templates/internal/assets"
+)
+
+const (
+	defaultNFTAddress        = "NFTADDRESS"
+	defaultContractAddress   = "NFTCONTRACTADDRESS"
+	defaultNFTName           = "ExampleToken"
+	defaultNFTStorage        = "NFTCollection"
+	createCollectionFilename = "setup_account.cdc"
 )
 
 // GenerateCreateCollectionScript Creates a script that instantiates a new
 // NFT collection instance, stores the collection in memory, then stores a
 // reference to the collection.
-func GenerateCreateCollectionScript(nftAddr flow.Address, tokenContractName string, tokenAddr flow.Address, storageName string) []byte {
-	template := `
-		import NonFungibleToken from 0x%s
-		import %s from 0x%s
+func GenerateCreateCollectionScript(nftAddr, tokenAddr, tokenContractName string, storageName string) []byte {
+	code := assets.MustAssetString(createCollectionFilename)
 
-		transaction {
-		  prepare(acct: AuthAccount) {
+	code = strings.ReplaceAll(
+		code,
+		"0x"+defaultNFTAddress,
+		"0x"+nftAddr,
+	)
 
-			if acct.borrow<&%s.Collection>(from: /storage/%s) == nil {
+	code = strings.ReplaceAll(
+		code,
+		"0x"+defaultContractAddress,
+		"0x"+tokenAddr,
+	)
 
-				let collection <- %s.createEmptyCollection() as! @%s.Collection
-				
-				acct.save(<-collection, to: /storage/%s)
+	code = strings.ReplaceAll(
+		code,
+		"0x"+defaultNFTName,
+		"0x"+tokenContractName,
+	)
 
-				acct.link<&{NonFungibleToken.CollectionPublic}>(/public/%s, target: /storage/%s)
-			}
-		  }
-		}
-	`
+	code = strings.ReplaceAll(
+		code,
+		"0x"+defaultNFTStorage,
+		"0x"+storageName,
+	)
 
-	return []byte(fmt.Sprintf(template, nftAddr, tokenContractName, tokenAddr, tokenContractName, storageName, tokenContractName, tokenContractName, storageName, storageName, storageName))
+	return []byte(code)
 }
 
 // GenerateMintNFTScript Creates a script that uses the admin resource

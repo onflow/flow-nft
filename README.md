@@ -129,15 +129,15 @@ with the [Flow Playground](play.onflow.org)
 or with the [Visual Studio Code Extension](https://github.com/onflow/cadence/tree/master/tools/vscode-extension).
 
 The steps to follow are:
-1. Deploy `NonFungibleToken.cdc` to account 2
-2. Deploy `ExampleNFT.cdc` to account 3
+1. Deploy `NonFungibleToken.cdc`
+2. Deploy `ExampleNFT.cdc`, importing `NonFungibleToken` from the address you deployed it to.
 
-Then you can experiment with some of the other transactions and scripts
-or even write your own.
+Then you can experiment with some of the other transactions and scripts in `transactions/`
+or even write your own. You'll need to replace some of the import address placeholders with addresses that you deploy to, as well as some of the transaction arguments.
 
 # Running Automated Tests
 
-You can find automated tests in the `test/nft_test.go` file. It uses the transaction templates that are contained in the `test/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
+You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
 
 ## Bonus Features 
 
