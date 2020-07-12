@@ -82,7 +82,7 @@ func TestCreateNFT(t *testing.T) {
 
 	t.Run("Shouldn't be able to borrow a reference to an NFT that doesn't exist", func(t *testing.T) {
 		// Assert that the account's collection is correct
-		result, err := b.ExecuteScript(templates.GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 5))
+		result, err := b.ExecuteScript(templates.GenerateInspectCollectionScript(nftAddr, tokenAddr, tokenAddr, "ExampleNFT", "NFTCollection", 5), nil)
 		require.NoError(t, err)
 		assert.True(t, result.Reverted())
 	})
