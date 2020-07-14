@@ -60,7 +60,8 @@ func GenerateMintNFTScript(nftAddr, tokenAddr, receiverAddr flow.Address) []byte
 		
 			prepare(signer: AuthAccount) {
 		
-				self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: /storage/NFTMinter)!
+				self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: /storage/NFTMinter)
+					?? panic("Could not borrow a reference to the minter resource")
 			}
 		
 			execute {
