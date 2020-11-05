@@ -19,7 +19,7 @@ transaction(recipient: Address) {
 
     execute {
         // Get the public account object for the recipient
-        let recipient = getAccount(recipient)
+        let recipient = getAccount(signer.address)
 
         // Borrow the recipient's public NFT collection reference
         let receiver = recipient
