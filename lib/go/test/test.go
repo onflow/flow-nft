@@ -2,6 +2,7 @@ package test
 
 import (
 	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/onflow/flow-go-sdk/crypto"
@@ -9,9 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/onflow/cadence/runtime/cmd"
+	"github.com/onflow/flow-emulator"
 	"github.com/onflow/flow-go-sdk"
-
-	emulator "github.com/dapperlabs/flow-emulator"
 )
 
 // newEmulator returns a emulator object for testing
@@ -73,7 +73,7 @@ func submit(
 	} else {
 		if !assert.True(t, result.Succeeded()) {
 			t.Log(result.Error.Error())
-			cmd.PrettyPrintError(result.Error, "", map[string]string{"": ""})
+			cmd.PrettyPrintError(os.Stdout, result.Error, "", map[string]string{"": ""})
 		}
 	}
 

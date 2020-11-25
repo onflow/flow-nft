@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/onflow/flow-go-sdk/crypto"
+	templates2 "github.com/onflow/flow-go-sdk/templates"
 	"github.com/onflow/flow-go-sdk/test"
 
 	"github.com/onflow/flow-nft/lib/go/contracts"
@@ -20,7 +21,12 @@ func TestNFTDeployment(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	nftCode := contracts.NonFungibleToken()
-	nftAddr, err := b.CreateAccount(nil, nftCode)
+	nftAddr, err := b.CreateAccount(nil, []templates2.Contract{
+		{
+			Name: "NonFungibleToken",
+			Source: string(nftCode),
+		},
+	})
 	if !assert.NoError(t, err) {
 		t.Log(err.Error())
 	}
@@ -29,7 +35,12 @@ func TestNFTDeployment(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	tokenCode := contracts.ExampleNFT(nftAddr.String())
-	_, err = b.CreateAccount(nil, tokenCode)
+	_, err = b.CreateAccount(nil, []templates2.Contract{
+		{
+			Name: "ExampleNFT",
+			Source: string(tokenCode),
+		},
+	})
 	if !assert.NoError(t, err) {
 		t.Log(err.Error())
 	}
@@ -45,12 +56,22 @@ func TestCreateNFT(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	nftCode := contracts.NonFungibleToken()
-	nftAddr, _ := b.CreateAccount(nil, nftCode)
+	nftAddr, _ := b.CreateAccount(nil, []templates2.Contract{
+		{
+			Name: "NonFungibleToken",
+			Source: string(nftCode),
+		},
+	})
 
 	// First, deploy the contract
 	tokenCode := contracts.ExampleNFT(nftAddr.String())
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
-	tokenAddr, _ := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, tokenCode)
+	tokenAddr, _ := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, []templates2.Contract{
+		{
+			Name: "ExampleNFT",
+			Source: string(tokenCode),
+		},
+	})
 
 	executeScriptAndCheck(t, b, templates.GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, "ExampleNFT", 0))
 
@@ -60,7 +81,7 @@ func TestCreateNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(templates.GenerateMintNFTScript(nftAddr, tokenAddr, tokenAddr)).
 			SetGasLimit(100).
-			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().Index, b.ServiceKey().SequenceNumber).
 			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(tokenAddr)
 
@@ -96,13 +117,23 @@ func TestTransferNFT(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	nftCode := contracts.NonFungibleToken()
-	nftAddr, err := b.CreateAccount(nil, nftCode)
+	nftAddr, err := b.CreateAccount(nil, []templates2.Contract{
+		{
+			Name: "NonFungibleToken",
+			Source: string(nftCode),
+		},
+	})
 	assert.NoError(t, err)
 
 	// First, deploy the contract
 	tokenCode := contracts.ExampleNFT(nftAddr.String())
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
-	tokenAddr, err := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, tokenCode)
+	tokenAddr, err := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, []templates2.Contract{
+		{
+			Name: "ExampleNFT",
+			Source: string(tokenCode),
+		},
+	})
 	assert.NoError(t, err)
 
 	joshAccountKey, joshSigner := accountKeys.NewWithSigner()
@@ -111,7 +142,7 @@ func TestTransferNFT(t *testing.T) {
 	tx := flow.NewTransaction().
 		SetScript(templates.GenerateMintNFTScript(nftAddr, tokenAddr, tokenAddr)).
 		SetGasLimit(100).
-		SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+		SetProposalKey(b.ServiceKey().Address, b.ServiceKey().Index, b.ServiceKey().SequenceNumber).
 		SetPayer(b.ServiceKey().Address).
 		AddAuthorizer(tokenAddr)
 
@@ -127,7 +158,7 @@ func TestTransferNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(templates.GenerateCreateCollectionScript(nftAddr.String(), tokenAddr.String(), "ExampleNFT", "NFTCollection")).
 			SetGasLimit(100).
-			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().Index, b.ServiceKey().SequenceNumber).
 			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(joshAddress)
 
@@ -146,7 +177,7 @@ func TestTransferNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(templates.GenerateTransferScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", joshAddress, 3)).
 			SetGasLimit(100).
-			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().Index, b.ServiceKey().SequenceNumber).
 			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(tokenAddr)
 
@@ -169,7 +200,7 @@ func TestTransferNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(templates.GenerateTransferScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", joshAddress, 0)).
 			SetGasLimit(100).
-			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().Index, b.ServiceKey().SequenceNumber).
 			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(tokenAddr)
 
@@ -195,7 +226,7 @@ func TestTransferNFT(t *testing.T) {
 		tx := flow.NewTransaction().
 			SetScript(templates.GenerateDestroyScript(nftAddr, tokenAddr, "ExampleNFT", "NFTCollection", 0)).
 			SetGasLimit(100).
-			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().ID, b.ServiceKey().SequenceNumber).
+			SetProposalKey(b.ServiceKey().Address, b.ServiceKey().Index, b.ServiceKey().SequenceNumber).
 			SetPayer(b.ServiceKey().Address).
 			AddAuthorizer(joshAddress)
 

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/onflow/flow-go-sdk"
+
 	"github.com/onflow/flow-nft/lib/go/templates/internal/assets"
 )
 
