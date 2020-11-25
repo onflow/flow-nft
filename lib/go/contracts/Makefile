@@ -6,9 +6,10 @@ test:
 generate:
 	go generate
 
-.PHONY: check-generated
-check-generated:
+.PHONY: check-tidy
+check-tidy: generate
+	go mod tidy
 	git diff --exit-code
 
 .PHONY: ci
-ci: generate check-generated test
+ci: check-tidy test

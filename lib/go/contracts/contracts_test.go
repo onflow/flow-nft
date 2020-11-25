@@ -3,13 +3,12 @@ package contracts_test
 import (
 	"testing"
 
-	"github.com/onflow/flow-go-sdk"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/onflow/flow-nft/lib/go/contracts"
 )
 
-var addrA = flow.HexToAddress("0A")
+const addrA = "0x0A"
 
 func TestNonFungibleTokenContract(t *testing.T) {
 	contract := contracts.NonFungibleToken()
@@ -17,7 +16,7 @@ func TestNonFungibleTokenContract(t *testing.T) {
 }
 
 func TestExampleNFTContract(t *testing.T) {
-	contract := contracts.ExampleNFT(addrA.Hex())
+	contract := contracts.ExampleNFT(addrA)
 	assert.NotNil(t, contract)
-	assert.Contains(t, string(contract), addrA.Hex())
+	assert.Contains(t, string(contract), addrA)
 }
