@@ -250,8 +250,8 @@ type bintree struct {
 }
 
 var _bintree = &bintree{nil, map[string]*bintree{
-	"ExampleNFT.cdc":       &bintree{examplenftCdc, map[string]*bintree{}},
-	"NonFungibleToken.cdc": &bintree{nonfungibletokenCdc, map[string]*bintree{}},
+	"ExampleNFT.cdc": {examplenftCdc, map[string]*bintree{}},
+	"NonFungibleToken.cdc": {nonfungibletokenCdc, map[string]*bintree{}},
 }}
 
 // RestoreAsset restores an asset under the given directory.
