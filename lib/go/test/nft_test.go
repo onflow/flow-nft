@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/onflow/flow-go-sdk/crypto"
-	templates2 "github.com/onflow/flow-go-sdk/templates"
+	sdktemplates "github.com/onflow/flow-go-sdk/templates"
 	"github.com/onflow/flow-go-sdk/test"
 
 	"github.com/onflow/flow-nft/lib/go/contracts"
@@ -21,7 +21,7 @@ func TestNFTDeployment(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	nftCode := contracts.NonFungibleToken()
-	nftAddr, err := b.CreateAccount(nil, []templates2.Contract{
+	nftAddr, err := b.CreateAccount(nil, []sdktemplates.Contract{
 		{
 			Name: "NonFungibleToken",
 			Source: string(nftCode),
@@ -35,7 +35,7 @@ func TestNFTDeployment(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	tokenCode := contracts.ExampleNFT(nftAddr.String())
-	_, err = b.CreateAccount(nil, []templates2.Contract{
+	_, err = b.CreateAccount(nil, []sdktemplates.Contract{
 		{
 			Name: "ExampleNFT",
 			Source: string(tokenCode),
@@ -56,7 +56,7 @@ func TestCreateNFT(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	nftCode := contracts.NonFungibleToken()
-	nftAddr, _ := b.CreateAccount(nil, []templates2.Contract{
+	nftAddr, _ := b.CreateAccount(nil, []sdktemplates.Contract{
 		{
 			Name: "NonFungibleToken",
 			Source: string(nftCode),
@@ -66,7 +66,7 @@ func TestCreateNFT(t *testing.T) {
 	// First, deploy the contract
 	tokenCode := contracts.ExampleNFT(nftAddr.String())
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
-	tokenAddr, _ := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, []templates2.Contract{
+	tokenAddr, _ := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, []sdktemplates.Contract{
 		{
 			Name: "ExampleNFT",
 			Source: string(tokenCode),
@@ -117,7 +117,7 @@ func TestTransferNFT(t *testing.T) {
 
 	// Should be able to deploy a contract as a new account with no keys.
 	nftCode := contracts.NonFungibleToken()
-	nftAddr, err := b.CreateAccount(nil, []templates2.Contract{
+	nftAddr, err := b.CreateAccount(nil, []sdktemplates.Contract{
 		{
 			Name: "NonFungibleToken",
 			Source: string(nftCode),
@@ -128,7 +128,7 @@ func TestTransferNFT(t *testing.T) {
 	// First, deploy the contract
 	tokenCode := contracts.ExampleNFT(nftAddr.String())
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
-	tokenAddr, err := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, []templates2.Contract{
+	tokenAddr, err := b.CreateAccount([]*flow.AccountKey{tokenAccountKey}, []sdktemplates.Contract{
 		{
 			Name: "ExampleNFT",
 			Source: string(tokenCode),
