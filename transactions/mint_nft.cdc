@@ -6,7 +6,7 @@ import ExampleNFT from 0xNFTCONTRACTADDRESS
 // stored in /storage/NFTMinter
 
 transaction(recipient: Address) {
-    
+
     // local variable for storing the minter reference
     let minter: &ExampleNFT.NFTMinter
 
@@ -18,12 +18,9 @@ transaction(recipient: Address) {
     }
 
     execute {
-        // Get the public account object for the recipient
-        let recipient = getAccount(recipient)
-
         // Borrow the recipient's public NFT collection reference
-        let receiver = recipient
-            .getCapability(/public/NFTCollection)!
+        let receiver = getAccount(recipient)
+            .getCapability(/public/NFTCollection)
             .borrow<&{NonFungibleToken.CollectionPublic}>()
             ?? panic("Could not get receiver reference to the NFT Collection")
 
