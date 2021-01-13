@@ -5,11 +5,12 @@ import (
 	"os"
 	"testing"
 
+	"github.com/onflow/cadence/runtime/common"
+	"github.com/onflow/cadence/runtime/pretty"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/onflow/cadence/runtime/cmd"
 	"github.com/onflow/flow-emulator"
 	"github.com/onflow/flow-go-sdk"
 )
@@ -70,11 +71,16 @@ func submit(
 
 	if shouldRevert {
 		assert.True(t, result.Reverted())
-	} else {
-		if !assert.True(t, result.Succeeded()) {
-			t.Log(result.Error.Error())
-			cmd.PrettyPrintError(os.Stdout, result.Error, "", map[string]string{"": ""})
-		}
+	} else if !assert.True(t, result.Succeeded()) {
+		printer := pretty.NewErrorPrettyPrinter(os.Stdout, true)
+		location := common.TransactionLocation(tx.ID().Bytes())
+		_ = printer.PrettyPrintError(
+			result.Error,
+			location,
+			map[common.LocationID]string{
+				location.ID(): string(tx.Script),
+			},
+		)
 	}
 
 	_, err = b.CommitBlock()
