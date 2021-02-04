@@ -17,14 +17,14 @@ import (
 )
 
 func TestNFTDeployment(t *testing.T) {
-	b := newEmulator()
+	b := newBlockchain()
 
 	// Should be able to deploy a contract as a new account with no keys.
 	nftCode := contracts.NonFungibleToken()
 	nftAddr, err := b.CreateAccount(nil,
 		[]sdktemplates.Contract{
 			{
-				Name: "NonFungibleToken",
+				Name:   "NonFungibleToken",
 				Source: string(nftCode),
 			},
 		},
@@ -41,7 +41,7 @@ func TestNFTDeployment(t *testing.T) {
 		nil,
 		[]sdktemplates.Contract{
 			{
-				Name: "ExampleNFT",
+				Name:   "ExampleNFT",
 				Source: string(tokenCode),
 			},
 		},
@@ -55,7 +55,7 @@ func TestNFTDeployment(t *testing.T) {
 }
 
 func TestCreateNFT(t *testing.T) {
-	b := newEmulator()
+	b := newBlockchain()
 
 	accountKeys := test.AccountKeyGenerator()
 
@@ -65,7 +65,7 @@ func TestCreateNFT(t *testing.T) {
 		nil,
 		[]sdktemplates.Contract{
 			{
-				Name: "NonFungibleToken",
+				Name:   "NonFungibleToken",
 				Source: string(nftCode),
 			},
 		},
@@ -78,14 +78,14 @@ func TestCreateNFT(t *testing.T) {
 		[]*flow.AccountKey{tokenAccountKey},
 		[]sdktemplates.Contract{
 			{
-				Name: "ExampleNFT",
+				Name:   "ExampleNFT",
 				Source: string(tokenCode),
 			},
 		},
 	)
 
 	script := templates.GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, "ExampleNFT", 0)
-	executeScriptAndCheck(t, b, script)
+	executeScriptAndCheck(t, b, script, nil)
 
 	script = templates.GenerateInspectCollectionLenScript(
 		nftAddr,
@@ -95,21 +95,12 @@ func TestCreateNFT(t *testing.T) {
 		"NFTCollection",
 		0,
 	)
-	executeScriptAndCheck(t, b, script)
+	executeScriptAndCheck(t, b, script, nil)
 
 	t.Run("Should be able to mint a token", func(t *testing.T) {
 
 		script := templates.GenerateMintNFTScript(nftAddr, tokenAddr, tokenAddr)
-		tx := flow.NewTransaction().
-			SetScript(script).
-			SetGasLimit(100).
-			SetProposalKey(
-				b.ServiceKey().Address,
-				b.ServiceKey().Index,
-				b.ServiceKey().SequenceNumber,
-			).
-			SetPayer(b.ServiceKey().Address).
-			AddAuthorizer(tokenAddr)
+		tx := createTxWithTemplateAndAuthorizer(b, script, tokenAddr)
 
 		signAndSubmit(
 			t, b, tx,
@@ -133,7 +124,7 @@ func TestCreateNFT(t *testing.T) {
 			"NFTCollection",
 			0,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 		script = templates.GenerateInspectCollectionLenScript(
 			nftAddr,
@@ -143,10 +134,10 @@ func TestCreateNFT(t *testing.T) {
 			"NFTCollection",
 			1,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 		script = templates.GenerateInspectNFTSupplyScript(nftAddr, tokenAddr, "ExampleNFT", 1)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 	})
 
@@ -169,7 +160,7 @@ func TestCreateNFT(t *testing.T) {
 }
 
 func TestTransferNFT(t *testing.T) {
-	b := newEmulator()
+	b := newBlockchain()
 
 	accountKeys := test.AccountKeyGenerator()
 
@@ -179,7 +170,7 @@ func TestTransferNFT(t *testing.T) {
 		nil,
 		[]sdktemplates.Contract{
 			{
-				Name: "NonFungibleToken",
+				Name:   "NonFungibleToken",
 				Source: string(nftCode),
 			},
 		},
@@ -193,7 +184,7 @@ func TestTransferNFT(t *testing.T) {
 		[]*flow.AccountKey{tokenAccountKey},
 		[]sdktemplates.Contract{
 			{
-				Name: "ExampleNFT",
+				Name:   "ExampleNFT",
 				Source: string(tokenCode),
 			},
 		},
@@ -237,16 +228,7 @@ func TestTransferNFT(t *testing.T) {
 			"ExampleNFT",
 			"NFTCollection",
 		)
-		tx := flow.NewTransaction().
-			SetScript(script).
-			SetGasLimit(100).
-			SetProposalKey(
-				b.ServiceKey().Address,
-				b.ServiceKey().Index,
-				b.ServiceKey().SequenceNumber,
-			).
-			SetPayer(b.ServiceKey().Address).
-			AddAuthorizer(joshAddress)
+		tx := createTxWithTemplateAndAuthorizer(b, script, joshAddress)
 
 		signAndSubmit(
 			t, b, tx,
@@ -269,7 +251,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			0,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 	})
 
@@ -283,16 +265,7 @@ func TestTransferNFT(t *testing.T) {
 			joshAddress,
 			3,
 		)
-		tx := flow.NewTransaction().
-			SetScript(script).
-			SetGasLimit(100).
-			SetProposalKey(
-				b.ServiceKey().Address,
-				b.ServiceKey().Index,
-				b.ServiceKey().SequenceNumber,
-			).
-			SetPayer(b.ServiceKey().Address).
-			AddAuthorizer(tokenAddr)
+		tx := createTxWithTemplateAndAuthorizer(b, script, tokenAddr)
 
 		signAndSubmit(
 			t, b, tx,
@@ -315,7 +288,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			0,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 		// Assert that the account's collection is correct
 		script = templates.GenerateInspectCollectionLenScript(
@@ -326,7 +299,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			1,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 	})
 
@@ -340,16 +313,7 @@ func TestTransferNFT(t *testing.T) {
 			joshAddress,
 			0,
 		)
-		tx := flow.NewTransaction().
-			SetScript(script).
-			SetGasLimit(100).
-			SetProposalKey(
-				b.ServiceKey().Address,
-				b.ServiceKey().Index,
-				b.ServiceKey().SequenceNumber,
-			).
-			SetPayer(b.ServiceKey().Address).
-			AddAuthorizer(tokenAddr)
+		tx := createTxWithTemplateAndAuthorizer(b, script, tokenAddr)
 
 		signAndSubmit(
 			t, b, tx,
@@ -373,7 +337,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			0,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 		script = templates.GenerateInspectCollectionLenScript(
 			nftAddr,
@@ -383,7 +347,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			1,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 		// Assert that the account's collection is correct
 		script = templates.GenerateInspectCollectionLenScript(
@@ -394,7 +358,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			0,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 	})
 
@@ -408,16 +372,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			0,
 		)
-		tx := flow.NewTransaction().
-			SetScript(script).
-			SetGasLimit(100).
-			SetProposalKey(
-				b.ServiceKey().Address,
-				b.ServiceKey().Index,
-				b.ServiceKey().SequenceNumber,
-			).
-			SetPayer(b.ServiceKey().Address).
-			AddAuthorizer(joshAddress)
+		tx := createTxWithTemplateAndAuthorizer(b, script, joshAddress)
 
 		signAndSubmit(
 			t, b, tx,
@@ -440,7 +395,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			0,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 		// Assert that the account's collection is correct
 		script = templates.GenerateInspectCollectionLenScript(
@@ -451,7 +406,7 @@ func TestTransferNFT(t *testing.T) {
 			"NFTCollection",
 			0,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 		script = templates.GenerateInspectNFTSupplyScript(
 			nftAddr,
@@ -459,7 +414,7 @@ func TestTransferNFT(t *testing.T) {
 			"ExampleNFT",
 			1,
 		)
-		executeScriptAndCheck(t, b, script)
+		executeScriptAndCheck(t, b, script, nil)
 
 	})
 }
