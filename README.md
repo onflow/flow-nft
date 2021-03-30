@@ -13,7 +13,7 @@ Flow is a new blockchain for open worlds. Read more about it [here](https://www.
 
 Cadence is a new Resource-oriented programming language 
 for developing smart contracts for the Flow Blockchain.
-Read more about it [here](https://www.docs.onflow.org)
+Read more about it [here](https://docs.onflow.org)
 
 We recommend that anyone who is reading this should have already
 completed the [Cadence Tutorials](https://docs.onflow.org/docs/getting-started-1) 
