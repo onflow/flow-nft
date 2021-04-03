@@ -125,7 +125,7 @@ We are still trying to think about how to do token metadata, which is very impor
 ## How to test the standard
 
 If you want to test out these contracts, we recommend either testing them
-with the [Flow Playground](play.onflow.org) 
+with the [Flow Playground](https://play.onflow.org) 
 or with the [Visual Studio Code Extension](https://github.com/onflow/cadence/tree/master/tools/vscode-extension).
 
 The steps to follow are:
