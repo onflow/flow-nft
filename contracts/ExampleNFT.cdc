@@ -80,23 +80,23 @@ pub contract ExampleNFT: NonFungibleToken {
     // Resource that an admin or something similar would own to be
     // able to mint new NFTs
     //
-	pub resource NFTMinter {
+    pub resource NFTMinter {
 
-		// mintNFT mints a new NFT with a new ID
-		// and deposit it in the recipients collection using their collection reference
-		pub fun mintNFT(recipient: &{NonFungibleToken.CollectionPublic}) {
+        // mintNFT mints a new NFT with a new ID
+        // and deposit it in the recipients collection using their collection reference
+        pub fun mintNFT(recipient: &{NonFungibleToken.CollectionPublic}) {
 
-			// create a new NFT
-			var newNFT <- create NFT(initID: ExampleNFT.totalSupply)
+            // create a new NFT
+            var newNFT <- create NFT(initID: ExampleNFT.totalSupply)
 
-			// deposit it in the recipient's account using their reference
-			recipient.deposit(token: <-newNFT)
+            // deposit it in the recipient's account using their reference
+            recipient.deposit(token: <-newNFT)
 
             ExampleNFT.totalSupply = ExampleNFT.totalSupply + UInt64(1)
-		}
-	}
+        }
+    }
 
-	init() {
+    init() {
         // Initialize the total supply
         self.totalSupply = 0
 
@@ -115,6 +115,6 @@ pub contract ExampleNFT: NonFungibleToken {
         self.account.save(<-minter, to: /storage/NFTMinter)
 
         emit ContractInitialized()
-	}
+    }
 }
 
