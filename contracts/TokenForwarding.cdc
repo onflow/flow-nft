@@ -4,7 +4,7 @@
 
 */
 
-import NonFungibleToken from 0x04
+import NonFungibleToken from 0x02
 
 pub contract NFTForwarding {
 
