@@ -1,7 +1,6 @@
 package test
 
 import (
-	"log"
 	"testing"
 
 	"github.com/onflow/cadence"
@@ -49,12 +48,10 @@ func TestNFTForwarding(t *testing.T) {
 		},
 	)
 	assert.NoError(t, err)
-	log.Print(exampleNftTokenSigner)
-	log.Print(exampleNftAddr)
 
 	// deploy forwarding contract
 	forwarderContractCode := contracts.NFTForwarding(nftAddr.String())
-	forwarderAccountKey, forwarderTokenSigner := accountKeys.NewWithSigner()
+	forwarderAccountKey, _ := accountKeys.NewWithSigner()
 	forwarderAddr, err := b.CreateAccount(
 		[]*flow.AccountKey{forwarderAccountKey},
 		[]sdktemplates.Contract{
@@ -65,8 +62,6 @@ func TestNFTForwarding(t *testing.T) {
 		},
 	)
 	assert.NoError(t, err)
-	log.Print(forwarderTokenSigner)
-	log.Print(forwarderAddr)
 
 	// mint a couple of new NFT and verify they exist
 	mintScript := templates.GenerateMintNFTScript(nftAddr, exampleNftAddr, exampleNftAddr)
@@ -100,12 +95,10 @@ func TestNFTForwarding(t *testing.T) {
 		forwarderRecipientKey, forwarderRecipientSigner := accountKeys.NewWithSigner()
 		forwarderRecipientAddr, err := b.CreateAccount([]*flow.AccountKey{forwarderRecipientKey}, nil)
 		assert.NoError(t, err)
-		log.Print(forwarderRecipientSigner, forwarderRecipientAddr)
 
 		forwarderOwnerKey, forwarderOwnerSigner := accountKeys.NewWithSigner()
 		forwarderOwnerAddr, err := b.CreateAccount([]*flow.AccountKey{forwarderOwnerKey}, nil)
 		assert.NoError(t, err)
-		log.Print(forwarderOwnerSigner, forwarderOwnerAddr)
 
 		// forwarder recipient requires a valid NFT collection
 		createCol := templates.GenerateCreateCollectionScript(

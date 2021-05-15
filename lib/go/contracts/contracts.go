@@ -4,7 +4,6 @@ package contracts
 
 import (
 	"github.com/onflow/flow-nft/lib/go/contracts/internal/assets"
-	"log"
 	"strings"
 )
 
@@ -37,8 +36,6 @@ func ExampleNFT(nonfungibleTokenAddr string) []byte {
 
 // NFTForwarding returns the NFTForwarding contract
 func NFTForwarding(nonfungibleTokenAddr string) []byte {
-	log.Print("nonfungibleToken Addr", nonfungibleTokenAddr)
-	log.Print("forwarding filename:", nftForwardingFilename)
 	code := assets.MustAssetString(nftForwardingFilename)
 
 	code = strings.ReplaceAll(
