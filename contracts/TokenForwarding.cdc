@@ -28,14 +28,14 @@ pub contract NFTForwarding {
         // changeRecipient allows the forwarding target to be updated
         pub fun changeRecipient(_ newRecipient: Capability) {
             pre {
-                newRecipient.borrow<&{NonFungibleToken.Receiver}>() != nil: "Could not borrow Receiver interface from the Capability"
+                newRecipient.borrow<&{NonFungibleToken.Receiver}>() != nil: "Could not borrow NFT Receiver interface from the Capability"
             }
             self.recipient = newRecipient
         }
 
         init(recipient: Capability) {
             pre {
-                recipient.borrow<&{NonFungibleToken.Receiver}>() != nil: "Could not borrow Receiver reference from the Capability"
+                recipient.borrow<&{NonFungibleToken.Receiver}>() != nil: "Could not borrow NFT Receiver reference from the Capability"
             }
             self.recipient = recipient
         }

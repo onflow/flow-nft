@@ -37,7 +37,6 @@ func ExampleNFT(nonfungibleTokenAddr string) []byte {
 // NFTForwarding returns the NFTForwarding contract
 func NFTForwarding(nonfungibleTokenAddr string) []byte {
 	code := assets.MustAssetString(nftForwardingFilename)
-
 	code = strings.ReplaceAll(
 		code,
 		"0x"+defaultNonFungibleTokenAddress,
