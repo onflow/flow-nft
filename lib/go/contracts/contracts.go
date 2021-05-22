@@ -3,14 +3,14 @@ package contracts
 //go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../contracts -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../contracts
 
 import (
-	"strings"
-
 	"github.com/onflow/flow-nft/lib/go/contracts/internal/assets"
+	"strings"
 )
 
 const (
 	nonfungibleTokenFilename       = "NonFungibleToken.cdc"
 	exampleNFTFilename             = "ExampleNFT.cdc"
+	nftForwardingFilename          = "TokenForwarding.cdc"
 	defaultNonFungibleTokenAddress = "02"
 )
 
@@ -25,6 +25,18 @@ func NonFungibleToken() []byte {
 func ExampleNFT(nonfungibleTokenAddr string) []byte {
 	code := assets.MustAssetString(exampleNFTFilename)
 
+	code = strings.ReplaceAll(
+		code,
+		"0x"+defaultNonFungibleTokenAddress,
+		"0x"+nonfungibleTokenAddr,
+	)
+
+	return []byte(code)
+}
+
+// NFTForwarding returns the NFTForwarding contract
+func NFTForwarding(nonfungibleTokenAddr string) []byte {
+	code := assets.MustAssetString(nftForwardingFilename)
 	code = strings.ReplaceAll(
 		code,
 		"0x"+defaultNonFungibleTokenAddress,

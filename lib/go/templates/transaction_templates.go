@@ -14,9 +14,11 @@ import (
 const (
 	defaultNFTAddress        = "NFTADDRESS"
 	defaultContractAddress   = "NFTCONTRACTADDRESS"
+	defaultForwarderAddress  = "NFTFORWARDERADDRESS"
 	defaultNFTName           = "ExampleToken"
 	defaultNFTStorage        = "NFTCollection"
 	createCollectionFilename = "setup_account.cdc"
+	createForwarderFilename  = "create_forwarder.cdc"
 )
 
 // GenerateCreateCollectionScript Creates a script that instantiates a new
@@ -44,6 +46,30 @@ func GenerateCreateCollectionScript(nftAddr, tokenAddr, tokenContractName string
 		code,
 		"0x"+defaultNFTStorage,
 		"0x"+storageName,
+	)
+
+	return []byte(code)
+}
+
+// GenerateCreateForwarderTransaction creates a transaction that instantiates
+// a TokenForwarder object.
+func GenerateCreateForwarderTransaction(nftAddr, tokenAddr, forwarderAddr string) []byte {
+	code := assets.MustAssetString(createForwarderFilename)
+
+	code = strings.ReplaceAll(
+		code,
+		"0x"+defaultNFTAddress,
+		"0x"+nftAddr,
+	)
+	code = strings.ReplaceAll(
+		code,
+		"0x"+defaultContractAddress,
+		"0x"+tokenAddr,
+	)
+	code = strings.ReplaceAll(
+		code,
+		"0x"+defaultForwarderAddress,
+		"0x"+forwarderAddr,
 	)
 
 	return []byte(code)
