@@ -5,6 +5,8 @@ package contracts
 import (
 	"strings"
 
+	_ "github.com/kevinburke/go-bindata"
+
 	"github.com/onflow/flow-nft/lib/go/contracts/internal/assets"
 )
 
