@@ -8,6 +8,8 @@ import (
 
 	"github.com/onflow/flow-go-sdk"
 
+	_ "github.com/kevinburke/go-bindata"
+
 	"github.com/onflow/flow-nft/lib/go/templates/internal/assets"
 )
 
