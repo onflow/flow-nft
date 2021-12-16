@@ -1,41 +1,33 @@
 # Flow Non-Fungible Token Standard
 
-This is a description of the work-in-progress standard for 
-non-fungible token contracts on the Flow Blockchain.  It is meant to contain 
-the minimum functionality to implement a safe, secure, easy to understand, 
-and easy to use non-fungible token contract in Cadence.
-
-## What is Flow?
-
-Flow is a new blockchain for open worlds. Read more about it [here](https://www.onflow.org/).
+This standard defines the minimum functionality required to 
+implement a safe, secure, and easy-to-use non-fungible token 
+contract on the [Flow blockchain](https://www.onflow.org/).
 
 ## What is Cadence?
 
-Cadence is a new Resource-oriented programming language 
-for developing smart contracts for the Flow Blockchain.
-Read more about it [here](https://docs.onflow.org)
+[Cadence is the resource-oriented programming language](https://docs.onflow.org/cadence)
+for developing smart contracts on the Flow blockchain.
 
-We recommend that anyone who is reading this should have already
-completed the [Cadence Tutorials](https://docs.onflow.org/docs/getting-started-1) 
-so they can build a basic understanding of the programming language.
+Before reading this standard, 
+we recommend completing the [Cadence tutorials](https://docs.onflow.org/cadence/tutorial/01-first-steps/) 
+to build a basic understanding of the programming language.
 
 Resource-oriented programming, and by extension Cadence, 
-is the perfect programming environment for Non-Fungible Tokens (NFTs), because users are able
-to store their NFT objects directly in their accounts and transact
-peer-to-peer. Please see the [blog post about resources](https://medium.com/dapperlabs/resource-oriented-programming-bee4d69c8f8e)
-to understand why they are perfect for digital assets.
+is an ideal programming model for non-fungible tokens (NFTs).
+Users are able to store their NFT objects directly in their accounts and transact
+peer-to-peer. Learn more in this [blog post about resources](https://medium.com/dapperlabs/resource-oriented-programming-bee4d69c8f8e).
 
 ## Feedback
 
-Flow and Cadence are both still in development, so this standard will still 
-be going through a lot of changes as the protocol and language evolves, 
-and as we receive feedback from the community about the standard.
+As Flow and Cadence are still new,
+we expect this standard to evolve based on feedback
+from both developers and users.
 
-We'd love to hear from anyone who has feedback. 
-Main feedback we are looking for is:
+We'd love to hear from anyone who has feedback. For example: 
 
 - Are there any features that are missing from the standard?
-- Are the features that we have included defined in the best way possible?
+- Are the current features defined in the best way possible?
 - Are there any pre and post conditions that are missing?
 - Are the pre and post conditions defined well enough? Error messages?
 - Are there any other actions that need an event defined for them?
@@ -43,7 +35,7 @@ Main feedback we are looking for is:
 - Are the variable, function, and parameter names descriptive enough?
 - Are there any openings for bugs or vulnerabilities that we are not noticing?
 
-Please create an issue in this repo if there is a feature that
+Please create an issue in this repository if there is a feature that
 you believe needs discussing or changing.
 
 ## Core Features (main NonFungibleToken interface)
@@ -106,21 +98,30 @@ and a `Collection` resource that contains and manages these NFTs.
 
 - no event
 
+## Metadata
+
+NFT metadata is represented in a flexible and modular way using
+the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
+
+The standard `NonFungibleToken.NFT` interface implements the [Views.Resolver]() interface,
+which allows an NFT to implement one or more metadata types,
+called `Views`.
+
+Each `View` represents a different kind of metadata.
+
+- An NFT can implement multiple views
+
 ## Comparison to other Standards on Ethereum
 
-This covers much of the same ground that a spec like ERC-721 or ERC-1155 covers, but without most of the downsides.  
+This standard covers much of the same ground as ERC-721 and ERC-1155,
+but without most of the downsides.  
 
-- Tokens cannot be sent to contracts that don't understand how to use them, because an account has to have a `Receiver` or `Collection` in its storage to receive tokens.
-- If the recipient is a contract that has a stored `Collection`, the tokens can just be deposited to that Collection without having to do a clunky `approve`, `transferFrom`
+- Tokens cannot be sent to contracts that don't understand how to use them, because an account needs to have a `Receiver` or `Collection` in its storage to receive tokens.
+- If the recipient is a contract that has a stored `Collection`, the tokens can just be deposited to that Collection without having to do a clunky `approve`, `transferFrom`.
 - Events are defined in the contract for withdrawing and depositing, so a recipient will always be notified that someone has sent them tokens with their own deposit event.
 - This version can support batch transfers of NFTs. Even though it isn't explicitly defined in the contract, a batch transfer can be done within a transaction by just withdrawing all the tokens to transfer, then depositing them wherever they need to be, all atomically.
 - Transfers can trigger actions because users can define custom `Receivers` to execute certain code when a token is sent.
-- Easy ownership indexing:  Instead of having to iterate through all tokens to find which ones you own, you have them all stored in your account's collection and can get the list of the ones you own instantly
-
-
-## Metadata
-
-We are still trying to think about how to do token metadata, which is very important. We want to be able to have all metadata on-chain, but we haven't made much progress discussing or designing it.
+- Easy ownership indexing: rathing than iterating through all tokens to find which ones you own, you have them all stored in your account's collection and can get the list of the ones you own instantly.
 
 ## How to test the standard
 
@@ -178,3 +179,6 @@ The works in these folders
 
 are under the Unlicense
 https://github.com/onflow/flow-NFT/blob/master/LICENSE
+
+## Metadata
+
