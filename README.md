@@ -18,26 +18,6 @@ is an ideal programming model for non-fungible tokens (NFTs).
 Users are able to store their NFT objects directly in their accounts and transact
 peer-to-peer. Learn more in this [blog post about resources](https://medium.com/dapperlabs/resource-oriented-programming-bee4d69c8f8e).
 
-## Feedback
-
-As Flow and Cadence are still new,
-we expect this standard to evolve based on feedback
-from both developers and users.
-
-We'd love to hear from anyone who has feedback. For example: 
-
-- Are there any features that are missing from the standard?
-- Are the current features defined in the best way possible?
-- Are there any pre and post conditions that are missing?
-- Are the pre and post conditions defined well enough? Error messages?
-- Are there any other actions that need an event defined for them?
-- Are the current event definitions clear enough and do they provide enough information?
-- Are the variable, function, and parameter names descriptive enough?
-- Are there any openings for bugs or vulnerabilities that we are not noticing?
-
-Please create an issue in this repository if there is a feature that
-you believe needs discussing or changing.
-
 ## Core Features (main NonFungibleToken interface)
 
 These features are the ones that are specified in the interface for NFTs.
@@ -104,12 +84,32 @@ NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
 
 The standard `NonFungibleToken.NFT` interface implements the [Views.Resolver]() interface,
-which allows an NFT to implement one or more metadata types,
-called `Views`.
+which allows an NFT to implement one or more metadata types called `Views`.
 
-Each `View` represents a different kind of metadata.
+Each `View` represents a different type of metadata, 
+such as an on-chain creator biography or an off-chain video clip.
 
-- An NFT can implement multiple views
+View the full list of 
+
+## Feedback
+
+As Flow and Cadence are still new,
+we expect this standard to evolve based on feedback
+from both developers and users.
+
+We'd love to hear from anyone who has feedback. For example: 
+
+- Are there any features that are missing from the standard?
+- Are the current features defined in the best way possible?
+- Are there any pre and post conditions that are missing?
+- Are the pre and post conditions defined well enough? Error messages?
+- Are there any other actions that need an event defined for them?
+- Are the current event definitions clear enough and do they provide enough information?
+- Are the variable, function, and parameter names descriptive enough?
+- Are there any openings for bugs or vulnerabilities that we are not noticing?
+
+Please create an issue in this repository if there is a feature that
+you believe needs discussing or changing.
 
 ## Comparison to other Standards on Ethereum
 
