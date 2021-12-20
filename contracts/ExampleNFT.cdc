@@ -2,7 +2,7 @@
 // It is not part of the official standard but it assumed to be
 // very similar to how many NFTs would implement the core functionality.
 
-import NonFungibleToken from 0x02
+import NonFungibleToken from "./NonFungibleToken.cdc"
 
 pub contract ExampleNFT: NonFungibleToken {
 

@@ -5,6 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/onflow/flow-go-sdk/test"
+
 	"github.com/onflow/flow-nft/lib/go/contracts"
 )
 
@@ -16,7 +18,10 @@ func TestNonFungibleTokenContract(t *testing.T) {
 }
 
 func TestExampleNFTContract(t *testing.T) {
-	contract := contracts.ExampleNFT(addrA)
+	addresses := test.AddressGenerator()
+	addressA := addresses.New()
+
+	contract := contracts.ExampleNFT(addressA)
 	assert.NotNil(t, contract)
-	assert.Contains(t, string(contract), addrA)
+	assert.Contains(t, string(contract), addressA.String())
 }
