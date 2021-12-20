@@ -51,7 +51,7 @@ account.link<&{NonFungibleToken.CollectionPublic}>(
     /public/ExampleNFTCollection,
     target: /storage/ExampleNFTCollection
 )
-````
+```
 
 ### Withdraw an NFT
 
