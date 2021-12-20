@@ -137,7 +137,7 @@ log(nftRef.id)
 NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
 
-The `NonFungibleToken.NFT` interface implements the [Views.Resolver]() interface,
+All `NFT` resources are encouraged to implement the [Views.Resolver](contracts/Views.cdc) interface,
 which allows an NFT to implement one or more metadata types called `Views`.
 
 Each `View` represents a different type of metadata, 
