@@ -132,13 +132,15 @@ let nftRef = collection.borrowNFT(id: 42)
 log(nftRef.id)
 ```
 
-## Metadata
+## NFT Metadata
 
 NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
 
-All `NFT` resources are encouraged to implement the [Views.Resolver](contracts/Views.cdc) interface,
-which allows an NFT to implement one or more metadata types called `Views`.
+When writing an NFT contract, 
+you should implement the [`Views.Resolver`](contracts/Views.cdc#L3-L6) and
+[`Views.ResolverCollection`](Views.cdc#L8-L11) interfaces,
+which allow your NFT to implement one or more metadata types called views.
 
 Each `View` represents a different type of metadata, 
 such as an on-chain creator biography or an off-chain video clip.
@@ -162,6 +164,10 @@ if let view = nftRef.resolveView(Type<Views.Display>()) {
   log(display.description)
 }
 ```
+
+### How to implement metadata
+
+The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement metadata views.
 
 ### List of common views
 
