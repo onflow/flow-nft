@@ -14,82 +14,166 @@ we recommend completing the [Cadence tutorials](https://docs.onflow.org/cadence/
 to build a basic understanding of the programming language.
 
 Resource-oriented programming, and by extension Cadence, 
-is an ideal programming model for non-fungible tokens (NFTs).
+provides an ideal programming model for non-fungible tokens (NFTs).
 Users are able to store their NFT objects directly in their accounts and transact
 peer-to-peer. Learn more in this [blog post about resources](https://medium.com/dapperlabs/resource-oriented-programming-bee4d69c8f8e).
 
-## Core Features (main NonFungibleToken interface)
+## Core features
 
-These features are the ones that are specified in the interface for NFTs.
-Please be aware, that a NFT contract that implements the interface can 
-include other features in addition to these if they so wish. Also be aware
-that with the way that Cadence smart contracts define objects and with how
-objects can be integrated easily into other contracts, many more actions and 
-features are possible even with a contract that only defines the bare minimim 
-functionality.
+The `NonFungibleToken` contract defines the following set of functionality
+that must be included in each implementation.
 
-The main interface requires that implementing types define a `NFT` resource 
-and a `Collection` resource that contains and manages these NFTs.
+Contracts that implement the `NonFungibleToken` interface are required to implement two resource interfaces:
 
-#### 1 - Getting metadata for the token smart contract via the fields of the contract:
+- `NFT` -  A resource that describes the structure of a single NFT.
+- `Collection` - A resource that can hold multiple NFTs of the same type. 
 
-- Get the total number of tokens that have been created by the contract
-    - `pub var totalSupply: UInt64`
-- Event that gets emitted when the contract is initialized
-    - `event ContractInitialized()`
+  Users typically store one collection per NFT type, saved at a well-known location in their account storage.
 
-#### 2 - Retrieving the token fields of an NFT in a user's collection
+  For example, all NBA Top Shot Moments owned by a single user are held in a [`TopShot.Collection`](https://github.com/dapperlabs/nba-smart-contracts/blob/master/contracts/TopShot.cdc#L605) stored in their account at the path `/storage/MomentCollection`.
 
-- unique identifier
-    - `pub let id: UInt64`
-- function to borrow a reference to a specific NFT in the collection
-    - `pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT`
-        - the caller can read fields and call functions on the NFT with
-          the reference
+### Create a new NFT collection
 
-#### 3 - Withdrawing a single token id using the `withdraw` function of the owner's collection
+Create a new collection using the `createEmptyCollection` function.
 
-- withdraw event
-    - `event Withdraw(id: UInt64, from: Address?)`
-- Provider interface
-    - `pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT`
+This function MUST return an empty collection that contains no NFTs.
 
-#### 5 - Depositing a single token id using the recipient's *deposit function*
+Users typically save new collections to a well-known location in their account
+and link the `NonFungibleToken.CollectionPublic` interface as a public capability.
 
-- deposit event
-    - `event Deposit(id: UInt64, to: Address?)`
-- Receiver interface
-    - `pub fun deposit(token: @NonFungibleToken.NFT)`
-    - **IMPORTANT**: In order to comply with the deposit function in the interface, an implementation MUST take a `@NonFungibleToken.NFT` resource as an argument. This means that anyone can send a resource object that conforms to `@NonFungibleToken.NFT` to a deposit function. In an implementation, you MUST cast the `token` as your specific token type before depositing it or you will deposit another token type into your collection:
-    `let token <- token as! @ExampleNFT.NFT`
+```swift
+let collection <- ExampleNFT.createEmptyCollection()
 
-#### 7 - Retrieving a list of the token IDs in the collection
+account.save(<-collection, to: /storage/ExampleNFTCollection)
 
-- `getIDs(): [UInt64]` returns an array of all the tokens in the collection
+// create a public capability for the collection
+account.link<&{NonFungibleToken.CollectionPublic}>(
+    /public/ExampleNFTCollection,
+    target: /storage/ExampleNFTCollection
+)
+````
 
-#### 8 - Creating an empty collection resource
+### Withdraw an NFT
 
-- `pub fun createEmptyCollection(): @NonFungibleToken.NFTCollection`
-- no event
-- defined in the contract
-- the returned collection must not contain any NFTs
+Withdraw an `NFT` from a `Collection` using the [`withdraw`](contracts/ExampleNFT.cdc#L36-L42) function.
+This function emits the [`Withdraw`](contracts/ExampleNFT.cdc#L12) event.
 
-#### 8 - NFTCollection Resource Destructor
+```swift
+let collectionRef = account.borrow<&ExampleNFT.Collection>(from: /storage/ExampleNFTCollection)
+    ?? panic("Could not borrow a reference to the owner's collection")
 
-- no event
+// withdraw the NFT from the owner's collection
+let nft <- collectionRef.withdraw(withdrawID: 42)
+```
+
+### Deposit an NFT
+
+Deposit an `NFT` into a `Collection` using the [`deposit`](contracts/ExampleNFT.cdc#L46-L57) function.
+This function emits the [`Deposit`](contracts/ExampleNFT.cdc#L13) event.
+
+This function is available on the `NonFungibleToken.CollectionPublic` interface,
+which accounts publish as public capability. 
+This capability allows anybody to deposit an NFT into a collection 
+without accessing the entire collection.
+
+```swift
+let nft: ExampleNFT.NFT
+
+// ...
+
+let collection = account.getCapability(/public/ExampleNFTCollection)
+    .borrow<&{NonFungibleToken.CollectionPublic}>()
+    ?? panic("Could not borrow a reference to the receiver's collection")
+            
+collection.deposit(token: <-nft)
+```
+
+#### ⚠️ Important
+
+In order to comply with the deposit function in the interface,
+an implementation MUST take a `@NonFungibleToken.NFT` resource as an argument. 
+This means that anyone can send a resource object that conforms to `@NonFungibleToken.NFT` to a deposit function. 
+In an implementation, you MUST cast the `token` as your specific token type before depositing it or you will 
+deposit another token type into your collection. For example:
+
+```swift
+let token <- token as! @ExampleNFT.NFT
+```
+
+### List NFTs in an account
+
+Return a list of NFTs in a `Collection` using the [`getIDs`](contracts/ExampleNFT.cdc#L59-L62) function.
+
+This function is available on the `NonFungibleToken.CollectionPublic` interface,
+which accounts publish as public capability. 
+
+```swift
+let collection = account.getCapability(/public/ExampleNFTCollection)
+    .borrow<&{NonFungibleToken.CollectionPublic}>()
+    ?? panic("Could not borrow a reference to the receiver's collection")
+    
+let ids = collection.getIDs()
+```
+
+### Read an NFT from an account
+
+Obtain a reference to a specific NFT in a `Collection` using the [`borrowNFT`]() function.
+
+This only returns a reference to the NFT resource, not the resource itself.
+However, the caller can read fields on the NFT and call public functions.
+
+```swift
+let collection = account.getCapability(/public/ExampleNFTCollection)
+    .borrow<&{NonFungibleToken.CollectionPublic}>()
+    ?? panic("Could not borrow a reference to the receiver's collection")
+
+let nftRef = collection.borrowNFT(id: 42)
+
+log(nftRef.id)
+```
 
 ## Metadata
 
 NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
 
-The standard `NonFungibleToken.NFT` interface implements the [Views.Resolver]() interface,
+The `NonFungibleToken.NFT` interface implements the [Views.Resolver]() interface,
 which allows an NFT to implement one or more metadata types called `Views`.
 
 Each `View` represents a different type of metadata, 
 such as an on-chain creator biography or an off-chain video clip.
 
-View the full list of 
+### Display view
+
+The [`Display`]() view is the most basic metadata view.
+It returns the minimum information required to render an NFT in most applications.
+
+```swift
+let collection = account.getCapability(/public/ExampleNFTCollection)
+    .borrow<&{NonFungibleToken.CollectionPublic}>()
+    ?? panic("Could not borrow a reference to the receiver's collection")
+
+let nftRef = collection.borrowNFT(id: 42)
+
+if let view = nftRef.resolveView(Type<Views.Display>()) {
+  let display = view as! Views.Display
+  log(display.name)
+  log(display.thumbnail)
+  log(display.description)
+}
+```
+
+### Full list of views
+
+|Name|Purpose|Source|
+|----|-------|------|
+|`Display`|Render the basic representation of an NFT.|[Views](contracts/Views.cdc)|
+
+### How to propose a new view
+
+If you want to propose a new metadata view, 
+or changes to an existing view, 
+please create an issue in this repository.
 
 ## Feedback
 
@@ -111,7 +195,7 @@ We'd love to hear from anyone who has feedback. For example:
 Please create an issue in this repository if there is a feature that
 you believe needs discussing or changing.
 
-## Comparison to other Standards on Ethereum
+## Comparison to other standards on Ethereum
 
 This standard covers much of the same ground as ERC-721 and ERC-1155,
 but without most of the downsides.  
@@ -136,11 +220,11 @@ The steps to follow are:
 Then you can experiment with some of the other transactions and scripts in `transactions/`
 or even write your own. You'll need to replace some of the import address placeholders with addresses that you deploy to, as well as some of the transaction arguments.
 
-# Running Automated Tests
+## Running automated tests
 
 You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
 
-## Bonus Features 
+## Bonus features 
 
 **(These could each be defined as a separate interface and standard and are probably not part of the main standard) They are not implemented in this repository yet**
 
@@ -173,12 +257,9 @@ You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the 
 
 ## License 
 
-The works in these folders 
-/onflow/flow-NFT/blob/master/contracts/ExampleNFT.cdc 
-/onflow/flow-NFT/blob/master/contracts/NonFungibleToken.cdc
+The works in these files:
 
-are under the Unlicense
-https://github.com/onflow/flow-NFT/blob/master/LICENSE
+- [ExampleNFT.cdc](contracts/ExampleNFT.cdc)
+- [NonFungibleToken.cdc](contracts/NonFungibleToken.cdc)
 
-## Metadata
-
+are under the [Unlicense](LICENSE).
