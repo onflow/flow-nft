@@ -2,8 +2,8 @@
 // It is not part of the official standard but it assumed to be
 // very similar to how many NFTs would implement the core functionality.
 
-import NonFungibleToken from "NonFungibleToken.cdc"
-import Views from "Views.cdc"
+import NonFungibleToken from "./NonFungibleToken.cdc"
+import Views from "./Views.cdc"
 
 pub contract ExampleNFT: NonFungibleToken {
 
@@ -117,10 +117,20 @@ pub contract ExampleNFT: NonFungibleToken {
 
         // mintNFT mints a new NFT with a new ID
         // and deposit it in the recipients collection using their collection reference
-        pub fun mintNFT(recipient: &{NonFungibleToken.CollectionPublic}) {
+        pub fun mintNFT(
+            recipient: &{NonFungibleToken.CollectionPublic},
+            name: String,
+            description: String,
+            thumbnail: String,
+        ) {
 
             // create a new NFT
-            var newNFT <- create NFT(initID: ExampleNFT.totalSupply)
+            var newNFT <- create NFT(
+                id: ExampleNFT.totalSupply,
+                name: name,
+                description: description,
+                thumbnail: thumbnail,
+            )
 
             // deposit it in the recipient's account using their reference
             recipient.deposit(token: <-newNFT)
