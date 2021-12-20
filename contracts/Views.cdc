@@ -2,7 +2,7 @@ pub contract Views {
 
     pub resource interface Resolver {
         pub fun getViews(): [Type]
-        pub fun resolveView(_ view: Type): AnyStruct? 
+        pub fun resolveView(_ view: Type): AnyStruct?
     }
 
     pub resource interface ResolverCollection {
@@ -14,7 +14,7 @@ pub contract Views {
         pub let name: String
         pub let thumbnail: String
         pub let description: String
-            
+
         init(
             name: String,
             thumbnail: String,

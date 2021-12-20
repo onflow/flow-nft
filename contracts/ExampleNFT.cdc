@@ -2,7 +2,8 @@
 // It is not part of the official standard but it assumed to be
 // very similar to how many NFTs would implement the core functionality.
 
-import NonFungibleToken from 0x02
+import NonFungibleToken from "NonFungibleToken.cdc"
+import Views from "Views.cdc"
 
 pub contract ExampleNFT: NonFungibleToken {
 
@@ -12,18 +13,44 @@ pub contract ExampleNFT: NonFungibleToken {
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
 
-    pub resource NFT: NonFungibleToken.INFT {
+    pub resource NFT: NonFungibleToken.INFT, Views.Resolver {
         pub let id: UInt64
 
-        pub var metadata: {String: String}
+        pub let name: String
+        pub let thumbnail: String
+        pub let description: String
 
-        init(initID: UInt64) {
-            self.id = initID
-            self.metadata = {}
+        init(
+            id: UInt64,
+            name: String,
+            description: String,
+            thumbnail: String,
+        ) {
+            self.id = id
+            self.name = name
+            self.thumbnail = thumbnail
+            self.description = description
+        }
+    
+        pub fun getViews(): [Type] {
+            return [Type<Views.Display>()]
+        }
+
+        pub fun resolveView(_ view: Type): AnyStruct? {
+            switch view {
+                case Type<Views.Display>():
+                    return Views.Display(
+                        name: self.name,
+                        thumbnail: self.thumbnail,
+                        description: self.description,
+                    )
+            }
+
+            return nil
         }
     }
 
-    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, Views.ResolverCollection {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
@@ -65,6 +92,12 @@ pub contract ExampleNFT: NonFungibleToken {
         // so that the caller can read its metadata and call its methods
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
             return &self.ownedNFTs[id] as &NonFungibleToken.NFT
+        }
+ 
+        pub fun borrowViewResolver(id: UInt64): &AnyResource{Views.Resolver} {
+            let nft = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
+            let exampleNFT = nft as! &ExampleNFT.NFT
+            return exampleNFT as &AnyResource{Views.Resolver}
         }
 
         destroy() {
