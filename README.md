@@ -115,29 +115,6 @@ let collection = account.getCapability(/public/ExampleNFTCollection)
 let ids = collection.getIDs()
 ```
 
-### Read an NFT from an account
-
-Obtain a reference to a specific NFT in a `Collection` using the [`borrowNFT`]() function.
-
-This only returns a reference to the NFT resource, not the resource itself.
-However, the caller can read fields on the NFT and call public functions.
-
-```swift
-let collection = account.getCapability(/public/ExampleNFTCollection)
-    .borrow<&{NonFungibleToken.CollectionPublic}>()
-    ?? panic("Could not borrow a reference to the receiver's collection")
-
-let nftRef = collection.borrowNFT(id: 42)
-
-log(nftRef.id)
-```
-
-### How to propose a new view
-
-If you want to propose a new metadata view, 
-or changes to an existing view, 
-please create an issue in this repository.
-
 ## Feedback
 
 As Flow and Cadence are still new,
