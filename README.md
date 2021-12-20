@@ -163,7 +163,7 @@ if let view = nftRef.resolveView(Type<Views.Display>()) {
 }
 ```
 
-### Full list of views
+### List of common views
 
 |Name|Purpose|Source|
 |----|-------|------|
