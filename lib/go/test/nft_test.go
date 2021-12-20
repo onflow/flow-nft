@@ -19,9 +19,10 @@ import (
 func TestNFTDeployment(t *testing.T) {
 	b := newBlockchain()
 
-	// Should be able to deploy a contract as a new account with no keys.
+	// Deploy NonFungibleToken.cdc
 	nftCode := contracts.NonFungibleToken()
-	nftAddress, err := b.CreateAccount(nil,
+	nftAddress, err := b.CreateAccount(
+		nil,
 		[]sdktemplates.Contract{
 			{
 				Name:   "NonFungibleToken",
@@ -29,15 +30,23 @@ func TestNFTDeployment(t *testing.T) {
 			},
 		},
 	)
-	if !assert.NoError(t, err) {
-		t.Log(err.Error())
-	}
-
-	_, err = b.CommitBlock()
 	assert.NoError(t, err)
 
-	// Should be able to deploy a contract as a new account with no keys.
-	tokenCode := contracts.ExampleNFT(nftAddress)
+	// Deploy Views.cdc
+	viewsCode := contracts.Views()
+	viewsAddress, err := b.CreateAccount(
+		nil,
+		[]sdktemplates.Contract{
+			{
+				Name:   "Views",
+				Source: string(viewsCode),
+			},
+		},
+	)
+	assert.NoError(t, err)
+
+	// Deploy ExampleNFT.cdc
+	tokenCode := contracts.ExampleNFT(nftAddress, viewsAddress)
 	_, err = b.CreateAccount(
 		nil,
 		[]sdktemplates.Contract{
@@ -47,11 +56,6 @@ func TestNFTDeployment(t *testing.T) {
 			},
 		},
 	)
-	if !assert.NoError(t, err) {
-		t.Log(err.Error())
-	}
-
-	_, err = b.CommitBlock()
 	assert.NoError(t, err)
 }
 
@@ -60,9 +64,9 @@ func TestCreateNFT(t *testing.T) {
 
 	accountKeys := test.AccountKeyGenerator()
 
-	// Should be able to deploy a contract as a new account with no keys.
+	// Deploy NonFungibleToken.cdc
 	nftCode := contracts.NonFungibleToken()
-	nftAddress, _ := b.CreateAccount(
+	nftAddress, err := b.CreateAccount(
 		nil,
 		[]sdktemplates.Contract{
 			{
@@ -71,11 +75,25 @@ func TestCreateNFT(t *testing.T) {
 			},
 		},
 	)
+	assert.NoError(t, err)
 
-	// First, deploy the contract
-	tokenCode := contracts.ExampleNFT(nftAddress)
+	// Deploy Views.cdc
+	viewsCode := contracts.Views()
+	viewsAddress, err := b.CreateAccount(
+		nil,
+		[]sdktemplates.Contract{
+			{
+				Name:   "Views",
+				Source: string(viewsCode),
+			},
+		},
+	)
+	assert.NoError(t, err)
+
+	// Deploy ExampleNFT.cdc
+	tokenCode := contracts.ExampleNFT(nftAddress, viewsAddress)
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
-	tokenAddr, _ := b.CreateAccount(
+	tokenAddr, err := b.CreateAccount(
 		[]*flow.AccountKey{tokenAccountKey},
 		[]sdktemplates.Contract{
 			{
@@ -84,6 +102,7 @@ func TestCreateNFT(t *testing.T) {
 			},
 		},
 	)
+	assert.NoError(t, err)
 
 	script := templates.GenerateGetTotalSupplyScript(nftAddress, tokenAddr)
 	supply := executeScriptAndCheck(t, b, script, nil)
@@ -98,7 +117,11 @@ func TestCreateNFT(t *testing.T) {
 		script := templates.GenerateMintNFTScript(nftAddress, tokenAddr)
 
 		tx := createTxWithTemplateAndAuthorizer(b, script, tokenAddr)
+
 		tx.AddArgument(cadence.NewAddress(tokenAddr))
+		tx.AddArgument(cadence.String("Example NFT 0"))
+		tx.AddArgument(cadence.String("This is an example NFT"))
+		tx.AddArgument(cadence.String("example.jpeg"))
 
 		signAndSubmit(
 			t, b, tx,
@@ -153,7 +176,7 @@ func TestTransferNFT(t *testing.T) {
 
 	accountKeys := test.AccountKeyGenerator()
 
-	// Should be able to deploy a contract as a new account with no keys.
+	// Deploy NonFungibleToken.cdc
 	nftCode := contracts.NonFungibleToken()
 	nftAddress, err := b.CreateAccount(
 		nil,
@@ -166,8 +189,21 @@ func TestTransferNFT(t *testing.T) {
 	)
 	assert.NoError(t, err)
 
-	// First, deploy the contract
-	tokenCode := contracts.ExampleNFT(nftAddress)
+	// Deploy Views.cdc
+	viewsCode := contracts.Views()
+	viewsAddress, err := b.CreateAccount(
+		nil,
+		[]sdktemplates.Contract{
+			{
+				Name:   "Views",
+				Source: string(viewsCode),
+			},
+		},
+	)
+	assert.NoError(t, err)
+
+	// Deploy ExampleNFT.cdc
+	tokenCode := contracts.ExampleNFT(nftAddress, viewsAddress)
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
 	tokenAddr, err := b.CreateAccount(
 		[]*flow.AccountKey{tokenAccountKey},
@@ -197,6 +233,9 @@ func TestTransferNFT(t *testing.T) {
 		AddAuthorizer(tokenAddr)
 
 	tx.AddArgument(cadence.NewAddress(tokenAddr))
+	tx.AddArgument(cadence.String("Example NFT 0"))
+	tx.AddArgument(cadence.String("This is an example NFT"))
+	tx.AddArgument(cadence.String("example.jpeg"))
 
 	signAndSubmit(
 		t, b, tx,

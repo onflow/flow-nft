@@ -5,7 +5,12 @@ import ExampleNFT from "../contracts/ExampleNFT.cdc"
 // It must be run with the account that has the minter resource
 // stored in /storage/NFTMinter
 
-transaction(recipient: Address) {
+transaction(
+    recipient: Address,
+    name: String,
+    thumbnail: String,
+    description: String,
+) {
 
     // local variable for storing the minter reference
     let minter: &ExampleNFT.NFTMinter
@@ -24,6 +29,11 @@ transaction(recipient: Address) {
             ?? panic("Could not get receiver reference to the NFT Collection")
 
         // Mint the NFT and deposit it to the recipient's collection
-        self.minter.mintNFT(recipient: receiver)
+        self.minter.mintNFT(
+            recipient: receiver,
+            name: name,
+            description: description,
+            thumbnail: thumbnail,
+        )
     }
 }
