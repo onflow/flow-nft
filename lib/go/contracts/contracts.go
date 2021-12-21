@@ -3,35 +3,34 @@ package contracts
 //go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../contracts -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../contracts
 
 import (
-	"strings"
+	"regexp"
 
 	_ "github.com/kevinburke/go-bindata"
+
+	"github.com/onflow/flow-go-sdk"
 
 	"github.com/onflow/flow-nft/lib/go/contracts/internal/assets"
 )
 
+var placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
+
 const (
-	nonfungibleTokenFilename       = "NonFungibleToken.cdc"
-	exampleNFTFilename             = "ExampleNFT.cdc"
-	defaultNonFungibleTokenAddress = "02"
+	filenameNonFungibleToken = "NonFungibleToken.cdc"
+	filenameExampleNFT       = "ExampleNFT.cdc"
 )
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleToken() []byte {
-	return assets.MustAsset(nonfungibleTokenFilename)
+	return assets.MustAsset(filenameNonFungibleToken)
 }
 
 // ExampleNFT returns the ExampleNFT contract.
 //
 // The returned contract will import the NonFungibleToken contract from the specified address.
-func ExampleNFT(nonfungibleTokenAddr string) []byte {
-	code := assets.MustAssetString(exampleNFTFilename)
+func ExampleNFT(nftAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameExampleNFT)
 
-	code = strings.ReplaceAll(
-		code,
-		"0x"+defaultNonFungibleTokenAddress,
-		"0x"+nonfungibleTokenAddr,
-	)
+	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 
 	return []byte(code)
 }

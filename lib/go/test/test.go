@@ -108,6 +108,7 @@ func Submit(
 func executeScriptAndCheck(t *testing.T, b *emulator.Blockchain, script []byte, arguments [][]byte) cadence.Value {
 	result, err := b.ExecuteScript(script, arguments)
 	require.NoError(t, err)
+
 	if !assert.True(t, result.Succeeded()) {
 		t.Log(result.Error.Error())
 	}

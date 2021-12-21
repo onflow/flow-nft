@@ -1,5 +1,5 @@
-import NonFungibleToken from 0xNFTADDRESS
-import ExampleNFT from 0xNFTCONTRACTADDRESS
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+import ExampleNFT from "../contracts/ExampleNFT.cdc"
 
 // This script uses the NFTMinter resource to mint a new NFT
 // It must be run with the account that has the minter resource
@@ -11,7 +11,6 @@ transaction(recipient: Address) {
     let minter: &ExampleNFT.NFTMinter
 
     prepare(signer: AuthAccount) {
-
         // borrow a reference to the NFTMinter resource in storage
         self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: /storage/NFTMinter)
             ?? panic("Could not borrow a reference to the NFT minter")
