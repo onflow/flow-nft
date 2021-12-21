@@ -7,7 +7,7 @@ contract on the [Flow blockchain](https://www.onflow.org/).
 ## What is Cadence?
 
 [Cadence is the resource-oriented programming language](https://docs.onflow.org/cadence)
-for developing smart contracts on the Flow blockchain.
+for developing smart contracts on Flow.
 
 Before reading this standard, 
 we recommend completing the [Cadence tutorials](https://docs.onflow.org/cadence/tutorial/01-first-steps/) 
@@ -113,23 +113,6 @@ let collection = account.getCapability(/public/ExampleNFTCollection)
     ?? panic("Could not borrow a reference to the receiver's collection")
     
 let ids = collection.getIDs()
-```
-
-### Read an NFT from an account
-
-Obtain a reference to a specific NFT in a `Collection` using the [`borrowNFT`]() function.
-
-This only returns a reference to the NFT resource, not the resource itself.
-However, the caller can read fields on the NFT and call public functions.
-
-```swift
-let collection = account.getCapability(/public/ExampleNFTCollection)
-    .borrow<&{NonFungibleToken.CollectionPublic}>()
-    ?? panic("Could not borrow a reference to the receiver's collection")
-
-let nftRef = collection.borrowNFT(id: 42)
-
-log(nftRef.id)
 ```
 
 ## NFT Metadata

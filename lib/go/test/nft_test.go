@@ -117,7 +117,7 @@ func TestCreateNFT(t *testing.T) {
 		script := templates.GenerateMintNFTScript(nftAddress, tokenAddr)
 
 		tx := createTxWithTemplateAndAuthorizer(b, script, tokenAddr)
-
+		
 		tx.AddArgument(cadence.NewAddress(tokenAddr))
 		tx.AddArgument(cadence.String("Example NFT 0"))
 		tx.AddArgument(cadence.String("This is an example NFT"))

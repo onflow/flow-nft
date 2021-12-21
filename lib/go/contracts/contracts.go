@@ -12,8 +12,10 @@ import (
 	"github.com/onflow/flow-nft/lib/go/contracts/internal/assets"
 )
 
-var placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
-var placeholderViews = regexp.MustCompile(`"[^"\s].*/Views.cdc"`)
+var (
+	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
+	placeholderViews            = regexp.MustCompile(`"[^"\s].*/Views.cdc"`)
+)
 
 const (
 	filenameNonFungibleToken = "NonFungibleToken.cdc"
