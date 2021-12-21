@@ -1,41 +1,130 @@
 # Flow Non-Fungible Token Standard
 
-This is a description of the work-in-progress standard for 
-non-fungible token contracts on the Flow Blockchain.  It is meant to contain 
-the minimum functionality to implement a safe, secure, easy to understand, 
-and easy to use non-fungible token contract in Cadence.
-
-## What is Flow?
-
-Flow is a new blockchain for open worlds. Read more about it [here](https://www.onflow.org/).
+This standard defines the minimum functionality required to 
+implement a safe, secure, and easy-to-use non-fungible token 
+contract on the [Flow blockchain](https://www.onflow.org/).
 
 ## What is Cadence?
 
-Cadence is a new Resource-oriented programming language 
-for developing smart contracts for the Flow Blockchain.
-Read more about it [here](https://docs.onflow.org)
+[Cadence is the resource-oriented programming language](https://docs.onflow.org/cadence)
+for developing smart contracts on Flow.
 
-We recommend that anyone who is reading this should have already
-completed the [Cadence Tutorials](https://docs.onflow.org/docs/getting-started-1) 
-so they can build a basic understanding of the programming language.
+Before reading this standard, 
+we recommend completing the [Cadence tutorials](https://docs.onflow.org/cadence/tutorial/01-first-steps/) 
+to build a basic understanding of the programming language.
 
 Resource-oriented programming, and by extension Cadence, 
-is the perfect programming environment for Non-Fungible Tokens (NFTs), because users are able
-to store their NFT objects directly in their accounts and transact
-peer-to-peer. Please see the [blog post about resources](https://medium.com/dapperlabs/resource-oriented-programming-bee4d69c8f8e)
-to understand why they are perfect for digital assets.
+provides an ideal programming model for non-fungible tokens (NFTs).
+Users are able to store their NFT objects directly in their accounts and transact
+peer-to-peer. Learn more in this [blog post about resources](https://medium.com/dapperlabs/resource-oriented-programming-bee4d69c8f8e).
+
+## Core features
+
+The `NonFungibleToken` contract defines the following set of functionality
+that must be included in each implementation.
+
+Contracts that implement the `NonFungibleToken` interface are required to implement two resource interfaces:
+
+- `NFT` -  A resource that describes the structure of a single NFT.
+- `Collection` - A resource that can hold multiple NFTs of the same type. 
+
+  Users typically store one collection per NFT type, saved at a well-known location in their account storage.
+
+  For example, all NBA Top Shot Moments owned by a single user are held in a [`TopShot.Collection`](https://github.com/dapperlabs/nba-smart-contracts/blob/master/contracts/TopShot.cdc#L605) stored in their account at the path `/storage/MomentCollection`.
+
+### Create a new NFT collection
+
+Create a new collection using the `createEmptyCollection` function.
+
+This function MUST return an empty collection that contains no NFTs.
+
+Users typically save new collections to a well-known location in their account
+and link the `NonFungibleToken.CollectionPublic` interface as a public capability.
+
+```swift
+let collection <- ExampleNFT.createEmptyCollection()
+
+account.save(<-collection, to: /storage/ExampleNFTCollection)
+
+// create a public capability for the collection
+account.link<&{NonFungibleToken.CollectionPublic}>(
+    /public/ExampleNFTCollection,
+    target: /storage/ExampleNFTCollection
+)
+```
+
+### Withdraw an NFT
+
+Withdraw an `NFT` from a `Collection` using the [`withdraw`](contracts/ExampleNFT.cdc#L36-L42) function.
+This function emits the [`Withdraw`](contracts/ExampleNFT.cdc#L12) event.
+
+```swift
+let collectionRef = account.borrow<&ExampleNFT.Collection>(from: /storage/ExampleNFTCollection)
+    ?? panic("Could not borrow a reference to the owner's collection")
+
+// withdraw the NFT from the owner's collection
+let nft <- collectionRef.withdraw(withdrawID: 42)
+```
+
+### Deposit an NFT
+
+Deposit an `NFT` into a `Collection` using the [`deposit`](contracts/ExampleNFT.cdc#L46-L57) function.
+This function emits the [`Deposit`](contracts/ExampleNFT.cdc#L13) event.
+
+This function is available on the `NonFungibleToken.CollectionPublic` interface,
+which accounts publish as public capability. 
+This capability allows anybody to deposit an NFT into a collection 
+without accessing the entire collection.
+
+```swift
+let nft: ExampleNFT.NFT
+
+// ...
+
+let collection = account.getCapability(/public/ExampleNFTCollection)
+    .borrow<&{NonFungibleToken.CollectionPublic}>()
+    ?? panic("Could not borrow a reference to the receiver's collection")
+            
+collection.deposit(token: <-nft)
+```
+
+#### ⚠️ Important
+
+In order to comply with the deposit function in the interface,
+an implementation MUST take a `@NonFungibleToken.NFT` resource as an argument. 
+This means that anyone can send a resource object that conforms to `@NonFungibleToken.NFT` to a deposit function. 
+In an implementation, you MUST cast the `token` as your specific token type before depositing it or you will 
+deposit another token type into your collection. For example:
+
+```swift
+let token <- token as! @ExampleNFT.NFT
+```
+
+### List NFTs in an account
+
+Return a list of NFTs in a `Collection` using the [`getIDs`](contracts/ExampleNFT.cdc#L59-L62) function.
+
+This function is available on the `NonFungibleToken.CollectionPublic` interface,
+which accounts publish as public capability. 
+
+```swift
+let collection = account.getCapability(/public/ExampleNFTCollection)
+    .borrow<&{NonFungibleToken.CollectionPublic}>()
+    ?? panic("Could not borrow a reference to the receiver's collection")
+    
+let ids = collection.getIDs()
+```
 
 ## Feedback
 
-Flow and Cadence are both still in development, so this standard will still 
-be going through a lot of changes as the protocol and language evolves, 
-and as we receive feedback from the community about the standard.
+As Flow and Cadence are still new,
+we expect this standard to evolve based on feedback
+from both developers and users.
 
-We'd love to hear from anyone who has feedback. 
-Main feedback we are looking for is:
+We'd love to hear from anyone who has feedback. For example: 
 
 - Are there any features that are missing from the standard?
-- Are the features that we have included defined in the best way possible?
+- Are the current features defined in the best way possible?
 - Are there any pre and post conditions that are missing?
 - Are the pre and post conditions defined well enough? Error messages?
 - Are there any other actions that need an event defined for them?
@@ -43,84 +132,20 @@ Main feedback we are looking for is:
 - Are the variable, function, and parameter names descriptive enough?
 - Are there any openings for bugs or vulnerabilities that we are not noticing?
 
-Please create an issue in this repo if there is a feature that
+Please create an issue in this repository if there is a feature that
 you believe needs discussing or changing.
 
-## Core Features (main NonFungibleToken interface)
+## Comparison to other standards on Ethereum
 
-These features are the ones that are specified in the interface for NFTs.
-Please be aware, that a NFT contract that implements the interface can 
-include other features in addition to these if they so wish. Also be aware
-that with the way that Cadence smart contracts define objects and with how
-objects can be integrated easily into other contracts, many more actions and 
-features are possible even with a contract that only defines the bare minimim 
-functionality.
+This standard covers much of the same ground as ERC-721 and ERC-1155,
+but without most of the downsides.  
 
-The main interface requires that implementing types define a `NFT` resource 
-and a `Collection` resource that contains and manages these NFTs.
-
-#### 1 - Getting metadata for the token smart contract via the fields of the contract:
-
-- Get the total number of tokens that have been created by the contract
-    - `pub var totalSupply: UInt64`
-- Event that gets emitted when the contract is initialized
-    - `event ContractInitialized()`
-
-#### 2 - Retrieving the token fields of an NFT in a user's collection
-
-- unique identifier
-    - `pub let id: UInt64`
-- function to borrow a reference to a specific NFT in the collection
-    - `pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT`
-        - the caller can read fields and call functions on the NFT with
-          the reference
-
-#### 3 - Withdrawing a single token id using the `withdraw` function of the owner's collection
-
-- withdraw event
-    - `event Withdraw(id: UInt64, from: Address?)`
-- Provider interface
-    - `pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT`
-
-#### 5 - Depositing a single token id using the recipient's *deposit function*
-
-- deposit event
-    - `event Deposit(id: UInt64, to: Address?)`
-- Receiver interface
-    - `pub fun deposit(token: @NonFungibleToken.NFT)`
-    - **IMPORTANT**: In order to comply with the deposit function in the interface, an implementation MUST take a `@NonFungibleToken.NFT` resource as an argument. This means that anyone can send a resource object that conforms to `@NonFungibleToken.NFT` to a deposit function. In an implementation, you MUST cast the `token` as your specific token type before depositing it or you will deposit another token type into your collection:
-    `let token <- token as! @ExampleNFT.NFT`
-
-#### 7 - Retrieving a list of the token IDs in the collection
-
-- `getIDs(): [UInt64]` returns an array of all the tokens in the collection
-
-#### 8 - Creating an empty collection resource
-
-- `pub fun createEmptyCollection(): @NonFungibleToken.NFTCollection`
-- no event
-- defined in the contract
-- the returned collection must not contain any NFTs
-
-#### 8 - NFTCollection Resource Destructor
-
-- no event
-
-## Comparison to other Standards on Ethereum
-
-This covers much of the same ground that a spec like ERC-721 or ERC-1155 covers, but without most of the downsides.  
-
-- Tokens cannot be sent to contracts that don't understand how to use them, because an account has to have a `Receiver` or `Collection` in its storage to receive tokens.
-- If the recipient is a contract that has a stored `Collection`, the tokens can just be deposited to that Collection without having to do a clunky `approve`, `transferFrom`
+- Tokens cannot be sent to contracts that don't understand how to use them, because an account needs to have a `Receiver` or `Collection` in its storage to receive tokens.
+- If the recipient is a contract that has a stored `Collection`, the tokens can just be deposited to that Collection without having to do a clunky `approve`, `transferFrom`.
 - Events are defined in the contract for withdrawing and depositing, so a recipient will always be notified that someone has sent them tokens with their own deposit event.
 - This version can support batch transfers of NFTs. Even though it isn't explicitly defined in the contract, a batch transfer can be done within a transaction by just withdrawing all the tokens to transfer, then depositing them wherever they need to be, all atomically.
 - Transfers can trigger actions because users can define custom `Receivers` to execute certain code when a token is sent.
-- Easy ownership indexing:  Instead of having to iterate through all tokens to find which ones you own, you have them all stored in your account's collection and can get the list of the ones you own instantly
-
-
-## Metadata
-
-We are still trying to think about how to do token metadata, which is very important. We want to be able to have all metadata on-chain, but we haven't made much progress discussing or designing it.
+- Easy ownership indexing: rathing than iterating through all tokens to find which ones you own, you have them all stored in your account's collection and can get the list of the ones you own instantly.
 
 ## How to test the standard
 
@@ -135,11 +160,11 @@ The steps to follow are:
 Then you can experiment with some of the other transactions and scripts in `transactions/`
 or even write your own. You'll need to replace some of the import address placeholders with addresses that you deploy to, as well as some of the transaction arguments.
 
-# Running Automated Tests
+## Running automated tests
 
 You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
 
-## Bonus Features 
+## Bonus features 
 
 **(These could each be defined as a separate interface and standard and are probably not part of the main standard) They are not implemented in this repository yet**
 
@@ -172,9 +197,9 @@ You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the 
 
 ## License 
 
-The works in these folders 
-/onflow/flow-NFT/blob/master/contracts/ExampleNFT.cdc 
-/onflow/flow-NFT/blob/master/contracts/NonFungibleToken.cdc
+The works in these files:
 
-are under the Unlicense
-https://github.com/onflow/flow-NFT/blob/master/LICENSE
+- [ExampleNFT.cdc](contracts/ExampleNFT.cdc)
+- [NonFungibleToken.cdc](contracts/NonFungibleToken.cdc)
+
+are under the [Unlicense](LICENSE).
