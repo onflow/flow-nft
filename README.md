@@ -7,7 +7,7 @@ contract on the [Flow blockchain](https://www.onflow.org/).
 ## What is Cadence?
 
 [Cadence is the resource-oriented programming language](https://docs.onflow.org/cadence)
-for developing smart contracts on the Flow blockchain.
+for developing smart contracts on Flow.
 
 Before reading this standard, 
 we recommend completing the [Cadence tutorials](https://docs.onflow.org/cadence/tutorial/01-first-steps/) 
