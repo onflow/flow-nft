@@ -121,10 +121,10 @@ NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
 
 When writing an NFT contract, 
-you should implement the [`Metadata.ViewResolver`](contracts/Metadata.cdc#L3-L6)interface,
+you should implement the [`MetadataViews.Resolver`](contracts/MetadataViews.cdc#L3-L6)interface,
 which allows your NFT to implement one or more metadata types called views.
 
-Each `View` represents a different type of metadata, 
+Each view represents a different type of metadata, 
 such as an on-chain creator biography or an off-chain video clip.
 
 ### How to read metadata
@@ -136,7 +136,7 @@ including the name, description, image and owner.
 
 ```swift
 import ExampleNFT from "..."
-import Metadata from "..."
+import MetadataViews from "..."
 
 // ...
 
@@ -147,15 +147,15 @@ let collection = account.getCapability(/public/ExampleNFTCollection)
 let nft = collection.borrowExampleNFT(id: 42)
 
 // Get the basic display information for this NFT
-if let view = nft.resolveView(Type<Metadata.Display>()) {
-    let display = view as! Metadata.Display
+if let view = nft.resolveView(Type<MetadataViews.Display>()) {
+    let display = view as! MetadataViews.Display
     log(display.name)
     log(display.description)
 }
 
 // Get the image thumbnail for this NFT (if it exists)
-if let view = nft.resolveView(Type<Metadata.Thumbnail>()) {
-    let thumbnail = view as! Metadata.Thumbnail
+if let view = nft.resolveView(Type<MetadataViews.Thumbnail>()) {
+    let thumbnail = view as! MetadataViews.Thumbnail
     log(thumbnail.uri)
     log(thumbnail.mimetype)
 }
@@ -177,7 +177,7 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 |Name|Purpose|Source|
 |----|-------|------|
-|`Display`|Render the basic representation of an NFT.|[Metadata.cdc](contracts/Metadata.cdc)|
+|`Display`|Render the basic representation of an NFT.|[MetadataViews.cdc](contracts/MetadataViews.cdc)|
 
 ### How to propose a new view
 
