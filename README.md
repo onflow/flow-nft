@@ -132,6 +132,8 @@ such as an on-chain creator biography or an off-chain video clip.
 This example shows how to read basic information about an NFT
 including the name, description, image and owner.
 
+**Source: [get_nft_metadata.cdc](transactions/scripts/get_nft_metadata.cdc)**
+
 ```swift
 import ExampleNFT from "..."
 import Metadata from "..."
@@ -159,12 +161,12 @@ if let view = nft.resolveView(Type<Metadata.Thumbnail>()) {
 }
 
 // The owner is stored directly on the NFT object
-let owner: Address = nft.owner
+let owner: Address? = nft.owner!.address
 
 // Inspect the type of this NFT to verify its origin
 let nftType = nft.getType()
 
-// `nftType` is `Type<@ExampleNFT>()`
+// `nftType.identifier` is `A.f8d6e0586b0a20c7.ExampleNFT.NFT`
 ```
 
 ### How to implement metadata
