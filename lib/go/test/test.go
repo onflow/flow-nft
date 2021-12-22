@@ -12,8 +12,6 @@ import (
 	sdktemplates "github.com/onflow/flow-go-sdk/templates"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/onflow/flow-nft/lib/go/contracts"
 )
 
 // newBlockchain returns an emulator blockchain for testing.
@@ -44,26 +42,6 @@ func deploy(
 		[]sdktemplates.Contract{
 			{
 				Name:   name,
-				Source: string(code),
-			},
-		},
-	)
-	assert.NoError(t, err)
-
-	return address
-}
-
-func deployMetadata(
-	t *testing.T,
-	b *emulator.Blockchain,
-) flow.Address {
-	// Deploy Metadata.cdc
-	code := contracts.Metadata()
-	address, err := b.CreateAccount(
-		nil,
-		[]sdktemplates.Contract{
-			{
-				Name:   "Metadata",
 				Source: string(code),
 			},
 		},

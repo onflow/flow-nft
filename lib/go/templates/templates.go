@@ -11,12 +11,12 @@ import (
 var (
 	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
 	placeholderExampleNFT       = regexp.MustCompile(`"[^"\s].*/ExampleNFT.cdc"`)
-	placeholderMetadata         = regexp.MustCompile(`"[^"\s].*/Metadata.cdc"`)
+	placeholderMetadataViews    = regexp.MustCompile(`"[^"\s].*/MetadataViews.cdc"`)
 )
 
 func replaceAddresses(code string, nftAddress, exampleNFTAddress, metadataAddress flow.Address) []byte {
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 	code = placeholderExampleNFT.ReplaceAllString(code, "0x"+exampleNFTAddress.String())
-	code = placeholderMetadata.ReplaceAllString(code, "0x"+metadataAddress.String())
+	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
 	return []byte(code)
 }

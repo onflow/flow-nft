@@ -3,7 +3,7 @@
 // very similar to how many NFTs would implement the core functionality.
 
 import NonFungibleToken from "./NonFungibleToken.cdc"
-import Metadata from "./Metadata.cdc"
+import MetadataViews from "./MetadataViews.cdc"
 
 pub contract ExampleNFT: NonFungibleToken {
 
@@ -13,7 +13,7 @@ pub contract ExampleNFT: NonFungibleToken {
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
 
-    pub resource NFT: NonFungibleToken.INFT, Metadata.ViewResolver {
+    pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
 
         pub let name: String
@@ -34,20 +34,20 @@ pub contract ExampleNFT: NonFungibleToken {
     
         pub fun getViews(): [Type] {
             return [
-                Type<Metadata.Display>(),
-                Type<Metadata.Thumbnail>()
+                Type<MetadataViews.Display>(),
+                Type<MetadataViews.Thumbnail>()
             ]
         }
 
         pub fun resolveView(_ view: Type): AnyStruct? {
             switch view {
-                case Type<Metadata.Display>():
-                    return Metadata.Display(
+                case Type<MetadataViews.Display>():
+                    return MetadataViews.Display(
                         name: self.name,
                         description: self.description,
                     )
-                case Type<Metadata.Thumbnail>():
-                    return Metadata.Thumbnail(
+                case Type<MetadataViews.Thumbnail>():
+                    return MetadataViews.Thumbnail(
                         uri: self.thumbnail,
                         mimetype: "image/jpeg",
                     )

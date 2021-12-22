@@ -14,13 +14,13 @@ import (
 
 var (
 	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
-	placeholderMetadata         = regexp.MustCompile(`"[^"\s].*/Metadata.cdc"`)
+	placeholderMetadataViews    = regexp.MustCompile(`"[^"\s].*/MetadataViews.cdc"`)
 )
 
 const (
 	filenameNonFungibleToken = "NonFungibleToken.cdc"
 	filenameExampleNFT       = "ExampleNFT.cdc"
-	filenameMetadata         = "Metadata.cdc"
+	filenameMetadataViews    = "MetadataViews.cdc"
 )
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
@@ -35,11 +35,11 @@ func ExampleNFT(nftAddress, metadataAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	code = placeholderMetadata.ReplaceAllString(code, "0x"+metadataAddress.String())
+	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
 
 	return []byte(code)
 }
 
-func Metadata() []byte {
-	return assets.MustAsset(filenameMetadata)
+func MetadataViews() []byte {
+	return assets.MustAsset(filenameMetadataViews)
 }

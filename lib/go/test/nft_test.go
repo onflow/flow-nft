@@ -19,7 +19,7 @@ func TestNFTDeployment(t *testing.T) {
 	b := newBlockchain()
 
 	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
-	metadataAddress := deploy(t, b, "Metadata", contracts.Metadata())
+	metadataAddress := deploy(t, b, "MetadataViews", contracts.MetadataViews())
 
 	_ = deploy(
 		t, b, 
@@ -32,7 +32,7 @@ func TestCreateNFT(t *testing.T) {
 	b := newBlockchain()
 
 	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
-	metadataAddress := deploy(t, b, "Metadata", contracts.Metadata())
+	metadataAddress := deploy(t, b, "MetadataViews", contracts.MetadataViews())
 
 	accountKeys := test.AccountKeyGenerator()
 
@@ -115,7 +115,7 @@ func TestTransferNFT(t *testing.T) {
 	b := newBlockchain()
 
 	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
-	metadataAddress := deploy(t, b, "Metadata", contracts.Metadata())
+	metadataAddress := deploy(t, b, "MetadataViews", contracts.MetadataViews())
 
 	accountKeys := test.AccountKeyGenerator()
 

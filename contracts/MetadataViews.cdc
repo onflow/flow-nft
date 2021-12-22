@@ -11,14 +11,14 @@ a different kind of metadata, such as a creator biography
 or a JPEG image file.
 */
 
-pub contract Metadata {
+pub contract MetadataViews {
 
     // A ViewResolver provides access to a set of metadata views.
     //
     // A struct or resource (e.g. an NFT) can implement this interface
     // to provide access to the views that it supports.
     //
-    pub resource interface ViewResolver {
+    pub resource interface Resolver {
         pub fun getViews(): [Type]
         pub fun resolveView(_ view: Type): AnyStruct?
     }

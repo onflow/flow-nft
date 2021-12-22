@@ -29,7 +29,7 @@ func TestExampleNFTContract(t *testing.T) {
 	assert.Contains(t, string(contract), addressB.String())
 }
 
-func TestMetadataContract(t *testing.T) {
-	contract := contracts.Metadata()
+func TestMetadataViewsContract(t *testing.T) {
+	contract := contracts.MetadataViews()
 	assert.NotNil(t, contract)
 }
