@@ -33,7 +33,10 @@ pub contract ExampleNFT: NonFungibleToken {
         }
     
         pub fun getViews(): [Type] {
-            return [Type<Metadata.Display>()]
+            return [
+                Type<Metadata.Display>(),
+                Type<Metadata.Thumbnail>()
+            ]
         }
 
         pub fun resolveView(_ view: Type): AnyStruct? {
@@ -41,8 +44,12 @@ pub contract ExampleNFT: NonFungibleToken {
                 case Type<Metadata.Display>():
                     return Metadata.Display(
                         name: self.name,
-                        thumbnail: self.thumbnail,
                         description: self.description,
+                    )
+                case Type<Metadata.Thumbnail>():
+                    return Metadata.Thumbnail(
+                        uri: self.thumbnail,
+                        mimetype: "image/jpeg",
                     )
             }
 
@@ -62,7 +69,7 @@ pub contract ExampleNFT: NonFungibleToken {
         }
     }
 
-    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+    pub resource Collection: ExampleNFTCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
@@ -164,7 +171,7 @@ pub contract ExampleNFT: NonFungibleToken {
         self.account.save(<-collection, to: /storage/NFTCollection)
 
         // create a public capability for the collection
-        self.account.link<&{NonFungibleToken.CollectionPublic}>(
+        self.account.link<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic}>(
             /public/NFTCollection,
             target: /storage/NFTCollection
         )

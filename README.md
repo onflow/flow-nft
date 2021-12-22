@@ -127,10 +127,10 @@ which allows your NFT to implement one or more metadata types called views.
 Each `View` represents a different type of metadata, 
 such as an on-chain creator biography or an off-chain video clip.
 
-### Display view
+### How to read metadata
 
-The [`Display`](contracts/Metadata.cdc#L8-L22) view is the most basic metadata view.
-It returns the minimum information required to render an NFT in most applications.
+This example shows how to read basic information about an NFT
+including the name, description, image and owner.
 
 ```swift
 import ExampleNFT from "..."
@@ -140,16 +140,31 @@ import Metadata from "..."
 
 let collection = account.getCapability(/public/ExampleNFTCollection)
     .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
-    ?? panic("Could not borrow a reference to the receiver's collection")
+    ?? panic("Could not borrow a reference to the collection")
 
 let nft = collection.borrowExampleNFT(id: 42)
 
+// Get the basic display information for this NFT
 if let view = nft.resolveView(Type<Metadata.Display>()) {
-  let display = view as! Metadata.Display
-  log(display.name)
-  log(display.thumbnail)
-  log(display.description)
+    let display = view as! Metadata.Display
+    log(display.name)
+    log(display.description)
 }
+
+// Get the image thumbnail for this NFT (if it exists)
+if let view = nft.resolveView(Type<Metadata.Thumbnail>()) {
+    let thumbnail = view as! Metadata.Thumbnail
+    log(thumbnail.uri)
+    log(thumbnail.mimetype)
+}
+
+// The owner is stored directly on the NFT object
+let owner: Address = nft.owner
+
+// Inspect the type of this NFT to verify its origin
+let nftType = nft.getType()
+
+// `nftType` is `Type<@ExampleNFT>()`
 ```
 
 ### How to implement metadata

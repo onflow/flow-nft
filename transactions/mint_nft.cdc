@@ -8,8 +8,8 @@ import ExampleNFT from "../contracts/ExampleNFT.cdc"
 transaction(
     recipient: Address,
     name: String,
-    thumbnail: String,
     description: String,
+    thumbnail: String,
 ) {
 
     // local variable for storing the minter reference

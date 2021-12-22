@@ -7,7 +7,6 @@ import (
 	jsoncdc "github.com/onflow/cadence/encoding/json"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
-	sdktemplates "github.com/onflow/flow-go-sdk/templates"
 	"github.com/onflow/flow-go-sdk/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -19,90 +18,31 @@ import (
 func TestNFTDeployment(t *testing.T) {
 	b := newBlockchain()
 
-	// Deploy NonFungibleToken.cdc
-	nftCode := contracts.NonFungibleToken()
-	nftAddress, err := b.CreateAccount(
-		nil,
-		[]sdktemplates.Contract{
-			{
-				Name:   "NonFungibleToken",
-				Source: string(nftCode),
-			},
-		},
-	)
-	assert.NoError(t, err)
+	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
+	metadataAddress := deploy(t, b, "Metadata", contracts.Metadata())
 
-	// Deploy Views.cdc
-	viewsCode := contracts.Views()
-	viewsAddress, err := b.CreateAccount(
-		nil,
-		[]sdktemplates.Contract{
-			{
-				Name:   "Views",
-				Source: string(viewsCode),
-			},
-		},
+	_ = deploy(
+		t, b, 
+		"ExampleNFT", 
+		contracts.ExampleNFT(nftAddress, metadataAddress),
 	)
-	assert.NoError(t, err)
-
-	// Deploy ExampleNFT.cdc
-	tokenCode := contracts.ExampleNFT(nftAddress, viewsAddress)
-	_, err = b.CreateAccount(
-		nil,
-		[]sdktemplates.Contract{
-			{
-				Name:   "ExampleNFT",
-				Source: string(tokenCode),
-			},
-		},
-	)
-	assert.NoError(t, err)
 }
 
 func TestCreateNFT(t *testing.T) {
 	b := newBlockchain()
 
+	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
+	metadataAddress := deploy(t, b, "Metadata", contracts.Metadata())
+
 	accountKeys := test.AccountKeyGenerator()
 
-	// Deploy NonFungibleToken.cdc
-	nftCode := contracts.NonFungibleToken()
-	nftAddress, err := b.CreateAccount(
-		nil,
-		[]sdktemplates.Contract{
-			{
-				Name:   "NonFungibleToken",
-				Source: string(nftCode),
-			},
-		},
-	)
-	assert.NoError(t, err)
-
-	// Deploy Views.cdc
-	viewsCode := contracts.Views()
-	viewsAddress, err := b.CreateAccount(
-		nil,
-		[]sdktemplates.Contract{
-			{
-				Name:   "Views",
-				Source: string(viewsCode),
-			},
-		},
-	)
-	assert.NoError(t, err)
-
-	// Deploy ExampleNFT.cdc
-	tokenCode := contracts.ExampleNFT(nftAddress, viewsAddress)
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
-	tokenAddr, err := b.CreateAccount(
-		[]*flow.AccountKey{tokenAccountKey},
-		[]sdktemplates.Contract{
-			{
-				Name:   "ExampleNFT",
-				Source: string(tokenCode),
-			},
-		},
+	tokenAddr := deploy(
+		t, b, 
+		"ExampleNFT", 
+		contracts.ExampleNFT(nftAddress, metadataAddress), 
+		tokenAccountKey,
 	)
-	assert.NoError(t, err)
 
 	script := templates.GenerateGetTotalSupplyScript(nftAddress, tokenAddr)
 	supply := executeScriptAndCheck(t, b, script, nil)
@@ -174,50 +114,22 @@ func TestCreateNFT(t *testing.T) {
 func TestTransferNFT(t *testing.T) {
 	b := newBlockchain()
 
+	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
+	metadataAddress := deploy(t, b, "Metadata", contracts.Metadata())
+
 	accountKeys := test.AccountKeyGenerator()
 
-	// Deploy NonFungibleToken.cdc
-	nftCode := contracts.NonFungibleToken()
-	nftAddress, err := b.CreateAccount(
-		nil,
-		[]sdktemplates.Contract{
-			{
-				Name:   "NonFungibleToken",
-				Source: string(nftCode),
-			},
-		},
-	)
-	assert.NoError(t, err)
-
-	// Deploy Views.cdc
-	viewsCode := contracts.Views()
-	viewsAddress, err := b.CreateAccount(
-		nil,
-		[]sdktemplates.Contract{
-			{
-				Name:   "Views",
-				Source: string(viewsCode),
-			},
-		},
-	)
-	assert.NoError(t, err)
-
-	// Deploy ExampleNFT.cdc
-	tokenCode := contracts.ExampleNFT(nftAddress, viewsAddress)
 	tokenAccountKey, tokenSigner := accountKeys.NewWithSigner()
-	tokenAddr, err := b.CreateAccount(
-		[]*flow.AccountKey{tokenAccountKey},
-		[]sdktemplates.Contract{
-			{
-				Name:   "ExampleNFT",
-				Source: string(tokenCode),
-			},
-		},
+	tokenAddr := deploy(
+		t, b, 
+		"ExampleNFT", 
+		contracts.ExampleNFT(nftAddress, metadataAddress), 
+		tokenAccountKey,
 	)
-	assert.NoError(t, err)
 
 	joshAccountKey, joshSigner := accountKeys.NewWithSigner()
 	joshAddress, err := b.CreateAccount([]*flow.AccountKey{joshAccountKey}, nil)
+	require.NoError(t, err)
 
 	script := templates.GenerateMintNFTScript(nftAddress, tokenAddr)
 
