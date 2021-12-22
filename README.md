@@ -140,7 +140,7 @@ import MetadataViews from "..."
 
 // ...
 
-let collection = account.getCapability(/public/ExampleNFTCollection)
+let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
     .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
     ?? panic("Could not borrow a reference to the collection")
 

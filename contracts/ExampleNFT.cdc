@@ -13,6 +13,10 @@ pub contract ExampleNFT: NonFungibleToken {
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
 
+    pub let CollectionStoragePath: StoragePath
+    pub let CollectionPublicPath: PublicPath
+    pub let MinterStoragePath: StoragePath
+
     pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
 
@@ -166,19 +170,24 @@ pub contract ExampleNFT: NonFungibleToken {
         // Initialize the total supply
         self.totalSupply = 0
 
+        // Set the named paths
+        self.CollectionStoragePath = /storage/exampleNFTCollection
+        self.CollectionPublicPath = /public/exampleNFTCollection
+        self.MinterStoragePath = /storage/exampleNFTMinter
+
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
-        self.account.save(<-collection, to: /storage/NFTCollection)
+        self.account.save(<-collection, to: self.CollectionStoragePath)
 
         // create a public capability for the collection
         self.account.link<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic}>(
-            /public/NFTCollection,
-            target: /storage/NFTCollection
+            self.CollectionPublicPath,
+            target: self.CollectionStoragePath
         )
 
         // Create a Minter resource and save it to storage
         let minter <- create NFTMinter()
-        self.account.save(<-minter, to: /storage/NFTMinter)
+        self.account.save(<-minter, to: self.MinterStoragePath)
 
         emit ContractInitialized()
     }

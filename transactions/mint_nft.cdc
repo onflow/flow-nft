@@ -17,14 +17,14 @@ transaction(
 
     prepare(signer: AuthAccount) {
         // borrow a reference to the NFTMinter resource in storage
-        self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: /storage/NFTMinter)
+        self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
     }
 
     execute {
         // Borrow the recipient's public NFT collection reference
         let receiver = getAccount(recipient)
-            .getCapability(/public/NFTCollection)
+            .getCapability(ExampleNFT.CollectionPublicPath)
             .borrow<&{NonFungibleToken.CollectionPublic}>()
             ?? panic("Could not get receiver reference to the NFT Collection")
 
