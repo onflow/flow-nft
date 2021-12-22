@@ -161,7 +161,7 @@ if let view = nft.resolveView(Type<Metadata.Thumbnail>()) {
 }
 
 // The owner is stored directly on the NFT object
-let owner: Address? = nft.owner!.address
+let owner: Address = nft.owner!.address!
 
 // Inspect the type of this NFT to verify its origin
 let nftType = nft.getType()
