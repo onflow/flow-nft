@@ -121,27 +121,31 @@ NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
 
 When writing an NFT contract, 
-you should implement the [`Views.Resolver`](contracts/Views.cdc#L3-L6) and
-[`Views.ResolverCollection`](Views.cdc#L8-L11) interfaces,
-which allow your NFT to implement one or more metadata types called views.
+you should implement the [`Metadata.ViewResolver`](contracts/Metadata.cdc#L3-L6)interface,
+which allows your NFT to implement one or more metadata types called views.
 
 Each `View` represents a different type of metadata, 
 such as an on-chain creator biography or an off-chain video clip.
 
 ### Display view
 
-The [`Display`]() view is the most basic metadata view.
+The [`Display`](contracts/Metadata.cdc#L8-L22) view is the most basic metadata view.
 It returns the minimum information required to render an NFT in most applications.
 
 ```swift
+import ExampleNFT from "..."
+import Metadata from "..."
+
+// ...
+
 let collection = account.getCapability(/public/ExampleNFTCollection)
-    .borrow<&{NonFungibleToken.CollectionPublic}>()
+    .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
     ?? panic("Could not borrow a reference to the receiver's collection")
 
-let nftRef = collection.borrowNFT(id: 42)
+let nft = collection.borrowExampleNFT(id: 42)
 
-if let view = nftRef.resolveView(Type<Views.Display>()) {
-  let display = view as! Views.Display
+if let view = nft.resolveView(Type<Metadata.Display>()) {
+  let display = view as! Metadata.Display
   log(display.name)
   log(display.thumbnail)
   log(display.description)
@@ -156,13 +160,11 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 |Name|Purpose|Source|
 |----|-------|------|
-|`Display`|Render the basic representation of an NFT.|[Views](contracts/Views.cdc)|
+|`Display`|Render the basic representation of an NFT.|[Metadata.cdc](contracts/Metadata.cdc)|
 
 ### How to propose a new view
 
-If you want to propose a new metadata view, 
-or changes to an existing view, 
-please create an issue in this repository.
+Please open a pull request to propose a new metadata view or changes to an existing view.
 
 ## Feedback
 

@@ -19,7 +19,7 @@ transaction {
         signer.save(<-collection, to: /storage/NFTCollection)
 
         // create a public capability for the collection
-        signer.link<&{NonFungibleToken.CollectionPublic}>(
+        signer.link<&{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic}>(
             /public/NFTCollection,
             target: /storage/NFTCollection
         )

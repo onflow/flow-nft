@@ -1,13 +1,8 @@
-pub contract Views {
+pub contract Metadata {
 
-    pub resource interface Resolver {
+    pub resource interface ViewResolver {
         pub fun getViews(): [Type]
         pub fun resolveView(_ view: Type): AnyStruct?
-    }
-
-    pub resource interface ResolverCollection {
-        pub fun borrowViewResolver(id: UInt64): &{Resolver}
-        pub fun getIDs(): [UInt64]
     }
 
     pub struct Display {
