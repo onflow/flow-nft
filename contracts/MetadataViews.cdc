@@ -29,38 +29,4 @@ pub contract MetadataViews {
         pub fun borrowViewResolver(id: UInt64): &{Resolver}
         pub fun getIDs(): [UInt64]
     }
-
-    // Display is a basic view that includes the name and description
-    // of an object. Most objects should implement this view.
-    //
-    pub struct Display {
-        pub let name: String
-        pub let description: String
-
-        init(
-            name: String,
-            description: String,
-        ) {
-            self.name=name
-            self.description=description
-        }
-    }
-
-    // Thumbnail returns a thumbnail image for an object.
-    //
-    // Many NFT resources implement this view to provide 
-    // a simple visual representation of the NFT.
-    //
-    pub struct Thumbnail {
-        pub let uri: String
-        pub let mimetype: String
-
-        init(
-            uri: String,
-            mimetype: String,
-        ) {
-            self.uri=uri
-            self.mimetype=mimetype
-        }
-    }
 }
