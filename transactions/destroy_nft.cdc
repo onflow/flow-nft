@@ -3,7 +3,7 @@ import ExampleNFT from "../contracts/ExampleNFT.cdc"
 
 transaction(id: UInt64) {
     prepare(signer: AuthAccount) {
-        let collectionRef = signer.borrow<&ExampleNFT.Collection>(from: /storage/NFTCollection)
+        let collectionRef = signer.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
             ?? panic("Could not borrow a reference to the owner's collection")
 
         // withdraw the NFT from the owner's collection

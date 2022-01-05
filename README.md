@@ -115,6 +115,71 @@ let collection = account.getCapability(/public/ExampleNFTCollection)
 let ids = collection.getIDs()
 ```
 
+## NFT Metadata
+
+NFT metadata is represented in a flexible and modular way using
+the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
+
+When writing an NFT contract, 
+you should implement the [`MetadataViews.Resolver`](contracts/MetadataViews.cdc#L3-L6)interface,
+which allows your NFT to implement one or more metadata types called views.
+
+Each view represents a different type of metadata, 
+such as an on-chain creator biography or an off-chain video clip.
+
+### How to read metadata
+
+This example shows how to read basic information about an NFT
+including the name, description, image and owner.
+
+**Source: [get_nft_metadata.cdc](transactions/scripts/get_nft_metadata.cdc)**
+
+```swift
+import ExampleNFT from "..."
+import MetadataViews from "..."
+
+// ...
+
+let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
+    .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
+    ?? panic("Could not borrow a reference to the collection")
+
+let nft = collection.borrowExampleNFT(id: 42)
+
+// Get the basic display information for this NFT
+if let view = nft.resolveView(Type<ExampleNFT.MetadataDisplayExample>()) {
+    let display = view as! ExampleNFT.MetadataDisplayExample
+
+    log(display.name)
+    log(display.thumbnail)
+    log(display.description)
+}
+
+// The owner is stored directly on the NFT object
+let owner: Address = nft.owner!.address!
+
+// Inspect the type of this NFT to verify its origin
+let nftType = nft.getType()
+
+// `nftType.identifier` is `A.f3fcd2c1a78f5eee.ExampleNFT.NFT`
+```
+
+### How to implement metadata
+
+The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement metadata views.
+
+### List of common views
+
+|Name|Purpose|Status|Source|
+|----|-------|------|------|
+|`Display`|Return the basic representation of an NFT.|Proposed|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L33-L47)|
+|`HTTPThumbnail`|A thumbnail image available at an HTTP URI.|Proposed|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L49-L62)|
+|`IPFSThumbnail`|A thumbnail image stored in IPFS.|Proposed|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L64-L82)|
+
+### How to propose a new view
+
+Please open a pull request to propose a new metadata view or changes to an existing view.
+
 ## Feedback
 
 As Flow and Cadence are still new,

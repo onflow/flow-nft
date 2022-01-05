@@ -9,6 +9,7 @@ import (
 	"github.com/onflow/flow-emulator"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
+	sdktemplates "github.com/onflow/flow-go-sdk/templates"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -27,6 +28,27 @@ func newBlockchain(opts ...emulator.Option) *emulator.Blockchain {
 		panic(err)
 	}
 	return b
+}
+
+func deploy(
+	t *testing.T,
+	b *emulator.Blockchain,
+	name string,
+	code []byte,
+	keys ... *flow.AccountKey,
+) flow.Address {
+	address, err := b.CreateAccount(
+		keys,
+		[]sdktemplates.Contract{
+			{
+				Name:   name,
+				Source: string(code),
+			},
+		},
+	)
+	assert.NoError(t, err)
+
+	return address
 }
 
 func createTxWithTemplateAndAuthorizer(

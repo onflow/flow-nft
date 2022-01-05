@@ -20,8 +20,16 @@ func TestNonFungibleTokenContract(t *testing.T) {
 func TestExampleNFTContract(t *testing.T) {
 	addresses := test.AddressGenerator()
 	addressA := addresses.New()
+	addressB := addresses.New()
 
-	contract := contracts.ExampleNFT(addressA)
+	contract := contracts.ExampleNFT(addressA, addressB)
 	assert.NotNil(t, contract)
+
 	assert.Contains(t, string(contract), addressA.String())
+	assert.Contains(t, string(contract), addressB.String())
+}
+
+func TestMetadataViewsContract(t *testing.T) {
+	contract := contracts.MetadataViews()
+	assert.NotNil(t, contract)
 }

@@ -6,7 +6,7 @@ pub fun main(address: Address, id: UInt64) {
     let account = getAccount(address)
 
     let collectionRef = account
-        .getCapability(/public/NFTCollection)
+        .getCapability(ExampleNFT.CollectionPublicPath)
         .borrow<&{NonFungibleToken.CollectionPublic}>()
         ?? panic("Could not borrow capability from public collection")
 

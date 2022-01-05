@@ -12,11 +12,15 @@ import (
 	"github.com/onflow/flow-nft/lib/go/contracts/internal/assets"
 )
 
-var placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
+var (
+	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
+	placeholderMetadataViews    = regexp.MustCompile(`"[^"\s].*/MetadataViews.cdc"`)
+)
 
 const (
 	filenameNonFungibleToken = "NonFungibleToken.cdc"
 	filenameExampleNFT       = "ExampleNFT.cdc"
+	filenameMetadataViews    = "MetadataViews.cdc"
 )
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
@@ -27,10 +31,15 @@ func NonFungibleToken() []byte {
 // ExampleNFT returns the ExampleNFT contract.
 //
 // The returned contract will import the NonFungibleToken contract from the specified address.
-func ExampleNFT(nftAddress flow.Address) []byte {
+func ExampleNFT(nftAddress, metadataAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
+	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
 
 	return []byte(code)
+}
+
+func MetadataViews() []byte {
+	return assets.MustAsset(filenameMetadataViews)
 }
