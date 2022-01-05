@@ -147,17 +147,12 @@ let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
 let nft = collection.borrowExampleNFT(id: 42)
 
 // Get the basic display information for this NFT
-if let view = nft.resolveView(Type<MetadataViews.Display>()) {
-    let display = view as! MetadataViews.Display
-    log(display.name)
-    log(display.description)
-}
+if let view = nft.resolveView(Type<ExampleNFT.MetadataDisplayExample>()) {
+    let display = view as! ExampleNFT.MetadataDisplayExample
 
-// Get the image thumbnail for this NFT (if it exists)
-if let view = nft.resolveView(Type<MetadataViews.Thumbnail>()) {
-    let thumbnail = view as! MetadataViews.Thumbnail
-    log(thumbnail.uri)
-    log(thumbnail.mimetype)
+    log(display.name)
+    log(display.thumbnail)
+    log(display.description)
 }
 
 // The owner is stored directly on the NFT object
@@ -175,9 +170,9 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 ### List of common views
 
-|Name|Purpose|Source|
-|----|-------|------|
-|`Display`|Render the basic representation of an NFT.|[MetadataViews.cdc](contracts/MetadataViews.cdc)|
+|Name|Purpose|Status|Source|
+|----|-------|------|------|
+|`Display`|Render the basic representation of an NFT.|Proposed|[MetadataViews.cdc](contracts/MetadataViews.cdc)|
 
 ### How to propose a new view
 
