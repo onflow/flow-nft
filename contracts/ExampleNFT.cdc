@@ -56,6 +56,8 @@ pub contract ExampleNFT: NonFungibleToken {
                         mimetype: "image/jpeg",
                     )
             }
+
+            return nil
         }
     }
 

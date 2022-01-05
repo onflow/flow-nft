@@ -1,4 +1,5 @@
 import ExampleNFT from "../../contracts/ExampleNFT.cdc"
+import MetadataViews from "./MetadataViews.cdc"
 
 pub struct NFTResult {
     pub(set) var name: String
