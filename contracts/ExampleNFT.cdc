@@ -39,7 +39,7 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
-                Type<MetadataViews.Thumbnail>()
+                Type<MetadataViews.HTTPThumbnail>()
             ]
         }
 
@@ -50,11 +50,10 @@ pub contract ExampleNFT: NonFungibleToken {
                         name: self.name,
                         description: self.description,
                     )
-                case Type<MetadataViews.Thumbnail>():
-                    return MetadataViews.Thumbnail(
+                case Type<MetadataViews.HTTPThumbnail>():
+                    return MetadataViews.HTTPThumbnail(
                         uri: self.thumbnail,
                         mimetype: "image/jpeg",
-                        thumbnail: self.thumbnail,
                     )
             }
         }

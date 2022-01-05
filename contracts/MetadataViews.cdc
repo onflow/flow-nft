@@ -46,12 +46,9 @@ pub contract MetadataViews {
         }
     }
 
-    // Thumbnail returns a thumbnail image for an object.
+    // HTTPThumbnail returns a thumbnail image for an object.
     //
-    // Many NFT resources implement this view to provide 
-    // a simple visual representation of the NFT.
-    //
-    pub struct Thumbnail {
+    pub struct HTTPThumbnail {
         pub let uri: String
         pub let mimetype: String
 
@@ -60,6 +57,26 @@ pub contract MetadataViews {
             mimetype: String,
         ) {
             self.uri = uri
+            self.mimetype =m imetype
+        }
+    }
+
+    // IPFSThumbnail returns a thumbnail image for an object
+    // stored as an image file in IPFS.
+    //
+    // IPFS images are referenced by their content identifier (CID)
+    // rather than a direct URI. A client application can use this CID
+    // to find and load the image via an IPFS gateway.
+    //
+    pub struct IPFSThumbnail {
+        pub let cid: String
+        pub let mimetype: String
+
+        init(
+            cid: String,
+            mimetype: String,
+        ) {
+            self.cid = cid
             self.mimetype =m imetype
         }
     }

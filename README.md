@@ -154,8 +154,8 @@ if let view = nft.resolveView(Type<MetadataViews.Display>()) {
 }
 
 // Get the image thumbnail for this NFT (if it exists)
-if let view = nft.resolveView(Type<MetadataViews.Thumbnail>()) {
-    let thumbnail = view as! MetadataViews.Thumbnail
+if let view = nft.resolveView(Type<MetadataViews.HTTPThumbnail>()) {
+    let thumbnail = view as! MetadataViews.HTTPThumbnail
     log(thumbnail.uri)
     log(thumbnail.mimetype)
 }

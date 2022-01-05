@@ -37,11 +37,10 @@ pub fun main(address: Address, id: UInt64): NFTResult {
     }
 
     // Get the image thumbnail for this NFT (if it exists)
-    if let view = nft.resolveView(Type<MetadataViews.Thumbnail>()) {
-        let thumbnail = view as! MetadataViews.Thumbnail
+    if let view = nft.resolveView(Type<MetadataViews.HTTPThumbnail>()) {
+        let thumbnail = view as! MetadataViews.HTTPThumbnail
 
         data.thumbnail = thumbnail.uri
-        data.thumbnail = display.thumbnail
     }
 
     // The owner is stored directly on the NFT object
