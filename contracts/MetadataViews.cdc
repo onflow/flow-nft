@@ -77,7 +77,7 @@ pub contract MetadataViews {
             mimetype: String,
         ) {
             self.cid = cid
-            self.mimetype =m imetype
+            self.mimetype = mimetype
         }
     }
 }
