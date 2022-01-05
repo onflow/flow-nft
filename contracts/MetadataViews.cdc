@@ -57,7 +57,7 @@ pub contract MetadataViews {
             mimetype: String,
         ) {
             self.uri = uri
-            self.mimetype =m imetype
+            self.mimetype = mimetype
         }
     }
 
