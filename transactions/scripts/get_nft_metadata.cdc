@@ -29,11 +29,18 @@ pub fun main(address: Address, id: UInt64): NFTResult {
     var data = NFTResult()
 
     // Get the basic display information for this NFT
-    if let view = nft.resolveView(Type<ExampleNFT.MetadataDisplayExample>()) {
-        let display = view as! ExampleNFT.MetadataDisplayExample
+    if let view = nft.resolveView(Type<MetadataViews.Display>()) {
+        let display = view as! MetadataViews.Display
 
         data.name = display.name
         data.description = display.description
+    }
+
+    // Get the image thumbnail for this NFT (if it exists)
+    if let view = nft.resolveView(Type<MetadataViews.Thumbnail>()) {
+        let thumbnail = view as! MetadataViews.Thumbnail
+
+        data.thumbnail = thumbnail.uri
         data.thumbnail = display.thumbnail
     }
 

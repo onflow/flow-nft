@@ -17,27 +17,6 @@ pub contract ExampleNFT: NonFungibleToken {
     pub let CollectionPublicPath: PublicPath
     pub let MinterStoragePath: StoragePath
 
-    // This is an example implementation of a metadata view.
-    // Eventually, structures like this will be defined in a common
-    // contract and shared by NFT implementations.
-    //
-    pub struct MetadataDisplayExample {
-
-        pub let name: String
-        pub let description: String
-        pub let thumbnail: String
-
-        init(
-            name: String,
-            description: String,
-            thumbnail: String,
-        ) {
-            self.name = name
-            self.description = description
-            self.thumbnail = thumbnail
-        }
-    }
-
     pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
 
@@ -59,21 +38,25 @@ pub contract ExampleNFT: NonFungibleToken {
     
         pub fun getViews(): [Type] {
             return [
-                Type<MetadataDisplayExample>()
+                Type<MetadataViews.Display>(),
+                Type<MetadataViews.Thumbnail>()
             ]
         }
 
         pub fun resolveView(_ view: Type): AnyStruct? {
             switch view {
-                case Type<MetadataDisplayExample>():
-                    return MetadataDisplayExample(
+                case Type<MetadataViews.Display>():
+                    return MetadataViews.Display(
                         name: self.name,
                         description: self.description,
+                    )
+                case Type<MetadataViews.Thumbnail>():
+                    return MetadataViews.Thumbnail(
+                        uri: self.thumbnail,
+                        mimetype: "image/jpeg",
                         thumbnail: self.thumbnail,
                     )
             }
-
-            return nil
         }
     }
 
