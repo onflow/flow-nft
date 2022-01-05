@@ -172,7 +172,9 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 |Name|Purpose|Status|Source|
 |----|-------|------|------|
-|`Display`|Render the basic representation of an NFT.|Proposed|[MetadataViews.cdc](contracts/MetadataViews.cdc)|
+|`Display`|Return the basic representation of an NFT.|Proposed|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L33-L47)|
+|`HTTPThumbnail`|A thumbnail image available at an HTTP URI.|Proposed|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L49-L62)|
+|`IPFSThumbnail`|A thumbnail image stored in IPFS.|Proposed|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L64-L82)|
 
 ### How to propose a new view
 
