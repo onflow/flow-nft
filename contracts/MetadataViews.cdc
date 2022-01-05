@@ -39,7 +39,7 @@ pub contract MetadataViews {
 
         init(
             name: String,
-            description: String,
+            description: String
         ) {
             self.name = name
             self.description = description
@@ -54,7 +54,7 @@ pub contract MetadataViews {
 
         init(
             uri: String,
-            mimetype: String,
+            mimetype: String
         ) {
             self.uri = uri
             self.mimetype = mimetype
@@ -74,7 +74,7 @@ pub contract MetadataViews {
 
         init(
             cid: String,
-            mimetype: String,
+            mimetype: String
         ) {
             self.cid = cid
             self.mimetype = mimetype

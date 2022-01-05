@@ -53,7 +53,7 @@ pub contract ExampleNFT: NonFungibleToken {
                 case Type<MetadataViews.HTTPThumbnail>():
                     return MetadataViews.HTTPThumbnail(
                         uri: self.thumbnail,
-                        mimetype: "image/jpeg",
+                        mimetype: "image/jpeg"
                     )
             }
 
