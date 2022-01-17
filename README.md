@@ -151,13 +151,7 @@ if let view = nft.resolveView(Type<MetadataViews.Display>()) {
 
     log(display.name)
     log(display.description)
-}
-
-// Get the image thumbnail for this NFT (if it exists)
-if let view = nft.resolveView(Type<MetadataViews.HTTPThumbnail>()) {
-    let thumbnail = view as! MetadataViews.HTTPThumbnail
-    log(thumbnail.uri)
-    log(thumbnail.mimetype)
+    log(display.thumbnail)
 }
 
 // The owner is stored directly on the NFT object
@@ -177,9 +171,9 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 |Name|Purpose|Status|Source|
 |----|-------|------|------|
-|`Display`|Return the basic representation of an NFT.|Implemented|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L33-L47)|
-|`HTTPThumbnail`|A thumbnail image available at an HTTP URI.|Implemented|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L49-L62)|
-|`IPFSThumbnail`|A thumbnail image stored in IPFS.|Implemented|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L64-L82)|
+|`Display`|Return the basic representation of an NFT.|Implemented|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L36-L50)|
+|`HTTPFile`|A file available at an HTTP(S) URL.|Implemented|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L62-L72)|
+|`IPFSFile`|A file stored in IPFS.|Implemented|[MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/metadata-display/contracts/MetadataViews.cdc#L81-L113)|
 
 ### How to propose a new view
 
