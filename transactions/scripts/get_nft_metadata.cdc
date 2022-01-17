@@ -1,23 +1,29 @@
 import ExampleNFT from "../../contracts/ExampleNFT.cdc"
 import MetadataViews from "./MetadataViews.cdc"
 
-pub struct NFTResult {
-    pub(set) var name: String
-    pub(set) var description: String
-    pub(set) var thumbnail: String
-    pub(set) var owner: Address
-    pub(set) var type: String
+pub struct NFT {
+    pub let name: String
+    pub let description: String
+    pub let thumbnail: String
+    pub let owner: Address
+    pub let type: String
 
-    init() {
-        self.name = ""
-        self.description = ""
-        self.thumbnail = ""
-        self.owner = 0x0
-        self.type = ""
+    init(
+        name: String,
+        description: String,
+        thumbnail: String,
+        owner: Address,
+        nftType: String,
+    ) {
+        self.name = name
+        self.description = description
+        self.thumbnail = thumbnail
+        self.owner = owner
+        self.type = nftType
     }
 }
 
-pub fun main(address: Address, id: UInt64): NFTResult {
+pub fun main(address: Address, id: UInt64): NFT {
     let account = getAccount(address)
 
     let collection = account
@@ -27,33 +33,19 @@ pub fun main(address: Address, id: UInt64): NFTResult {
 
     let nft = collection.borrowExampleNFT(id: id)!
 
-    var data = NFTResult()
-
     // Get the basic display information for this NFT
-    if let view = nft.resolveView(Type<MetadataViews.Display>()) {
-        let display = view as! MetadataViews.Display
+    let view = nft.resolveView(Type<MetadataViews.Display>())!
 
-        data.name = display.name
-        data.description = display.description
-    }
-
-    // Get the image thumbnail for this NFT (if it exists)
-    if let view = nft.resolveView(Type<MetadataViews.HTTPThumbnail>()) {
-        let thumbnail = view as! MetadataViews.HTTPThumbnail
-
-        data.thumbnail = thumbnail.uri
-    }
-
-    // The owner is stored directly on the NFT object
+    let display = view as! MetadataViews.Display
+    
     let owner: Address = nft.owner!.address!
-
-    data.owner = owner
-
-    // Inspect the type of this NFT to verify its origin
     let nftType = nft.getType()
 
-    data.type = nftType.identifier
-    // `data.type` is `A.f3fcd2c1a78f5eee.ExampleNFT.NFT`
-
-    return data
+    return NFT(
+        name: display.name,
+        description: display.description,
+        thumbnail: display.thumbnail.uri(),
+        owner: owner,
+        nftType: nftType.identifier,
+    )
 }
