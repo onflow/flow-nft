@@ -30,12 +30,30 @@ pub contract MetadataViews {
         pub fun getIDs(): [UInt64]
     }
 
-    // Display is a basic view that includes the name and description
-    // of an object. Most objects should implement this view.
+    // Display is a basic view that includes the name, description and
+    // thumbnail for an object. Most objects should implement this view.
     //
     pub struct Display {
+
+        // The name of the object. 
+        //
+        // This field will be displayed in lists and therefore should
+        // be short an concise.
+        //
         pub let name: String
+
+        // A written description of the object. 
+        //
+        // This field will be displayed in a detailed view of the object,
+        // so can be more verbose (e.g. a paragraph instead of a single line).
+        //
         pub let description: String
+
+        // A small thumbnail representation of the object.
+        //
+        // This field should be a web-friendly file (i.e JPEG, PNG)
+        // that can be displayed in lists, link previews, etc.
+        //
         pub let thumbnail: AnyStruct{File}
 
         init(
