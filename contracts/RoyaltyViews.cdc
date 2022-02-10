@@ -19,28 +19,10 @@ pub contract RoyaltyViews {
         /// Percentage of sale price in the basis points.
         /// Ex - if the sale price is 100 units and the `royaltyCut` is 2500 then
         /// recepient would receive 25 units as the royalty.
-        pub let royaltyCut: UInt64
+        pub let royaltyCut: UFix64
 
         /// Optional description to know about the cause of paying the royalty or what is the
         /// relationship between the `recepient` and the NFT.
-        pub let description: String?
-
-        init(recepient: Address, royaltyCut: UInt64, description: String?) {
-            self.recepient = recepient
-            self.royaltyCut = royaltyCut
-            self.description = description
-        }
-    }
-
-    /// Struct to return the royalty.
-    /// It is not too much different from the `RoyaltyDetails` struct beside `Royalties.royaltyCut` here is not
-    /// in the basis points.
-    pub struct Royalties {
-        /// Beneficiary of the royalty.
-        pub let recepient: Address
-        /// Number of units of sale vault entitled to pay as the royalty.
-        pub let royaltyCut: UFix64
-        /// Optional description.
         pub let description: String?
 
         init(recepient: Address, royaltyCut: UFix64, description: String?) {
@@ -51,10 +33,12 @@ pub contract RoyaltyViews {
     }
 
     /// Interface to provide details of the royalty.
-    pub resource interface Royalty {
+    pub struct interface Royalty {
         /// Returns the list of the royalties that need to deducted from the sale price and distributed to
         /// the respective recepients.
-        pub fun royaltyFor(salePrice: UFix64): [Royalties]
+        /// Note - Return the royalty cut always in the calculated percentage value base on the salePrice instead
+        /// of direct returning the royalty cut in the basis points.
+        pub fun royaltyFor(salePrice: UFix64): [RoyaltyDetails]
     }
 
 }
