@@ -5,6 +5,11 @@ import FungibleToken from "./utility/FungibleToken.cdc"
 /// Royalty is a voluntary action can be performed by the marketplace to support the artists and make
 /// NFT community vaibrant. It can't be forced as a standard because there is a no way to know whether a
 /// transfer of NFT is a trade or just a movement from one wallet to another.
+///
+/// Note - It is a wider consensus that the payment of royalties should happen in the royalty view and 
+/// should be taken care by the marketplace. If the concern is how do the NFT know whether the royalty 
+/// get paid or not, To resolve it user can use custom fungible token receivers to emit the events from
+/// the NFT and update some state if required.
 pub contract RoyaltyViews {
     
     /// Struct to store details of the royalty for a given wallet.
@@ -13,11 +18,26 @@ pub contract RoyaltyViews {
         /// royalty get transferred to.
         ///
         /// Using capability to recieve the royalty.
+        /// 
+        /// Capability would not tell which vault type it would recieve to resolve that we can have a utility function
+        /// alongside the Royalty view that checks to see if the receiver is a type that the buyer expects & that
+        /// function can be accessed via scripts that the marketplace app can run before listing sales in order to
+        /// avoid the issue of users trying to purchase a sale where the royalty receivers do not accept the token they want to purchase it with.
+        ///
+        /// Recommendation - 
+        /// In future we may use the switchboard contract to support multiple vaults. 
+        /// Bellow capability should not be the typical `FlowToken` receiver public path.
+        /// It should be a new path that temporarily holds a `FlowToken.Receiver` capability so that later,
+        /// when the switchboard contract is alive on mainnet, user can easily replace the link with a link
+        /// to the switchboard contract without having to update any of the royalty views of our NFTs, which would likely be impossible to do.
         pub let wallet: Capability<&AnyResource{FungibleToken.Receiver}>
 
         /// It is a multiplier used to calculate the amount of sale value transferred to royalty receiver i.e wallet.
         /// Note - It should lies between 0.0 and 1.0 
         /// Ex - If the sale value is x and multiplier is 0.56 then the royalty value would be 0.56 * x.
+        ///
+        /// Generally percentage get represented in terms of basis points in solidity based smart contracts while cadence offers `UFix64` that already supports
+        /// the basis points use case because its operations are entirely deterministic integer operations and support up to 8 points of precision.
         pub let cut: UFix64
 
         /// Description to know about the cause of paying the royalty or what is the
@@ -35,48 +55,8 @@ pub contract RoyaltyViews {
         }
     }
 
-    pub struct RoyaltyFor {
-        /// Beneficiary of the royalty, It can be the wallet of the artist, minter or anyone whom
-        /// royalty get transferred to.
-        ///
-        /// Using capability to recieve the royalty.
-        pub let wallet: Capability<&AnyResource{FungibleToken.Receiver}>
-
-        /// It is the value that would get transferred to the beneficiary
-        pub let cut: UFix64
-
-        /// Description to know about the cause of paying the royalty or what is the
-        /// relationship between the `wallet` and the NFT.
-        pub let description: String
-
-        init(recepient: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
-            pre {
-                recepient.check() : "Couldn't able to borrow the capability"
-            }
-            self.wallet = recepient
-            self.cut = cut
-            self.description = description
-        }
-    }
-
-    /// Optional interface to provide the helper functions
-    /// for better integration of the royalty standard with the marketplace
-    /// smart contract or provide help to provide better UI/UX.
-    pub struct interface RoyaltyHelpers {
-
-        /// Allow the sale lister to validate whether the beneficary of the royalty
-        /// is using the compatible capability with what buyer accepts.
-        pub fun checkWalletType(typeToCheck: Type): Bool
-
-        /// Returns the list of the royalties that need to deducted from the sale price and distributed to
-        /// the respective recepients.
-        /// This method will be useful to support different algorithms to derive the royalty value using `Royalty.cut`, `salePrice` and
-        /// other variants (ex- block timestamp) that depends on the implementer of the algorithm.
-        pub fun royaltyFor(salePrice: UFix64): [RoyaltyFor]
-    }
-
     /// Interface to provide details of the royalty.
-    pub struct Royalties : RoyaltyHelpers {
+    pub struct Royalties {
 
         /// Array to keep the royalties 
         access(contract) let royalties: [Royalty]
@@ -84,42 +64,13 @@ pub contract RoyaltyViews {
         /// Initialize the `Royalties` struct
         pub init(royalties: [Royalty]) {
             // Validate that sum of all cut multiplier should not be greater than 1.0
-           var totalCut = 0.0
+            var totalCut = 0.0
             for royalty in royalties {
                 totalCut = totalCut + royalty.cut
             }
             assert(totalCut <= 1.0, message: "Sum of royalties multiplier cut should not greater than 1.0")
             // Assign the royalties
             self.royalties = royalties
-        }
-
-        //////////////////////////////////////////////////////////////////
-        /// Optional helper function to facilitate the royalty integration 
-        //////////////////////////////////////////////////////////////////
-
-        /// Allow the sale lister to validate whether the beneficary of the royalty
-        /// is using the compatible capability with what buyer accepts.
-        pub fun checkWalletType(typeToCheck: Type): Bool {
-            var hasCorrectType = true
-            for royalty in self.royalties {
-                if !royalty.wallet.isInstance(typeToCheck) {
-                    hasCorrectType = false
-                    break
-                }
-            }
-            return hasCorrectType
-        }
-
-        /// Returns the list of the royalties that need to deducted from the sale price and distributed to
-        /// the respective recepients.
-        /// This method will be useful to support different algorithms to derive the royalty value using `Royalty.cut`, `salePrice` and
-        /// other variants (ex- block timestamp) that depends on the implementer of the algorithm.
-        pub fun royaltyFor(salePrice: UFix64): [RoyaltyFor] {
-            var royaltyValues: [RoyaltyFor] = []
-            for royalty in self.royalties {
-                royaltyValues.append(RoyaltyFor(recepient: royalty.wallet, cut: royalty.cut * salePrice, description: royalty.description))
-            }
-            return royaltyValues
         }
     }
 }
