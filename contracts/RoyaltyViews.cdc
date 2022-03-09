@@ -58,24 +58,24 @@ pub contract RoyaltyViews {
     /// Interface to provide details of the royalty.
     pub struct Royalties {
 
-        /// Array to keep the royalties 
-        access(self) let royalties: [Royalty]
+        /// Array to keep the cutInfos 
+        access(self) let cutInfos: [Royalty]
 
         /// Initialize the `Royalties` struct
-        pub init(royalties: [Royalty]) {
+        pub init(cutInfos: [Royalty]) {
             // Validate that sum of all cut multiplier should not be greater than 1.0
             var totalCut = 0.0
-            for royalty in royalties {
+            for royalty in cutInfos {
                 totalCut = totalCut + royalty.cut
             }
-            assert(totalCut <= 1.0, message: "Sum of royalties multiplier cut should not greater than 1.0")
-            // Assign the royalties
-            self.royalties = royalties
+            assert(totalCut <= 1.0, message: "Sum of cutInfos multiplier cut should not greater than 1.0")
+            // Assign the cutInfos
+            self.cutInfos = cutInfos
         }
 
-        /// Return the royalties list
+        /// Return the cutInfos list
         pub fun getRoyalties(): [Royalty] {
-            return self.royalties
+            return self.cutInfos
         }
     }
 }

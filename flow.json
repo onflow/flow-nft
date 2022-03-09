@@ -1,0 +1,34 @@
+{
+	"emulators": {
+		"default": {
+			"port": 3569,
+			"serviceAccount": "emulator-account"
+		}
+	},
+	"contracts": {
+		"RoyaltyViews": "./contracts/RoyaltyViews.cdc",
+		"FungibleToken": {
+			"source" : "./contracts/utility/FungibleToken.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7"
+			}
+		},
+		"ExampleToken": "./contracts/utility/ExampleToken.cdc"
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "0c7803af8c506683fa5b5fbd3b9d66f3c170a47ae97f631d119f27dc7c75c8fb"
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-account": ["RoyaltyViews", "FungibleToken", "ExampleToken"]
+		}
+	}
+}
