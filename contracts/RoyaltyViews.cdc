@@ -59,7 +59,7 @@ pub contract RoyaltyViews {
     pub struct Royalties {
 
         /// Array to keep the royalties 
-        access(contract) let royalties: [Royalty]
+        access(self) let royalties: [Royalty]
 
         /// Initialize the `Royalties` struct
         pub init(royalties: [Royalty]) {
@@ -71,6 +71,11 @@ pub contract RoyaltyViews {
             assert(totalCut <= 1.0, message: "Sum of royalties multiplier cut should not greater than 1.0")
             // Assign the royalties
             self.royalties = royalties
+        }
+
+        /// Return the royalties list
+        pub fun getRoyalties(): [Royalty] {
+            return self.royalties
         }
     }
 }
