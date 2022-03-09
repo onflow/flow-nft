@@ -47,7 +47,6 @@ pub contract RoyaltyViews {
         init(recepient: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
             pre {
                 cut >= 0.0 && cut <= 1.0 : "Cut value should be in valid range i.e [0,1]"
-                recepient.check() : "Couldn't able to borrow the capability"
             }
             self.wallet = recepient
             self.cut = cut
