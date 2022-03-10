@@ -11,7 +11,7 @@ a different kind of metadata, such as a creator biography
 or a JPEG image file.
 */
 
-import FungibleToken from "./utility/FungibleToken.cdc"
+import FungibleToken from 0xee82856bf20e2aa6
 
 pub contract MetadataViews {
 
@@ -193,7 +193,7 @@ pub contract MetadataViews {
             pre {
                 cut >= 0.0 && cut <= 1.0 : "Cut value should be in valid range i.e [0,1]"
             }
-            self.wallet = recepient
+            self.receiver = recepient
             self.cut = cut
             self.description = description
         }

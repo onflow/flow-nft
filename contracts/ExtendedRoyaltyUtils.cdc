@@ -27,14 +27,14 @@ pub contract MetadataViews {
     /// Specification of the AMOUNT of tokens to send to a specific receiver
     pub struct RoyaltyFor {
 
-        pub let wallet: Capability<&AnyResource{FungibleToken.Receiver}>
+        pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
 
         /// The amount of the given token that would get transferred to the beneficiary
         pub let cut: UFix64
         pub let description: String
 
         init(recepient: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
-            self.wallet = recepient
+            self.receiver = recepient
             self.cut = cut
             self.description = description
         }
@@ -47,7 +47,7 @@ pub contract MetadataViews {
     pub fun royaltyFor(royalties: Royalties, salePrice: UFix64): [RoyaltyFor] {
         var royaltyValues: [RoyaltyFor] = []
         for royalty in royalties.cutInfos {
-            royaltyValues.append(RoyaltyFor(recepient: royalty.wallet, cut: royalty.cut * salePrice, description: royalty.description))
+            royaltyValues.append(RoyaltyFor(recepient: royalty.receiver, cut: royalty.cut * salePrice, description: royalty.description))
         }
         return royaltyValues
     }
