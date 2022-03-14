@@ -148,7 +148,7 @@ pub contract MetadataViews {
         /// Array that tracks the individual royalties
         access(self) let cutInfos: [Royalty]
 
-        pub init(cutInfos: [Royalty]) {
+        pub init(_ cutInfos: [Royalty]) {
             // Validate that sum of all cut multipliers should not be greater than 1.0
             var totalCut = 0.0
             for royalty in cutInfos {
