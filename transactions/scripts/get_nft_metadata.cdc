@@ -1,5 +1,5 @@
 import ExampleNFT from "../../contracts/ExampleNFT.cdc"
-import MetadataViews from "./MetadataViews.cdc"
+import MetadataViews from "../../contracts/MetadataViews.cdc"
 
 pub struct NFT {
     pub let name: String
@@ -7,6 +7,7 @@ pub struct NFT {
     pub let thumbnail: String
     pub let owner: Address
     pub let type: String
+    pub let royalties: [MetadataViews.Royalty]
 
     init(
         name: String,
@@ -14,12 +15,14 @@ pub struct NFT {
         thumbnail: String,
         owner: Address,
         nftType: String,
+        royalties: [MetadataViews.Royalty]
     ) {
         self.name = name
         self.description = description
         self.thumbnail = thumbnail
         self.owner = owner
         self.type = nftType
+        self.royalties = royalties
     }
 }
 
@@ -36,6 +39,11 @@ pub fun main(address: Address, id: UInt64): NFT {
     // Get the basic display information for this NFT
     let view = nft.resolveView(Type<MetadataViews.Display>())!
 
+    // Get the royalty information for the given NFT
+    let expectedRoyaltyView = nft.resolveView(Type<MetadataViews.Royalties>())!
+
+    let royaltyView = expectedRoyaltyView as! MetadataViews.Royalties
+
     let display = view as! MetadataViews.Display
     
     let owner: Address = nft.owner!.address!
@@ -47,5 +55,6 @@ pub fun main(address: Address, id: UInt64): NFT {
         thumbnail: display.thumbnail.uri(),
         owner: owner,
         nftType: nftType.identifier,
+        royalties: royaltyView.getRoyalties()
     )
 }
