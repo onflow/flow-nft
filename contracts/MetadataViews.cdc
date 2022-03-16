@@ -204,5 +204,15 @@ pub contract MetadataViews {
     pub fun getRoyaltyReceiverPublicPath(): PublicPath {
         return /public/GenericFTReceiver
     }
+
+    // A license according to https://spdx.org/licenses/
+    pub struct License {
+        pub let spdxIdentifier: String
+
+        init(_ identifier: String) {
+            self.spdxIdentifier = identifier
+        }
+    }
+
 }
  
