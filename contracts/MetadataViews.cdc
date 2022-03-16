@@ -226,5 +226,14 @@ pub contract MetadataViews {
             self.totalInEdition=totalInEdition
         }
     }
+
+    //A view to expose an url to this item on an external site
+    pub struct ExternalDomainViewUrl {
+        pub let url:String
+
+        init(url: String) {
+            self.url=url
+        }
+    }
 }
  
