@@ -214,5 +214,17 @@ pub contract MetadataViews {
         }
     }
 
+
+    // A view to show serialNumbers/editions of NFTs
+    pub struct SerialNumber {
+  
+        pub let serialNumber:UInt64
+        pub let totalInEdition: UInt64
+  
+        init(serialNumber:UInt64, totalInEdition:UInt64) {
+            self.serialNumber=serialNumber
+            self.totalInEdition=totalInEdition
+        }
+    }
 }
  
