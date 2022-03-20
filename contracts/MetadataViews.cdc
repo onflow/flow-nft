@@ -140,8 +140,6 @@ pub contract MetadataViews {
     *  and are expected to pay royalties based on these specifications.
     *
     */
-
-    /// Interface to provide details of the royalty.
     pub struct Royalties {
 
         /// Array that tracks the individual royalties
@@ -206,6 +204,8 @@ pub contract MetadataViews {
     }
 
     // A license according to https://spdx.org/licenses/
+		//
+		//This view can be used if the content of an NFT is licensed. 
     pub struct License {
         pub let spdxIdentifier: String
 
@@ -214,24 +214,13 @@ pub contract MetadataViews {
         }
     }
 
-
-    // A view to show serialNumbers/editions of NFTs
-    pub struct SerialNumber {
-  
-        pub let serialNumber:UInt64
-        pub let totalInEdition: UInt64
-  
-        init(serialNumber:UInt64, totalInEdition:UInt64) {
-            self.serialNumber=serialNumber
-            self.totalInEdition=totalInEdition
-        }
-    }
-
     //A view to expose an url to this item on an external site
+
+		//This can be used in solutions like .find/blocto to know what should happen when you click on a link
     pub struct ExternalDomainViewUrl {
         pub let url:String
 
-        init(url: String) {
+        init(_ url: String) {
             self.url=url
         }
     }
