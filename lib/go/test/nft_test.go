@@ -54,16 +54,16 @@ func TestCreateNFT(t *testing.T) {
 
 	t.Run("Should be able to mint a token", func(t *testing.T) {
 
-		script := templates.GenerateMintNFTScript(nftAddress, exampleNFTAddress)
-
-		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
-
 		beneficiaryAccountKey1, _ := accountKeys.NewWithSigner()
 		beneficiaryAddress1, err := b.CreateAccount([]*flow.AccountKey{beneficiaryAccountKey1}, nil)
 		require.NoError(t, err)
 		beneficiaryAccountKey2, _ := accountKeys.NewWithSigner()
 		beneficiaryAddress2, err := b.CreateAccount([]*flow.AccountKey{beneficiaryAccountKey2}, nil)
 		require.NoError(t, err)
+
+		script := templates.GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadataAddress)
+
+		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
 		cut1, err := cadence.NewUFix64("0.25")
 		require.NoError(t, err)
@@ -150,7 +150,14 @@ func TestTransferNFT(t *testing.T) {
 	joshAddress, err := b.CreateAccount([]*flow.AccountKey{joshAccountKey}, nil)
 	require.NoError(t, err)
 
-	script := templates.GenerateMintNFTScript(nftAddress, exampleNFTAddress)
+	beneficiaryAccountKey1, _ := accountKeys.NewWithSigner()
+	beneficiaryAddress1, err := b.CreateAccount([]*flow.AccountKey{beneficiaryAccountKey1}, nil)
+	require.NoError(t, err)
+	beneficiaryAccountKey2, _ := accountKeys.NewWithSigner()
+	beneficiaryAddress2, err := b.CreateAccount([]*flow.AccountKey{beneficiaryAccountKey2}, nil)
+	require.NoError(t, err)
+
+	script := templates.GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadataAddress)
 
 	tx := flow.NewTransaction().
 		SetScript(script).
@@ -163,10 +170,22 @@ func TestTransferNFT(t *testing.T) {
 		SetPayer(b.ServiceKey().Address).
 		AddAuthorizer(exampleNFTAddress)
 
+	cut1, err := cadence.NewUFix64("0.25")
+	require.NoError(t, err)
+	cut2, err := cadence.NewUFix64("0.40")
+	require.NoError(t, err)
+
+	cuts := []cadence.Value{cut1, cut2}
+	royaltyDescriptions := []cadence.Value{cadence.String("Minter royalty"), cadence.String("Creator royalty")}
+	royaltyBeneficiaries := []cadence.Value{cadence.NewAddress(beneficiaryAddress1), cadence.NewAddress(beneficiaryAddress2)}
+
 	tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
 	tx.AddArgument(cadence.String("Example NFT 0"))
 	tx.AddArgument(cadence.String("This is an example NFT"))
 	tx.AddArgument(cadence.String("example.jpeg"))
+	tx.AddArgument(cadence.NewArray(cuts))
+	tx.AddArgument(cadence.NewArray(royaltyDescriptions))
+	tx.AddArgument(cadence.NewArray(royaltyBeneficiaries))
 
 	signAndSubmit(
 		t, b, tx,

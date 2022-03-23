@@ -198,5 +198,9 @@ pub contract MetadataViews {
             self.description = description
         }
     }
+
+    pub fun getRoyaltyReceiverPublicPath(): PublicPath {
+        return /public/RoyaltyReceiverPublicCapabilityPath
+    }
 }
  

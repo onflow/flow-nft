@@ -25,9 +25,9 @@ func GenerateSetupAccountScript(nftAddress, exampleNFTAddress flow.Address) []by
 
 // GenerateMintNFTScript returns script that uses the admin resource
 // to mint a new NFT and deposit it into a user's collection.
-func GenerateMintNFTScript(nftAddress, exampleNFTAddress flow.Address) []byte {
+func GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadatViewsAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameMintNFT)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadatViewsAddress)
 }
 
 // GenerateTransferNFTScript returns a script that withdraws an NFT token

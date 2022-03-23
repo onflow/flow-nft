@@ -1,6 +1,7 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -32,9 +33,7 @@ func TestGetNFTMetadata(t *testing.T) {
 		exampleNFTAccountKey,
 	)
 
-	script := templates.GenerateMintNFTScript(nftAddress, exampleNFTAddress)
-
-	tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
+	script := templates.GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadataAddress)
 
 	beneficiaryAccountKey1, _ := accountKeys.NewWithSigner()
 	beneficiaryAddress1, err := b.CreateAccount([]*flow.AccountKey{beneficiaryAccountKey1}, nil)
@@ -42,6 +41,8 @@ func TestGetNFTMetadata(t *testing.T) {
 	beneficiaryAccountKey2, _ := accountKeys.NewWithSigner()
 	beneficiaryAddress2, err := b.CreateAccount([]*flow.AccountKey{beneficiaryAccountKey2}, nil)
 	require.NoError(t, err)
+
+	tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
 	const (
 		name        = "Example NFT 0"
@@ -98,7 +99,24 @@ func TestGetNFTMetadata(t *testing.T) {
 	assert.Equal(t, cadence.String(thumbnail), nftResult.Fields[2])
 	assert.Equal(t, cadence.NewAddress(exampleNFTAddress), nftResult.Fields[3])
 	assert.Equal(t, cadence.String(nftType), nftResult.Fields[4])
-	assert.Equal(t, cadence.NewArray(cuts), nftResult.Fields[5])
-	assert.Equal(t, cadence.NewArray(royaltyDescriptions), nftResult.Fields[6])
-	assert.Equal(t, cadence.NewArray(royaltyBeneficiaries), nftResult.Fields[7])
+
+	// TODO: To verify the return data from the script with the expected data.
+	royalties := toJson(t, nftResult.Fields[5])
+	// Declared an empty interface of type Array
+	var results map[string]interface{}
+
+	// Unmarshal or Decode the JSON to the interface.
+	json.Unmarshal([]byte(royalties), &results)
+
+	// for key, value := range results {
+	// 	// Each value is an interface{} type, that is type asserted as a string
+	// 	fmt.Println(key, value.(string))
+	// }
+}
+
+func toJson(t *testing.T, target cadence.Value) string {
+	actualJSONBytes, err := jsoncdc.Encode(target)
+	require.NoError(t, err)
+	actualJSON := string(actualJSONBytes)
+	return actualJSON
 }

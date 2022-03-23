@@ -34,7 +34,7 @@ transaction(
         while royaltyBeneficiaries.length > count {
             let beneficiary = royaltyBeneficiaries[count]
             let beneficiaryCapability = getAccount(beneficiary)
-            .getCapability<&FungibleToken.Vault{FungibleToken.Receiver}>(/public/exampleRoyaltyReceiver)
+            .getCapability<&FungibleToken.Vault{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath())
 
             self.royalties.append(
                 MetadataViews.Royalty(
