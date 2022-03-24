@@ -214,9 +214,9 @@ pub contract MetadataViews {
         }
     }
 
-    //A view to expose an url to this item on an external site
-
-		//This can be used in solutions like .find/blocto to know what should happen when you click on a link
+    // A view to expose a URL to this item on an external site.
+    //
+    // This can be used by applications like .find and Blocto to direct users to the original link for an NFT.
     pub struct ExternalDomainViewUrl {
         pub let url:String
 
