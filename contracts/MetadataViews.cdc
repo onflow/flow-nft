@@ -205,7 +205,7 @@ pub contract MetadataViews {
 
     // A license according to https://spdx.org/licenses/
 		//
-		//This view can be used if the content of an NFT is licensed. 
+		// This view can be used if the content of an NFT is licensed. 
     pub struct License {
         pub let spdxIdentifier: String
 
