@@ -217,7 +217,7 @@ pub contract MetadataViews {
     // A view to expose a URL to this item on an external site.
     //
     // This can be used by applications like .find and Blocto to direct users to the original link for an NFT.
-    pub struct ExternalDomainViewUrl {
+    pub struct ExternalURL {
         pub let url: String
 
         init(_ url: String) {
