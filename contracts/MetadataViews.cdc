@@ -201,11 +201,22 @@ pub contract MetadataViews {
     /// hence the name but will only be used for royalties for now.
     pub fun getRoyaltyReceiverPublicPath(): PublicPath {
         return /public/GenericFTReceiver
+
+    // A view to represent Media, a file with an correspoiding mediaType.
+    // media-type comes on the form of type/subtype as described here https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+    pub struct Media {
+        pub let file: AnyStruct{File}
+        pub let mediaType: String
+
+        init(file: AnyStruct{File}, mediaType: String) {
+          self.file=file
+          self.mediaType=mediaType
+        }
     }
 
     // A license according to https://spdx.org/licenses/
-		//
-		// This view can be used if the content of an NFT is licensed. 
+    //
+    // This view can be used if the content of an NFT is licensed. 
     pub struct License {
         pub let spdxIdentifier: String
 
