@@ -145,7 +145,8 @@ let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
     ?? panic("Could not borrow a reference to the collection")
 
 let nft = collection.borrowExampleNFT(id: 42)
-
+    ?? panic("Could not borrow a reference to the NFT")
+    
 if let view = nft.resolveView(Type<MetadataViews.Display>()) {
     let display = view as! MetadataViews.Display
 
