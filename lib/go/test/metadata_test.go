@@ -50,6 +50,7 @@ func TestGetNFTMetadata(t *testing.T) {
 		thumbnail   = "example.jpeg"
 	)
 
+	// Add two new royalties to the minted NFT
 	cut1, err := cadence.NewUFix64("0.25")
 	require.NoError(t, err)
 	cut2, err := cadence.NewUFix64("0.40")
@@ -107,16 +108,4 @@ func TestGetNFTMetadata(t *testing.T) {
 
 	// Unmarshal or Decode the JSON to the interface.
 	json.Unmarshal([]byte(royalties), &results)
-
-	// for key, value := range results {
-	// 	// Each value is an interface{} type, that is type asserted as a string
-	// 	fmt.Println(key, value.(string))
-	// }
-}
-
-func toJson(t *testing.T, target cadence.Value) string {
-	actualJSONBytes, err := jsoncdc.Encode(target)
-	require.NoError(t, err)
-	actualJSON := string(actualJSONBytes)
-	return actualJSON
 }

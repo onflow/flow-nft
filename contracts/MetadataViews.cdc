@@ -170,8 +170,8 @@ pub contract MetadataViews {
 
         /// Generic FungibleToken Receiver for the beneficiary of the royalty
         /// Can get the concrete type of the receiver with receiver.getType()
-        /// Recommendation - Users should create a new link for a FlowToken receiver for this,
-        /// and not use the default receiver.
+        /// Recommendation - Users should create a new link for a FlowToken receiver for this using `getRoyaltyReceiverPublicPath()`,
+        /// and not use the default FlowToken receiver.
         /// This will allow for updating to use a more generic capability in the future
         pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
 
@@ -199,8 +199,11 @@ pub contract MetadataViews {
         }
     }
 
+    /// Get the path that should be used for receiving royalties
+    /// This is a path that will eventually be used for a generic switchboard receiver,
+    /// hence the name but will only be used for royalties for now.
     pub fun getRoyaltyReceiverPublicPath(): PublicPath {
-        return /public/RoyaltyReceiverPublicCapabilityPath
+        return /public/GenericFTReceiver
     }
 }
  
