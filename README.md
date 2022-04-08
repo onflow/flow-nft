@@ -149,6 +149,7 @@ let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
 
 // Borrow a reference to the NFT as usual
 let nft = collection.borrowExampleNFT(id: 42)
+    ?? panic("Could not borrow a reference to the NFT")
 
 // Call the resolveView method
 // Provide the type of the view that you want to resolve
