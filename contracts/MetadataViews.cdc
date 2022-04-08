@@ -91,7 +91,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// IPFSThumbnail returns a thumbnail image for an object
+    /// IPFSFile returns a thumbnail image for an object
     /// stored as an image file in IPFS.
     ///
     /// IPFS images are referenced by their content identifier (CID)
@@ -172,7 +172,7 @@ pub contract MetadataViews {
         /// Can get the concrete type of the receiver with receiver.getType()
         /// Recommendation - Users should create a new link for a FlowToken receiver for this using `getRoyaltyReceiverPublicPath()`,
         /// and not use the default FlowToken receiver.
-        /// This will allow for updating to use a more generic capability in the future
+        /// This will allow users to update the capability in the future to use a more generic capability
         pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
 
         /// Multiplier used to calculate the amount of sale value transferred to royalty receiver.
