@@ -178,12 +178,13 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 ### List of common views
 
-| Name       | Purpose                                    | Status      | Source                                                                                                   |
-| ----------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
-| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)  |
-| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)  |
-| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133) |
-| `Royalties` | An array of Royalty Cuts for a given NFT.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208) |
+| Name        | Purpose                                              | Status      | Source                                                                                                   |
+| ----------- | ---------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------- |
+| `Display`   | Return the basic representation of an NFT.           | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)  |
+| `HTTPFile`  | A file available at an HTTP(S) URL.                  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)  |
+| `IPFSFile`  | A file stored in IPFS.                               | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133) |
+| `Royalties` | An array of Royalty Cuts for a given NFT.            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208) |
+| `Edition`  | Return the edition number and max editions of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L213-L233) |
 
 
 ## Royalty View
