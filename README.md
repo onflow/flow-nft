@@ -126,6 +126,8 @@ which allows your NFT to implement one or more metadata types called views.
 
 Each view represents a different type of metadata,
 such as an on-chain creator biography or an off-chain video clip.
+Views do not specify or require how to store your metadata, they only specify
+the format to query and return them, so projects can still be flexible with how they store their data.
 
 ### How to read metadata
 
@@ -140,13 +142,19 @@ import MetadataViews from "..."
 
 // ...
 
+// Get the regular public capability
 let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
     .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
     ?? panic("Could not borrow a reference to the collection")
 
+// Borrow a reference to the NFT as usual
 let nft = collection.borrowExampleNFT(id: 42)
     ?? panic("Could not borrow a reference to the NFT")
-    
+
+// Call the resolveView method
+// Provide the type of the view that you want to resolve
+// View types are defined in the MetadataViews contract
+// You can see if an NFT supports a specific view type by using the `getViews()` method
 if let view = nft.resolveView(Type<MetadataViews.Display>()) {
     let display = view as! MetadataViews.Display
 
@@ -171,12 +179,80 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 ### List of common views
 
 | Name       | Purpose                                    | Status      | Source                                                                                                   |
-| ---------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
-| `Display`  | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L36-L50)  |
-| `HTTPFile` | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L90)  |
-| `IPFSFile` | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L99-L113) |
+| ----------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
+| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)  |
+| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)  |
+| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133) |
+| `Royalties` | An array of Royalty Cuts for a given NFT.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208) |
 
-### How to propose a new view
+
+## Royalty View
+
+The `MetadataViews` contract also includes [a standard view for Royalties](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208).
+
+This view is meant to be used by 3rd party marketplaces to take a cut of the proceeds of an NFT sale
+and send it to the author of a certain NFT. Each NFT can have its own royalty view:
+
+```cadence
+pub struct Royalties {
+
+    /// Array that tracks the individual royalties
+    access(self) let cutInfos: [Royalty]
+}
+```
+and the royalty can indicate whatever fungible token it wants to accept via the type of the generic `{FungibleToken.Reciever}` capability that it specifies:
+
+```cadence
+pub struct Royalty {
+    /// Generic FungibleToken Receiver for the beneficiary of the royalty
+    /// Can get the concrete type of the receiver with receiver.getType()
+    /// Recommendation - Users should create a new link for a FlowToken receiver for this using `getRoyaltyReceiverPublicPath()`,
+    /// and not use the default FlowToken receiver.
+    /// This will allow users to update the capability in the future to use a more generic capability
+    pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
+
+    /// Multiplier used to calculate the amount of sale value transferred to royalty receiver.
+    /// Note - It should be between 0.0 and 1.0 
+    /// Ex - If the sale value is x and multiplier is 0.56 then the royalty value would be 0.56 * x.
+    ///
+    /// Generally percentage get represented in terms of basis points
+    /// in solidity based smart contracts while cadence offers `UFix64` that already supports
+    /// the basis points use case because its operations
+    /// are entirely deterministic integer operations and support up to 8 points of precision.
+    pub let cut: UFix64
+}
+```
+
+If someone wants to make a listing for their NFT on a marketplace,
+the marketplace can check to see if the royalty receiver accepts the seller's desired fungible token
+by checking the concrete type of the reference.
+If the concrete type is not the same as the type of token the seller wants to accept,
+the marketplace has a few options. 
+They could either get the address of the receiver by using the 
+`receiver.owner.address` field and check to see if the account has a receiver for the desired token,
+they could perform the sale without a royalty cut, or they could abort the sale
+since the token type isn't accepted by the royalty beneficiary.
+
+You can see example implementations of royalties in the `ExampleNFT` contract
+and the associated transactions and scripts.
+
+#### Important Royalty Instructions for Royalty Receivers
+
+If you plan to set your account as a receiver of royalties, you'll likely want to be able to accept
+as many token types as possible. This won't be immediately possible at first, but eventually,
+we will also design a contract that can act as a sort of switchboard for fungible tokens.
+It will accept any generic fungible token and route it to the correct vault in your account. 
+This hasn't been built yet, but you can still set up your account to be ready for it in the future.
+Therefore, if you want to receive royalties, you should set up your account with the
+[`setup_account_to_receive_royalty.cdc` transaction](https://github.com/onflow/flow-nft/blob/c13545c37be4d1e63605c5d76340fb188923d997/transactions/setup_account_to_receive_royalty.cdc).
+
+This will link generic public path from `MetadataViews.getRoyaltyReceiverPublicPath()`
+to your chosen fungible token for now. Then, use that public path for your royalty receiver
+and in the future, you will be able to easily update the link at that path to use the
+fungible token switchboard instead.
+
+
+## How to propose a new view
 
 Please open a pull request to propose a new metadata view or changes to an existing view.
 
