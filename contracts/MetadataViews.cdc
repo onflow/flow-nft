@@ -201,12 +201,13 @@ pub contract MetadataViews {
     /// hence the name but will only be used for royalties for now.
     pub fun getRoyaltyReceiverPublicPath(): PublicPath {
         return /public/GenericFTReceiver
+    }
 
     // A view to represent Media, a file with an correspoiding mediaType.
     pub struct Media {
         pub let file: AnyStruct{File}
 
-				// media-type comes on the form of type/subtype as described here https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+        // media-type comes on the form of type/subtype as described here https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
         pub let mediaType: String
 
         init(file: AnyStruct{File}, mediaType: String) {
@@ -237,4 +238,3 @@ pub contract MetadataViews {
         }
     }
 }
- 
