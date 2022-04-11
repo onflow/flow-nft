@@ -127,6 +127,7 @@ pub contract MetadataViews {
             if let path = self.path {
                 return "ipfs://".concat(self.cid).concat("/").concat(path)
             }
+
             return "ipfs://".concat(self.cid)
         }
     }
