@@ -45,9 +45,11 @@ func TestGetNFTMetadata(t *testing.T) {
 	tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
 	const (
-		name        = "Example NFT 0"
-		description = "This is an example NFT"
-		thumbnail   = "example.jpeg"
+		name          = "Example NFT 0"
+		description   = "This is an example NFT"
+		thumbnail     = "example.jpeg"
+		editionNumber = 1
+		maxEdition    = 100
 	)
 
 	// Add two new royalties to the minted NFT
@@ -67,6 +69,8 @@ func TestGetNFTMetadata(t *testing.T) {
 	tx.AddArgument(cadence.NewArray(cuts))
 	tx.AddArgument(cadence.NewArray(royaltyDescriptions))
 	tx.AddArgument(cadence.NewArray(royaltyBeneficiaries))
+	tx.AddArgument(cadence.UInt64(editionNumber))
+	tx.AddArgument(cadence.UInt64(maxEdition))
 
 	signAndSubmit(
 		t, b, tx,

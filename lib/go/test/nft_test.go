@@ -81,6 +81,8 @@ func TestCreateNFT(t *testing.T) {
 		tx.AddArgument(cadence.NewArray(cuts))
 		tx.AddArgument(cadence.NewArray(royaltyDescriptions))
 		tx.AddArgument(cadence.NewArray(royaltyBeneficiaries))
+		tx.AddArgument(cadence.UInt64(1))
+		tx.AddArgument(cadence.UInt64(100))
 
 		signAndSubmit(
 			t, b, tx,
@@ -186,6 +188,8 @@ func TestTransferNFT(t *testing.T) {
 	tx.AddArgument(cadence.NewArray(cuts))
 	tx.AddArgument(cadence.NewArray(royaltyDescriptions))
 	tx.AddArgument(cadence.NewArray(royaltyBeneficiaries))
+	tx.AddArgument(cadence.UInt64(1))
+	tx.AddArgument(cadence.UInt64(100))
 
 	signAndSubmit(
 		t, b, tx,

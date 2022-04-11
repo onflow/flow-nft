@@ -14,7 +14,9 @@ transaction(
     thumbnail: String,
     cuts: [UFix64],
     royaltyDescriptions: [String],
-    royaltyBeneficiaries: [Address] 
+    royaltyBeneficiaries: [Address],
+    editionNumber: UInt64,
+    maxEdition: UInt64,
 ) {
 
     // local variable for storing the minter reference
@@ -65,7 +67,9 @@ transaction(
             name: name,
             description: description,
             thumbnail: thumbnail,
-            royalties: self.royalties
+            royalties: self.royalties,
+            editionNumber: editionNumber,
+            maxEdition: maxEdition,
         )
     }
 }
