@@ -25,24 +25,32 @@ pub contract ExampleNFT: NonFungibleToken {
         pub let thumbnail: String
         access(self) let royalties: [MetadataViews.Royalty]
 
+        pub let editionNumber: UInt64
+        pub let maxEdition: UInt64?
+
         init(
             id: UInt64,
             name: String,
             description: String,
             thumbnail: String,
-            royalties: [MetadataViews.Royalty]
+            royalties: [MetadataViews.Royalty],
+            editionNumber: UInt64,
+            maxEdition: UInt64,
         ) {
             self.id = id
             self.name = name
             self.description = description
             self.thumbnail = thumbnail
             self.royalties = royalties
+            self.editionNumber = editionNumber
+            self.maxEdition = maxEdition
         }
     
         pub fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
                 Type<MetadataViews.Royalties>()
+                Type<MetadataViews.Edition>()
             ]
         }
 
@@ -59,6 +67,11 @@ pub contract ExampleNFT: NonFungibleToken {
                 case Type<MetadataViews.Royalties>():
                     return MetadataViews.Royalties(
                         self.royalties
+                    )
+                case Type<MetadataViews.Edition>():
+                    return MetadataViews.Edition(
+                        editionNumber: self.editionNumber,
+                        maxEdition: self.maxEdition
                     )
             }
             return nil
@@ -159,7 +172,9 @@ pub contract ExampleNFT: NonFungibleToken {
             name: String,
             description: String,
             thumbnail: String,
-            royalties: [MetadataViews.Royalty]
+            royalties: [MetadataViews.Royalty],
+            editionNumber: UInt64,
+            maxEdition: UInt64,
         ) {
 
             // create a new NFT
@@ -168,7 +183,9 @@ pub contract ExampleNFT: NonFungibleToken {
                 name: name,
                 description: description,
                 thumbnail: thumbnail,
-                royalties: royalties
+                royalties: royalties,
+                editionNumber: editionNumber,
+                maxEdition: maxEdition,
             )
 
             // deposit it in the recipient's account using their reference

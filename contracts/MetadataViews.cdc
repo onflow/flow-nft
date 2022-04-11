@@ -238,4 +238,30 @@ pub contract MetadataViews {
             self.url=url
         }
     }
+
+    // Edition is an optional view for collections that issues multiple objects
+    // with the same name, description and media file. This information is 
+    // useful for wallets and marketplaces.
+    // 
+    pub struct Edition {
+
+        // The edition number of the object.
+        //
+        // For an "24 of 100 (#24/100)" item, the editionNumber is 24. 
+        //
+        pub let editionNumber: UInt64
+
+        // The max edition number of this type of objects.
+        // 
+        // This field should only be provided for limited-editioned objects.
+        // For an "24 of 100 (#24/100)" item, maxEdition is 100.
+        // For an item with unlimited edition, maxEdition should be set to nil.
+        // 
+        pub let maxEdition: UInt64?
+
+        init(editionNumber: UInt64, maxEdition: UInt64?) {
+            self.editionNumber = editionNumber
+            self.maxEdition = maxEdition
+        }
+    }
 }
