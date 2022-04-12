@@ -127,7 +127,7 @@ pub contract MetadataViews {
             if let path = self.path {
                 return "ipfs://".concat(self.cid).concat("/").concat(path)
             }
-            
+
             return "ipfs://".concat(self.cid)
         }
     }
@@ -141,8 +141,6 @@ pub contract MetadataViews {
     *  and are expected to pay royalties based on these specifications.
     *
     */
-
-    /// Interface to provide details of the royalty.
     pub struct Royalties {
 
         /// Array that tracks the individual royalties
@@ -205,5 +203,39 @@ pub contract MetadataViews {
     pub fun getRoyaltyReceiverPublicPath(): PublicPath {
         return /public/GenericFTReceiver
     }
+
+    // A view to represent Media, a file with an correspoiding mediaType.
+    pub struct Media {
+        pub let file: AnyStruct{File}
+
+        // media-type comes on the form of type/subtype as described here https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+        pub let mediaType: String
+
+        init(file: AnyStruct{File}, mediaType: String) {
+          self.file=file
+          self.mediaType=mediaType
+        }
+    }
+
+    // A license according to https://spdx.org/licenses/
+    //
+    // This view can be used if the content of an NFT is licensed. 
+    pub struct License {
+        pub let spdxIdentifier: String
+
+        init(_ identifier: String) {
+            self.spdxIdentifier = identifier
+        }
+    }
+
+    // A view to expose a URL to this item on an external site.
+    //
+    // This can be used by applications like .find and Blocto to direct users to the original link for an NFT.
+    pub struct ExternalURL {
+        pub let url: String
+
+        init(_ url: String) {
+            self.url=url
+        }
+    }
 }
- 
