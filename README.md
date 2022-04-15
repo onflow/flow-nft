@@ -178,13 +178,12 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 ### List of common views
 
-| Name       | Purpose                                    | Status      | Source                                                                                                   |
-| ----------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
-| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)  |
-| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)  |
-| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133) |
+| Name        | Purpose                                    | Status      | Source                                                                                                    |
+| ----------- | ------------------------------------------ | ----------- | --------------------------------------------------------------------------------------------------------- |
+| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)   |
+| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)   |
+| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133)  |
 | `Royalties` | An array of Royalty Cuts for a given NFT.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208) |
-
 
 ## Royalty View
 
@@ -200,6 +199,7 @@ pub struct Royalties {
     access(self) let cutInfos: [Royalty]
 }
 ```
+
 and the royalty can indicate whatever fungible token it wants to accept via the type of the generic `{FungibleToken.Reciever}` capability that it specifies:
 
 ```cadence
@@ -212,7 +212,7 @@ pub struct Royalty {
     pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
 
     /// Multiplier used to calculate the amount of sale value transferred to royalty receiver.
-    /// Note - It should be between 0.0 and 1.0 
+    /// Note - It should be between 0.0 and 1.0
     /// Ex - If the sale value is x and multiplier is 0.56 then the royalty value would be 0.56 * x.
     ///
     /// Generally percentage get represented in terms of basis points
@@ -227,8 +227,8 @@ If someone wants to make a listing for their NFT on a marketplace,
 the marketplace can check to see if the royalty receiver accepts the seller's desired fungible token
 by checking the concrete type of the reference.
 If the concrete type is not the same as the type of token the seller wants to accept,
-the marketplace has a few options. 
-They could either get the address of the receiver by using the 
+the marketplace has a few options.
+They could either get the address of the receiver by using the
 `receiver.owner.address` field and check to see if the account has a receiver for the desired token,
 they could perform the sale without a royalty cut, or they could abort the sale
 since the token type isn't accepted by the royalty beneficiary.
@@ -241,7 +241,7 @@ and the associated transactions and scripts.
 If you plan to set your account as a receiver of royalties, you'll likely want to be able to accept
 as many token types as possible. This won't be immediately possible at first, but eventually,
 we will also design a contract that can act as a sort of switchboard for fungible tokens.
-It will accept any generic fungible token and route it to the correct vault in your account. 
+It will accept any generic fungible token and route it to the correct vault in your account.
 This hasn't been built yet, but you can still set up your account to be ready for it in the future.
 Therefore, if you want to receive royalties, you should set up your account with the
 [`setup_account_to_receive_royalty.cdc` transaction](https://github.com/onflow/flow-nft/blob/c13545c37be4d1e63605c5d76340fb188923d997/transactions/setup_account_to_receive_royalty.cdc).
@@ -250,7 +250,6 @@ This will link generic public path from `MetadataViews.getRoyaltyReceiverPublicP
 to your chosen fungible token for now. Then, use that public path for your royalty receiver
 and in the future, you will be able to easily update the link at that path to use the
 fungible token switchboard instead.
-
 
 ## How to propose a new view
 
@@ -305,6 +304,10 @@ or even write your own. You'll need to replace some of the import address placeh
 ## Running automated tests
 
 You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
+
+### How to improve NFT discoverability
+
+Wallets like Blocto may use the [Alchemy API](https://alchemyapi.io/) to discover and display NFT collections. In order to get an NFT collection listed on Alchemy, you should follow the [steps listed in the Alchemy repository](https://github.com/alchemyplatform/alchemy-flow-contracts#adding-a-new-contract).
 
 ## Bonus features
 
