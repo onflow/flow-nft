@@ -6,9 +6,9 @@
 import FungibleToken from 0xFUNGIBLETOKENADDRESS
 import MetadataViews from "../../contracts/MetadataViews.cdc"
 
-transaction {
+transaction(vaultPath: StoragePath) {
 
-    prepare(signer: AuthAccount, vaultPath: StoragePath) {
+    prepare(signer: AuthAccount) {
 
         // Return early if the account doesn't have a FungibleToken Vault
         if signer.borrow<&FungibleToken.Vault>(from: vaultPath) == nil {
@@ -17,7 +17,7 @@ transaction {
 
         // Create a public capability to the Vault that only exposes
         // the deposit function through the Receiver interface
-        signer.link<&FungibleToken.Vault{FungibleToken.Receiver, FungibleToken.Balance}>(
+        signer.link<&{FungibleToken.Receiver, FungibleToken.Balance}>(
             MetadataViews.getRoyaltyReceiverPublicPath(),
             target: vaultPath
         )
