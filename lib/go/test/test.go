@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/onflow/cadence"
+	jsoncdc "github.com/onflow/cadence/encoding/json"
 	"github.com/onflow/flow-emulator"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
@@ -35,7 +36,7 @@ func deploy(
 	b *emulator.Blockchain,
 	name string,
 	code []byte,
-	keys ... *flow.AccountKey,
+	keys ...*flow.AccountKey,
 ) flow.Address {
 	address, err := b.CreateAccount(
 		keys,
@@ -188,4 +189,11 @@ func assertEqual(t *testing.T, expected, actual interface{}) bool {
 	)
 
 	return assert.Fail(t, message)
+}
+
+func toJson(t *testing.T, target cadence.Value) string {
+	actualJSONBytes, err := jsoncdc.Encode(target)
+	require.NoError(t, err)
+	actualJSON := string(actualJSONBytes)
+	return actualJSON
 }

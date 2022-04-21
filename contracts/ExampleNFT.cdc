@@ -23,22 +23,26 @@ pub contract ExampleNFT: NonFungibleToken {
         pub let name: String
         pub let description: String
         pub let thumbnail: String
+        access(self) let royalties: [MetadataViews.Royalty]
 
         init(
             id: UInt64,
             name: String,
             description: String,
             thumbnail: String,
+            royalties: [MetadataViews.Royalty]
         ) {
             self.id = id
             self.name = name
             self.description = description
             self.thumbnail = thumbnail
+            self.royalties = royalties
         }
     
         pub fun getViews(): [Type] {
             return [
-                Type<MetadataViews.Display>()
+                Type<MetadataViews.Display>(),
+                Type<MetadataViews.Royalties>()
             ]
         }
 
@@ -52,8 +56,11 @@ pub contract ExampleNFT: NonFungibleToken {
                             url: self.thumbnail
                         )
                     )
+                case Type<MetadataViews.Royalties>():
+                    return MetadataViews.Royalties(
+                        self.royalties
+                    )
             }
-
             return nil
         }
     }
@@ -152,6 +159,7 @@ pub contract ExampleNFT: NonFungibleToken {
             name: String,
             description: String,
             thumbnail: String,
+            royalties: [MetadataViews.Royalty]
         ) {
 
             // create a new NFT
@@ -160,6 +168,7 @@ pub contract ExampleNFT: NonFungibleToken {
                 name: name,
                 description: description,
                 thumbnail: thumbnail,
+                royalties: royalties
             )
 
             // deposit it in the recipient's account using their reference
