@@ -1,6 +1,6 @@
 module github.com/onflow/flow-nft/lib/go/test
 
-go 1.14
+go 1.17
 
 require (
 	github.com/onflow/cadence v0.21.3-0.20220419065337-d5202c162010
