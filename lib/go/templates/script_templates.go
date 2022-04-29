@@ -18,13 +18,13 @@ const (
 // If it owns it, it will not fail.
 func GenerateBorrowNFTScript(nftAddress, exampleNFTAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameBorrowNFT)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress, flow.EmptyAddress)
 }
 
 // GenerateGetNFTMetadataScript creates a script that returns the metadata for an NFT.
 func GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameGetNFTMetadata)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataAddress, flow.EmptyAddress)
 }
 
 // GenerateGetCollectionLengthScript creates a script that retrieves an NFT collection
@@ -32,7 +32,7 @@ func GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress
 // If it owns it, it will not fail.
 func GenerateGetCollectionLengthScript(nftAddress, exampleNFTAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameGetCollectionLength)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress, flow.EmptyAddress)
 }
 
 // GenerateGetTotalSupplyScript creates a script that reads
@@ -40,5 +40,5 @@ func GenerateGetCollectionLengthScript(nftAddress, exampleNFTAddress flow.Addres
 // and makes assertions about the number
 func GenerateGetTotalSupplyScript(nftAddress, exampleNFTAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameGetTotalSupply)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress, flow.EmptyAddress)
 }

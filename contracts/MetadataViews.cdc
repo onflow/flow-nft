@@ -11,7 +11,7 @@ a different kind of metadata, such as a creator biography
 or a JPEG image file.
 */
 
-import FungibleToken from 0xee82856bf20e2aa6
+import FungibleToken from "./utility/FungibleToken.cdc"
 
 pub contract MetadataViews {
 
