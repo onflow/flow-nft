@@ -42,7 +42,8 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
-                Type<MetadataViews.Royalties>()
+                Type<MetadataViews.Royalties>(),
+                Type<MetadataViews.NFTCollectionView>()
             ]
         }
 
@@ -59,6 +60,16 @@ pub contract ExampleNFT: NonFungibleToken {
                 case Type<MetadataViews.Royalties>():
                     return MetadataViews.Royalties(
                         self.royalties
+                    )
+                case Type<MetadataViews.NFTCollectionView>():
+                    return MetadataViews.NFTCollectionView(
+                        storagePath: ExampleNFT.CollectionStoragePath,
+                        publicPath: ExampleNFT.CollectionPublicPath,
+                        publicCollection: Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>(),
+                        publicCollectionLinkedType: Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic}>(),
+                        createEmptyCollectionFunction: (fun (): @NonFungibleToken.Collection {
+                            return <-ExampleNFT.createEmptyCollection()
+                        })
                     )
             }
             return nil

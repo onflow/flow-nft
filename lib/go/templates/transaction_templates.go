@@ -14,6 +14,7 @@ const (
 	filenameTransferNFT  = "transfer_nft.cdc"
 	filenameDestroyNFT   = "destroy_nft.cdc"
 	filenameSetupRoyalty = "setup_account_to_receive_royalty.cdc"
+	filenameSetupAccountFromNftReference = "setup_account_from_nft_reference.cdc"
 )
 
 // GenerateSetupAccountScript returns a script that instantiates a new
@@ -26,9 +27,9 @@ func GenerateSetupAccountScript(nftAddress, exampleNFTAddress flow.Address) []by
 
 // GenerateMintNFTScript returns script that uses the admin resource
 // to mint a new NFT and deposit it into a user's collection.
-func GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadatViewsAddress, ftAddress flow.Address) []byte {
+func GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadataViewsAddress, ftAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameMintNFT)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadatViewsAddress, ftAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataViewsAddress, ftAddress)
 }
 
 // GenerateTransferNFTScript returns a script that withdraws an NFT token
@@ -47,7 +48,15 @@ func GenerateDestroyNFTScript(nftAddress, exampleNFTAddress flow.Address) []byte
 
 // GenerateSetupAccountToReceiveRoyaltyScript returns a script that
 // links a new royalty receiver interface
-func GenerateSetupAccountToReceiveRoyaltyScript(metadatViewsAddress, ftAddress flow.Address) []byte {
+func GenerateSetupAccountToReceiveRoyaltyScript(metadataViewsAddress, ftAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameSetupRoyalty)
-	return replaceAddresses(code, flow.EmptyAddress, flow.EmptyAddress, metadatViewsAddress, ftAddress)
+	return replaceAddresses(code, flow.EmptyAddress, flow.EmptyAddress, metadataViewsAddress, ftAddress)
+}
+
+// GenerateSetupAccountFromNftReferenceScript returns a script that instantiates a new
+// NFT collection instance, saves the collection in storage, then stores a
+// reference to the collection.
+func GenerateSetupAccountFromNftReferenceScript(nftAddress flow.Address, exampleNFTAddress flow.Address, metadataViewsAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameSetupAccountFromNftReference)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataViewsAddress, flow.EmptyAddress)
 }

@@ -12,6 +12,7 @@ or a JPEG image file.
 */
 
 import FungibleToken from "./utility/FungibleToken.cdc"
+import NonFungibleToken from "./NonFungibleToken.cdc"
 
 pub contract MetadataViews {
 
@@ -236,6 +237,45 @@ pub contract MetadataViews {
 
         init(_ url: String) {
             self.url=url
+        }
+    }
+
+
+    // A view to expose the information needed store and retrieve an NFT
+    //
+    // This can be used by applications to setup a NFT collection with proper storage and public capabilities.
+    pub struct NFTCollectionView {
+        // Path in storage where this NFT is recommended to be stored.
+        pub let storagePath: StoragePath
+
+        // Public path which should be linked to expose public capabilities of this NFT
+        pub let publicPath: PublicPath
+
+        // Public collection type that is expected to be linked at the aforementioned public path
+        // and provides sufficient access to standard functions (i.e. deposit + getIDs + borrowNFT)
+        // This is normally a restricted type with a single interface.
+        pub let publicCollection: Type
+
+        // Type that should be linked at the aformentioned public path. This is normally a
+        // restricted type with many interfaces.
+        pub let publicCollectionLinkedType: Type
+
+        // Function that allows creation of an empty NFT collection that is intended to store
+        // this NFT.
+        pub let createEmptyCollectionFunction: ((): @NonFungibleToken.Collection)
+
+        init(
+            storagePath: StoragePath,
+            publicPath: PublicPath,
+            publicCollection: Type,
+            publicCollectionLinkedType: Type,
+            createEmptyCollectionFunction: ((): @NonFungibleToken.Collection)
+        ) {
+            self.storagePath=storagePath
+            self.publicPath=publicPath
+            self.publicCollection=publicCollection
+            self.publicCollectionLinkedType=publicCollectionLinkedType
+            self.createEmptyCollectionFunction=createEmptyCollectionFunction
         }
     }
 }

@@ -8,6 +8,10 @@ pub struct NFT {
     pub let owner: Address
     pub let type: String
     pub let royalties: [MetadataViews.Royalty]
+    pub let collectionPublicPath: PublicPath
+    pub let collectionStoragePath: StoragePath
+    pub let collectionPublic: String
+    pub let collectionPublicLinkedType: String
 
     init(
         name: String,
@@ -15,7 +19,11 @@ pub struct NFT {
         thumbnail: String,
         owner: Address,
         nftType: String,
-        royalties: [MetadataViews.Royalty]
+        royalties: [MetadataViews.Royalty],
+        collectionPublicPath: PublicPath,
+        collectionStoragePath: StoragePath,
+        collectionPublic: String,
+        collectionPublicLinkedType: String
     ) {
         self.name = name
         self.description = description
@@ -23,6 +31,10 @@ pub struct NFT {
         self.owner = owner
         self.type = nftType
         self.royalties = royalties
+        self.collectionPublicPath = collectionPublicPath
+        self.collectionStoragePath = collectionStoragePath
+        self.collectionPublic = collectionPublic
+        self.collectionPublicLinkedType = collectionPublicLinkedType
     }
 }
 
@@ -45,6 +57,8 @@ pub fun main(address: Address, id: UInt64): NFT {
     let royaltyView = expectedRoyaltyView as! MetadataViews.Royalties
 
     let display = view as! MetadataViews.Display
+
+    let nftCollectionView = nft.resolveView(Type<MetadataViews.NFTCollectionView>())! as! MetadataViews.NFTCollectionView
     
     let owner: Address = nft.owner!.address!
     let nftType = nft.getType()
@@ -55,6 +69,10 @@ pub fun main(address: Address, id: UInt64): NFT {
         thumbnail: display.thumbnail.uri(),
         owner: owner,
         nftType: nftType.identifier,
-        royalties: royaltyView.getRoyalties()
+        royalties: royaltyView.getRoyalties(),
+        collectionPublicPath: nftCollectionView.publicPath,
+        collectionStoragePath: nftCollectionView.storagePath,
+        collectionPublic: nftCollectionView.publicCollection.identifier,
+        collectionPublicLinkedType: nftCollectionView.publicCollectionLinkedType.identifier
     )
 }

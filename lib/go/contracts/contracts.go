@@ -42,10 +42,11 @@ func ExampleNFT(nftAddress, metadataAddress flow.Address) []byte {
 	return []byte(code)
 }
 
-func MetadataViews(ftAddress flow.Address) []byte {
+func MetadataViews(ftAddress flow.Address, nftAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameMetadataViews)
 
 	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress.String())
+	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 
 	return []byte(code)
 }

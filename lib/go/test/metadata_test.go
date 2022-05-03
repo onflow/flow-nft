@@ -101,5 +101,75 @@ func TestGetNFTMetadata(t *testing.T) {
 		// Unmarshal or Decode the JSON to the interface.
 		json.Unmarshal([]byte(royalties), &results)
 
+		// Verify NFTCollectionView results are as expected
+		const (
+			pathName                = "exampleNFTCollection"
+			collectionType          = "A.f3fcd2c1a78f5eee.ExampleNFT.Collection"
+			collectionPublicType    = "A.f3fcd2c1a78f5eee.ExampleNFT.ExampleNFTCollectionPublic"
+			nftCollectionPublicType = "A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic"
+		)
+		assert.Equal(t, cadence.Path{Domain: "public", Identifier: pathName}, nftResult.Fields[6])
+		assert.Equal(t, cadence.Path{Domain: "storage", Identifier: pathName}, nftResult.Fields[7])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[8])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType)), nftResult.Fields[9])
+	})
+}
+
+func TestSetupCollectionFromNFTReference(t *testing.T) {
+	b, accountKeys := newTestSetup(t)
+
+	// Create a new account to setting up a new account
+	aAddress, _, aSigner := newAccountWithAddress(b, accountKeys)
+
+	// Create new keys for the NFT contract account
+	// and deploy all the NFT contracts
+	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
+	nftAddress, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+
+
+	// Run a script to get the Display view for the specified NFT ID
+	//metadataScript := templates.GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress)
+	/*metadataResult := executeScriptAndCheck(
+		t, b,
+		metadataScript,
+		[][]byte{
+			jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
+			jsoncdc.MustEncode(cadence.NewUInt64(0)),
+		},
+	)*/
+
+	// Mint a single NFT with standard royalty cuts and metadata
+	mintExampleNFT(t, b,
+		accountKeys,
+		nftAddress, metadataAddress, exampleNFTAddress,
+		exampleNFTAccountKey,
+		exampleNFTSigner)
+
+	t.Run("Should be able to setup an account using the NFTCollectionData metadata view of a referenced NFT", func(t *testing.T) {
+		// Ideally, the exampleNFTAddress would not be needed in order to perform the full setup, but it is required
+		// until the following issue is supported in cadence: https://github.com/onflow/cadence/issues/1617
+		script := templates.GenerateSetupAccountFromNftReferenceScript(nftAddress, exampleNFTAddress, metadataAddress)
+		tx := createTxWithTemplateAndAuthorizer(b, script, aAddress)
+
+		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
+		tx.AddArgument(cadence.NewUInt64(0))
+
+		signAndSubmit(
+			t, b, tx,
+			[]flow.Address{
+				b.ServiceKey().Address,
+				aAddress,
+			},
+			[]crypto.Signer{
+				b.ServiceKey().Signer(),
+				aSigner,
+			},
+			false,
+		)
+
+		assertCollectionLength(t, b, nftAddress, exampleNFTAddress,
+			aAddress,
+			0,
+		)
 	})
 }
