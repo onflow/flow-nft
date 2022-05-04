@@ -10,8 +10,10 @@ pub struct NFT {
     pub let royalties: [MetadataViews.Royalty]
     pub let collectionPublicPath: PublicPath
     pub let collectionStoragePath: StoragePath
+    pub let collectionProviderPath: PrivatePath
     pub let collectionPublic: String
     pub let collectionPublicLinkedType: String
+    pub let collectionProviderLinkedType: String
 
     init(
         name: String,
@@ -22,8 +24,10 @@ pub struct NFT {
         royalties: [MetadataViews.Royalty],
         collectionPublicPath: PublicPath,
         collectionStoragePath: StoragePath,
+        collectionProviderPath: PrivatePath,
         collectionPublic: String,
-        collectionPublicLinkedType: String
+        collectionPublicLinkedType: String,
+        collectionProviderLinkedType: String
     ) {
         self.name = name
         self.description = description
@@ -33,8 +37,10 @@ pub struct NFT {
         self.royalties = royalties
         self.collectionPublicPath = collectionPublicPath
         self.collectionStoragePath = collectionStoragePath
+        self.collectionProviderPath = collectionProviderPath
         self.collectionPublic = collectionPublic
         self.collectionPublicLinkedType = collectionPublicLinkedType
+        self.collectionProviderLinkedType = collectionProviderLinkedType
     }
 }
 
@@ -72,7 +78,9 @@ pub fun main(address: Address, id: UInt64): NFT {
         royalties: royaltyView.getRoyalties(),
         collectionPublicPath: nftCollectionView.publicPath,
         collectionStoragePath: nftCollectionView.storagePath,
+        collectionProviderPath: nftCollectionView.providerPath,
         collectionPublic: nftCollectionView.publicCollection.identifier,
-        collectionPublicLinkedType: nftCollectionView.publicCollectionLinkedType.identifier
+        collectionPublicLinkedType: nftCollectionView.publicLinkedType.identifier,
+        collectionProviderLinkedType: nftCollectionView.providerLinkedType.identifier
     )
 }

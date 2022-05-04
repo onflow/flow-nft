@@ -65,8 +65,10 @@ pub contract ExampleNFT: NonFungibleToken {
                     return MetadataViews.NFTCollectionView(
                         storagePath: ExampleNFT.CollectionStoragePath,
                         publicPath: ExampleNFT.CollectionPublicPath,
+                        providerPath: /private/exampleNFTCollection,
                         publicCollection: Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>(),
-                        publicCollectionLinkedType: Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic}>(),
+                        publicLinkedType: Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
+                        providerLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.Provider}>(),
                         createEmptyCollectionFunction: (fun (): @NonFungibleToken.Collection {
                             return <-ExampleNFT.createEmptyCollection()
                         })

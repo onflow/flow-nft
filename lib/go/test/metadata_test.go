@@ -107,11 +107,16 @@ func TestGetNFTMetadata(t *testing.T) {
 			collectionType          = "A.f3fcd2c1a78f5eee.ExampleNFT.Collection"
 			collectionPublicType    = "A.f3fcd2c1a78f5eee.ExampleNFT.ExampleNFTCollectionPublic"
 			nftCollectionPublicType = "A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic"
+			nftReceiverType         = "A.01cf0e2f2f715450.NonFungibleToken.Receiver"
+			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
+			providerType            = "A.01cf0e2f2f715450.NonFungibleToken.Provider"
 		)
 		assert.Equal(t, cadence.Path{Domain: "public", Identifier: pathName}, nftResult.Fields[6])
 		assert.Equal(t, cadence.Path{Domain: "storage", Identifier: pathName}, nftResult.Fields[7])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[8])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType)), nftResult.Fields[9])
+		assert.Equal(t, cadence.Path{Domain: "private", Identifier: pathName}, nftResult.Fields[8])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[9])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[10])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, providerType)), nftResult.Fields[11])
 	})
 }
 

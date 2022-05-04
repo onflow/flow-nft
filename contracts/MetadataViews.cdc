@@ -248,17 +248,27 @@ pub contract MetadataViews {
         // Path in storage where this NFT is recommended to be stored.
         pub let storagePath: StoragePath
 
-        // Public path which should be linked to expose public capabilities of this NFT
+        // Public path which must be linked to expose public capabilities of this NFT
+        // including standard NFT interfaces and metadataviews interfaces
         pub let publicPath: PublicPath
+
+        // Private path which should be linked to expose the provider
+        // capability to withdraw NFTs from the collection holding NFTs
+        pub let providerPath: PrivatePath
 
         // Public collection type that is expected to be linked at the aforementioned public path
         // and provides sufficient access to standard functions (i.e. deposit + getIDs + borrowNFT)
         // This is normally a restricted type with a single interface.
         pub let publicCollection: Type
 
-        // Type that should be linked at the aformentioned public path. This is normally a
-        // restricted type with many interfaces.
-        pub let publicCollectionLinkedType: Type
+        // Type that should be linked at the aforementioned public path. This is normally a
+        // restricted type with many interfaces. Notably the `NFT.CollectionPublic` and
+        // `NFT.Receiver` are required.
+        pub let publicLinkedType: Type
+
+        // Type that should be linked at the aforementioned private path. This is normally
+        // a restricted type with at a minimum the `NFT.Provider` interface
+        pub let providerLinkedType: Type
 
         // Function that allows creation of an empty NFT collection that is intended to store
         // this NFT.
@@ -267,14 +277,22 @@ pub contract MetadataViews {
         init(
             storagePath: StoragePath,
             publicPath: PublicPath,
+            providerPath: PrivatePath,
             publicCollection: Type,
-            publicCollectionLinkedType: Type,
+            publicLinkedType: Type,
+            providerLinkedType: Type,
             createEmptyCollectionFunction: ((): @NonFungibleToken.Collection)
         ) {
+            pre {
+                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver}>()): "Public type must include NonFungibleToken.CollectionPublic and NonFungibleToken.Receiver interfaces."
+                providerLinkedType.isSubtype(of: Type<&{NonFungibleToken.Provider}>()): "Provider type must include NonFungibleToken.Provider interface."
+            }
             self.storagePath=storagePath
             self.publicPath=publicPath
+            self.providerPath = providerPath
             self.publicCollection=publicCollection
-            self.publicCollectionLinkedType=publicCollectionLinkedType
+            self.publicLinkedType=publicLinkedType
+            self.providerLinkedType = providerLinkedType
             self.createEmptyCollectionFunction=createEmptyCollectionFunction
         }
     }
