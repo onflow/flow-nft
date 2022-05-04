@@ -284,7 +284,7 @@ pub contract MetadataViews {
             createEmptyCollectionFunction: ((): @NonFungibleToken.Collection)
         ) {
             pre {
-                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver}>()): "Public type must include NonFungibleToken.CollectionPublic and NonFungibleToken.Receiver interfaces."
+                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>()): "Public type must include NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, and MetadataViews.ResolverCollection interfaces."
                 providerLinkedType.isSubtype(of: Type<&{NonFungibleToken.Provider}>()): "Provider type must include NonFungibleToken.Provider interface."
             }
             self.storagePath=storagePath
