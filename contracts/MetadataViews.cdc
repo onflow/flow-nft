@@ -244,7 +244,7 @@ pub contract MetadataViews {
     // A view to expose the information needed store and retrieve an NFT
     //
     // This can be used by applications to setup a NFT collection with proper storage and public capabilities.
-    pub struct NFTCollectionView {
+    pub struct NFTCollectionData {
         // Path in storage where this NFT is recommended to be stored.
         pub let storagePath: StoragePath
 
