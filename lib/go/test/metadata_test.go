@@ -115,8 +115,8 @@ func TestGetNFTMetadata(t *testing.T) {
 		assert.Equal(t, cadence.Path{Domain: "storage", Identifier: pathName}, nftResult.Fields[7])
 		assert.Equal(t, cadence.Path{Domain: "private", Identifier: pathName}, nftResult.Fields[8])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[9])
-		//assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[10])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, providerType)), nftResult.Fields[11])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[10])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[11])
 	})
 }
 
