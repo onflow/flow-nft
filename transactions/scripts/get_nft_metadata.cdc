@@ -64,7 +64,7 @@ pub fun main(address: Address, id: UInt64): NFT {
 
     let display = view as! MetadataViews.Display
 
-    let nftCollectionView = nft.resolveView(Type<MetadataViews.NFTCollectionView>())! as! MetadataViews.NFTCollectionView
+    let nftCollectionView = nft.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
     
     let owner: Address = nft.owner!.address!
     let nftType = nft.getType()

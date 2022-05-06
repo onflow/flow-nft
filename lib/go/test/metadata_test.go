@@ -131,18 +131,6 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
 	nftAddress, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
 
-
-	// Run a script to get the Display view for the specified NFT ID
-	//metadataScript := templates.GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress)
-	/*metadataResult := executeScriptAndCheck(
-		t, b,
-		metadataScript,
-		[][]byte{
-			jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
-			jsoncdc.MustEncode(cadence.NewUInt64(0)),
-		},
-	)*/
-
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
 		accountKeys,
@@ -157,6 +145,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 		tx := createTxWithTemplateAndAuthorizer(b, script, aAddress)
 
 		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
+		tx.AddArgument(cadence.Path{Domain: "public", Identifier: "exampleNFTCollection"})
 		tx.AddArgument(cadence.NewUInt64(0))
 
 		signAndSubmit(

@@ -256,14 +256,16 @@ pub contract MetadataViews {
         // capability to withdraw NFTs from the collection holding NFTs
         pub let providerPath: PrivatePath
 
-        // Public collection type that is expected to be linked at the aforementioned public path
-        // and provides sufficient access to standard functions (i.e. deposit + getIDs + borrowNFT)
-        // This is normally a restricted type with a single interface.
+        // Public collection type that is expected to provide sufficient read-only access to standard
+        // functions (deposit + getIDs + borrowNFT)
+        // This field is for backwards compatibility with collections that have not used the standard
+        // NonFungibleToken.CollectionPublic interface when setting up collections. For new
+        // collections, this may be set to be equal to the type specified in `publicLinkedType`.
         pub let publicCollection: Type
 
         // Type that should be linked at the aforementioned public path. This is normally a
-        // restricted type with many interfaces. Notably the `NFT.CollectionPublic` and
-        // `NFT.Receiver` are required.
+        // restricted type with many interfaces. Notably the `NFT.CollectionPublic`,
+        // `NFT.Receiver`, and `MetadataViews.ResolverCollection` interfaces are required.
         pub let publicLinkedType: Type
 
         // Type that should be linked at the aforementioned private path. This is normally
