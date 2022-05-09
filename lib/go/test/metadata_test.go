@@ -106,6 +106,17 @@ func TestGetNFTMetadata(t *testing.T) {
 	// Declared an empty interface of type Array
 	var results map[string]interface{}
 
+	const (
+		collectionName        = "The Example Collection"
+		collectionDescription = "This collection is used as an example to help you develop your next Flow NFT."
+		collectionImage       = "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
+	)
+
+	assert.Equal(t, cadence.String(collectionName), nftResult.Fields[6])
+	assert.Equal(t, cadence.String(collectionDescription), nftResult.Fields[7])
+	assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[8])
+	assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[9])
+
 	// Unmarshal or Decode the JSON to the interface.
 	json.Unmarshal([]byte(royalties), &results)
 }

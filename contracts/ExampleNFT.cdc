@@ -42,7 +42,8 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
-                Type<MetadataViews.Royalties>()
+                Type<MetadataViews.Royalties>(),
+                Type<MetadataViews.NFTCollectionDisplay>()
             ]
         }
 
@@ -59,6 +60,19 @@ pub contract ExampleNFT: NonFungibleToken {
                 case Type<MetadataViews.Royalties>():
                     return MetadataViews.Royalties(
                         self.royalties
+                    )
+                case Type<MetadataViews.NFTCollectionDisplay>():
+                    let media = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                            url: "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
+                        ),
+                        mediaType: "image/svg+xml"
+                    )
+                    return MetadataViews.NFTCollectionDisplay(
+                        name: "The Example Collection",
+                        description: "This collection is used as an example to help you develop your next Flow NFT.",
+                        squareImage: media,
+                        bannerImage: media
                     )
             }
             return nil

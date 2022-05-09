@@ -243,6 +243,7 @@ and the associated transactions and scripts.
 | `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)  |
 | `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133) |
 | `Royalties` | An array of Royalty Cuts for a given NFT.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208) |
+| `NFTCollectionDisplay` | Returns the basic representation of an NFT Collection.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L242-L264) |
 
 #### Important Royalty Instructions for Royalty Receivers
 

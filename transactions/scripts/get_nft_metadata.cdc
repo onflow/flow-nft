@@ -8,6 +8,10 @@ pub struct NFT {
     pub let owner: Address
     pub let type: String
     pub let royalties: [MetadataViews.Royalty]
+    pub let collectionName: String
+    pub let collectionDescription: String
+    pub let collectionSquareImage: String
+    pub let collectionBannerImage: String
 
     init(
         name: String,
@@ -15,7 +19,11 @@ pub struct NFT {
         thumbnail: String,
         owner: Address,
         nftType: String,
-        royalties: [MetadataViews.Royalty]
+        royalties: [MetadataViews.Royalty],
+        collectionName: String,
+        collectionDescription: String,
+        collectionSquareImage: String,
+        collectionBannerImage: String
     ) {
         self.name = name
         self.description = description
@@ -23,6 +31,10 @@ pub struct NFT {
         self.owner = owner
         self.type = nftType
         self.royalties = royalties
+        self.collectionName = collectionName
+        self.collectionDescription = collectionDescription
+        self.collectionSquareImage = collectionSquareImage
+        self.collectionBannerImage = collectionBannerImage
     }
 }
 
@@ -45,6 +57,8 @@ pub fun main(address: Address, id: UInt64): NFT {
     let royaltyView = expectedRoyaltyView as! MetadataViews.Royalties
 
     let display = view as! MetadataViews.Display
+
+    let collectionDisplay = nft.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
     
     let owner: Address = nft.owner!.address!
     let nftType = nft.getType()
@@ -55,6 +69,10 @@ pub fun main(address: Address, id: UInt64): NFT {
         thumbnail: display.thumbnail.uri(),
         owner: owner,
         nftType: nftType.identifier,
-        royalties: royaltyView.getRoyalties()
+        royalties: royaltyView.getRoyalties(),
+        collectionName: collectionDisplay.name,
+        collectionDescription: collectionDisplay.description,
+        collectionSquareImage: collectionDisplay.squareImage.file.uri(),
+        collectionBannerImage: collectionDisplay.bannerImage.file.uri()
     )
 }
