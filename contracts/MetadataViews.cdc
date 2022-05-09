@@ -244,21 +244,25 @@ pub contract MetadataViews {
     // This can be used by applications to give an overview and graphics of the NFT collection
     // this NFT belongs to.
     pub struct NFTCollectionDisplay {
-        // Name that should be used when displaying this NFT Collection
+        // Name that should be used when displaying this NFT collection.
         pub let name: String
 
         // Description that should be used to give an overview of this collection.
         pub let description: String
 
-        // Square-sized image to represent this collection
+        // External link to a URL to view more information about this collection.
+        pub let externalURL: ExternalURL
+
+        // Square-sized image to represent this collection.
         pub let squareImage: Media
 
-        // Banner-sized image for this collection, recommended to have a size near 1200x630
+        // Banner-sized image for this collection, recommended to have a size near 1200x630.
         pub let bannerImage: Media
 
-        init(name: String, description: String, squareImage: Media, bannerImage: Media) {
+        init(name: String, description: String, externalURL: ExternalURL, squareImage: Media, bannerImage: Media) {
             self.name = name
             self.description = description
+            self.externalURL = externalURL
             self.squareImage = squareImage
             self.bannerImage = bannerImage
         }

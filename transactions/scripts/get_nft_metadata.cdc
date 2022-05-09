@@ -8,8 +8,10 @@ pub struct NFT {
     pub let owner: Address
     pub let type: String
     pub let royalties: [MetadataViews.Royalty]
+    pub let externalURL: String
     pub let collectionName: String
     pub let collectionDescription: String
+    pub let collectionExternalURL: String
     pub let collectionSquareImage: String
     pub let collectionBannerImage: String
 
@@ -20,8 +22,10 @@ pub struct NFT {
         owner: Address,
         nftType: String,
         royalties: [MetadataViews.Royalty],
+        externalURL: String,
         collectionName: String,
         collectionDescription: String,
+        collectionExternalURL: String,
         collectionSquareImage: String,
         collectionBannerImage: String
     ) {
@@ -31,8 +35,10 @@ pub struct NFT {
         self.owner = owner
         self.type = nftType
         self.royalties = royalties
+        self.externalURL = externalURL
         self.collectionName = collectionName
         self.collectionDescription = collectionDescription
+        self.collectionExternalURL = collectionExternalURL
         self.collectionSquareImage = collectionSquareImage
         self.collectionBannerImage = collectionBannerImage
     }
@@ -58,6 +64,8 @@ pub fun main(address: Address, id: UInt64): NFT {
 
     let display = view as! MetadataViews.Display
 
+    let externalURL = nft.resolveView(Type<MetadataViews.ExternalURL>())! as! MetadataViews.ExternalURL
+
     let collectionDisplay = nft.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
     
     let owner: Address = nft.owner!.address!
@@ -70,8 +78,10 @@ pub fun main(address: Address, id: UInt64): NFT {
         owner: owner,
         nftType: nftType.identifier,
         royalties: royaltyView.getRoyalties(),
+        externalURL: externalURL.url,
         collectionName: collectionDisplay.name,
         collectionDescription: collectionDisplay.description,
+        collectionExternalURL: collectionDisplay.externalURL.url,
         collectionSquareImage: collectionDisplay.squareImage.file.uri(),
         collectionBannerImage: collectionDisplay.bannerImage.file.uri()
     )

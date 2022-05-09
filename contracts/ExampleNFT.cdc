@@ -43,7 +43,8 @@ pub contract ExampleNFT: NonFungibleToken {
             return [
                 Type<MetadataViews.Display>(),
                 Type<MetadataViews.Royalties>(),
-                Type<MetadataViews.NFTCollectionDisplay>()
+                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<MetadataViews.ExternalURL>()
             ]
         }
 
@@ -61,6 +62,8 @@ pub contract ExampleNFT: NonFungibleToken {
                     return MetadataViews.Royalties(
                         self.royalties
                     )
+                case Type<MetadataViews.ExternalURL>():
+                    return MetadataViews.ExternalURL("https://example-nft.onflow.org/".concat(self.id.toString()))
                 case Type<MetadataViews.NFTCollectionDisplay>():
                     let media = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(
@@ -71,6 +74,7 @@ pub contract ExampleNFT: NonFungibleToken {
                     return MetadataViews.NFTCollectionDisplay(
                         name: "The Example Collection",
                         description: "This collection is used as an example to help you develop your next Flow NFT.",
+                        externalURL: MetadataViews.ExternalURL("https://example-nft.onflow.org"),
                         squareImage: media,
                         bannerImage: media
                     )
