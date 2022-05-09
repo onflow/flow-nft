@@ -19,7 +19,7 @@ transaction(address: Address, publicPath: PublicPath, id: UInt64) {
         let nftCollectionView = resolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
 
         // Create a new empty collections
-        let emptyCollection <- nftCollectionView.createEmptyCollectionFunction()
+        let emptyCollection <- nftCollectionView.createEmptyCollection()
 
         // save it to the account
         signer.save(<-emptyCollection, to: nftCollectionView.storagePath)

@@ -274,7 +274,7 @@ pub contract MetadataViews {
 
         // Function that allows creation of an empty NFT collection that is intended to store
         // this NFT.
-        pub let createEmptyCollectionFunction: ((): @NonFungibleToken.Collection)
+        pub let createEmptyCollection: ((): @NonFungibleToken.Collection)
 
         init(
             storagePath: StoragePath,
@@ -295,7 +295,7 @@ pub contract MetadataViews {
             self.publicCollection=publicCollection
             self.publicLinkedType=publicLinkedType
             self.providerLinkedType = providerLinkedType
-            self.createEmptyCollectionFunction=createEmptyCollectionFunction
+            self.createEmptyCollection=createEmptyCollectionFunction
         }
     }
 }
