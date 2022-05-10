@@ -11,7 +11,8 @@ a different kind of metadata, such as a creator biography
 or a JPEG image file.
 */
 
-import FungibleToken from 0xee82856bf20e2aa6
+import FungibleToken from "./utility/FungibleToken.cdc"
+import NonFungibleToken from "./NonFungibleToken.cdc"
 
 pub contract MetadataViews {
 
@@ -239,7 +240,65 @@ pub contract MetadataViews {
         }
     }
 
-    // A view to expose the information needed to showcase this NFT collection
+    // A view to expose the information needed store and retrieve an NFT
+    //
+    // This can be used by applications to setup a NFT collection with proper storage and public capabilities.
+    pub struct NFTCollectionData {
+        // Path in storage where this NFT is recommended to be stored.
+        pub let storagePath: StoragePath
+
+        // Public path which must be linked to expose public capabilities of this NFT
+        // including standard NFT interfaces and metadataviews interfaces
+        pub let publicPath: PublicPath
+
+        // Private path which should be linked to expose the provider
+        // capability to withdraw NFTs from the collection holding NFTs
+        pub let providerPath: PrivatePath
+
+        // Public collection type that is expected to provide sufficient read-only access to standard
+        // functions (deposit + getIDs + borrowNFT)
+        // This field is for backwards compatibility with collections that have not used the standard
+        // NonFungibleToken.CollectionPublic interface when setting up collections. For new
+        // collections, this may be set to be equal to the type specified in `publicLinkedType`.
+        pub let publicCollection: Type
+
+        // Type that should be linked at the aforementioned public path. This is normally a
+        // restricted type with many interfaces. Notably the `NFT.CollectionPublic`,
+        // `NFT.Receiver`, and `MetadataViews.ResolverCollection` interfaces are required.
+        pub let publicLinkedType: Type
+
+        // Type that should be linked at the aforementioned private path. This is normally
+        // a restricted type with at a minimum the `NFT.Provider` interface
+        pub let providerLinkedType: Type
+
+        // Function that allows creation of an empty NFT collection that is intended to store
+        // this NFT.
+        pub let createEmptyCollection: ((): @NonFungibleToken.Collection)
+
+        init(
+            storagePath: StoragePath,
+            publicPath: PublicPath,
+            providerPath: PrivatePath,
+            publicCollection: Type,
+            publicLinkedType: Type,
+            providerLinkedType: Type,
+            createEmptyCollectionFunction: ((): @NonFungibleToken.Collection)
+        ) {
+            pre {
+                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>()): "Public type must include NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, and MetadataViews.ResolverCollection interfaces."
+                providerLinkedType.isSubtype(of: Type<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>()): "Provider type must include NonFungibleToken.Provider, NonFungibleToken.CollectionPublic, and MetadataViews.ResolverCollection interface."
+            }
+            self.storagePath=storagePath
+            self.publicPath=publicPath
+            self.providerPath = providerPath
+            self.publicCollection=publicCollection
+            self.publicLinkedType=publicLinkedType
+            self.providerLinkedType = providerLinkedType
+            self.createEmptyCollection=createEmptyCollectionFunction
+        }
+    }
+
+    // A view to expose the information needed to showcase this NFT's collection
     //
     // This can be used by applications to give an overview and graphics of the NFT collection
     // this NFT belongs to.

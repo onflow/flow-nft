@@ -1,6 +1,6 @@
 module github.com/onflow/flow-nft/lib/go/templates
 
-go 1.14
+go 1.16
 
 require (
 	github.com/kevinburke/go-bindata v3.22.0+incompatible

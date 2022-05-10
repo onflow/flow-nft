@@ -1,7 +1,7 @@
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 import ExampleNFT from "../contracts/ExampleNFT.cdc"
 import MetadataViews from "../contracts/MetadataViews.cdc"
-import FungibleToken from 0xee82856bf20e2aa6
+import FungibleToken from "./utility/FungibleToken.cdc"
 
 // This script uses the NFTMinter resource to mint a new NFT
 // It must be run with the account that has the minter resource
@@ -34,7 +34,10 @@ transaction(
         while royaltyBeneficiaries.length > count {
             let beneficiary = royaltyBeneficiaries[count]
             let beneficiaryCapability = getAccount(beneficiary)
-            .getCapability<&FungibleToken.Vault{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath())
+            .getCapability<&{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath())
+
+            // Make sure the royalty capability is valid before minting the NFT
+            if !beneficiaryCapability.check() { panic("Beneficiary capability is not valid!") }
 
             self.royalties.append(
                 MetadataViews.Royalty(

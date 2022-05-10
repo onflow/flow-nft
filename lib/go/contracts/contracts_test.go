@@ -30,6 +30,9 @@ func TestExampleNFTContract(t *testing.T) {
 }
 
 func TestMetadataViewsContract(t *testing.T) {
-	contract := contracts.MetadataViews()
+	addresses := test.AddressGenerator()
+	addressA := addresses.New()
+	addressB := addresses.New()
+	contract := contracts.MetadataViews(addressA, addressB)
 	assert.NotNil(t, contract)
 }
