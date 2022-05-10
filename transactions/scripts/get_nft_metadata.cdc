@@ -62,10 +62,6 @@ pub struct NFT {
     }
 }
 
-pub struct NFTCollection {
-    
-}
-
 pub fun main(address: Address, id: UInt64): NFT {
     let account = getAccount(address)
 
