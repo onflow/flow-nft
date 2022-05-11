@@ -117,6 +117,10 @@ func TestGetNFTMetadata(t *testing.T) {
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[9])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[10])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[11])
+
+		// Assert that the serial number is correct
+		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[12])
+
 	})
 }
 
