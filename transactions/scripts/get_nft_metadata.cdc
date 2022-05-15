@@ -1,6 +1,9 @@
 import ExampleNFT from "../../contracts/ExampleNFT.cdc"
 import MetadataViews from "../../contracts/MetadataViews.cdc"
 
+/// This script gets all the view-based metadata associated with the specified NFT
+/// and returns it as a single struct
+
 pub struct NFT {
     pub let name: String
     pub let description: String
@@ -14,6 +17,7 @@ pub struct NFT {
     pub let collectionPublic: String
     pub let collectionPublicLinkedType: String
     pub let collectionProviderLinkedType: String
+    pub let serialNumber: UInt64
 
     init(
         name: String,
@@ -27,7 +31,8 @@ pub struct NFT {
         collectionProviderPath: PrivatePath,
         collectionPublic: String,
         collectionPublicLinkedType: String,
-        collectionProviderLinkedType: String
+        collectionProviderLinkedType: String,
+        serialNumber: UInt64
     ) {
         self.name = name
         self.description = description
@@ -41,6 +46,7 @@ pub struct NFT {
         self.collectionPublic = collectionPublic
         self.collectionPublicLinkedType = collectionPublicLinkedType
         self.collectionProviderLinkedType = collectionProviderLinkedType
+        self.serialNumber = serialNumber
     }
 }
 
@@ -65,6 +71,8 @@ pub fun main(address: Address, id: UInt64): NFT {
     let display = view as! MetadataViews.Display
 
     let nftCollectionView = nft.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
+
+    let serialNumberView = nft.resolveView(Type<MetadataViews.Serial>())! as! MetadataViews.Serial
     
     let owner: Address = nft.owner!.address!
     let nftType = nft.getType()
@@ -81,6 +89,7 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionProviderPath: nftCollectionView.providerPath,
         collectionPublic: nftCollectionView.publicCollection.identifier,
         collectionPublicLinkedType: nftCollectionView.publicLinkedType.identifier,
-        collectionProviderLinkedType: nftCollectionView.providerLinkedType.identifier
+        collectionProviderLinkedType: nftCollectionView.providerLinkedType.identifier,
+        serialNumber: serialNumberView.number
     )
 }
