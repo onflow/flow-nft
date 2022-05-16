@@ -49,7 +49,6 @@ pub struct NFT {
         collectionBannerImage: String,
         collectionSocials: {String: String}
         attributes: MetadataViews.Attributes
-
     ) {
         self.name = name
         self.description = description
