@@ -141,6 +141,45 @@ func TestGetNFTMetadata(t *testing.T) {
 
 		// TODO: Verify `nftResult.Fields[19]` is equal to a {String: String} dictionary
 		// with key `twitter` and value `https://twitter.com/flow_blockchain`
+		// verify the returned Attributes
+		fmt.Printf("%+v", nftResult.Fields[12])
+
+	})
+
+	t.Run("Should be able to verify the metadata of the minted NFT through the Attributes View", func(t *testing.T) {
+
+		// Run a script to get the Display view for the specified NFT ID
+		script := templates.GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress)
+		result := executeScriptAndCheck(
+			t, b,
+			script,
+			[][]byte{
+				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
+				jsoncdc.MustEncode(cadence.NewUInt64(0)),
+			},
+		)
+
+		nftResult := result.(cadence.Struct)
+		attributes := nftResult.Fields[13].ToGoValue().([]interface{})[0].([]interface{})
+
+		const (
+			nameTraitType = "name"
+			nameValue     = "Example NFT 0"
+		)
+		nameAttribute := attributes[0].([]interface{})
+		assert.Nil(t, nameAttribute[0])
+		assert.Equal(t, nameTraitType, nameAttribute[1])
+		assert.Equal(t, nameValue, nameAttribute[2])
+
+		const (
+			descDisplayType = "String"
+			descTraitType   = "description"
+			descValue       = "This is an example NFT"
+		)
+		descAttribute := attributes[1].([]interface{})
+		assert.Equal(t, descDisplayType, descAttribute[0])
+		assert.Equal(t, descTraitType, descAttribute[1])
+		assert.Equal(t, descValue, descAttribute[2])
 	})
 }
 

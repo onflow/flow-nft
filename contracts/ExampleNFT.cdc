@@ -47,7 +47,17 @@ pub contract ExampleNFT: NonFungibleToken {
                 Type<MetadataViews.NFTCollectionData>(),
                 Type<MetadataViews.NFTCollectionDisplay>(),
                 Type<MetadataViews.Serial>()
+                Type<MetadataViews.Attributes>()
             ]
+        }
+
+        pub fun getAttributes(): [MetadataViews.Attribute] {
+            let attributes: [MetadataViews.Attribute] = []
+
+            attributes.append(MetadataViews.Attribute(displayType: nil, traitType: "name", value: self.name))
+            attributes.append(MetadataViews.Attribute(displayType: "String", traitType: "description", value: self.description))
+
+            return attributes
         }
 
         pub fun resolveView(_ view: Type): AnyStruct? {
@@ -99,6 +109,8 @@ pub contract ExampleNFT: NonFungibleToken {
                             "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
                         }
                     )
+                case Type<MetadataViews.Attributes>():
+                    return MetadataViews.Attributes(self.getAttributes())
             }
             return nil
         }

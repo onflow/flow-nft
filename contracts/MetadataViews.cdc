@@ -353,4 +353,36 @@ pub contract MetadataViews {
             self.socials = socials
         }
     }
+
+    /// Encapsulates a single attribute of an NFT.
+    ///
+    /// Used by the Attributes view
+    pub struct Attribute {
+        // How this attribute be shown. String, Date, Number, etc.
+        pub let displayType: String?
+
+        // The name of this attribute. Name, Description, Height, etc.
+        pub let traitType: String
+
+        // The value of this attribute
+        pub let value: AnyStruct
+
+        init(displayType: String?, traitType: String, value: AnyStruct) {
+            self.displayType = displayType
+            self.traitType = traitType
+            self.value = value
+        }
+    }
+
+    /// Collection of NFT attributes to give a complete picture of attributes an NFT wishes to expose
+    ///
+    /// This can be used by dapps with metadata-dependent features or for platforms which need to ingest the metadata
+    /// of an NFT without wanting to consume a specific view for each type they support
+    pub struct Attributes {
+        pub let attributes: [Attribute]
+
+        init(_ attributes: [Attribute]) {
+            self.attributes = attributes
+        }
+    }
 }
