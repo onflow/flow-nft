@@ -45,7 +45,8 @@ pub contract ExampleNFT: NonFungibleToken {
                 Type<MetadataViews.Royalties>(),
                 Type<MetadataViews.ExternalURL>(),
                 Type<MetadataViews.NFTCollectionData>(),
-                Type<MetadataViews.NFTCollectionDisplay>()
+                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<MetadataViews.Serial>()
             ]
         }
 
@@ -58,6 +59,10 @@ pub contract ExampleNFT: NonFungibleToken {
                         thumbnail: MetadataViews.HTTPFile(
                             url: self.thumbnail
                         )
+                    )
+                case Type<MetadataViews.Serial>():
+                    return MetadataViews.Serial(
+                        self.id
                     )
                 case Type<MetadataViews.Royalties>():
                     return MetadataViews.Royalties(

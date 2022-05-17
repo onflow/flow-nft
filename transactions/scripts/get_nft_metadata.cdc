@@ -1,6 +1,9 @@
 import ExampleNFT from "../../contracts/ExampleNFT.cdc"
 import MetadataViews from "../../contracts/MetadataViews.cdc"
 
+/// This script gets all the view-based metadata associated with the specified NFT
+/// and returns it as a single struct
+
 pub struct NFT {
     pub let name: String
     pub let description: String
@@ -9,6 +12,7 @@ pub struct NFT {
     pub let type: String
     pub let royalties: [MetadataViews.Royalty]
     pub let externalURL: String
+    pub let serialNumber: UInt64
     pub let collectionPublicPath: PublicPath
     pub let collectionStoragePath: StoragePath
     pub let collectionProviderPath: PrivatePath
@@ -30,6 +34,7 @@ pub struct NFT {
         nftType: String,
         royalties: [MetadataViews.Royalty],
         externalURL: String,
+        serialNumber: UInt64,
         collectionPublicPath: PublicPath,
         collectionStoragePath: StoragePath,
         collectionProviderPath: PrivatePath,
@@ -50,6 +55,7 @@ pub struct NFT {
         self.type = nftType
         self.royalties = royalties
         self.externalURL = externalURL
+        self.serialNumber = serialNumber
         self.collectionPublicPath = collectionPublicPath
         self.collectionStoragePath = collectionStoragePath
         self.collectionProviderPath = collectionProviderPath
@@ -88,6 +94,8 @@ pub fun main(address: Address, id: UInt64): NFT {
     let externalURL = nft.resolveView(Type<MetadataViews.ExternalURL>())! as! MetadataViews.ExternalURL
     let collectionDisplay = nft.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
     let nftCollectionView = nft.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
+
+    let serialNumberView = nft.resolveView(Type<MetadataViews.Serial>())! as! MetadataViews.Serial
     
     let owner: Address = nft.owner!.address!
     let nftType = nft.getType()
@@ -105,6 +113,7 @@ pub fun main(address: Address, id: UInt64): NFT {
         nftType: nftType.identifier,
         royalties: royaltyView.getRoyalties(),
         externalURL: externalURL.url,
+        serialNumber: serialNumberView.number,
         collectionPublicPath: nftCollectionView.publicPath,
         collectionStoragePath: nftCollectionView.storagePath,
         collectionProviderPath: nftCollectionView.providerPath,
