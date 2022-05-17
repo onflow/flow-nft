@@ -105,7 +105,6 @@ func TestGetNFTMetadata(t *testing.T) {
 		// Verify external URL view result is as expected
 		assert.Equal(t, cadence.String(externalURL), nftResult.Fields[6])
 
-
 		// Assert that the serial number is correct
 		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[7])
 
@@ -141,11 +140,6 @@ func TestGetNFTMetadata(t *testing.T) {
 
 		// TODO: Verify `nftResult.Fields[19]` is equal to a {String: String} dictionary
 		// with key `twitter` and value `https://twitter.com/flow_blockchain`
-		// verify the returned Attributes
-		fmt.Printf("%+v", nftResult.Fields[12])
-
-		// Assert that the serial number is correct
-		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[12])
 	})
 
 	t.Run("Should be able to verify the metadata of the minted NFT through the Attributes View", func(t *testing.T) {
@@ -162,7 +156,7 @@ func TestGetNFTMetadata(t *testing.T) {
 		)
 
 		nftResult := result.(cadence.Struct)
-		attributes := nftResult.Fields[13].ToGoValue().([]interface{})[0].([]interface{})
+		attributes := nftResult.Fields[20].ToGoValue().([]interface{})[0].([]interface{})
 
 		const (
 			nameTraitType = "name"

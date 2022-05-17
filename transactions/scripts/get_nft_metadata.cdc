@@ -47,7 +47,7 @@ pub struct NFT {
         collectionExternalURL: String,
         collectionSquareImage: String,
         collectionBannerImage: String,
-        collectionSocials: {String: String}
+        collectionSocials: {String: String},
         attributes: MetadataViews.Attributes
     ) {
         self.name = name
@@ -130,7 +130,7 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionExternalURL: collectionDisplay.externalURL.url,
         collectionSquareImage: collectionDisplay.squareImage.file.uri(),
         collectionBannerImage: collectionDisplay.bannerImage.file.uri(),
-        collectionSocials: collectionSocials
+        collectionSocials: collectionSocials,
         attributes: attributes
     )
 }
