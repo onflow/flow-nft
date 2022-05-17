@@ -20,6 +20,7 @@ pub struct NFT {
     pub let collectionExternalURL: String
     pub let collectionSquareImage: String
     pub let collectionBannerImage: String
+    pub let collectionSocials: {String: String}
 
     init(
         name: String,
@@ -39,7 +40,8 @@ pub struct NFT {
         collectionDescription: String,
         collectionExternalURL: String,
         collectionSquareImage: String,
-        collectionBannerImage: String
+        collectionBannerImage: String,
+        collectionSocials: {String: String} 
     ) {
         self.name = name
         self.description = description
@@ -59,6 +61,7 @@ pub struct NFT {
         self.collectionExternalURL = collectionExternalURL
         self.collectionSquareImage = collectionSquareImage
         self.collectionBannerImage = collectionBannerImage
+        self.collectionSocials = collectionSocials
     }
 }
 
@@ -89,6 +92,11 @@ pub fun main(address: Address, id: UInt64): NFT {
     let owner: Address = nft.owner!.address!
     let nftType = nft.getType()
 
+    let collectionSocials: {String: String} = {}
+    for key in collectionDisplay.socials.keys {
+        collectionSocials[key] = collectionDisplay.socials[key]!.url
+    }
+
     return NFT(
         name: display.name,
         description: display.description,
@@ -107,6 +115,7 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionDescription: collectionDisplay.description,
         collectionExternalURL: collectionDisplay.externalURL.url,
         collectionSquareImage: collectionDisplay.squareImage.file.uri(),
-        collectionBannerImage: collectionDisplay.bannerImage.file.uri()
+        collectionBannerImage: collectionDisplay.bannerImage.file.uri(),
+        collectionSocials: collectionSocials
     )
 }

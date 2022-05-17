@@ -318,12 +318,24 @@ pub contract MetadataViews {
         // Banner-sized image for this collection, recommended to have a size near 1200x630.
         pub let bannerImage: Media
 
-        init(name: String, description: String, externalURL: ExternalURL, squareImage: Media, bannerImage: Media) {
+        // Social links to reach this collection's social homepages.
+        // Possible keys may be "instagram", "twitter", "discord", etc.
+        pub let socials: {String: ExternalURL}
+
+        init(
+            name: String,
+            description: String,
+            externalURL: ExternalURL,
+            squareImage: Media,
+            bannerImage: Media,
+            socials: {String: ExternalURL}
+        ) {
             self.name = name
             self.description = description
             self.externalURL = externalURL
             self.squareImage = squareImage
             self.bannerImage = bannerImage
+            self.socials = socials
         }
     }
 }

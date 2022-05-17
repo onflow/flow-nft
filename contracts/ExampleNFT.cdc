@@ -89,7 +89,10 @@ pub contract ExampleNFT: NonFungibleToken {
                         description: "This collection is used as an example to help you develop your next Flow NFT.",
                         externalURL: MetadataViews.ExternalURL("https://example-nft.onflow.org"),
                         squareImage: media,
-                        bannerImage: media
+                        bannerImage: media,
+                        socials: {
+                            "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
+                        }
                     )
             }
             return nil

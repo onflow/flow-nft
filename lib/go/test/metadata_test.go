@@ -134,6 +134,9 @@ func TestGetNFTMetadata(t *testing.T) {
 		assert.Equal(t, cadence.String(collectionExternalURL), nftResult.Fields[15])
 		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[16])
 		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[17])
+
+		// TODO: Verify `nftResult.Fields[18]` is equal to a {String: String} dictionary
+		// with key `twitter` and value `https://twitter.com/flow_blockchain`
 	})
 }
 
