@@ -255,10 +255,9 @@ pub contract MetadataViews {
         }
     }
 
-
-    /// A view to expose the information needed store and retrieve an NFT
-    ///
-    /// This can be used by applications to setup a NFT collection with proper storage and public capabilities.
+    // A view to expose the information needed store and retrieve an NFT
+    //
+    // This can be used by applications to setup a NFT collection with proper storage and public capabilities.
     pub struct NFTCollectionData {
         /// Path in storage where this NFT is recommended to be stored.
         pub let storagePath: StoragePath
@@ -311,6 +310,47 @@ pub contract MetadataViews {
             self.publicLinkedType=publicLinkedType
             self.providerLinkedType = providerLinkedType
             self.createEmptyCollection=createEmptyCollectionFunction
+        }
+    }
+
+    // A view to expose the information needed to showcase this NFT's collection
+    //
+    // This can be used by applications to give an overview and graphics of the NFT collection
+    // this NFT belongs to.
+    pub struct NFTCollectionDisplay {
+        // Name that should be used when displaying this NFT collection.
+        pub let name: String
+
+        // Description that should be used to give an overview of this collection.
+        pub let description: String
+
+        // External link to a URL to view more information about this collection.
+        pub let externalURL: ExternalURL
+
+        // Square-sized image to represent this collection.
+        pub let squareImage: Media
+
+        // Banner-sized image for this collection, recommended to have a size near 1200x630.
+        pub let bannerImage: Media
+
+        // Social links to reach this collection's social homepages.
+        // Possible keys may be "instagram", "twitter", "discord", etc.
+        pub let socials: {String: ExternalURL}
+
+        init(
+            name: String,
+            description: String,
+            externalURL: ExternalURL,
+            squareImage: Media,
+            bannerImage: Media,
+            socials: {String: ExternalURL}
+        ) {
+            self.name = name
+            self.description = description
+            self.externalURL = externalURL
+            self.squareImage = squareImage
+            self.bannerImage = bannerImage
+            self.socials = socials
         }
     }
 }

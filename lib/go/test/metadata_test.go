@@ -81,6 +81,7 @@ func TestGetNFTMetadata(t *testing.T) {
 			name        = "Example NFT 0"
 			description = "This is an example NFT"
 			thumbnail   = "example.jpeg"
+			externalURL = "https://example-nft.onflow.org/0"
 		)
 
 		nftResult := result.(cadence.Struct)
@@ -101,7 +102,14 @@ func TestGetNFTMetadata(t *testing.T) {
 		// Unmarshal or Decode the JSON to the interface.
 		json.Unmarshal([]byte(royalties), &results)
 
-		// Verify NFTCollectionView results are as expected
+		// Verify external URL view result is as expected
+		assert.Equal(t, cadence.String(externalURL), nftResult.Fields[6])
+
+
+		// Assert that the serial number is correct
+		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[7])
+
+		// Verify NFTCollectionData results are as expected
 		const (
 			pathName                = "exampleNFTCollection"
 			collectionType          = "A.f3fcd2c1a78f5eee.ExampleNFT.Collection"
@@ -111,16 +119,28 @@ func TestGetNFTMetadata(t *testing.T) {
 			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
 			providerType            = "A.01cf0e2f2f715450.NonFungibleToken.Provider"
 		)
-		assert.Equal(t, cadence.Path{Domain: "public", Identifier: pathName}, nftResult.Fields[6])
-		assert.Equal(t, cadence.Path{Domain: "storage", Identifier: pathName}, nftResult.Fields[7])
-		assert.Equal(t, cadence.Path{Domain: "private", Identifier: pathName}, nftResult.Fields[8])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[9])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[10])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[11])
+		assert.Equal(t, cadence.Path{Domain: "public", Identifier: pathName}, nftResult.Fields[8])
+		assert.Equal(t, cadence.Path{Domain: "storage", Identifier: pathName}, nftResult.Fields[9])
+		assert.Equal(t, cadence.Path{Domain: "private", Identifier: pathName}, nftResult.Fields[10])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[11])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[12])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[13])
 
-		// Assert that the serial number is correct
-		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[12])
+		// Verify NFTCollectionDisplay results are as expected
+		const (
+			collectionName        = "The Example Collection"
+			collectionDescription = "This collection is used as an example to help you develop your next Flow NFT."
+			collectionImage       = "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
+			collectionExternalURL = "https://example-nft.onflow.org"
+		)
+		assert.Equal(t, cadence.String(collectionName), nftResult.Fields[14])
+		assert.Equal(t, cadence.String(collectionDescription), nftResult.Fields[15])
+		assert.Equal(t, cadence.String(collectionExternalURL), nftResult.Fields[16])
+		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[17])
+		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[18])
 
+		// TODO: Verify `nftResult.Fields[19]` is equal to a {String: String} dictionary
+		// with key `twitter` and value `https://twitter.com/flow_blockchain`
 	})
 }
 
