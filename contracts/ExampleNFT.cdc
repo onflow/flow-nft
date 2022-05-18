@@ -1,6 +1,13 @@
-// This is an example implementation of a Flow Non-Fungible Token
-// It is not part of the official standard but it assumed to be
-// very similar to how many NFTs would implement the core functionality.
+/* 
+*
+*  This is an example implementation of a Flow Non-Fungible Token
+*  It is not part of the official standard but it assumed to be
+*  similar to how many NFTs would implement the core functionality.
+*
+*  This contract does not implement any sophisticated classification
+*  system for its NFTs. It defines a simple NFT with minimal metadata.
+*   
+*/
 
 import NonFungibleToken from "./NonFungibleToken.cdc"
 import MetadataViews from "./MetadataViews.cdc"
@@ -43,7 +50,8 @@ pub contract ExampleNFT: NonFungibleToken {
             return [
                 Type<MetadataViews.Display>(),
                 Type<MetadataViews.Royalties>(),
-                Type<MetadataViews.NFTCollectionData>()
+                Type<MetadataViews.NFTCollectionData>(),
+                Type<MetadataViews.Edition>()
             ]
         }
 
@@ -56,6 +64,14 @@ pub contract ExampleNFT: NonFungibleToken {
                         thumbnail: MetadataViews.HTTPFile(
                             url: self.thumbnail
                         )
+                    )
+                case Type<MetadataViews.Edition>():
+                    // There is no max number of NFTs that can be minted from this contract
+                    // so the max edition field value is set to nil
+                    let editionInfo = MetadataViews.EditionInfo(name: "Example NFT Edition", number: self.id, max: nil)
+                    let editionList: [MetadataViews.EditionInfo] = [editionInfo]
+                    return MetadataViews.Edition(
+                        editionList
                     )
                 case Type<MetadataViews.Royalties>():
                     return MetadataViews.Royalties(

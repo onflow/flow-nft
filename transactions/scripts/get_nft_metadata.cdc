@@ -14,6 +14,7 @@ pub struct NFT {
     pub let collectionPublic: String
     pub let collectionPublicLinkedType: String
     pub let collectionProviderLinkedType: String
+    pub let edition: MetadataViews.EditionInfo
 
     init(
         name: String,
@@ -27,7 +28,8 @@ pub struct NFT {
         collectionProviderPath: PrivatePath,
         collectionPublic: String,
         collectionPublicLinkedType: String,
-        collectionProviderLinkedType: String
+        collectionProviderLinkedType: String,
+        edition: MetadataViews.EditionInfo
     ) {
         self.name = name
         self.description = description
@@ -41,6 +43,7 @@ pub struct NFT {
         self.collectionPublic = collectionPublic
         self.collectionPublicLinkedType = collectionPublicLinkedType
         self.collectionProviderLinkedType = collectionProviderLinkedType
+        self.edition = edition
     }
 }
 
@@ -65,6 +68,8 @@ pub fun main(address: Address, id: UInt64): NFT {
     let display = view as! MetadataViews.Display
 
     let nftCollectionView = nft.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
+
+    let nftEditionView = nft.resolveView(Type<MetadataViews.Edition>())! as! MetadataViews.Edition
     
     let owner: Address = nft.owner!.address!
     let nftType = nft.getType()
@@ -81,6 +86,7 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionProviderPath: nftCollectionView.providerPath,
         collectionPublic: nftCollectionView.publicCollection.identifier,
         collectionPublicLinkedType: nftCollectionView.publicLinkedType.identifier,
-        collectionProviderLinkedType: nftCollectionView.providerLinkedType.identifier
+        collectionProviderLinkedType: nftCollectionView.providerLinkedType.identifier,
+        edition: nftEditionView.infoList[0]
     )
 }
