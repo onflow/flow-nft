@@ -50,8 +50,11 @@ pub contract ExampleNFT: NonFungibleToken {
             return [
                 Type<MetadataViews.Display>(),
                 Type<MetadataViews.Royalties>(),
+                Type<MetadataViews.Edition>(),
+                Type<MetadataViews.ExternalURL>(),
                 Type<MetadataViews.NFTCollectionData>(),
-                Type<MetadataViews.Edition>()
+                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<MetadataViews.Serial>()
             ]
         }
 
@@ -73,10 +76,16 @@ pub contract ExampleNFT: NonFungibleToken {
                     return MetadataViews.Edition(
                         editionList
                     )
+                case Type<MetadataViews.Serial>():
+                    return MetadataViews.Serial(
+                        self.id
+                    )
                 case Type<MetadataViews.Royalties>():
                     return MetadataViews.Royalties(
                         self.royalties
                     )
+                case Type<MetadataViews.ExternalURL>():
+                    return MetadataViews.ExternalURL("https://example-nft.onflow.org/".concat(self.id.toString()))
                 case Type<MetadataViews.NFTCollectionData>():
                     return MetadataViews.NFTCollectionData(
                         storagePath: ExampleNFT.CollectionStoragePath,
@@ -88,6 +97,23 @@ pub contract ExampleNFT: NonFungibleToken {
                         createEmptyCollectionFunction: (fun (): @NonFungibleToken.Collection {
                             return <-ExampleNFT.createEmptyCollection()
                         })
+                    )
+                case Type<MetadataViews.NFTCollectionDisplay>():
+                    let media = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                            url: "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
+                        ),
+                        mediaType: "image/svg+xml"
+                    )
+                    return MetadataViews.NFTCollectionDisplay(
+                        name: "The Example Collection",
+                        description: "This collection is used as an example to help you develop your next Flow NFT.",
+                        externalURL: MetadataViews.ExternalURL("https://example-nft.onflow.org"),
+                        squareImage: media,
+                        bannerImage: media,
+                        socials: {
+                            "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
+                        }
                     )
             }
             return nil
