@@ -110,7 +110,7 @@ func TestTransferNFT(t *testing.T) {
 
 		// Setup Account creates an empty NFT collection, stores it in the authorizers account,
 		// and creates a public link
-		script := templates.GenerateSetupAccountScript(nftAddress, exampleNFTAddress)
+		script := templates.GenerateSetupAccountScript(nftAddress, exampleNFTAddress, metadataAddress)
 		tx := createTxWithTemplateAndAuthorizer(b, script, joshAddress)
 
 		signAndSubmit(

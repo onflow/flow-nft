@@ -9,20 +9,20 @@ import (
 )
 
 const (
-	filenameSetupAccount = "setup_account.cdc"
-	filenameMintNFT      = "mint_nft.cdc"
-	filenameTransferNFT  = "transfer_nft.cdc"
-	filenameDestroyNFT   = "destroy_nft.cdc"
-	filenameSetupRoyalty = "setup_account_to_receive_royalty.cdc"
+	filenameSetupAccount                 = "setup_account.cdc"
+	filenameMintNFT                      = "mint_nft.cdc"
+	filenameTransferNFT                  = "transfer_nft.cdc"
+	filenameDestroyNFT                   = "destroy_nft.cdc"
+	filenameSetupRoyalty                 = "setup_account_to_receive_royalty.cdc"
 	filenameSetupAccountFromNftReference = "setup_account_from_nft_reference.cdc"
 )
 
 // GenerateSetupAccountScript returns a script that instantiates a new
 // NFT collection instance, saves the collection in storage, then stores a
 // reference to the collection.
-func GenerateSetupAccountScript(nftAddress, exampleNFTAddress flow.Address) []byte {
+func GenerateSetupAccountScript(nftAddress, exampleNFTAddress, metadataViewsAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameSetupAccount)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress, flow.EmptyAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataViewsAddress, flow.EmptyAddress)
 }
 
 // GenerateMintNFTScript returns script that uses the admin resource

@@ -13,7 +13,8 @@ func TestGenerateSetupAccountScript(t *testing.T) {
 	addresses := test.AddressGenerator()
 	addressA := addresses.New()
 	addressB := addresses.New()
+	addressC := addresses.New()
 
-	template := templates.GenerateSetupAccountScript(addressA, addressB)
+	template := templates.GenerateSetupAccountScript(addressA, addressB, addressC)
 	assert.NotNil(t, template)
 }
