@@ -68,12 +68,12 @@ pub contract ExampleNFT: NonFungibleToken {
                             url: self.thumbnail
                         )
                     )
-                case Type<MetadataViews.Edition>():
+                case Type<MetadataViews.Editions>():
                     // There is no max number of NFTs that can be minted from this contract
                     // so the max edition field value is set to nil
-                    let editionInfo = MetadataViews.EditionInfo(name: "Example NFT Edition", number: self.id, max: nil)
-                    let editionList: [MetadataViews.EditionInfo] = [editionInfo]
-                    return MetadataViews.Edition(
+                    let editionInfo = MetadataViews.Edition(name: "Example NFT Edition", number: self.id, max: nil)
+                    let editionList: [MetadataViews.Edition] = [editionInfo]
+                    return MetadataViews.Editions(
                         editionList
                     )
                 case Type<MetadataViews.Serial>():

@@ -133,26 +133,26 @@ pub contract MetadataViews {
         }
     }
 
-    /// Edition is an optional view for collections that issues multiple objects
+    /// Editions is an optional view for collections that issues multiple objects
     /// with the same or similar metadata, for example an X of 100 set. This information is 
     /// useful for wallets and marketplaes.
     ///
     /// An NFT might be part of multiple editions, which is why the edition information
     /// is returned as an arbitrary sized array
     /// 
-    pub struct Edition {
+    pub struct Editions {
 
         /// An arbitrary-sized list for any number of editions
         /// that the NFT might be a part of
-        pub let infoList: [EditionInfo]
+        pub let infoList: [Edition]
 
-        init(_ infoList: [EditionInfo]) {
+        init(_ infoList: [Edition]) {
             self.infoList = infoList
         }
     }
 
     /// Edition information for a single edition
-    pub struct EditionInfo {
+    pub struct Edition {
 
         /// The name of the edition
         /// For example, this could be Set, Play, Series,
@@ -179,7 +179,7 @@ pub contract MetadataViews {
             self.max = max
         }
     }
-    
+
     /// A view representing a project-defined serial number for a specific NFT
     /// Projects have different definitions for what a serial number should be
     /// Some may use the NFTs regular ID and some may use a different classification system

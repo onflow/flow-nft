@@ -25,7 +25,7 @@ pub struct NFT {
     pub let collectionSquareImage: String
     pub let collectionBannerImage: String
     pub let collectionSocials: {String: String}
-    pub let edition: MetadataViews.EditionInfo
+    pub let edition: MetadataViews.Edition
 
     init(
         name: String,
@@ -48,7 +48,7 @@ pub struct NFT {
         collectionSquareImage: String,
         collectionBannerImage: String,
         collectionSocials: {String: String},
-        edition: MetadataViews.EditionInfo
+        edition: MetadataViews.Edition
     ) {
         self.name = name
         self.description = description
@@ -98,7 +98,8 @@ pub fun main(address: Address, id: UInt64): NFT {
     let collectionDisplay = nft.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
     let nftCollectionView = nft.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
 
-    let nftEditionView = nft.resolveView(Type<MetadataViews.Edition>())! as! MetadataViews.Edition
+    let nftEditionView = nft.resolveView(Type<MetadataViews.Editions>())! as! MetadataViews.Editions
+
     let serialNumberView = nft.resolveView(Type<MetadataViews.Serial>())! as! MetadataViews.Serial
     
     let owner: Address = nft.owner!.address!
