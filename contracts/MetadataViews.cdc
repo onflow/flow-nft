@@ -174,6 +174,9 @@ pub contract MetadataViews {
         pub let max: UInt64?
 
         init(name: String?, number: UInt64, max: UInt64?) {
+            if max != nil {
+                assert(number <= max!, message: "The number cannot be greater than the max number!")
+            }
             self.name = name
             self.number = number
             self.max = max
