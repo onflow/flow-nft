@@ -133,6 +133,56 @@ pub contract MetadataViews {
         }
     }
 
+    /// Editions is an optional view for collections that issues multiple objects
+    /// with the same or similar metadata, for example an X of 100 set. This information is 
+    /// useful for wallets and marketplaes.
+    ///
+    /// An NFT might be part of multiple editions, which is why the edition information
+    /// is returned as an arbitrary sized array
+    /// 
+    pub struct Editions {
+
+        /// An arbitrary-sized list for any number of editions
+        /// that the NFT might be a part of
+        pub let infoList: [Edition]
+
+        init(_ infoList: [Edition]) {
+            self.infoList = infoList
+        }
+    }
+
+    /// Edition information for a single edition
+    pub struct Edition {
+
+        /// The name of the edition
+        /// For example, this could be Set, Play, Series,
+        /// or any other way a project could classify its editions
+        pub let name: String?
+
+        /// The edition number of the object.
+        ///
+        /// For an "24 of 100 (#24/100)" item, the number is 24. 
+        ///
+        pub let number: UInt64
+
+        /// The max edition number of this type of objects.
+        /// 
+        /// This field should only be provided for limited-editioned objects.
+        /// For an "24 of 100 (#24/100)" item, max is 100.
+        /// For an item with unlimited edition, max should be set to nil.
+        /// 
+        pub let max: UInt64?
+
+        init(name: String?, number: UInt64, max: UInt64?) {
+            if max != nil {
+                assert(number <= max!, message: "The number cannot be greater than the max number!")
+            }
+            self.name = name
+            self.number = number
+            self.max = max
+        }
+    }
+
     /// A view representing a project-defined serial number for a specific NFT
     /// Projects have different definitions for what a serial number should be
     /// Some may use the NFTs regular ID and some may use a different classification system

@@ -105,7 +105,6 @@ func TestGetNFTMetadata(t *testing.T) {
 		// Verify external URL view result is as expected
 		assert.Equal(t, cadence.String(externalURL), nftResult.Fields[6])
 
-
 		// Assert that the serial number is correct
 		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[7])
 
@@ -141,6 +140,16 @@ func TestGetNFTMetadata(t *testing.T) {
 
 		// TODO: Verify `nftResult.Fields[19]` is equal to a {String: String} dictionary
 		// with key `twitter` and value `https://twitter.com/flow_blockchain`
+
+		// Verify Edition results are as expected
+		const (
+			editionName = "Example NFT Edition"
+			editionNum  = 0
+		)
+		expectedName, _ := cadence.NewString(editionName)
+		assert.Equal(t, cadence.NewOptional(expectedName), nftResult.Fields[20].(cadence.Struct).Fields[0])
+		assert.Equal(t, cadence.NewUInt64(editionNum), nftResult.Fields[20].(cadence.Struct).Fields[1])
+		assert.Equal(t, cadence.NewOptional(nil), nftResult.Fields[20].(cadence.Struct).Fields[2])
 	})
 }
 
