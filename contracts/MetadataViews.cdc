@@ -429,7 +429,7 @@ pub contract MetadataViews {
         /// leave it blank to signal that this is the main rarity for all the content of this NFT
         pub let name: String?
 
-        /// The score of the rarity if this is NFT represents its rarity as a score
+        /// The score of the rarity as a number 
         ///
         pub let score: UFix64?
 
