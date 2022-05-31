@@ -361,6 +361,5 @@ are under the [Unlicense](LICENSE).
 ### Testnet
 
 ```sh
-export TESTNET_PRIVATE_KEY=xxxx
-flow project deploy --update --network testnet
+TESTNET_PRIVATE_KEY=xxxx flow project deploy --update --network testnet
 ```
