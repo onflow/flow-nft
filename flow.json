@@ -1,39 +1,54 @@
 {
-    "contracts": {
-      "NonFungibleToken": {
-        "source": "./cadence/contracts/NonFungibleToken.cdc",
-        "aliases": {
-          "emulator": "0xf8d6e0586b0a20c7",
-          "testnet": "0x631e88ae7f1d7c20",
-          "mainnet": "0x1d7e57aa55817448"
-        }
-      },
-      "MetadataViews": {
-        "source": "./cadence/contracts/MetadataViews.cdc",
-        "aliases": {
-          "testnet": "0x631e88ae7f1d7c20",
-          "mainnet": "0x1d7e57aa55817448"
-        }
-      },
-      "FungibleToken": {
-        "source": "./cadence/contracts/FungibleToken.cdc",
-        "aliases": {
-          "emulator": "0xee82856bf20e2aa6",
-          "testnet": "0x9a0766d93b6608b7",
-          "mainnet": "0xf233dcee88fe0abe"
-        }
-      },
-      "FlowToken": {
-        "source": "./cadence/contracts/FlowToken.cdc",
-        "aliases": {
-          "emulator": "0x0ae53cb6e3f42a79",
-          "testnet": "0x7e60df042a9c0868",
-          "mainnet": "0x1654653399040a61"
-        }
+  "emulators": {
+    "default": {
+      "port": 3569,
+      "serviceAccount": "emulator-account"
+    }
+  },
+  "contracts": {
+    "MetadataViews": "./contracts/MetadataViews.cdc",
+    "NonFungibleToken": {
+      "source": "./contracts/NonFungibleToken.cdc",
+      "aliases": {
+        "emulator": "0xf8d6e0586b0a20c7",
+        "testnet": "0x631e88ae7f1d7c20",
+        "mainnet": "0x1d7e57aa55817448"
       }
     },
-    "networks": {
-      "testnet": "access.devnet.nodes.onflow.org:9000",
-      "mainnet": "access.mainnet.nodes.onflow.org:9000"
+    "FungibleToken": {
+      "source": "./contracts/utility/FungibleToken.cdc",
+      "aliases": {
+        "emulator": "0xee82856bf20e2aa6",
+        "testnet": "0x9a0766d93b6608b7",
+        "mainnet": "0xf233dcee88fe0abe"
+      }
+    }
+  },
+  "networks": {
+    "emulator": "127.0.0.1:3569",
+    "mainnet": "access.mainnet.nodes.onflow.org:9000",
+    "testnet": "access.devnet.nodes.onflow.org:9000"
+  },
+  "accounts": {
+    "emulator-account": {
+      "address": "0xf8d6e0586b0a20c7",
+      "key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
+    },
+    "testnet-account": {
+      "address": "0x631e88ae7f1d7c20",
+      "key": "${TESTNET_PRIVATE_KEY}"
+    }
+  },
+  "deployments": {
+    "testnet": {
+      "testnet-account": [
+        "MetadataViews"
+      ]
+    },
+    "mainnet": {
+      "mainnet-account": [
+        "MetadataViews"
+      ]
     }
   }
+}

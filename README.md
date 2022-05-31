@@ -355,3 +355,11 @@ The works in these files:
 - [NonFungibleToken.cdc](contracts/NonFungibleToken.cdc)
 
 are under the [Unlicense](LICENSE).
+
+## Deploying updates
+
+### Testnet
+
+```sh
+TESTNET_PRIVATE_KEY=xxxx flow project deploy --update --network testnet
+```
