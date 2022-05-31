@@ -425,7 +425,7 @@ pub contract MetadataViews {
 
         /// The name of the rarity
         /// For example, this could be Body,Head
-        /// or any other way a project could classify its editions
+        /// or any other way a project could classify its rarities
         /// leave it blank to signal that this is the main rarity for all the content of this NFT
         pub let name: String?
 
