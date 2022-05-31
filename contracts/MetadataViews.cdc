@@ -268,6 +268,18 @@ pub contract MetadataViews {
         return /public/GenericFTReceiver
     }
 
+    /// Medias is an optional view for collections that issue objects with multiple Media sources in it
+    ///
+    pub struct Medias {
+
+        /// An arbitrary-sized list for any number of Media items
+        pub let items: [Media]
+
+        init(_ items: [Media]) {
+            self.items = items
+        }
+    }
+
     /// A view to represent Media, a file with an correspoiding mediaType.
     pub struct Media {
         
