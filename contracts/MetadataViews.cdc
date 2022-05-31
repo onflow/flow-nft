@@ -403,4 +403,48 @@ pub contract MetadataViews {
             self.socials = socials
         }
     }
+
+    /// Rarities is an optional view for collections that have nfts with multiple items thas has rarities in them.
+    ///
+    /// An NFT might have a main rarity but some PFP projects often consist of multiple parts that each have their own rarity
+    pub struct Rarities {
+
+        /// An arbitrary-sized list for any number of rarities
+        /// that the NFT might contain
+        pub let infoList: [Rarity]
+
+        init(_ infoList: [Rarity]) {
+            self.infoList = infoList
+        }
+    }
+
+    /// Rarity information for a single rarity
+    //
+    /// Note that a rarity needs to have either score or description but it can has both
+    pub struct Rarity {
+
+        /// The name of the rarity
+        /// For example, this could be Body,Head
+        /// or any other way a project could classify its editions
+        /// leave it blank to signal that this is the main rarity for all the content of this NFT
+        pub let name: String?
+
+        /// The score of the rarity if this is NFT represents its rarity as a score
+        ///
+        pub let score: UFix64?
+
+        /// The description of the rarity as a string. 
+        ///
+        /// This could be Legendary, Epic, Rare,Uncommon, Common or any other string value
+        pub let description: String?
+
+        init(name: String?, score: UFix64?, description: String?) {
+            if score != nil && description==nil {
+                panic("A Rarity needs either score or description")
+            }
+            self.name = name
+            self.score = score
+            self.description=description
+        }
+    }
 }
