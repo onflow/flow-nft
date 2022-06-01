@@ -451,8 +451,8 @@ pub contract MetadataViews {
         pub let description: String?
 
         init(name: String?, score: UFix64?, description: String?) {
-            if score != nil && description==nil {
-                panic("A Rarity needs either score or description")
+            if score == nil && description ==nil {
+                panic("A Rarity needs to set score, description or both")
             }
             self.name = name
             self.score = score
