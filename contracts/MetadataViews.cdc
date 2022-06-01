@@ -456,7 +456,7 @@ pub contract MetadataViews {
             }
             self.name = name
             self.score = score
-            self.description=description
+            self.description = description
         }
     }
 }
