@@ -31,7 +31,7 @@ transaction(
 
         // borrow a reference to the NFTMinter resource in storage
         self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
-            ?? panic("Could not borrow a reference to the NFT minter")
+            ?? panic("Account does not store an object at the specified path")
 
         // Borrow the recipient's public NFT collection reference
         self.recipientCollectionRef = getAccount(recipient)

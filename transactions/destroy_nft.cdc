@@ -12,7 +12,7 @@ transaction(id: UInt64) {
 
         // borrow a reference to the owner's collection
         self.collectionRef = signer.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
-            ?? panic("Could not borrow a reference to the owner's collection")
+            ?? panic("Account does not store an object at the specified path")
 
     }
 

@@ -16,7 +16,7 @@ transaction(recipient: Address, withdrawID: UInt64) {
         // borrow a reference to the signer's NFT collection
         self.withdrawRef = signer
             .borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
-            ?? panic("Could not borrow a reference to the owner's collection")
+            ?? panic("Account does not store an object at the specified path")
 
         // get the recipients public account object
         let recipient = getAccount(recipient)
