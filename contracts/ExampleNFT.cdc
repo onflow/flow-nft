@@ -50,7 +50,7 @@ pub contract ExampleNFT: NonFungibleToken {
             return [
                 Type<MetadataViews.Display>(),
                 Type<MetadataViews.Royalties>(),
-                Type<MetadataViews.Edition>(),
+                Type<MetadataViews.Editions>(),
                 Type<MetadataViews.ExternalURL>(),
                 Type<MetadataViews.NFTCollectionData>(),
                 Type<MetadataViews.NFTCollectionDisplay>(),
