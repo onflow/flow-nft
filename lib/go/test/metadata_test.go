@@ -150,6 +150,22 @@ func TestGetNFTMetadata(t *testing.T) {
 		assert.Equal(t, cadence.NewOptional(expectedName), nftResult.Fields[20].(cadence.Struct).Fields[0])
 		assert.Equal(t, cadence.NewUInt64(editionNum), nftResult.Fields[20].(cadence.Struct).Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), nftResult.Fields[20].(cadence.Struct).Fields[2])
+
+		minterTraitType, _ := cadence.NewString("minter")
+		blockNumberTraitType, _ := cadence.NewString("mintedBlock")
+
+		traits := nftResult.Fields[21].(cadence.Array)
+		mintTrait := traits.Values[0].(cadence.Struct)
+		assert.Equal(t, minterTraitType, mintTrait.Fields[0])
+		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
+
+		blockNumberTrait := traits.Values[1].(cadence.Struct)
+		assert.Equal(t, blockNumberTraitType, blockNumberTrait.Fields[0])
+		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 	})
 }
 

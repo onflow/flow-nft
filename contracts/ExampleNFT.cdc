@@ -31,19 +31,22 @@ pub contract ExampleNFT: NonFungibleToken {
         pub let description: String
         pub let thumbnail: String
         access(self) let royalties: [MetadataViews.Royalty]
+        access(self) let metadata: {String: AnyStruct}
 
         init(
             id: UInt64,
             name: String,
             description: String,
             thumbnail: String,
-            royalties: [MetadataViews.Royalty]
+            royalties: [MetadataViews.Royalty],
+            metadata: {String: AnyStruct}
         ) {
             self.id = id
             self.name = name
             self.description = description
             self.thumbnail = thumbnail
             self.royalties = royalties
+            self.metadata = metadata
         }
     
         pub fun getViews(): [Type] {
@@ -54,7 +57,8 @@ pub contract ExampleNFT: NonFungibleToken {
                 Type<MetadataViews.ExternalURL>(),
                 Type<MetadataViews.NFTCollectionData>(),
                 Type<MetadataViews.NFTCollectionDisplay>(),
-                Type<MetadataViews.Serial>()
+                Type<MetadataViews.Serial>(),
+                Type<[MetadataViews.Trait]>()
             ]
         }
 
@@ -115,6 +119,9 @@ pub contract ExampleNFT: NonFungibleToken {
                             "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
                         }
                     )
+                case Type<[MetadataViews.Trait]>():
+                    return MetadataViews.dictToTraits(dict: self.metadata)
+
             }
             return nil
         }
@@ -217,13 +224,18 @@ pub contract ExampleNFT: NonFungibleToken {
             royalties: [MetadataViews.Royalty]
         ) {
 
+            let metadata: {String: AnyStruct} = {}
+            metadata["mintedBlock"] = getCurrentBlock().height
+            metadata["minter"] = recipient.owner!.address
+
             // create a new NFT
             var newNFT <- create NFT(
                 id: ExampleNFT.totalSupply,
                 name: name,
                 description: description,
                 thumbnail: thumbnail,
-                royalties: royalties
+                royalties: royalties,
+                metadata: metadata
             )
 
             // deposit it in the recipient's account using their reference

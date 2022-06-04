@@ -415,4 +415,55 @@ pub contract MetadataViews {
             self.socials = socials
         }
     }
+
+    // An NFT can add MetadataViews.Rarity as a top-level view to define the total rarity.
+    pub struct Rarity {
+        pub let score: UFix64?
+        pub let description: String?
+
+        init(score: UFix64?, description: String?) {
+            self.score = score
+            self.description = description
+        }
+    }
+
+    // A view to represent a single field of metadata on an NFT.
+    //
+    // This is used to get traits of individual key/value pairs along with some contextualized data about the trait
+    pub struct Trait {
+        // The name of the trait. Like Background, Eyes, Hair, etc.
+        pub let traitType: String
+
+        // The underlying value of the trait, the rest of the fields of a trait provide context to the value.
+        pub let value: AnyStruct
+
+        // displayType is used to show some context about what this traitType and value represent
+        // for instance, you could set value to a unix timestamp, and specify displayType as "Date" to tell
+        // platforms to consume this trait as a date and not a number
+        pub let displayType: String?
+
+        // Rarity can also be used directly on an attribute.
+        //
+        // This is optional because not all attributes need to contribute to the NFT's rarity.
+        pub let rarity: Rarity?
+
+        init(traitType: String, value: AnyStruct, rarity: Rarity?, displayType: String?) {
+            self.displayType = displayType
+            self.traitType = traitType
+            self.value = value
+            self.rarity = rarity
+        }
+    }
+
+    // helper function to easily convert a dictionary to traits. For NFT collections that do not need either of the
+    // optional values of a Trait, this method should suffice to give them an array of valid traits
+    pub fun dictToTraits(dict: {String: AnyStruct}): [Trait] {
+        let traits: [Trait] = []
+        for k in dict.keys {
+            let trait = Trait(traitType: k, value: dict[k]!, rarity: nil, displayType: nil)
+            traits.append(trait)
+        }
+
+        return traits
+    }
 }
