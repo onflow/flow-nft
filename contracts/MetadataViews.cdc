@@ -416,17 +416,6 @@ pub contract MetadataViews {
         }
     }
 
-    // An NFT can add MetadataViews.Rarity as a top-level view to define the total rarity.
-    pub struct Rarity {
-        pub let score: UFix64?
-        pub let description: String?
-
-        init(score: UFix64?, description: String?) {
-            self.score = score
-            self.description = description
-        }
-    }
-
     // A view to represent a single field of metadata on an NFT.
     //
     // This is used to get traits of individual key/value pairs along with some contextualized data about the trait
@@ -465,5 +454,28 @@ pub contract MetadataViews {
         }
 
         return traits
+    }
+
+    /// Rarity information for a single rarity
+    //
+    /// Note that a rarity needs to have either score or description but it can has both
+    pub struct Rarity {
+        /// The score of the rarity as a number 
+        ///
+        pub let score: UFix64?
+
+        /// The description of the rarity as a string. 
+        ///
+        /// This could be Legendary, Epic, Rare, Uncommon, Common or any other string value
+        pub let description: String?
+
+        init(name: String?, score: UFix64?, description: String?) {
+            if score == nil && description == nil {
+                panic("A Rarity needs to set score, description or both")
+            }
+
+            self.score = score
+            self.description = description
+        }
     }
 }
