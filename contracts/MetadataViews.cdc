@@ -458,7 +458,7 @@ pub contract MetadataViews {
 
     /// Rarity information for a single rarity
     //
-    /// Note that a rarity needs to have either score or description but it can has both
+    /// Note that a rarity needs to have either score or description but it can have both
     pub struct Rarity {
         /// The score of the rarity as a number 
         ///
