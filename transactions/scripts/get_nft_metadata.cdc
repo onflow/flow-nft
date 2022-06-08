@@ -26,7 +26,7 @@ pub struct NFT {
     pub let collectionBannerImage: String
     pub let collectionSocials: {String: String}
     pub let edition: MetadataViews.Edition
-    pub let traits: [MetadataViews.Trait]
+    pub let traits: MetadataViews.Traits
 
     init(
         name: String,
@@ -50,7 +50,7 @@ pub struct NFT {
         collectionBannerImage: String,
         collectionSocials: {String: String},
         edition: MetadataViews.Edition,
-        traits: [MetadataViews.Trait]
+        traits: MetadataViews.Traits
     ) {
         self.name = name
         self.description = description
@@ -113,7 +113,7 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionSocials[key] = collectionDisplay.socials[key]!.url
     }
 
-    let traits = nft.resolveView(Type<[MetadataViews.Trait]>())! as! [MetadataViews.Trait]
+    let traits = nft.resolveView(Type<MetadataViews.Traits>())! as! MetadataViews.Traits
 
     return NFT(
         name: display.name,

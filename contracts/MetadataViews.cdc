@@ -436,40 +436,69 @@ pub contract MetadataViews {
         // This is optional because not all attributes need to contribute to the NFT's rarity.
         pub let rarity: Rarity?
 
-        init(traitType: String, value: AnyStruct, rarity: Rarity?, displayType: String?) {
-            self.displayType = displayType
+        init(traitType: String, value: AnyStruct, displayType: String?, rarity: Rarity?) {
             self.traitType = traitType
             self.value = value
+            self.displayType = displayType
             self.rarity = rarity
+        }
+    }
+
+    // A view to return all the traits on an NFT.
+    //
+    // This is used to get traits of individual key/value pairs along with some contextualized data about the trait
+    pub struct Traits {
+        pub let traits: [Trait]
+
+        init(_ traits: [Trait]) {
+            self.traits = traits
+        }
+
+        pub fun addTrait(_ t: Trait) {
+            self.traits.append(t)
         }
     }
 
     // helper function to easily convert a dictionary to traits. For NFT collections that do not need either of the
     // optional values of a Trait, this method should suffice to give them an array of valid traits
-    pub fun dictToTraits(dict: {String: AnyStruct}): [Trait] {
+    pub fun dictToTraits(dict: {String: AnyStruct}, excludedTraitTypes: [String]?): Traits {
+        // Collection owners might not want all the fields in their metadata included.
+        // They might want to handle some specially, or they might just not want them included at all.
+        let excludedTraits: {String: Bool} = {}
+        if excludedTraitTypes != nil {
+            for k in excludedTraitTypes! {
+                excludedTraits[k] = true
+            }
+        }
+
         let traits: [Trait] = []
         for k in dict.keys {
-            let trait = Trait(traitType: k, value: dict[k]!, rarity: nil, displayType: nil)
+            // this key is part of our excluded traits set, skip it
+            if excludedTraits[k] != nil {
+                continue
+            }
+
+            let trait = Trait(traitType: k, value: dict[k]!, displayType: nil, rarity: nil)
             traits.append(trait)
         }
 
-        return traits
+        return Traits(traits)
     }
 
     /// Rarity information for a single rarity
     //
     /// Note that a rarity needs to have either score or description but it can have both
     pub struct Rarity {
-        /// The score of the rarity as a number 
+        /// The score of the rarity as a number
         ///
         pub let score: UFix64?
 
-        /// The description of the rarity as a string. 
+        /// The description of the rarity as a string.
         ///
         /// This could be Legendary, Epic, Rare, Uncommon, Common or any other string value
         pub let description: String?
 
-        init(name: String?, score: UFix64?, description: String?) {
+        init(score: UFix64?, description: String?) {
             if score == nil && description == nil {
                 panic("A Rarity needs to set score, description or both")
             }
