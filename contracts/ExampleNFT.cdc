@@ -30,7 +30,6 @@ pub contract ExampleNFT: NonFungibleToken {
         pub let name: String
         pub let description: String
         pub let thumbnail: String
-        pub let rarity: MetadataViews.Rarity?
         access(self) let royalties: [MetadataViews.Royalty]
         access(self) let metadata: {String: AnyStruct}
     
@@ -41,7 +40,6 @@ pub contract ExampleNFT: NonFungibleToken {
             thumbnail: String,
             royalties: [MetadataViews.Royalty],
             metadata: {String: AnyStruct},
-            rarity: MetadataViews.Rarity?
         ) {
             self.id = id
             self.name = name
@@ -49,7 +47,6 @@ pub contract ExampleNFT: NonFungibleToken {
             self.thumbnail = thumbnail
             self.royalties = royalties
             self.metadata = metadata
-            self.rarity = rarity
         }
     
         pub fun getViews(): [Type] {
@@ -248,8 +245,6 @@ pub contract ExampleNFT: NonFungibleToken {
             // this piece of metadata will be used to show embedding rarity into a trait
             metadata["foo"] = "bar"
 
-            let rarity = MetadataViews.Rarity(score: nil, description: "Common")
-
             // create a new NFT
             var newNFT <- create NFT(
                 id: ExampleNFT.totalSupply,
@@ -258,7 +253,6 @@ pub contract ExampleNFT: NonFungibleToken {
                 thumbnail: thumbnail,
                 royalties: royalties,
                 metadata: metadata,
-                rarity: rarity
             )
 
             // deposit it in the recipient's account using their reference
