@@ -464,20 +464,14 @@ pub contract MetadataViews {
     pub fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
         // Collection owners might not want all the fields in their metadata included.
         // They might want to handle some specially, or they might just not want them included at all.
-        let excludedTraits: {String: Bool} = {}
         if excludedNames != nil {
             for k in excludedNames! {
-                excludedTraits[k] = true
+                dict.remove(key: k)
             }
         }
 
         let traits: [Trait] = []
         for k in dict.keys {
-            // this key is part of our excluded traits set, skip it
-            if excludedTraits[k] != nil {
-                continue
-            }
-
             let trait = Trait(name: k, value: dict[k]!, displayType: nil, rarity: nil)
             traits.append(trait)
         }
@@ -493,17 +487,22 @@ pub contract MetadataViews {
         ///
         pub let score: UFix64?
 
+        /// The maximum value of score
+        ///
+        pub let max: UFix64?
+
         /// The description of the rarity as a string.
         ///
         /// This could be Legendary, Epic, Rare, Uncommon, Common or any other string value
         pub let description: String?
 
-        init(score: UFix64?, description: String?) {
+        init(score: UFix64?, max: UFix64?, description: String?) {
             if score == nil && description == nil {
                 panic("A Rarity needs to set score, description or both")
             }
 
             self.score = score
+            self.max = max
             self.description = description
         }
     }

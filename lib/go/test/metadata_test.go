@@ -186,7 +186,10 @@ func TestGetNFTMetadata(t *testing.T) {
 		fooRarityScore := fooRarity.Fields[0].(cadence.Optional).Value
 		score, _ := cadence.NewUFix64("10.0")
 		assert.Equal(t, fooRarityScore, score)
-		assert.Equal(t, fooRarity.Fields[1], cadence.NewOptional(rarityDescription))
+		fooRarityMax := fooRarity.Fields[1].(cadence.Optional).Value
+		max, _ := cadence.NewUFix64("100.0")
+		assert.Equal(t, max, fooRarityMax)
+		assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
 	})
 }
 

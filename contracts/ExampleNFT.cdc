@@ -129,7 +129,7 @@ pub contract ExampleNFT: NonFungibleToken {
                     traitsView.addTrait(mintedTimeTrait)
 
                     // foo is a trait with its own rarity
-                    let fooTraitRarity = MetadataViews.Rarity(score: 10.0, description: "Common")
+                    let fooTraitRarity = MetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
                     let fooTrait = MetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
                     traitsView.addTrait(fooTrait)
                     
