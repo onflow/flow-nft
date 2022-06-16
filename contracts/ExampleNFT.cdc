@@ -122,15 +122,15 @@ pub contract ExampleNFT: NonFungibleToken {
                 case Type<MetadataViews.Traits>():
                     // exclude mintedTime and foo to show other uses of Traits
                     let excludedTraits = ["mintedTime", "foo"]
-                    let traitsView = MetadataViews.dictToTraits(dict: self.metadata, excludedTraitTypes: excludedTraits)
+                    let traitsView = MetadataViews.dictToTraits(dict: self.metadata, excludedNames: excludedTraits)
 
                     // mintedTime is a unix timestamp, we should mark it with a displayType so platforms know how to show it.
-                    let mintedTimeTrait = MetadataViews.Trait(traitType: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
+                    let mintedTimeTrait = MetadataViews.Trait(name: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
                     traitsView.addTrait(mintedTimeTrait)
 
                     // foo is a trait with its own rarity
                     let fooTraitRarity = MetadataViews.Rarity(score: 10.0, description: "Common")
-                    let fooTrait = MetadataViews.Trait(traitType: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
+                    let fooTrait = MetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
                     traitsView.addTrait(fooTrait)
                     
                     return traitsView

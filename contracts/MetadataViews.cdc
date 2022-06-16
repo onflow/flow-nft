@@ -421,12 +421,12 @@ pub contract MetadataViews {
     // This is used to get traits of individual key/value pairs along with some contextualized data about the trait
     pub struct Trait {
         // The name of the trait. Like Background, Eyes, Hair, etc.
-        pub let traitType: String
+        pub let name: String
 
         // The underlying value of the trait, the rest of the fields of a trait provide context to the value.
         pub let value: AnyStruct
 
-        // displayType is used to show some context about what this traitType and value represent
+        // displayType is used to show some context about what this name and value represent
         // for instance, you could set value to a unix timestamp, and specify displayType as "Date" to tell
         // platforms to consume this trait as a date and not a number
         pub let displayType: String?
@@ -436,8 +436,8 @@ pub contract MetadataViews {
         // This is optional because not all attributes need to contribute to the NFT's rarity.
         pub let rarity: Rarity?
 
-        init(traitType: String, value: AnyStruct, displayType: String?, rarity: Rarity?) {
-            self.traitType = traitType
+        init(name: String, value: AnyStruct, displayType: String?, rarity: Rarity?) {
+            self.name = name
             self.value = value
             self.displayType = displayType
             self.rarity = rarity
@@ -461,12 +461,12 @@ pub contract MetadataViews {
 
     // helper function to easily convert a dictionary to traits. For NFT collections that do not need either of the
     // optional values of a Trait, this method should suffice to give them an array of valid traits
-    pub fun dictToTraits(dict: {String: AnyStruct}, excludedTraitTypes: [String]?): Traits {
+    pub fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
         // Collection owners might not want all the fields in their metadata included.
         // They might want to handle some specially, or they might just not want them included at all.
         let excludedTraits: {String: Bool} = {}
-        if excludedTraitTypes != nil {
-            for k in excludedTraitTypes! {
+        if excludedNames != nil {
+            for k in excludedNames! {
                 excludedTraits[k] = true
             }
         }
@@ -478,7 +478,7 @@ pub contract MetadataViews {
                 continue
             }
 
-            let trait = Trait(traitType: k, value: dict[k]!, displayType: nil, rarity: nil)
+            let trait = Trait(name: k, value: dict[k]!, displayType: nil, rarity: nil)
             traits.append(trait)
         }
 
