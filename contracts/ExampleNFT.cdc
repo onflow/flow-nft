@@ -31,19 +31,22 @@ pub contract ExampleNFT: NonFungibleToken {
         pub let description: String
         pub let thumbnail: String
         access(self) let royalties: [MetadataViews.Royalty]
-
+        access(self) let metadata: {String: AnyStruct}
+    
         init(
             id: UInt64,
             name: String,
             description: String,
             thumbnail: String,
-            royalties: [MetadataViews.Royalty]
+            royalties: [MetadataViews.Royalty],
+            metadata: {String: AnyStruct},
         ) {
             self.id = id
             self.name = name
             self.description = description
             self.thumbnail = thumbnail
             self.royalties = royalties
+            self.metadata = metadata
         }
     
         pub fun getViews(): [Type] {
@@ -54,7 +57,8 @@ pub contract ExampleNFT: NonFungibleToken {
                 Type<MetadataViews.ExternalURL>(),
                 Type<MetadataViews.NFTCollectionData>(),
                 Type<MetadataViews.NFTCollectionDisplay>(),
-                Type<MetadataViews.Serial>()
+                Type<MetadataViews.Serial>(),
+                Type<MetadataViews.Traits>()
             ]
         }
 
@@ -115,6 +119,22 @@ pub contract ExampleNFT: NonFungibleToken {
                             "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
                         }
                     )
+                case Type<MetadataViews.Traits>():
+                    // exclude mintedTime and foo to show other uses of Traits
+                    let excludedTraits = ["mintedTime", "foo"]
+                    let traitsView = MetadataViews.dictToTraits(dict: self.metadata, excludedNames: excludedTraits)
+
+                    // mintedTime is a unix timestamp, we should mark it with a displayType so platforms know how to show it.
+                    let mintedTimeTrait = MetadataViews.Trait(name: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
+                    traitsView.addTrait(mintedTimeTrait)
+
+                    // foo is a trait with its own rarity
+                    let fooTraitRarity = MetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
+                    let fooTrait = MetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
+                    traitsView.addTrait(fooTrait)
+                    
+                    return traitsView
+
             }
             return nil
         }
@@ -216,6 +236,14 @@ pub contract ExampleNFT: NonFungibleToken {
             thumbnail: String,
             royalties: [MetadataViews.Royalty]
         ) {
+            let metadata: {String: AnyStruct} = {}
+            let currentBlock = getCurrentBlock()
+            metadata["mintedBlock"] = currentBlock.height
+            metadata["mintedTime"] = currentBlock.timestamp
+            metadata["minter"] = recipient.owner!.address
+
+            // this piece of metadata will be used to show embedding rarity into a trait
+            metadata["foo"] = "bar"
 
             // create a new NFT
             var newNFT <- create NFT(
@@ -223,7 +251,8 @@ pub contract ExampleNFT: NonFungibleToken {
                 name: name,
                 description: description,
                 thumbnail: thumbnail,
-                royalties: royalties
+                royalties: royalties,
+                metadata: metadata,
             )
 
             // deposit it in the recipient's account using their reference

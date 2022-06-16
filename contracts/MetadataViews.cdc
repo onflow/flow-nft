@@ -415,4 +415,95 @@ pub contract MetadataViews {
             self.socials = socials
         }
     }
+
+    // A view to represent a single field of metadata on an NFT.
+    //
+    // This is used to get traits of individual key/value pairs along with some contextualized data about the trait
+    pub struct Trait {
+        // The name of the trait. Like Background, Eyes, Hair, etc.
+        pub let name: String
+
+        // The underlying value of the trait, the rest of the fields of a trait provide context to the value.
+        pub let value: AnyStruct
+
+        // displayType is used to show some context about what this name and value represent
+        // for instance, you could set value to a unix timestamp, and specify displayType as "Date" to tell
+        // platforms to consume this trait as a date and not a number
+        pub let displayType: String?
+
+        // Rarity can also be used directly on an attribute.
+        //
+        // This is optional because not all attributes need to contribute to the NFT's rarity.
+        pub let rarity: Rarity?
+
+        init(name: String, value: AnyStruct, displayType: String?, rarity: Rarity?) {
+            self.name = name
+            self.value = value
+            self.displayType = displayType
+            self.rarity = rarity
+        }
+    }
+
+    // A view to return all the traits on an NFT.
+    //
+    // This is used to return traits as individual key/value pairs along with some contextualized data about each trait.
+    pub struct Traits {
+        pub let traits: [Trait]
+
+        init(_ traits: [Trait]) {
+            self.traits = traits
+        }
+
+        pub fun addTrait(_ t: Trait) {
+            self.traits.append(t)
+        }
+    }
+
+    // A helper function to easily convert a dictionary to traits. For NFT collections that do not need either of the
+    // optional values of a Trait, this method should suffice to give them an array of valid traits.
+    pub fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
+        // Collection owners might not want all the fields in their metadata included.
+        // They might want to handle some specially, or they might just not want them included at all.
+        if excludedNames != nil {
+            for k in excludedNames! {
+                dict.remove(key: k)
+            }
+        }
+
+        let traits: [Trait] = []
+        for k in dict.keys {
+            let trait = Trait(name: k, value: dict[k]!, displayType: nil, rarity: nil)
+            traits.append(trait)
+        }
+
+        return Traits(traits)
+    }
+
+    /// Rarity information for a single rarity
+    //
+    /// Note that a rarity needs to have either score or description but it can have both
+    pub struct Rarity {
+        /// The score of the rarity as a number
+        ///
+        pub let score: UFix64?
+
+        /// The maximum value of score
+        ///
+        pub let max: UFix64?
+
+        /// The description of the rarity as a string.
+        ///
+        /// This could be Legendary, Epic, Rare, Uncommon, Common or any other string value
+        pub let description: String?
+
+        init(score: UFix64?, max: UFix64?, description: String?) {
+            if score == nil && description == nil {
+                panic("A Rarity needs to set score, description or both")
+            }
+
+            self.score = score
+            self.max = max
+            self.description = description
+        }
+    }
 }

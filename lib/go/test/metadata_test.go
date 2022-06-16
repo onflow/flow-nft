@@ -150,6 +150,46 @@ func TestGetNFTMetadata(t *testing.T) {
 		assert.Equal(t, cadence.NewOptional(expectedName), nftResult.Fields[20].(cadence.Struct).Fields[0])
 		assert.Equal(t, cadence.NewUInt64(editionNum), nftResult.Fields[20].(cadence.Struct).Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), nftResult.Fields[20].(cadence.Struct).Fields[2])
+
+		minterName, _ := cadence.NewString("minter")
+
+		traitsView := nftResult.Fields[21].(cadence.Struct)
+		traits := traitsView.Fields[0].(cadence.Array)
+
+		mintTrait := traits.Values[0].(cadence.Struct)
+		assert.Equal(t, minterName, mintTrait.Fields[0])
+		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
+
+		blockNumberName, _ := cadence.NewString("mintedBlock")
+		blockNumberTrait := traits.Values[1].(cadence.Struct)
+		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
+		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
+
+		mintedTimeName, _ := cadence.NewString("mintedTime")
+		mintedTimeDisplayType, _ := cadence.NewString("Date")
+		mintedTimeTrait := traits.Values[2].(cadence.Struct)
+		assert.Equal(t, mintedTimeName, mintedTimeTrait.Fields[0])
+		assert.Equal(t, cadence.NewOptional(mintedTimeDisplayType), mintedTimeTrait.Fields[2])
+
+		fooName, _ := cadence.NewString("foo")
+		fooValue, _ := cadence.NewString("bar")
+		fooTrait := traits.Values[3].(cadence.Struct)
+		fooRarityOptional := fooTrait.Fields[3].(cadence.Optional)
+		fooRarity := fooRarityOptional.Value.(cadence.Struct)
+		rarityDescription, _ := cadence.NewString("Common")
+		assert.Equal(t, fooName, fooTrait.Fields[0])
+		assert.Equal(t, cadence.NewOptional(fooValue), fooTrait.Fields[1])
+		fooRarityScore := fooRarity.Fields[0].(cadence.Optional).Value
+		score, _ := cadence.NewUFix64("10.0")
+		assert.Equal(t, fooRarityScore, score)
+		fooRarityMax := fooRarity.Fields[1].(cadence.Optional).Value
+		max, _ := cadence.NewUFix64("100.0")
+		assert.Equal(t, max, fooRarityMax)
+		assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
 	})
 }
 
