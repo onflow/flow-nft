@@ -446,7 +446,7 @@ pub contract MetadataViews {
 
     // A view to return all the traits on an NFT.
     //
-    // This is used to get traits of individual key/value pairs along with some contextualized data about the trait
+    // This is used to return traits as individual key/value pairs along with some contextualized data about each trait.
     pub struct Traits {
         pub let traits: [Trait]
 
@@ -459,8 +459,8 @@ pub contract MetadataViews {
         }
     }
 
-    // helper function to easily convert a dictionary to traits. For NFT collections that do not need either of the
-    // optional values of a Trait, this method should suffice to give them an array of valid traits
+    // A helper function to easily convert a dictionary to traits. For NFT collections that do not need either of the
+    // optional values of a Trait, this method should suffice to give them an array of valid traits.
     pub fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
         // Collection owners might not want all the fields in their metadata included.
         // They might want to handle some specially, or they might just not want them included at all.
