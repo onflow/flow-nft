@@ -27,6 +27,8 @@ pub struct NFT {
     pub let collectionSocials: {String: String}
     pub let edition: MetadataViews.Edition
     pub let traits: MetadataViews.Traits
+		pub let medias: MetadataViews.Medias?
+		pub let license: MetadataViews.License?
 
     init(
         name: String,
@@ -50,7 +52,9 @@ pub struct NFT {
         collectionBannerImage: String,
         collectionSocials: {String: String},
         edition: MetadataViews.Edition,
-        traits: MetadataViews.Traits
+        traits: MetadataViews.Traits,
+				medias:MetadataViews.Medias?,
+				license:MetadataViews.License?
     ) {
         self.name = name
         self.description = description
@@ -74,6 +78,8 @@ pub struct NFT {
         self.collectionSocials = collectionSocials
         self.edition = edition
         self.traits = traits
+				self.medias=medias
+				self.license=license
     }
 }
 
@@ -88,22 +94,18 @@ pub fun main(address: Address, id: UInt64): NFT {
     let nft = collection.borrowExampleNFT(id: id)!
 
     // Get the basic display information for this NFT
-    let view = nft.resolveView(Type<MetadataViews.Display>())!
+    let display = MetadataViews.getDisplay(nft)!
 
     // Get the royalty information for the given NFT
-    let expectedRoyaltyView = nft.resolveView(Type<MetadataViews.Royalties>())!
+    let royaltyView = MetadataViews.getRoyalties(nft)!
 
-    let royaltyView = expectedRoyaltyView as! MetadataViews.Royalties
+    let externalURL = MetadataViews.getExternalURL(nft)!
 
-    let display = view as! MetadataViews.Display
+    let collectionDisplay = MetadataViews.getNFTCollectionDisplay(nft)!
+    let nftCollectionView = MetadataViews.getNFTCollectionData(nft)!
 
-    let externalURL = nft.resolveView(Type<MetadataViews.ExternalURL>())! as! MetadataViews.ExternalURL
-    let collectionDisplay = nft.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
-    let nftCollectionView = nft.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
-
-    let nftEditionView = nft.resolveView(Type<MetadataViews.Editions>())! as! MetadataViews.Editions
-
-    let serialNumberView = nft.resolveView(Type<MetadataViews.Serial>())! as! MetadataViews.Serial
+    let nftEditionView = MetadataViews.getEditions(nft)!
+    let serialNumberView = MetadataViews.getSerial(nft)!
     
     let owner: Address = nft.owner!.address!
     let nftType = nft.getType()
@@ -113,7 +115,10 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionSocials[key] = collectionDisplay.socials[key]!.url
     }
 
-    let traits = nft.resolveView(Type<MetadataViews.Traits>())! as! MetadataViews.Traits
+		let traits = MetadataViews.getTraits(nft)!
+
+		let medias=MetadataViews.getMedias(nft)
+		let license=MetadataViews.getLicense(nft)
 
     return NFT(
         name: display.name,
@@ -137,6 +142,8 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionBannerImage: collectionDisplay.bannerImage.file.uri(),
         collectionSocials: collectionSocials,
         edition: nftEditionView.infoList[0],
-        traits: traits
+        traits: traits,
+				medias:medias,
+				license:license
     )
 }

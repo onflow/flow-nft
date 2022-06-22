@@ -70,6 +70,16 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get Display in a typesafe way
+    pub fun getDisplay(_ viewResolver: &{Resolver}) : Display? {
+        if let view = viewResolver.resolveView(Type<Display>()) {
+            if let v = view as? Display {
+                return v
+            }
+        }
+        return nil
+    }
+
     /// File is a generic interface that represents a file stored on or off chain.
     ///
     /// Files can be used to references images, videos and other media.
@@ -151,6 +161,16 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get Editions in a typesafe way
+    pub fun getEditions(_ viewResolver: &{Resolver}) : Editions? {
+        if let view = viewResolver.resolveView(Type<Editions>()) {
+            if let v = view as? Editions {
+                return v
+            }
+        }
+        return nil
+    }
+
     /// Edition information for a single edition
     pub struct Edition {
 
@@ -183,6 +203,7 @@ pub contract MetadataViews {
         }
     }
 
+
     /// A view representing a project-defined serial number for a specific NFT
     /// Projects have different definitions for what a serial number should be
     /// Some may use the NFTs regular ID and some may use a different classification system
@@ -194,6 +215,16 @@ pub contract MetadataViews {
         init(_ number: UInt64) {
             self.number = number
         }
+    }
+
+    /// A helper to get Serial in a typesafe way
+    pub fun getSerial(_ viewResolver: &{Resolver}) : Serial? {
+        if let view = viewResolver.resolveView(Type<Serial>()) {
+            if let v = view as? Serial {
+                return v
+            }
+        }
+        return nil
     }
 
     /*
@@ -225,6 +256,16 @@ pub contract MetadataViews {
         pub fun getRoyalties(): [Royalty] {
             return self.cutInfos
         }
+    }
+
+    /// A helper to get Royalties in a typesafe way
+    pub fun getRoyalties(_ viewResolver: &{Resolver}) : Royalties? {
+        if let view = viewResolver.resolveView(Type<Royalties>()) {
+            if let v = view as? Royalties {
+                return v
+            }
+        }
+        return nil
     }
 
     /// Struct to store details of a single royalty cut for a given NFT
@@ -280,9 +321,19 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get Medias in a typesafe way
+    pub fun getMedias(_ viewResolver: &{Resolver}) : Medias? {
+        if let view = viewResolver.resolveView(Type<Medias>()) {
+            if let v = view as? Medias {
+                return v
+            }
+        }
+        return nil
+    }
+
     /// A view to represent Media, a file with an correspoiding mediaType.
     pub struct Media {
-        
+
         /// File for the media
         pub let file: AnyStruct{File}
 
@@ -306,6 +357,17 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get License in a typesafe way
+    pub fun getLicense(_ viewResolver: &{Resolver}) : License? {
+        if let view = viewResolver.resolveView(Type<License>()) {
+            if let v = view as? License {
+                return v
+            }
+        }
+        return nil
+    }
+
+
     /// A view to expose a URL to this item on an external site.
     ///
     /// This can be used by applications like .find and Blocto to direct users to the original link for an NFT.
@@ -315,6 +377,16 @@ pub contract MetadataViews {
         init(_ url: String) {
             self.url=url
         }
+    }
+
+    /// A helper to get ExternalURL in a typesafe way
+    pub fun getExternalURL(_ viewResolver: &{Resolver}) : ExternalURL? {
+        if let view = viewResolver.resolveView(Type<ExternalURL>()) {
+            if let v = view as? ExternalURL {
+                return v
+            }
+        }
+        return nil
     }
 
     // A view to expose the information needed store and retrieve an NFT
@@ -375,6 +447,16 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get NFTCollectionData in a way that will return an typed Optional
+    pub fun getNFTCollectionData(_ viewResolver: &{Resolver}) : NFTCollectionData? {
+        if let view = viewResolver.resolveView(Type<NFTCollectionData>()) {
+            if let v = view as? NFTCollectionData {
+                return v
+            }
+        }
+        return nil
+    }
+
     // A view to expose the information needed to showcase this NFT's collection
     //
     // This can be used by applications to give an overview and graphics of the NFT collection
@@ -414,6 +496,16 @@ pub contract MetadataViews {
             self.bannerImage = bannerImage
             self.socials = socials
         }
+    }
+
+    /// A helper to get NFTCollectionDisplay in a way that will return an typed Optional
+    pub fun getNFTCollectionDisplay(_ viewResolver: &{Resolver}) : NFTCollectionDisplay? {
+        if let view = viewResolver.resolveView(Type<NFTCollectionDisplay>()) {
+            if let v = view as? NFTCollectionDisplay {
+                return v
+            }
+        }
+        return nil
     }
 
     // A view to represent a single field of metadata on an NFT.
@@ -457,6 +549,16 @@ pub contract MetadataViews {
         pub fun addTrait(_ t: Trait) {
             self.traits.append(t)
         }
+    }
+
+    /// A helper to get Traits view in a typesafe way
+    pub fun getTraits(_ viewResolver: &{Resolver}) : Traits? {
+        if let view = viewResolver.resolveView(Type<Traits>()) {
+            if let v = view as? Traits {
+                return v
+            }
+        }
+        return nil
     }
 
     // A helper function to easily convert a dictionary to traits. For NFT collections that do not need either of the
@@ -506,4 +608,15 @@ pub contract MetadataViews {
             self.description = description
         }
     }
+
+    /// A helper to get Rarity view in a typesafe way
+    pub fun getRarity(_ viewResolver: &{Resolver}) : Rarity? {
+        if let view = viewResolver.resolveView(Type<Rarity>()) {
+            if let v = view as? Rarity {
+                return v
+            }
+        }
+        return nil
+    }
+
 }
