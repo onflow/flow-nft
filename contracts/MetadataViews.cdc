@@ -70,7 +70,7 @@ pub contract MetadataViews {
         }
     }
 
-    ///a helper to get Display in a typesafe way
+    /// A helper to get Display in a typesafe way
     pub fun getDisplay(_ viewResolver: &{Resolver}) : Display? {
         if let view = viewResolver.resolveView(Type<Display>()) {
             if let v = view as? Display {
