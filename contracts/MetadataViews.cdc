@@ -161,7 +161,7 @@ pub contract MetadataViews {
         }
     }
 
-    ///a helper to get Editions in a typesafe way
+    /// A helper to get Editions in a typesafe way
     pub fun getEditions(_ viewResolver: &{Resolver}) : Editions? {
         if let view = viewResolver.resolveView(Type<Editions>()) {
             if let v = view as? Editions {
@@ -217,7 +217,7 @@ pub contract MetadataViews {
         }
     }
 
-    ///a helper to get Serial in a typesafe way
+    /// A helper to get Serial in a typesafe way
     pub fun getSerial(_ viewResolver: &{Resolver}) : Serial? {
         if let view = viewResolver.resolveView(Type<Serial>()) {
             if let v = view as? Serial {
@@ -258,7 +258,7 @@ pub contract MetadataViews {
         }
     }
 
-    ///a helper to get Royalties in a typesafe way
+    /// A helper to get Royalties in a typesafe way
     pub fun getRoyalties(_ viewResolver: &{Resolver}) : Royalties? {
         if let view = viewResolver.resolveView(Type<Royalties>()) {
             if let v = view as? Royalties {
@@ -321,7 +321,7 @@ pub contract MetadataViews {
         }
     }
 
-    ///a helper to get Medias in a typesafe way
+    /// A helper to get Medias in a typesafe way
     pub fun getMedias(_ viewResolver: &{Resolver}) : Medias? {
         if let view = viewResolver.resolveView(Type<Medias>()) {
             if let v = view as? Medias {
@@ -357,7 +357,7 @@ pub contract MetadataViews {
         }
     }
 
-    ///a helper to get License in a typesafe way
+    /// A helper to get License in a typesafe way
     pub fun getLicense(_ viewResolver: &{Resolver}) : License? {
         if let view = viewResolver.resolveView(Type<License>()) {
             if let v = view as? License {
@@ -379,7 +379,7 @@ pub contract MetadataViews {
         }
     }
 
-    ///a helper to get ExternalURL in a typesafe way
+    /// A helper to get ExternalURL in a typesafe way
     pub fun getExternalURL(_ viewResolver: &{Resolver}) : ExternalURL? {
         if let view = viewResolver.resolveView(Type<ExternalURL>()) {
             if let v = view as? ExternalURL {
@@ -447,7 +447,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// a helper to get NFTCollectionData in a way that will return an typed Optional
+    /// A helper to get NFTCollectionData in a way that will return an typed Optional
     pub fun getNFTCollectionData(_ viewResolver: &{Resolver}) : NFTCollectionData? {
         if let view = viewResolver.resolveView(Type<NFTCollectionData>()) {
             if let v = view as? NFTCollectionData {
@@ -498,7 +498,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// a helper to get NFTCollectionDisplay in a way that will return an typed Optional
+    /// A helper to get NFTCollectionDisplay in a way that will return an typed Optional
     pub fun getNFTCollectionDisplay(_ viewResolver: &{Resolver}) : NFTCollectionDisplay? {
         if let view = viewResolver.resolveView(Type<NFTCollectionDisplay>()) {
             if let v = view as? NFTCollectionDisplay {
@@ -551,7 +551,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// helper to get Traits view in a typesafe way
+    /// A helper to get Traits view in a typesafe way
     pub fun getTraits(_ viewResolver: &{Resolver}) : Traits? {
         if let view = viewResolver.resolveView(Type<Traits>()) {
             if let v = view as? Traits {
@@ -609,7 +609,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// helper to get Rarity view in a typesafe way
+    /// A helper to get Rarity view in a typesafe way
     pub fun getRarity(_ viewResolver: &{Resolver}) : Rarity? {
         if let view = viewResolver.resolveView(Type<Rarity>()) {
             if let v = view as? Rarity {
