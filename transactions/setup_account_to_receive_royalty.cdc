@@ -9,8 +9,8 @@
 /// The path used for the public link is a new path that in the future, is expected to receive
 /// and generic token, which could be forwarded to the appropriate vault
 
-import FungibleToken from "../../contracts/FungibleToken.cdc"
-import MetadataViews from "../../contracts/MetadataViews.cdc"
+import FungibleToken from "../contracts/utility/FungibleToken.cdc"
+import MetadataViews from "../contracts/MetadataViews.cdc"
 
 transaction(vaultPath: StoragePath) {
 
@@ -21,6 +21,11 @@ transaction(vaultPath: StoragePath) {
             panic("A vault for the specified fungible token path does not exist")
         }
 
+
+				if signer.getCapability<&{FungibleToken.Receiver, FungibleToken.Balance}>(MetadataViews.getRoyaltyReceiverPublicPath()).check() {
+					return
+				}
+					
         // Create a public capability to the Vault that only exposes
         // the deposit function through the Receiver interface
         let capability = signer.link<&{FungibleToken.Receiver, FungibleToken.Balance}>(

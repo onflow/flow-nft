@@ -3,13 +3,8 @@ module github.com/onflow/flow-nft/lib/go/demo
 go 1.18
 
 require (
-	github.com/bjartek/overflow v0.0.0-20220626215123-7f3b729e5c5e
-	github.com/onflow/cadence v0.24.3
-	github.com/onflow/flow-emulator v0.33.2
-	github.com/onflow/flow-go-sdk v0.26.2
-	github.com/onflow/flow-nft/lib/go/contracts v0.0.0-20220606143647-47126d1009e2
-	github.com/onflow/flow-nft/lib/go/templates v0.0.0-20220623175731-d04550762974
-	github.com/stretchr/testify v1.7.1
+	github.com/bjartek/overflow v0.0.0-20220626220303-1e2d82f944a8
+	github.com/sanity-io/litter v1.5.5
 )
 
 require (
@@ -76,11 +71,14 @@ require (
 	github.com/multiformats/go-multihash v0.1.0 // indirect
 	github.com/multiformats/go-varint v0.0.6 // indirect
 	github.com/onflow/atree v0.3.1-0.20220531231935-525fbc26f40a // indirect
+	github.com/onflow/cadence v0.24.3 // indirect
 	github.com/onflow/flow-cli v0.36.1 // indirect
 	github.com/onflow/flow-core-contracts/lib/go/contracts v0.11.2-0.20220513155751-c4c1f8d59f83 // indirect
 	github.com/onflow/flow-core-contracts/lib/go/templates v0.11.2-0.20220513155751-c4c1f8d59f83 // indirect
+	github.com/onflow/flow-emulator v0.33.2 // indirect
 	github.com/onflow/flow-ft/lib/go/contracts v0.5.0 // indirect
 	github.com/onflow/flow-go v0.26.3 // indirect
+	github.com/onflow/flow-go-sdk v0.26.2 // indirect
 	github.com/onflow/flow-go/crypto v0.24.3 // indirect
 	github.com/onflow/flow/protobuf/go/flow v0.3.1 // indirect
 	github.com/onflow/sdks v0.4.4 // indirect
@@ -101,6 +99,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.10.1 // indirect
+	github.com/stretchr/testify v1.7.1 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/thoas/go-funk v0.9.2 // indirect
 	github.com/turbolent/prettier v0.0.0-20210613180524-3a3f5a5b49ba // indirect
