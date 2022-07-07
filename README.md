@@ -178,12 +178,15 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 ### List of common views
 
-| Name        | Purpose                                    | Status      | Source                                                                                                    |
-| ----------- | ------------------------------------------ | ----------- | --------------------------------------------------------------------------------------------------------- |
-| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)   |
-| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)   |
-| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133)  |
+| Name       | Purpose                                    | Status      | Source                                                                                                   |
+| ----------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
+| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)  |
+| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)  |
+| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133) |
 | `Royalties` | An array of Royalty Cuts for a given NFT.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208) |
+| `Edition`  | Return information about one or more editions for an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L246-L266) |
+| `NFTCollectionData` | Provides storage and retrieval information of an NFT | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L243-L299) |
+| `NFTCollectionDisplay` | Returns the basic representation of an NFT's Collection.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L301-L328) |
 
 ## Royalty View
 
@@ -236,18 +239,7 @@ since the token type isn't accepted by the royalty beneficiary.
 You can see example implementations of royalties in the `ExampleNFT` contract
 and the associated transactions and scripts.
 
-=======
-| Name       | Purpose                                    | Status      | Source                                                                                                   |
-| ----------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
-| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)  |
-| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)  |
-| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133) |
-| `Royalties` | An array of Royalty Cuts for a given NFT.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208) |
-| `Edition`  | Return information about one or more editions for an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L246-L266) |
-| `NFTCollectionData` | Provides storage and retrieval information of an NFT | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L243-L299) |
-| `NFTCollectionDisplay` | Returns the basic representation of an NFT's Collection.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L301-L328) |
-
-#### Important Royalty Instructions for Royalty Receivers
+#### Important instructions for royalty receivers
 
 If you plan to set your account as a receiver of royalties, you'll likely want to be able to accept
 as many token types as possible. This won't be immediately possible at first, but eventually,
@@ -255,7 +247,7 @@ we will also design a contract that can act as a sort of switchboard for fungibl
 It will accept any generic fungible token and route it to the correct vault in your account. 
 This hasn't been built yet, but you can still set up your account to be ready for it in the future.
 Therefore, if you want to receive royalties, you should set up your account with the
-[`setup_account_to_receive_royalty.cdc` transaction](https://github.com/onflow/flow-nft/blob/c13545c37be4d1e63605c5d76340fb188923d997/transactions/setup_account_to_receive_royalty.cdc).
+[`setup_account_to_receive_royalty.cdc` transaction](https://github.com/onflow/flow-nft/blob/master/transactions/setup_account_to_receive_royalty.cdc).
 
 This will link generic public path from `MetadataViews.getRoyaltyReceiverPublicPath()`
 to your chosen fungible token for now. Then, use that public path for your royalty receiver
