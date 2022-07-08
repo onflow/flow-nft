@@ -33,6 +33,39 @@ pub contract MetadataViews {
         pub fun getIDs(): [UInt64]
     }
 
+    /// NFTView is a group of views used to give a complete picture of an NFT
+    ///
+    pub struct NFTView {
+        pub let id: UInt64
+        pub let uuid: UInt64
+        pub let display: Display?
+        pub let externalURL: ExternalURL?
+        pub let collectionData: NFTCollectionData?
+        pub let collectionDisplay: NFTCollectionDisplay?
+        pub let royalties: Royalties?
+        pub let traits: Traits?
+
+        init(
+            id : UInt64,
+            uuid : UInt64,
+            display : Display?,
+            externalURL : ExternalURL?,
+            collectionData : NFTCollectionData?,
+            collectionDisplay : NFTCollectionDisplay?,
+            royalties : Royalties?,
+            traits: Traits?
+        ) {
+            self.id = id
+            self.uuid = uuid
+            self.display = display
+            self.externalURL = externalURL
+            self.collectionData = collectionData
+            self.collectionDisplay = collectionDisplay
+            self.royalties = royalties
+            self.traits = traits
+        }
+    }
+
     /// Display is a basic view that includes the name, description and
     /// thumbnail for an object. Most objects should implement this view.
     ///
@@ -617,6 +650,19 @@ pub contract MetadataViews {
             }
         }
         return nil
+    }
+
+    pub fun getNFTView(id: UInt64, viewResolver: &{Resolver}) : NFTView {
+        return NFTView(
+            id : id,
+            uuid: viewResolver.uuid,
+            display: self.getDisplay(viewResolver),
+            externalURL : self.getExternalURL(viewResolver),
+            collectionData : self.getNFTCollectionData(viewResolver),
+            collectionDisplay : self.getNFTCollectionDisplay(viewResolver),
+            royalties : self.getRoyalties(viewResolver),
+            traits : self.getTraits(viewResolver)
+        )
     }
 
 }

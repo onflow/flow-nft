@@ -63,7 +63,7 @@ func TestGetNFTMetadata(t *testing.T) {
 		exampleNFTAccountKey,
 		exampleNFTSigner)
 
-	t.Run("Should be able to verify the metadata of the minted NFT through the Display View", func(t *testing.T) {
+	t.Run("Should be able to verify the metadata of the minted NFT", func(t *testing.T) {
 
 		// Run a script to get the Display view for the specified NFT ID
 		script := templates.GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress)
@@ -190,6 +190,133 @@ func TestGetNFTMetadata(t *testing.T) {
 		max, _ := cadence.NewUFix64("100.0")
 		assert.Equal(t, max, fooRarityMax)
 		assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
+	})
+}
+
+func TestGetNFTView(t *testing.T) {
+	b, accountKeys := newTestSetup(t)
+
+	// Create new keys for the NFT contract account
+	// and deploy all the NFT contracts
+	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
+	nftAddress, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+
+	// Mint a single NFT with standard royalty cuts and metadata
+	mintExampleNFT(t, b,
+		accountKeys,
+		nftAddress, metadataAddress, exampleNFTAddress,
+		exampleNFTAccountKey,
+		exampleNFTSigner)
+
+	t.Run("Should be able to verify the nft metadata view of the minted NFT", func(t *testing.T) {
+
+		// Run a script to get the Display view for the specified NFT ID
+		script := templates.GenerateGetNFTViewScript(nftAddress, exampleNFTAddress, metadataAddress)
+		result := executeScriptAndCheck(
+			t, b,
+			script,
+			[][]byte{
+				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
+				jsoncdc.MustEncode(cadence.NewUInt64(0)),
+			},
+		)
+
+		// Expected metadata
+		const (
+			name        = "Example NFT 0"
+			description = "This is an example NFT"
+			thumbnail   = "example.jpeg"
+			externalURL = "https://example-nft.onflow.org/0"
+		)
+
+		nftResult := result.(cadence.Struct)
+
+		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[0])
+		assert.Equal(t, cadence.String(name), nftResult.Fields[2])
+		assert.Equal(t, cadence.String(name), nftResult.Fields[2])
+		assert.Equal(t, cadence.String(description), nftResult.Fields[3])
+		assert.Equal(t, cadence.String(thumbnail), nftResult.Fields[4])
+
+		royalties := toJson(t, nftResult.Fields[5])
+		// Declared an empty interface of type Array
+		var results map[string]interface{}
+
+		// Unmarshal or Decode the JSON to the interface.
+		json.Unmarshal([]byte(royalties), &results)
+
+		// Verify external URL view result is as expected
+		assert.Equal(t, cadence.String(externalURL), nftResult.Fields[6])
+
+		// Verify NFTCollectionData results are as expected
+		const (
+			pathName                = "exampleNFTCollection"
+			collectionType          = "A.f3fcd2c1a78f5eee.ExampleNFT.Collection"
+			collectionPublicType    = "A.f3fcd2c1a78f5eee.ExampleNFT.ExampleNFTCollectionPublic"
+			nftCollectionPublicType = "A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic"
+			nftReceiverType         = "A.01cf0e2f2f715450.NonFungibleToken.Receiver"
+			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
+			providerType            = "A.01cf0e2f2f715450.NonFungibleToken.Provider"
+		)
+		assert.Equal(t, cadence.Path{Domain: "public", Identifier: pathName}, nftResult.Fields[7])
+		assert.Equal(t, cadence.Path{Domain: "storage", Identifier: pathName}, nftResult.Fields[8])
+		assert.Equal(t, cadence.Path{Domain: "private", Identifier: pathName}, nftResult.Fields[9])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[10])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[11])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[12])
+
+		// Verify NFTCollectionDisplay results are as expected
+		const (
+			collectionName        = "The Example Collection"
+			collectionDescription = "This collection is used as an example to help you develop your next Flow NFT."
+			collectionImage       = "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
+			collectionExternalURL = "https://example-nft.onflow.org"
+		)
+		assert.Equal(t, cadence.String(collectionName), nftResult.Fields[13])
+		assert.Equal(t, cadence.String(collectionDescription), nftResult.Fields[14])
+		assert.Equal(t, cadence.String(collectionExternalURL), nftResult.Fields[15])
+		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[16])
+		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[17])
+
+		minterName, _ := cadence.NewString("minter")
+
+		traitsView := nftResult.Fields[19].(cadence.Struct)
+		traits := traitsView.Fields[0].(cadence.Array)
+
+		mintTrait := traits.Values[0].(cadence.Struct)
+		assert.Equal(t, minterName, mintTrait.Fields[0])
+		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
+
+		blockNumberName, _ := cadence.NewString("mintedBlock")
+		blockNumberTrait := traits.Values[1].(cadence.Struct)
+		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
+		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
+
+		mintedTimeName, _ := cadence.NewString("mintedTime")
+		mintedTimeDisplayType, _ := cadence.NewString("Date")
+		mintedTimeTrait := traits.Values[2].(cadence.Struct)
+		assert.Equal(t, mintedTimeName, mintedTimeTrait.Fields[0])
+		assert.Equal(t, cadence.NewOptional(mintedTimeDisplayType), mintedTimeTrait.Fields[2])
+
+		fooName, _ := cadence.NewString("foo")
+		fooValue, _ := cadence.NewString("bar")
+		fooTrait := traits.Values[3].(cadence.Struct)
+		fooRarityOptional := fooTrait.Fields[3].(cadence.Optional)
+		fooRarity := fooRarityOptional.Value.(cadence.Struct)
+		rarityDescription, _ := cadence.NewString("Common")
+		assert.Equal(t, fooName, fooTrait.Fields[0])
+		assert.Equal(t, cadence.NewOptional(fooValue), fooTrait.Fields[1])
+		fooRarityScore := fooRarity.Fields[0].(cadence.Optional).Value
+		score, _ := cadence.NewUFix64("10.0")
+		assert.Equal(t, fooRarityScore, score)
+		fooRarityMax := fooRarity.Fields[1].(cadence.Optional).Value
+		max, _ := cadence.NewUFix64("100.0")
+		assert.Equal(t, max, fooRarityMax)
+		assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
+
 	})
 }
 
