@@ -1,4 +1,4 @@
-package test
+package main
 
 import (
 	"testing"
@@ -8,10 +8,7 @@ import (
 )
 
 func TestNFT(t *testing.T) {
-	o, err := OverflowTesting(
-		WithBasePath("../../.."),
-		WithScriptFolderName("transactions/scripts"),
-	)
+	o, err := OverflowTesting()
 	assert.NoError(t, err)
 
 	setupAccount := o.TxFileNameFN("setup_account")

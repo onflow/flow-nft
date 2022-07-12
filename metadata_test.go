@@ -1,4 +1,4 @@
-package test
+package main
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 
 func TestSetupRoyaltyReceiver(t *testing.T) {
 
-	o, err := OverflowTesting(WithBasePath("../../.."), WithScriptFolderName("transactions/scripts"))
+	o, err := OverflowTesting()
 	assert.NoError(t, err)
 
 	setupRoyalty := o.TxFileNameFN("setup_account_to_receive_royalty")
@@ -25,7 +25,7 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 }
 
 func TestGetNFTMetadata(t *testing.T) {
-	o, err := OverflowTesting(WithBasePath("../../.."), WithScriptFolderName("transactions/scripts"))
+	o, err := OverflowTesting()
 	assert.NoError(t, err)
 
 	setupAccount := o.TxFileNameFN("setup_account")
@@ -147,7 +147,7 @@ func TestGetNFTMetadata(t *testing.T) {
 }
 
 func TestSetupCollectionFromNFTReference(t *testing.T) {
-	o, err := OverflowTesting(WithBasePath("../../.."), WithScriptFolderName("transactions/scripts"))
+	o, err := OverflowTesting()
 	assert.NoError(t, err)
 
 	setupAccount := o.TxFileNameFN("setup_account")
