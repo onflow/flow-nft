@@ -2,10 +2,7 @@ module github.com/onflow/flow-nft/lib/go/demo
 
 go 1.18
 
-require (
-	github.com/bjartek/overflow v0.0.0-20220626220303-1e2d82f944a8
-	github.com/sanity-io/litter v1.5.5
-)
+require github.com/bjartek/overflow v0.0.0-20220626220303-1e2d82f944a8
 
 require (
 	cloud.google.com/go v0.100.2 // indirect
@@ -34,7 +31,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
-	github.com/google/go-cmp v0.5.7 // indirect
+	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.1.1 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
@@ -113,6 +110,7 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
+	golang.org/x/exp v0.0.0-20220706164943-b4a6d9510983 // indirect
 	golang.org/x/net v0.0.0-20220418201149-a630d4f3e7a2 // indirect
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
