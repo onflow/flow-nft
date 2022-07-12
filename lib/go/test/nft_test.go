@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 
 	. "github.com/bjartek/overflow/overflow"
@@ -9,8 +8,10 @@ import (
 )
 
 func TestNFT(t *testing.T) {
-
-	o, err := OverflowTesting(WithBasePath("../../.."), WithScriptFolderName("transactions/scripts"))
+	o, err := OverflowTesting(
+		WithBasePath("../../.."),
+		WithScriptFolderName("transactions/scripts"),
+	)
 	assert.NoError(t, err)
 
 	setupAccount := o.TxFileNameFN("setup_account")
@@ -66,10 +67,11 @@ func TestNFT(t *testing.T) {
 		setupFlowRoyalty(SignProposeAndPayAs("bob")).AssertSuccess(t)
 		nft := mintNft(Arg("recipient", "alice")).AssertSuccess(t)
 
-		//TODO: how is the best way to test events?
-		assert.Equal(t, fmt.Sprintf("%v", nft.Events), "map[A.f8d6e0586b0a20c7.ExampleNFT.Deposit:[map[id:1 to:0x01cf0e2f2f715450]]]")
+		nft.AssertEvent(t, "ExampleNFT.Deposit", OverflowEvent{
+			"id": uint64(1),
+		})
 
-		id := nft.GetIdFromEvent("A.f8d6e0586b0a20c7.ExampleNFT.Deposit", "id")
+		id := nft.GetIdFromEvent("ExampleNFT.Deposit", "id")
 
 		o.Tx("transfer_nft", SignProposeAndPayAs("alice"), Arg("recipient", "bob"), Arg("withdrawID", id)).AssertSuccess(t)
 
