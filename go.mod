@@ -3,7 +3,7 @@ module github.com/bjartek/flow-nft-overflow
 go 1.18
 
 require (
-	github.com/bjartek/overflow v0.0.0-20220713101144-94c0bbbd977e
+	github.com/bjartek/overflow v0.0.0-20220713170521-43fe9d0772b6
 	github.com/fatih/color v1.13.0
 	//Need this until flow-go-sdk and cadence is released propper
 	github.com/onflow/cadence v0.24.2-0.20220627202951-5a06fec82b4a
@@ -88,6 +88,7 @@ require (
 	github.com/psiemens/sconfig v0.1.0 // indirect
 	github.com/rivo/uniseg v0.2.1-0.20211004051800-57c86be7915a // indirect
 	github.com/rs/zerolog v1.26.1 // indirect
+	github.com/sanity-io/litter v1.5.5 // indirect
 	github.com/sethvargo/go-retry v0.2.3 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spacemonkeygo/spacelog v0.0.0-20180420211403-2296661a0572 // indirect
