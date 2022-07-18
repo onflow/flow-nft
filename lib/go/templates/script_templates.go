@@ -11,6 +11,7 @@ const (
 	filenameGetCollectionLength = "scripts/get_collection_length.cdc"
 	filenameGetTotalSupply      = "scripts/get_total_supply.cdc"
 	filenameGetNFTMetadata      = "scripts/get_nft_metadata.cdc"
+	filenameGetNFTView          = "scripts/get_nft_view.cdc"
 )
 
 // GenerateBorrowNFTScript creates a script that retrieves an NFT collection
@@ -24,6 +25,12 @@ func GenerateBorrowNFTScript(nftAddress, exampleNFTAddress flow.Address) []byte 
 // GenerateGetNFTMetadataScript creates a script that returns the metadata for an NFT.
 func GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameGetNFTMetadata)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataAddress, flow.EmptyAddress)
+}
+
+// GenerateGetNFTViewScript creates a script that returns the rollup NFT View for an NFT.
+func GenerateGetNFTViewScript(nftAddress, exampleNFTAddress, metadataAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameGetNFTView)
 	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataAddress, flow.EmptyAddress)
 }
 

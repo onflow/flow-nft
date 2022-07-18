@@ -245,7 +245,6 @@ pub fun resolveView(_ view: Type): AnyStruct? {
 }
 ```
 
-
 ## Royalty View
 
 The `MetadataViews` contract also includes [a standard view for Royalties](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208).
@@ -297,7 +296,7 @@ since the token type isn't accepted by the royalty beneficiary.
 You can see example implementations of royalties in the `ExampleNFT` contract
 and the associated transactions and scripts.
 
-#### Important Royalty Instructions for Royalty Receivers
+#### Important instructions for royalty receivers
 
 If you plan to set your account as a receiver of royalties, you'll likely want to be able to accept
 as many token types as possible. This won't be immediately possible at first, but eventually,
@@ -305,7 +304,7 @@ we will also design a contract that can act as a sort of switchboard for fungibl
 It will accept any generic fungible token and route it to the correct vault in your account. 
 This hasn't been built yet, but you can still set up your account to be ready for it in the future.
 Therefore, if you want to receive royalties, you should set up your account with the
-[`setup_account_to_receive_royalty.cdc` transaction](https://github.com/onflow/flow-nft/blob/c13545c37be4d1e63605c5d76340fb188923d997/transactions/setup_account_to_receive_royalty.cdc).
+[`setup_account_to_receive_royalty.cdc` transaction](https://github.com/onflow/flow-nft/blob/master/transactions/setup_account_to_receive_royalty.cdc).
 
 This will link generic public path from `MetadataViews.getRoyaltyReceiverPublicPath()`
 to your chosen fungible token for now. Then, use that public path for your royalty receiver

@@ -10,6 +10,7 @@ import NonFungibleToken from "./NonFungibleToken.cdc"
 /// metadata types, called views. Each view type represents
 /// a different kind of metadata, such as a creator biography
 /// or a JPEG image file.
+///
 pub contract MetadataViews {
 
     /// Provides access to a set of metadata views. A struct or 
@@ -30,6 +31,59 @@ pub contract MetadataViews {
 
     /// Basic view that includes the name, description and thumbnail for an 
     /// object. Most objects should implement this view.
+    /// NFTView is a group of views used to give a complete picture of an NFT
+    ///
+    pub struct NFTView {
+        pub let id: UInt64
+        pub let uuid: UInt64
+        pub let display: Display?
+        pub let externalURL: ExternalURL?
+        pub let collectionData: NFTCollectionData?
+        pub let collectionDisplay: NFTCollectionDisplay?
+        pub let royalties: Royalties?
+        pub let traits: Traits?
+
+        init(
+            id : UInt64,
+            uuid : UInt64,
+            display : Display?,
+            externalURL : ExternalURL?,
+            collectionData : NFTCollectionData?,
+            collectionDisplay : NFTCollectionDisplay?,
+            royalties : Royalties?,
+            traits: Traits?
+        ) {
+            self.id = id
+            self.uuid = uuid
+            self.display = display
+            self.externalURL = externalURL
+            self.collectionData = collectionData
+            self.collectionDisplay = collectionDisplay
+            self.royalties = royalties
+            self.traits = traits
+        }
+    }
+
+    /// Helper to get an NFT view 
+    ///
+    /// @param viewResolver: A reference to the resolver resource
+    /// @return A NFTView struct
+    ///
+    pub fun getNFTView(id: UInt64, viewResolver: &{Resolver}) : NFTView {
+        return NFTView(
+            id : id,
+            uuid: viewResolver.uuid,
+            display: self.getDisplay(viewResolver),
+            externalURL : self.getExternalURL(viewResolver),
+            collectionData : self.getNFTCollectionData(viewResolver),
+            collectionDisplay : self.getNFTCollectionDisplay(viewResolver),
+            royalties : self.getRoyalties(viewResolver),
+            traits : self.getTraits(viewResolver)
+        )
+    }
+
+    /// Display is a basic view that includes the name, description and
+    /// thumbnail for an object. Most objects should implement this view.
     ///
     pub struct Display {
 
@@ -682,5 +736,6 @@ pub contract MetadataViews {
 
         return Traits(traits)
     }
+
 
 }
