@@ -208,13 +208,10 @@ pub contract MetadataViews {
         pub let name: String?
 
         /// The edition number of the object.
-        ///
-        /// For an "24 of 100 (#24/100)" item, the number is 24. 
-        ///
+        /// For an "24 of 100 (#24/100)" item, the number is 24.
         pub let number: UInt64
 
         /// The max edition number of this type of objects.
-        /// 
         /// This field should only be provided for limited-editioned objects.
         /// For an "24 of 100 (#24/100)" item, max is 100.
         /// For an item with unlimited edition, max should be set to nil.
@@ -263,6 +260,7 @@ pub contract MetadataViews {
     /// Some may use the NFTs regular ID and some may use a different 
     /// classification system. The serial number is expected to be unique among 
     /// other NFTs within that project
+    ///
     pub struct Serial {
         pub let number: UInt64
 
@@ -296,7 +294,6 @@ pub contract MetadataViews {
         /// receiver for this using `getRoyaltyReceiverPublicPath()`, and not 
         /// use the default FlowToken receiver. This will allow users to update 
         /// the capability in the future to use a more generic capability
-        ///
         pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
 
         /// Multiplier used to calculate the amount of sale value transferred to 
@@ -308,13 +305,11 @@ pub contract MetadataViews {
         /// that already supports the basis points use case because its 
         /// operations are entirely deterministic integer operations and support 
         /// up to 8 points of precision.
-        ///
         pub let cut: UFix64
 
         /// Optional description: This can be the cause of paying the royalty,
         /// the relationship between the `wallet` and the NFT, or anything else
         /// that the owner might want to specify.
-        ///
         pub let description: String
 
         init(recepient: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
@@ -611,11 +606,9 @@ pub contract MetadataViews {
     ///
     pub struct Rarity {
         /// The score of the rarity as a number
-        ///
         pub let score: UFix64?
 
         /// The maximum value of score
-        ///
         pub let max: UFix64?
 
         /// The description of the rarity as a string.

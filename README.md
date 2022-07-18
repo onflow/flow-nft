@@ -180,23 +180,24 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 | Name       | Purpose                                    | Status      | Source                                                                                                   |
 | ----------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
-| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L31-L66)  |
-| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L86-L98)  |
-| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L100-L137) |
-| `Edition`   | Return information about one or more editions for an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L139-L174) |
+| `NFTView`   | Basic view that includes the name, description and thumbnail. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L32-L65)  |
+| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L85-L120)  |
+| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L143-L155)  |
+| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L157-L195) |
+| `Edition`   | Return information about one or more editions for an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L197-L229) |
 | `Editions`  | Wrapper for multiple edition views.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L176-L187)|
-| `Serial`    |                                            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L200-L211)|
-| `Royalty`   | A Royalty Cut for a given NFT.             | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L224-L264) |
-| `Royalties` | Wrapper for multiple Royalty views.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L266-L290) |
-| `Media`     |                                            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L311-L328)|
-| `Medias`    |                                            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L330-L340)|
-| `License`   |                                            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L353-L362)|
-| `ExternalURL`|                                           | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L375-L385)|
-| `NFTCollectionData` | Provides storage and retrieval information of an NFT | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L398-L455) |
-| `NFTCollectionDisplay` | Returns the basic representation of an NFT's Collection.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L468-L507) |
-| `Rarity`   |                                            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L523-L550)|
-| `Trait`    |                                            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L563-L590)|
-| `Traits`   |                                            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L592-L605)|
+| `Serial`    | Serial number for an NFT.                  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L258-L270)|
+| `Royalty`   | A Royalty Cut for a given NFT.             | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L286-L323) |
+| `Royalties` | Wrapper for multiple Royalty views.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L325-L352) |
+| `Media`     | Represents a file with an correspoiding mediaType | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L378-L395)|
+| `Medias`    | Wrapper for multiple Media views.          | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L397-L407)|
+| `License`   | Represents a license according to https://spdx.org/licenses/ | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L423-L432)|
+| `ExternalURL`| Exposes a URL to an NFT on an external site. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L448-L458)|
+| `NFTCollectionData` | Provides storage and retrieval information of an NFT | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L474-L531) |
+| `NFTCollectionDisplay` | Returns the basic representation of an NFT's Collection.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L547-L586) |
+| `Rarity`   | Expose rarity information for an NFT        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L603-L628)|
+| `Trait`    | Represents a single field of metadata on an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L644-L671)|
+| `Traits`   | Wrapper for multiple Trait views            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L673-L690)|
 
 ## Allways prefer wrappers over single views
 
