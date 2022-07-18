@@ -140,7 +140,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// Optional view for collections that issues multiple objects
+    /// Optional view for collections that issue multiple objects
     /// with the same or similar metadata, for example an X of 100 set. This 
     /// information is useful for wallets and marketplaces.
     /// An NFT might be part of multiple editions, which is why the edition 
@@ -536,7 +536,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// Helper to get NFTCollectionDisplay in a way that will return an typed 
+    /// Helper to get NFTCollectionDisplay in a way that will return a typed 
     /// Optional
     ///
     /// @param viewResolver: A reference to the resolver resource

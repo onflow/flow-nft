@@ -200,9 +200,9 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 ## Allways prefer wrappers over single views
 
-When exposing a view that could have multiple ocurrences on a single NFT, such as `Edition`, `Royalty`, `Media` or `Trait` the wrapper view should allways be exposed, even if there is a single occurrence.
+When exposing a view that could have multiple occurrences on a single NFT, such as `Edition`, `Royalty`, `Media` or `Trait` the wrapper view should always be used, even if there is only a single occurrence. The wrapper view is always the plural version of the single view name and can be found below the main view definition in the `MetadataViews` contract.
 
-When resolving the view, the wrapper view should be the returned value, instead of returning the single view or just an array of several ocurrences of the view
+When resolving the view, the wrapper view should be the returned value, instead of returning the single view or just an array of several occurrences of the view.
 
 ### Example
 
@@ -224,6 +224,7 @@ pub fun resolveView(_ view: Type): AnyStruct? {
 #### To be avoided
 
 ```cadence
+// `resolveView` should always return the same type that was passed to it as an argument, so this is improper usage because it returns `Edition` instead of `Editions`.
 pub fun resolveView(_ view: Type): AnyStruct? {
     switch view {
         case Type<MetadataViews.Editions>():
@@ -233,6 +234,7 @@ pub fun resolveView(_ view: Type): AnyStruct? {
 }
 ```
 ```cadence
+// This is also improper usage because it returns `[Edition]` instead of `Editions`
 pub fun resolveView(_ view: Type): AnyStruct? {
     switch view {
         case Type<MetadataViews.Editions>():
