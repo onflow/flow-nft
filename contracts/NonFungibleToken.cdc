@@ -4,8 +4,8 @@
 
 ## `NonFungibleToken` contract interface
 
-The interface that all non-fungible token contracts could conform to.
-If a user wants to deploy a new nft contract, their contract would need
+The interface that all Non-Fungible Token contracts could conform to.
+If a user wants to deploy a new NFT contract, their contract would need
 to implement the NonFungibleToken interface.
 
 Their contract would have to follow all the rules and naming
@@ -107,7 +107,7 @@ pub contract interface NonFungibleToken {
         pub fun borrowNFT(id: UInt64): &NFT
     }
 
-    // Requirement for the the concrete resource type
+    // Requirement for the concrete resource type
     // to be declared in the implementing contract
     //
     pub resource Collection: Provider, Receiver, CollectionPublic {
