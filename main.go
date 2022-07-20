@@ -14,18 +14,14 @@ func main() {
 	color.Green("In order to start overflow with a default in memory client you simply run")
 	color.Cyan(`o := Overflow(
 		StopOnError(),
-		PrintInteractionResults(
-			WithEmulatorLog(),
-		),
+		PrintInteractionResults(),
 	)`)
 	color.Green("This will start overflow in embedded mode, and also instruct it to stop if there are errors after scripts/transactions and print the results of them with the embedded emulator log. ")
 
 	pause()
 	o := Overflow(
 		StopOnError(),
-		PrintInteractionResults(
-			WithEmulatorLog(),
-		),
+		PrintInteractionResults(),
 	)
 
 	fmt.Println("")
