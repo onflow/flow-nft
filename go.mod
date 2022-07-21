@@ -3,7 +3,7 @@ module github.com/bjartek/flow-nft-overflow
 go 1.18
 
 require (
-	github.com/bjartek/overflow v1.0.0-rc1.0.20220720130033-18d4968caece
+	github.com/bjartek/overflow v1.0.0-rc2
 	github.com/fatih/color v1.13.0
 	//Need this until flow-go-sdk and cadence is released propper
 	github.com/onflow/cadence v0.24.2-0.20220627202951-5a06fec82b4a

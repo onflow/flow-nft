@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	. "github.com/bjartek/overflow/overflow"
+	. "github.com/bjartek/overflow"
 	"github.com/onflow/cadence"
 	"github.com/stretchr/testify/assert"
 )
