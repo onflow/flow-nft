@@ -20,8 +20,10 @@ func main() {
 
 	pause()
 	o := Overflow(
+		WithNoLog(),
 		StopOnError(),
 		PrintInteractionResults(),
+		NewUserFlowAmount(10.0),
 	)
 
 	fmt.Println("")

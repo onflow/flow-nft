@@ -3,9 +3,8 @@ module github.com/bjartek/flow-nft-overflow
 go 1.18
 
 require (
-	github.com/bjartek/overflow v1.0.0-rc5
+	github.com/bjartek/overflow v1.0.0-rc5.0.20220722154350-17239f51717b
 	github.com/fatih/color v1.13.0
-	//Need this until flow-go-sdk and cadence is released propper
 	github.com/onflow/cadence v0.24.2-0.20220627202951-5a06fec82b4a
 	github.com/stretchr/testify v1.8.0
 )
@@ -79,7 +78,7 @@ require (
 	github.com/onflow/flow-emulator v0.33.4-0.20220708173546-d2a99600c3fa // indirect
 	github.com/onflow/flow-ft/lib/go/contracts v0.5.0 // indirect
 	github.com/onflow/flow-go v0.25.13-0.20220706165514-abf4535fe946 // indirect
-	github.com/onflow/flow-go-sdk v0.26.6-0.20220712195924-6920f8f55b88 // indirect
+	github.com/onflow/flow-go-sdk v0.26.5-0.20220629191626-900f9f91bffc // indirect
 	github.com/onflow/flow-go/crypto v0.24.3 // indirect
 	github.com/onflow/flow/protobuf/go/flow v0.3.1 // indirect
 	github.com/onflow/sdks v0.4.4 // indirect
@@ -136,3 +135,7 @@ require (
 	lukechampine.com/blake3 v1.1.7 // indirect
 	mvdan.cc/gofumpt v0.1.0 // indirect
 )
+
+replace github.com/onflow/flow-cli/pkg/flowkit => github.com/findonflow/flow-cli/pkg/flowkit v0.0.0-20220722140917-f1a85c8a966f
+
+replace github.com/bjartek/overflow => ../overflow
