@@ -653,6 +653,11 @@ pub contract MetadataViews {
     }
 
     pub fun getNFTView(id: UInt64, viewResolver: &{Resolver}) : NFTView {
+        let nftView = viewResolver.resolveView(Type<NFTView>())
+        if nftView != nil {
+            return nftView! as! NFTView
+        }
+
         return NFTView(
             id : id,
             uuid: viewResolver.uuid,
@@ -666,3 +671,4 @@ pub contract MetadataViews {
     }
 
 }
+ 
