@@ -20,10 +20,8 @@ func main() {
 
 	pause()
 	o := Overflow(
-		WithNoLog(),
-		StopOnError(),
-		PrintInteractionResults(),
-		NewUserFlowAmount(10.0),
+		WithGlobalPrintOptions(),
+		WithFlowForNewUsers(10.0),
 	)
 
 	fmt.Println("")
@@ -34,42 +32,42 @@ In our case we deployed contracts and created the users alice and bob.`)
 	pause()
 
 	color.Green("Running an transaction in overflow is don by calling the `Tx` method on the `o` or overflow object")
-	color.Cyan(`o.Tx("setup_account", SignProposeAndPayAs("alice"))`)
+	color.Cyan(`o.Tx("setup_account", WithSigner("alice"))`)
 	color.Green("")
 	color.Green("that line will run the transaction `setup_account` from the `transactions/` folder, sign is as the demo user `alice` it will also print out the result in a nice terse way")
 
 	color.Green("note that when we refer to users by name in overflow we do not use the network prefix, this is so that you can have the same stakeholders on mainnet/testnet if you want to without chaning the code. So in flow.json the account for alice is called 'emulator-alice'")
 
 	pause()
-	o.Tx("setup_account", SignProposeAndPayAs("alice"))
+	o.Tx("setup_account", WithSigner("alice"))
 
 	color.Green("so we now have set up alice, lets set up bob and also setup their royalty receivers")
 
 	color.Cyan(`
 	o.Tx("setup_account", 
-		SignProposeAndPayAs("bob")
+		WithSigner("bob")
 	)
 
 	o.Tx("setup_account_to_receive_royalty", 
-		SignProposeAndPayAs("alice"), 
-		Arg("vaultPath", "/storage/flowTokenVault"),
+		WithSigner("alice"), 
+		WithArg("vaultPath", "/storage/flowTokenVault"),
 	)
 	o.Tx("setup_account_to_receive_royalty", 
-		SignProposeAndPayAs("bob"), 
-		Arg("vaultPath", "/storage/flowTokenVault"),
+		WithSigner("bob"), 
+		WithArg("vaultPath", "/storage/flowTokenVault"),
 	)	
 	`)
 
 	o.Tx("setup_account",
-		SignProposeAndPayAs("bob"),
+		WithSigner("bob"),
 	)
 	o.Tx("setup_account_to_receive_royalty",
-		SignProposeAndPayAs("alice"),
-		Arg("vaultPath", "/storage/flowTokenVault"),
+		WithSigner("alice"),
+		WithArg("vaultPath", "/storage/flowTokenVault"),
 	)
 	o.Tx("setup_account_to_receive_royalty",
-		SignProposeAndPayAs("bob"),
-		Arg("vaultPath", "/storage/flowTokenVault"),
+		WithSigner("bob"),
+		WithArg("vaultPath", "/storage/flowTokenVault"),
 	)
 
 	color.Green("Everything is now ready to mint an NFT into alice collection!")
@@ -82,14 +80,14 @@ In overflow v1 all arguments are _named_ that is you mention them by their name 
 
 	color.Cyan(`
   id,_ :=o.Tx("mint_nft", 
-	  SignProposeAndPayAsServiceAccount(),
-		Arg("recipient", "alice"),
-		Arg("name", "Example NFT 0"),
-		Arg("description", "This is an example NFT"),
-		Arg("thumbnail", "example.jpeg"),
-		Arg("cuts", "[0.25, 0.40]"),
-		Arg("royaltyDescriptions", ` + "`" + `["minter","creator"]` + "`" + `'),
-		Addresses("royaltyBeneficiaries", "alice", "bob")).
+	  WithSignerServiceAccount(),
+		WithArg("recipient", "alice"),
+		WithArg("name", "Example NFT 0"),
+		WithArg("description", "This is an example NFT"),
+		WithArg("thumbnail", "example.jpeg"),
+		WithArg("cuts", "[0.25, 0.40]"),
+		WithArg("royaltyDescriptions", ` + "`" + `["minter","creator"]` + "`" + `'),
+		WithAddresses("royaltyBeneficiaries", "alice", "bob")).
 		GetIdFromEvent("Deposit", "id")
 		`)
 
@@ -99,14 +97,14 @@ In overflow v1 all arguments are _named_ that is you mention them by their name 
 
 	pause()
 
-	id, _ := o.Tx("mint_nft", SignProposeAndPayAsServiceAccount(),
-		Arg("recipient", "alice"),
-		Arg("name", "Example NFT 0"),
-		Arg("description", "This is an example NFT"),
-		Arg("thumbnail", "example.jpeg"),
-		Arg("cuts", "[0.25, 0.40]"),
-		Arg("royaltyDescriptions", `["minter","creator"]`),
-		Addresses("royaltyBeneficiaries", "alice", "bob")).
+	id, _ := o.Tx("mint_nft", WithSignerServiceAccount(),
+		WithArg("recipient", "alice"),
+		WithArg("name", "Example NFT 0"),
+		WithArg("description", "This is an example NFT"),
+		WithArg("thumbnail", "example.jpeg"),
+		WithArg("cuts", "[0.25, 0.40]"),
+		WithArg("royaltyDescriptions", `["minter","creator"]`),
+		WithAddresses("royaltyBeneficiaries", "alice", "bob")).
 		GetIdFromEvent("Deposit", "id")
 
 	color.Green("We now have an NFT that is minted with id %d that we can run some scripts against!\n", id)
@@ -117,7 +115,7 @@ In overflow v1 all arguments are _named_ that is you mention them by their name 
 	color.Cyan(`o.Script("get_nft_metadata", Arg("address", "alice"), Arg("id", id))`)
 
 	pause()
-	o.Script("get_nft_metadata", Arg("address", "alice"), Arg("id", id))
+	o.Script("get_nft_metadata", WithArg("address", "alice"), WithArg("id", id))
 
 	color.Green("And that is the metadata of the nft that we just minted, hope you like what overflow can do to tell a story! Oh and if you want to run this story against `testnet` you can easily do that. At .find we use overflow to run system.d job, cronjobs, serverless functions and lots of things. it is the green goo that keeps everything (over)flowing")
 

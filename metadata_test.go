@@ -18,8 +18,8 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 	setupAccount := o.TxFileNameFN("setup_account")
 
 	t.Run("Should not be able to setup a royalty receiver for a vault that doesn't exist", func(t *testing.T) {
-		setupAccount(SignProposeAndPayAs("alice")).AssertSuccess(t)
-		setupRoyalty(SignProposeAndPayAs("alice"), Arg("vaultPath", "/storage/missingVault")).
+		setupAccount(WithSigner("alice")).AssertSuccess(t)
+		setupRoyalty(WithSigner("alice"), WithArg("vaultPath", "/storage/missingVault")).
 			AssertFailure(t, "A vault for the specified fungible token path does not exist")
 	})
 }
@@ -29,27 +29,28 @@ func TestGetNFTMetadata(t *testing.T) {
 	assert.NoError(t, err)
 
 	setupAccount := o.TxFileNameFN("setup_account")
-	setupFlowRoyalty := o.TxFileNameFN("setup_account_to_receive_royalty", Arg("vaultPath", "/storage/flowTokenVault"))
-	setupAccount(SignProposeAndPayAs("alice")).AssertSuccess(t)
-	setupFlowRoyalty(SignProposeAndPayAs("alice")).AssertSuccess(t)
+	setupFlowRoyalty := o.TxFileNameFN("setup_account_to_receive_royalty", WithArg("vaultPath", "/storage/flowTokenVault"))
+	setupAccount(WithSigner("alice")).AssertSuccess(t)
+	setupFlowRoyalty(WithSigner("alice")).AssertSuccess(t)
 
-	setupAccount(SignProposeAndPayAs("bob")).AssertSuccess(t)
-	setupFlowRoyalty(SignProposeAndPayAs("bob")).AssertSuccess(t)
+	setupAccount(WithSigner("bob")).AssertSuccess(t)
+	setupFlowRoyalty(WithSigner("bob")).AssertSuccess(t)
 
-	mintNft := o.TxFileNameFN("mint_nft", SignProposeAndPayAsServiceAccount(),
-		Arg("name", "Example NFT 0"),
-		Arg("description", "This is an example NFT"),
-		Arg("thumbnail", "example.jpeg"),
-		Arg("cuts", "[0.25, 0.40]"),
-		Arg("royaltyDescriptions", `["minter","creator"]`),
-		Addresses("royaltyBeneficiaries", "alice", "bob"))
+	mintNft := o.TxFileNameFN("mint_nft", WithSignerServiceAccount(),
+		WithArg("name", "Example NFT 0"),
+		WithArg("description", "This is an example NFT"),
+		WithArg("thumbnail", "example.jpeg"),
+		WithArg("cuts", "[0.25, 0.40]"),
+		WithArg("royaltyDescriptions", `["minter","creator"]`),
+		WithAddresses("royaltyBeneficiaries", "alice", "bob"))
 
-	id := mintNft(Arg("recipient", "alice")).AssertSuccess(t).GetIdFromEvent("A.f8d6e0586b0a20c7.ExampleNFT.Deposit", "id")
+	id, err := mintNft(WithArg("recipient", "alice")).AssertSuccess(t).GetIdFromEvent("A.f8d6e0586b0a20c7.ExampleNFT.Deposit", "id")
+	assert.NoError(t, err)
 
 	t.Run("Should be able to verify the metadata of the minted NFT through the Display View", func(t *testing.T) {
 
 		var metadata Metadata
-		err := o.Script("get_nft_metadata", Arg("address", "alice"), Arg("id", id)).MarhalAs(&metadata)
+		err := o.Script("get_nft_metadata", WithArg("address", "alice"), WithArg("id", id)).MarshalAs(&metadata)
 		assert.NoError(t, err)
 
 		//Here we could just assert on the values of the return type aswell if we want to
@@ -112,7 +113,7 @@ func TestGetNFTMetadata(t *testing.T) {
     },
     {
      "name": "mintedBlock",
-     "value": 10,
+     "value": 12,
      "rarity": {
       "description": "",
       "max": 0,
@@ -151,27 +152,28 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 	assert.NoError(t, err)
 
 	setupAccount := o.TxFileNameFN("setup_account")
-	setupFlowRoyalty := o.TxFileNameFN("setup_account_to_receive_royalty", Arg("vaultPath", "/storage/flowTokenVault"))
-	setupAccount(SignProposeAndPayAs("alice")).AssertSuccess(t)
-	setupFlowRoyalty(SignProposeAndPayAs("alice")).AssertSuccess(t)
+	setupFlowRoyalty := o.TxFileNameFN("setup_account_to_receive_royalty", WithArg("vaultPath", "/storage/flowTokenVault"))
+	setupAccount(WithSigner("alice")).AssertSuccess(t)
+	setupFlowRoyalty(WithSigner("alice")).AssertSuccess(t)
 
-	mintNft := o.TxFileNameFN("mint_nft", SignProposeAndPayAsServiceAccount(),
-		Arg("name", "Example NFT 0"),
-		Arg("description", "This is an example NFT"),
-		Arg("thumbnail", "example.jpeg"),
-		Arg("cuts", "[0.25, 0.40]"),
-		Arg("royaltyDescriptions", `["minter","creator"]`),
-		Addresses("royaltyBeneficiaries", "alice", "alice"))
+	mintNft := o.TxFileNameFN("mint_nft", WithSignerServiceAccount(),
+		WithArg("name", "Example NFT 0"),
+		WithArg("description", "This is an example NFT"),
+		WithArg("thumbnail", "example.jpeg"),
+		WithArg("cuts", "[0.25, 0.40]"),
+		WithArg("royaltyDescriptions", `["minter","creator"]`),
+		WithAddresses("royaltyBeneficiaries", "alice", "alice"))
 
-	id := mintNft(Arg("recipient", "alice")).AssertSuccess(t).GetIdFromEvent("A.f8d6e0586b0a20c7.ExampleNFT.Deposit", "id")
+	id, err := mintNft(WithArg("recipient", "alice")).AssertSuccess(t).GetIdFromEvent("A.f8d6e0586b0a20c7.ExampleNFT.Deposit", "id")
+	assert.NoError(t, err)
 
 	t.Run("Should be able to setup an account using the NFTCollectionData metadata view of a referenced NFT", func(t *testing.T) {
 
 		o.Tx("setup_account_from_nft_reference",
-			SignProposeAndPayAs("bob"),
-			Arg("address", "alice"),
-			Arg("publicPath", cadence.Path{Domain: "public", Identifier: "exampleNFTCollection"}),
-			Arg("id", id),
+			WithSigner("bob"),
+			WithArg("address", "alice"),
+			WithArg("publicPath", cadence.Path{Domain: "public", Identifier: "exampleNFTCollection"}),
+			WithArg("id", id),
 		).AssertSuccess(t)
 	})
 
