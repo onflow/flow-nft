@@ -176,17 +176,75 @@ let nftType = nft.getType()
 
 The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement metadata views.
 
-### List of common views
+### List of views
 
 | Name       | Purpose                                    | Status      | Source                                                                                                   |
 | ----------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
-| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L35-L70)  |
-| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L80-L92)  |
-| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L94-L133) |
-| `Royalties` | An array of Royalty Cuts for a given NFT.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208) |
-| `Edition`  | Return information about one or more editions for an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L246-L266) |
-| `NFTCollectionData` | Provides storage and retrieval information of an NFT | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L243-L299) |
-| `NFTCollectionDisplay` | Returns the basic representation of an NFT's Collection.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L301-L328) |
+| `NFTView`   | Basic view that includes the name, description and thumbnail. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L32-L65)  |
+| `Display`   | Return the basic representation of an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L85-L120)  |
+| `HTTPFile`  | A file available at an HTTP(S) URL.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L143-L155)  |
+| `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L157-L195) |
+| `Edition`   | Return information about one or more editions for an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L197-L229) |
+| `Editions`  | Wrapper for multiple edition views.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L176-L187)|
+| `Serial`    | Serial number for an NFT.                  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L258-L270)|
+| `Royalty`   | A Royalty Cut for a given NFT.             | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L286-L323) |
+| `Royalties` | Wrapper for multiple Royalty views.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L325-L352) |
+| `Media`     | Represents a file with an correspoiding mediaType | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L378-L395)|
+| `Medias`    | Wrapper for multiple Media views.          | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L397-L407)|
+| `License`   | Represents a license according to https://spdx.org/licenses/ | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L423-L432)|
+| `ExternalURL`| Exposes a URL to an NFT on an external site. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L448-L458)|
+| `NFTCollectionData` | Provides storage and retrieval information of an NFT | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L474-L531) |
+| `NFTCollectionDisplay` | Returns the basic representation of an NFT's Collection.  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L547-L586) |
+| `Rarity`   | Expose rarity information for an NFT        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L603-L628)|
+| `Trait`    | Represents a single field of metadata on an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L644-L671)|
+| `Traits`   | Wrapper for multiple Trait views            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L673-L690)|
+
+## Allways prefer wrappers over single views
+
+When exposing a view that could have multiple occurrences on a single NFT, such as `Edition`, `Royalty`, `Media` or `Trait` the wrapper view should always be used, even if there is only a single occurrence. The wrapper view is always the plural version of the single view name and can be found below the main view definition in the `MetadataViews` contract.
+
+When resolving the view, the wrapper view should be the returned value, instead of returning the single view or just an array of several occurrences of the view.
+
+### Example
+
+#### Prefered
+
+```cadence
+pub fun resolveView(_ view: Type): AnyStruct? {
+    switch view {
+        case Type<MetadataViews.Editions>():
+            let editionInfo = MetadataViews.Edition(name: "Example NFT Edition", number: self.id, max: nil)
+            let editionList: [MetadataViews.Edition] = [editionInfo]
+            return MetadataViews.Editions(
+                editionList
+            )
+    }
+}
+```
+
+#### To be avoided
+
+```cadence
+// `resolveView` should always return the same type that was passed to it as an argument, so this is improper usage because it returns `Edition` instead of `Editions`.
+pub fun resolveView(_ view: Type): AnyStruct? {
+    switch view {
+        case Type<MetadataViews.Editions>():
+            let editionInfo = MetadataViews.Edition(name: "Example NFT Edition", number: self.id, max: nil)
+            return editionInfo
+    }
+}
+```
+```cadence
+// This is also improper usage because it returns `[Edition]` instead of `Editions`
+pub fun resolveView(_ view: Type): AnyStruct? {
+    switch view {
+        case Type<MetadataViews.Editions>():
+            let editionInfo = MetadataViews.Edition(name: "Example NFT Edition", number: self.id, max: nil)
+            let editionList: [MetadataViews.Edition] = [editionInfo]
+            return editionList
+    }
+}
+```
 
 ## Royalty View
 
