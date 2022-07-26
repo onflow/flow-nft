@@ -318,11 +318,11 @@ pub contract MetadataViews {
         /// that the owner might want to specify.
         pub let description: String
 
-        init(recepient: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
+        init(receiver: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
             pre {
                 cut >= 0.0 && cut <= 1.0 : "Cut value should be in valid range i.e [0,1]"
             }
-            self.receiver = recepient
+            self.receiver = receiver
             self.cut = cut
             self.description = description
         }
