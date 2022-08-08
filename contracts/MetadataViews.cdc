@@ -29,9 +29,9 @@ pub contract MetadataViews {
         pub fun getIDs(): [UInt64]
     }
 
-    /// Basic view that includes the name, description and thumbnail for an 
-    /// object. Most objects should implement this view.
-    /// NFTView is a group of views used to give a complete picture of an NFT
+    /// NFTView wraps all Core views along `id` and `uuid` fields, and is used 
+    /// to give a complete picture of an NFT. Most NFTs should implement this 
+    /// view.
     ///
     pub struct NFTView {
         pub let id: UInt64
