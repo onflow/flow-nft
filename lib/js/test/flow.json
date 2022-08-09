@@ -1,0 +1,37 @@
+{
+	"emulators": {
+		"default": {
+			"port": 3569,
+			"serviceAccount": "emulator-account"
+		}
+	},
+	"contracts": {
+		"FungibleToken": "../../../contracts/utility/FungibleToken.cdc",
+		"NonFungibleToken": "../../../contracts/NonFungibleToken.cdc",
+		"MetadataViews": "../../../contracts/MetadataViews.cdc",
+		"ExampleNFT": "../../../contracts/ExampleNFT.cdc",
+		"NFTForwarding": "../../../contracts/utility/NFTForwarding.cdc"
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "16c90058492ffd0a241fd37fd00a1e4873135f9a5c630e63e22069e60dd309ff"
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-account": [
+				"FungibleToken",
+				"NonFungibleToken",
+				"MetadataViews",
+				"ExampleNFT",
+				"NFTForwarding"
+			]
+		}
+	}
+}
