@@ -23,7 +23,7 @@ pub contract NFTForwarding {
     pub event ForwardedNFTDeposit(id: UInt64, from: Address?)
     pub event NFTForwarderRecipientChanged(forwarder: Address?)
 
-    // Canonical Storage path
+    // Canonical Storage and Public paths
     pub let NFTForwarderStoragePath: StoragePath
 
     pub resource NFTForwarder: NonFungibleToken.Receiver {
