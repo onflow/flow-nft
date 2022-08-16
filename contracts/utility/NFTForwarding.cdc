@@ -38,12 +38,19 @@ pub contract NFTForwarding {
         // the designated
         //
         pub fun deposit(token: @NonFungibleToken.NFT) {
-            let receiverRef = self.recipient.borrow<&{NonFungibleToken.Receiver}>()!
+            post {
+                receiverRef.getIDs().contains(id): "Could not forward deposited NFT!"
+            }
+
+            let receiverRef = self.recipient
+                .borrow<&{NonFungibleToken.CollectionPublic}>()
+                ?? panic("Could not borrow reference to recipient's Receiver")
             let id = token.id
 
             receiverRef.deposit(token: <-token)
 
             emit ForwardedNFTDeposit(id: id, from: self.owner?.address)
+
         }
 
         // changeRecipient
@@ -53,14 +60,15 @@ pub contract NFTForwarding {
         // 
         pub fun changeRecipient(newRecipient: Capability) {
             pre {
-                newRecipient.borrow<&{NonFungibleToken.Receiver}>() != nil: "Could not borrow Receiver reference from the given Capability"
+                newRecipient.borrow<&{NonFungibleToken.CollectionPublic}>() != nil: "Could not borrow Receiver reference from the given Capability"
             }
             self.recipient = newRecipient
+            emit NFTForwarderRecipientChanged(forwarder: self.owner?.address)
         }
 
         init(_recipient: Capability) {
             pre {
-                _recipient.borrow<&{NonFungibleToken.Receiver}>() != nil: "Could not borrow Receiver reference from the given Capability"
+                _recipient.borrow<&{NonFungibleToken.CollectionPublic}>() != nil: "Could not borrow Receiver reference from the given Capability"
             }
             self.recipient = _recipient
             emit NFTForwarderRecipientChanged(forwarder: self.owner?.address)
