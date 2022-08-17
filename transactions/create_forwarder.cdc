@@ -4,7 +4,8 @@ import ExampleNFT from "../contracts/ExampleNFT.cdc"
 import NFTForwarding from "../contracts/utility/NFTForwarding.cdc"
 
 /// This transaction is what an account would run
-/// to set itself up to receive NFTs
+/// to set itself up to forward NFTs to a designated
+/// recipient's collection
 
 transaction(recipientAddress: Address) {
 

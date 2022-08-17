@@ -11,11 +11,10 @@ However, in this implementation, any time a deposit is made, the deposited NFT i
 additionally deposited to a predefined recipient.
 
 To create an NFTForwarder resource, an account calls the createNewNFTForwarder
-function, passing the Receiver Capability to which NFTs will be forwarded. 
- 
+function, passing the Receiver Capability to which NFTs will be forwarded.
+
 */
 
-import FungibleToken from "./FungibleToken.cdc"
 import NonFungibleToken from "../NonFungibleToken.cdc"
 
 pub contract NFTForwarding {
@@ -29,46 +28,47 @@ pub contract NFTForwarding {
     pub resource NFTForwarder: NonFungibleToken.Receiver {
 
         // Recipient to which NFTs will be forwarded
-        // 
+        //
         access(self) var recipient: Capability
 
         // deposit
-        // 
+        //
         // Function that takes NFT resource as argument and deposits it to
         // the designated
         //
         pub fun deposit(token: @NonFungibleToken.NFT) {
             post {
-                receiverRef.getIDs().contains(id): "Could not forward deposited NFT!"
+                recipientRef.getIDs().contains(id): "Could not forward deposited NFT!"
             }
 
-            let receiverRef = self.recipient
+            let recipientRef = self.recipient
                 .borrow<&{NonFungibleToken.CollectionPublic}>()
-                ?? panic("Could not borrow reference to recipient's Receiver")
+                ?? panic("Could not borrow reference to recipient's Collection!")
             let id = token.id
 
-            receiverRef.deposit(token: <-token)
+            recipientRef.deposit(token: <-token)
 
             emit ForwardedNFTDeposit(id: id, from: self.owner?.address)
 
         }
 
         // changeRecipient
-        // 
+        //
         // Function that allows resource owner to change the recipient of
         // forwarded NFTs
-        // 
+        //
         pub fun changeRecipient(newRecipient: Capability) {
             pre {
-                newRecipient.borrow<&{NonFungibleToken.CollectionPublic}>() != nil: "Could not borrow Receiver reference from the given Capability"
+                newRecipient.borrow<&{NonFungibleToken.CollectionPublic}>() != nil: "Could not borrow CollectionPublic reference from the given Capability"
             }
+
             self.recipient = newRecipient
             emit NFTForwarderRecipientChanged(forwarder: self.owner?.address)
         }
 
         init(_recipient: Capability) {
             pre {
-                _recipient.borrow<&{NonFungibleToken.CollectionPublic}>() != nil: "Could not borrow Receiver reference from the given Capability"
+                _recipient.borrow<&{NonFungibleToken.CollectionPublic}>() != nil: "Could not borrow CollectionPublic reference from the given Capability"
             }
             self.recipient = _recipient
             emit NFTForwarderRecipientChanged(forwarder: self.owner?.address)
@@ -76,7 +76,7 @@ pub contract NFTForwarding {
     }
 
     // Creates a new NFTForwarder with the passed recipient capability
-    // 
+    //
     pub fun createNewNFTForwarder(recipient: Capability): @NFTForwarder {
         return <- create NFTForwarder(_recipient: recipient)
     }
