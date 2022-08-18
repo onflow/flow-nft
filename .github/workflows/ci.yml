@@ -18,4 +18,17 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: lib/js/test/package-lock.json
+      - name: Install Flow CLI
+        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)" -- v0.33.1-sc-m5
+      - name: Flow cli Version
+        run: flow version
+      - name: Update PATH
+        run: echo "/root/.local/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        run: cd lib/js/test && npm ci
       - run: make ci
