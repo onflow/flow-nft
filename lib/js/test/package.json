@@ -6,6 +6,11 @@
   "scripts": {
     "test": "jest"
   },
+  "files": [
+    "../../../../cadence/contracts/*",
+    "../../../../cadence/transactions/*",
+    "../../../../cadence/scripts/*"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",

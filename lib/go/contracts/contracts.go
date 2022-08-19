@@ -1,6 +1,6 @@
 package contracts
 
-//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../contracts -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../contracts
+//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../cadence/contracts -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../cadence/contracts
 
 import (
 	"regexp"

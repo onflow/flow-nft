@@ -55,8 +55,8 @@ account.link<&{NonFungibleToken.CollectionPublic}>(
 
 ### Withdraw an NFT
 
-Withdraw an `NFT` from a `Collection` using the [`withdraw`](contracts/ExampleNFT.cdc#L36-L42) function.
-This function emits the [`Withdraw`](contracts/ExampleNFT.cdc#L12) event.
+Withdraw an `NFT` from a `Collection` using the [`withdraw`](cadence/contracts/ExampleNFT.cdc#L36-L42) function.
+This function emits the [`Withdraw`](cadence/contracts/ExampleNFT.cdc#L12) event.
 
 ```swift
 let collectionRef = account.borrow<&ExampleNFT.Collection>(from: /storage/ExampleNFTCollection)
@@ -68,8 +68,8 @@ let nft <- collectionRef.withdraw(withdrawID: 42)
 
 ### Deposit an NFT
 
-Deposit an `NFT` into a `Collection` using the [`deposit`](contracts/ExampleNFT.cdc#L46-L57) function.
-This function emits the [`Deposit`](contracts/ExampleNFT.cdc#L13) event.
+Deposit an `NFT` into a `Collection` using the [`deposit`](cadence/contracts/ExampleNFT.cdc#L46-L57) function.
+This function emits the [`Deposit`](cadence/contracts/ExampleNFT.cdc#L13) event.
 
 This function is available on the `NonFungibleToken.CollectionPublic` interface,
 which accounts publish as public capability.
@@ -102,7 +102,7 @@ let token <- token as! @ExampleNFT.NFT
 
 ### List NFTs in an account
 
-Return a list of NFTs in a `Collection` using the [`getIDs`](contracts/ExampleNFT.cdc#L59-L62) function.
+Return a list of NFTs in a `Collection` using the [`getIDs`](cadence/contracts/ExampleNFT.cdc#L59-L62) function.
 
 This function is available on the `NonFungibleToken.CollectionPublic` interface,
 which accounts publish as public capability.
@@ -121,7 +121,7 @@ NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
 
 When writing an NFT contract,
-you should implement the [`MetadataViews.Resolver`](contracts/MetadataViews.cdc#L3-L6) interface,
+you should implement the [`MetadataViews.Resolver`](cadence/contracts/MetadataViews.cdc#L3-L6) interface,
 which allows your NFT to implement one or more metadata types called views.
 
 Each view represents a different type of metadata,
@@ -134,7 +134,7 @@ the format to query and return them, so projects can still be flexible with how 
 This example shows how to read basic information about an NFT
 including the name, description, image and owner.
 
-**Source: [get_nft_metadata.cdc](transactions/scripts/get_nft_metadata.cdc)**
+**Source: [get_nft_metadata.cdc](cadence/scripts/get_nft_metadata.cdc)**
 
 ```swift
 import ExampleNFT from "..."
@@ -174,7 +174,7 @@ let nftType = nft.getType()
 
 ### How to implement metadata
 
-The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement metadata views.
+The [example NFT contract](cadence/contracts/ExampleNFT.cdc) shows how to implement metadata views.
 
 ### List of views
 
@@ -405,8 +405,8 @@ You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the 
 
 The works in these files:
 
-- [ExampleNFT.cdc](contracts/ExampleNFT.cdc)
-- [NonFungibleToken.cdc](contracts/NonFungibleToken.cdc)
+- [ExampleNFT.cdc](cadence/contracts/ExampleNFT.cdc)
+- [NonFungibleToken.cdc](cadence/contracts/NonFungibleToken.cdc)
 
 are under the [Unlicense](LICENSE).
 
