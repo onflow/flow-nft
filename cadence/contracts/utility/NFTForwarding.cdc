@@ -29,7 +29,7 @@ pub contract NFTForwarding {
 
         /// Recipient to which NFTs will be forwarded
         ///
-        access(self) var recipient: Capability
+        access(self) var recipient: Capability<&{NonFungibleToken.CollectionPublic}>
 
         /// Allows for deposits of NFT resources, forwarding
         /// passed deposits to the designated recipient
@@ -41,7 +41,7 @@ pub contract NFTForwarding {
             }
 
             let recipientRef = self.recipient
-                .borrow<&{NonFungibleToken.CollectionPublic}>()
+                .borrow()
                 ?? panic("Could not borrow reference to recipient's Collection!")
             let id = token.id
 
@@ -55,20 +55,20 @@ pub contract NFTForwarding {
         /// forwarded NFTs
         /// @param newRecipient: NonFungibleToken.CollectionPublic Capability
         ///
-        pub fun changeRecipient(newRecipient: Capability) {
+        pub fun changeRecipient(newRecipient: Capability<&{NonFungibleToken.CollectionPublic}>) {
             pre {
-                newRecipient.borrow<&{NonFungibleToken.CollectionPublic}>() != nil: "Could not borrow CollectionPublic reference from the given Capability"
+                newRecipient.check(): "Could not borrow CollectionPublic reference from the given Capability"
             }
 
             self.recipient = newRecipient
             emit NFTForwarderRecipientChanged(forwarder: self.owner?.address)
         }
 
-        init(_recipient: Capability) {
+        init(_ recipient: Capability<&{NonFungibleToken.CollectionPublic}>) {
             pre {
-                _recipient.borrow<&{NonFungibleToken.CollectionPublic}>() != nil: "Could not borrow CollectionPublic reference from the given Capability"
+                recipient.check(): "Could not borrow CollectionPublic reference from the given Capability"
             }
-            self.recipient = _recipient
+            self.recipient = recipient
             emit NFTForwarderRecipientChanged(forwarder: self.owner?.address)
         }
     }
@@ -77,8 +77,10 @@ pub contract NFTForwarding {
     /// @param recipient: NonFungibleToken.CollectionPublic Capability
     /// @return a new NFTForwarder resource
     ///
-    pub fun createNewNFTForwarder(recipient: Capability): @NFTForwarder {
-        return <- create NFTForwarder(_recipient: recipient)
+    pub fun createNewNFTForwarder(
+        recipient: Capability<&{NonFungibleToken.CollectionPublic}>
+    ): @NFTForwarder {
+        return <- create NFTForwarder(recipient)
     }
 
     init() {

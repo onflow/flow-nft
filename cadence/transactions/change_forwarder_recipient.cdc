@@ -7,20 +7,29 @@ import NFTForwarding from "../contracts/utility/NFTForwarding.cdc"
 
 transaction(newRecipientAddress: Address) {
 
+    /// Reference to the NFTFowarder Resource
+    let forwarderRef: &NFTForwarding.NFTForwarder
+    /// Collection we will designate as forwarding recipient
+    let newRecipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
+
     prepare(signer: AuthAccount) {
         /// Borrow reference to NFTForwarder resource
-        let forwarderRef = signer
+        self.forwarderRef = signer
             .borrow<&NFTForwarding.NFTForwarder>(from: NFTForwarding.NFTForwarderStoragePath)
             ?? panic("Could not borrow reference to NFTForwarder")
 
         /// Get Receiver Capability from the recipientAddress account
-        let newRecipientCollection = getAccount(newRecipientAddress)
+        self.newRecipientCollection = getAccount(newRecipientAddress)
             .getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
 
         /// Make sure the CollectionPublic capability is valid before minting the NFT
-        if !newRecipientCollection.check() { panic("CollectionPublic capability is not valid!") }
+        if !self.newRecipientCollection.check() {
+            panic("CollectionPublic capability is not valid!")
+        }
+    }
 
+    execute {
         /// Set new recipient
-        forwarderRef.changeRecipient(newRecipient: newRecipientCollection)
+        self.forwarderRef.changeRecipient(newRecipient: self.newRecipientCollection)
     }
 }

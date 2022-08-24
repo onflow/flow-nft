@@ -17,7 +17,11 @@ transaction(recipientAddress: Address) {
 
         // Get Receiver Capability from the recipientAddress account
         let receiverCapability = getAccount(recipientAddress)
-            .getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
+            .getCapability<
+                &{NonFungibleToken.CollectionPublic}
+            >(
+                ExampleNFT.CollectionPublicPath
+            )
 
         // Make sure the CollectionPublic capability is valid before minting the NFT
         if !receiverCapability.check() { panic("CollectionPublic capability is not valid!") }
