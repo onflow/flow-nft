@@ -13,7 +13,7 @@
     "cadence/scripts/*"
   ],
   "scripts": {
-    "release": "npm run changeset version && npm run changeset publish"
+    "release": "changeset version && changeset publish"
   },
   "repository": {
     "type": "git",
