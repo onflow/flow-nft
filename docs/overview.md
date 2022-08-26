@@ -314,9 +314,25 @@ or even write your own. You'll need to replace some of the import address placeh
 
 ## Running automated tests
 
-You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
+You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. 
+
+Tests have also been written in JavaScript and can be found in `lib/js/test/tests/nft_test.js`. Similar to the tests written in Go, test helper functions can be found in `lib/js/test/templates/` directory.
+
+Entering the `make test` command from the root directory will run both Go and JavaScript test suites. If you'd like to run just one test suite, you can run `make test` from the test suite's `test/` directory (e.g. running `make test` from `lib/js/test` will run just your JavaScript tests).
 
 ## Bonus features
+
+### NFT Forwarding
+
+While this utility contract is not a standard, it is a demonstration of how an account could be configured to forward NFTs to a specified forwarding recipient's collection.
+
+The NFTForwarder resource itself can be referenced like any `NonFungibleToken.Receiver` resource, allowing a sender to deposit NFT's as they usually would. However, `deposit()` as implemented in this resource forwards the deposited NFT to the designated recipient's collection.
+
+Several transactions are included in this repo to demonstrate how to interact with the `NFTForwarder` resource. Those are:
+* `create_forwarder.cdc` - Creates the NFTForwarder resource and links the capability to `ExampleNFT.CollectionPublicPath`, where an Example NFT Collection would expect to be found.
+* `transfer_nft_to_receiver.cdc` - Transfers an NFT to the forwarder by way of `deposit()` found in NonFungibleToken.Receiver` interface. By construction of the NFTForwarder resource, the NFT deposited by the signer is further forwarded to the forwarding recipient designated in the NFTForwarder resource.
+* `change_forwarder_recipient.cdc` - Changes the designated recipient collection to which NFT will be forwarded.
+* `unlink_forwarder_link_collection.cdc` - Unlinks the forwarder resource from `ExampleNFT.CollectionPublicPath`, restoring the accounts CollectionPublic capability.
 
 **(These could each be defined as a separate interface and standard and are probably not part of the main standard) They are not implemented in this repository yet**
 

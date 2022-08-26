@@ -13,23 +13,23 @@ transaction(newRecipientAddress: Address) {
     let newRecipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
 
     prepare(signer: AuthAccount) {
-        /// Borrow reference to NFTForwarder resource
+        // Borrow reference to NFTForwarder resource
         self.forwarderRef = signer
-            .borrow<&NFTForwarding.NFTForwarder>(from: NFTForwarding.NFTForwarderStoragePath)
+            .borrow<&NFTForwarding.NFTForwarder>(from: NFTForwarding.StoragePath)
             ?? panic("Could not borrow reference to NFTForwarder")
 
-        /// Get Receiver Capability from the recipientAddress account
+        // Get Receiver Capability from the recipientAddress account
         self.newRecipientCollection = getAccount(newRecipientAddress)
             .getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
 
-        /// Make sure the CollectionPublic capability is valid before minting the NFT
+        // Make sure the CollectionPublic capability is valid before minting the NFT
         if !self.newRecipientCollection.check() {
             panic("CollectionPublic capability is not valid!")
         }
     }
 
     execute {
-        /// Set new recipient
+        // Set new recipient
         self.forwarderRef.changeRecipient(newRecipient: self.newRecipientCollection)
     }
 }

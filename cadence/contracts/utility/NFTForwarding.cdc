@@ -1,6 +1,6 @@
 /// ## Non-Fungible Token Forwarding Contract
 ///
-/// This contract enables a user to designate a recipient to NFTs could be forwarded
+/// This contract enables a user to designate a recipient so NFTs could be forwarded
 ///
 /// The NFTForwarder resource can be referenced just like any NonFungibleToken Receiver,
 /// allowing a sender to deposit NFTs as they usually would
@@ -20,7 +20,7 @@ pub contract NFTForwarding {
 
     /// Canonical Storage and Public paths
     ///
-    pub let NFTForwarderStoragePath: StoragePath
+    pub let StoragePath: StoragePath
 
     /// Resource that forwards deposited NFTs to a designated
     /// recipient's collection
@@ -84,7 +84,7 @@ pub contract NFTForwarding {
     }
 
     init() {
-        self.NFTForwarderStoragePath = /storage/NFTForwarder
+        self.StoragePath = /storage/ExampleNFTForwarder
     }
 
 }

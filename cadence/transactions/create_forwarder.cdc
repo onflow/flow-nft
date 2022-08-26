@@ -11,7 +11,7 @@ transaction(recipientAddress: Address) {
 
     prepare(signer: AuthAccount) {
         // Return early if the account already has an NFTForwarder
-        if signer.borrow<&NFTForwarding.NFTForwarder>(from: NFTForwarding.NFTForwarderStoragePath) != nil {
+        if signer.borrow<&NFTForwarding.NFTForwarder>(from: NFTForwarding.StoragePath) != nil {
             return
         }
 
@@ -30,7 +30,7 @@ transaction(recipientAddress: Address) {
         let forwarder <- NFTForwarding.createNewNFTForwarder(recipient: receiverCapability)
 
         // save it to the account
-        signer.save(<-forwarder, to: NFTForwarding.NFTForwarderStoragePath)
+        signer.save(<-forwarder, to: NFTForwarding.StoragePath)
 
         // unlink existing Collection capabilities from PublicPath
         if signer.getCapability(ExampleNFT.CollectionPublicPath)
@@ -45,7 +45,7 @@ transaction(recipientAddress: Address) {
         // create a public capability for the forwarder where the collection would be
         signer.link<&{NonFungibleToken.Receiver}>(
             ExampleNFT.CollectionPublicPath,
-            target: NFTForwarding.NFTForwarderStoragePath
+            target: NFTForwarding.StoragePath
         )
     }
 }
