@@ -10,13 +10,25 @@ import NFTForwarding from "../contracts/utility/NFTForwarding.cdc"
 transaction(recipientAddress: Address) {
 
     prepare(signer: AuthAccount) {
-        // Return early if the account already has an NFTForwarder
+        // Change recipient and return if the account already has an NFTForwarder
         if signer.borrow<&NFTForwarding.NFTForwarder>(from: NFTForwarding.StoragePath) != nil {
+
+            let forwarderRef = signer.borrow<&NFTForwarding.NFTForwarder>(from: NFTForwarding.StoragePath)!
+            let newRecipientCollection = getAccount(recipientAddress)
+                .getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
+
+            // Make sure the CollectionPublic capability is valid before minting the NFT
+            if !newRecipientCollection.check() {
+                panic("Recipient's CollectionPublic capability is not valid!")
+            }
+
+            // Set new recipient
+            forwarderRef.changeRecipient(newRecipient: newRecipientCollection)
             return
         }
 
         // Get Receiver Capability from the recipientAddress account
-        let receiverCapability = getAccount(recipientAddress)
+        let recipientCollectionCap = getAccount(recipientAddress)
             .getCapability<
                 &{NonFungibleToken.CollectionPublic}
             >(
@@ -24,10 +36,10 @@ transaction(recipientAddress: Address) {
             )
 
         // Make sure the CollectionPublic capability is valid before minting the NFT
-        if !receiverCapability.check() { panic("CollectionPublic capability is not valid!") }
+        if !recipientCollectionCap.check() { panic("CollectionPublic capability is not valid!") }
 
         // Create a new NFTForwarder resource
-        let forwarder <- NFTForwarding.createNewNFTForwarder(recipient: receiverCapability)
+        let forwarder <- NFTForwarding.createNewNFTForwarder(recipient: recipientCollectionCap)
 
         // save it to the account
         signer.save(<-forwarder, to: NFTForwarding.StoragePath)
