@@ -7,9 +7,9 @@
     "test": "jest"
   },
   "files": [
-    "../../../../cadence/contracts/*",
-    "../../../../cadence/transactions/*",
-    "../../../../cadence/scripts/*"
+    "../../../contracts/*",
+    "../../../transactions/*",
+    "../../../scripts/*"
   ],
   "keywords": [],
   "author": "",

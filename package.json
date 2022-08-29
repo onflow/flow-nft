@@ -8,9 +8,9 @@
     "lib": "lib"
   },
   "files": [
-    "cadence/contracts/*",
-    "cadence/transactions/*",
-    "cadence/scripts/*"
+    "contracts/*",
+    "transactions/*",
+    "scripts/*"
   ],
   "scripts": {
     "release": "changeset version && changeset publish"

@@ -1,10 +1,10 @@
 package templates
 
-//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../cadence -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../cadence/...
+import "regexp"
+
+//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../ -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../scripts/... ../../../transactions/...
 
 import (
-	"regexp"
-
 	"github.com/onflow/flow-go-sdk"
 )
 
