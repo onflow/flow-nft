@@ -7,7 +7,11 @@
     "doc": "docs",
     "lib": "lib"
   },
-  "files": ["contracts/*", "transactions/*"],
+  "files": [
+    "contracts/*",
+    "transactions/*",
+    "scripts/*"
+  ],
   "scripts": {
     "release": "changeset version && changeset publish"
   },

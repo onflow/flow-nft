@@ -55,8 +55,8 @@ account.link<&{NonFungibleToken.CollectionPublic}>(
 
 ### Withdraw an NFT
 
-Withdraw an `NFT` from a `Collection` using the [`withdraw`](contracts/ExampleNFT.cdc#L36-L42) function.
-This function emits the [`Withdraw`](contracts/ExampleNFT.cdc#L12) event.
+Withdraw an `NFT` from a `Collection` using the [`withdraw`](../contracts/ExampleNFT.cdc#L36-L42) function.
+This function emits the [`Withdraw`](../contracts/ExampleNFT.cdc#L12) event.
 
 ```swift
 let collectionRef = account.borrow<&ExampleNFT.Collection>(from: /storage/ExampleNFTCollection)
@@ -68,8 +68,8 @@ let nft <- collectionRef.withdraw(withdrawID: 42)
 
 ### Deposit an NFT
 
-Deposit an `NFT` into a `Collection` using the [`deposit`](contracts/ExampleNFT.cdc#L46-L57) function.
-This function emits the [`Deposit`](contracts/ExampleNFT.cdc#L13) event.
+Deposit an `NFT` into a `Collection` using the [`deposit`](../contracts/ExampleNFT.cdc#L46-L57) function.
+This function emits the [`Deposit`](../contracts/ExampleNFT.cdc#L13) event.
 
 This function is available on the `NonFungibleToken.CollectionPublic` interface,
 which accounts publish as public capability.
@@ -102,7 +102,7 @@ let token <- token as! @ExampleNFT.NFT
 
 ### List NFTs in an account
 
-Return a list of NFTs in a `Collection` using the [`getIDs`](contracts/ExampleNFT.cdc#L59-L62) function.
+Return a list of NFTs in a `Collection` using the [`getIDs`](../contracts/ExampleNFT.cdc#L59-L62) function.
 
 This function is available on the `NonFungibleToken.CollectionPublic` interface,
 which accounts publish as public capability.
@@ -121,7 +121,7 @@ NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
 
 When writing an NFT contract,
-you should implement the [`MetadataViews.Resolver`](contracts/MetadataViews.cdc#L3-L6)interface,
+you should implement the [`MetadataViews.Resolver`](../contracts/MetadataViews.cdc#L3-L6)interface,
 which allows your NFT to implement one or more metadata types called views.
 
 Each view represents a different type of metadata,
@@ -134,7 +134,7 @@ the format to query and return them, so projects can still be flexible with how 
 This example shows how to read basic information about an NFT
 including the name, description, image and owner.
 
-**Source: [get_nft_metadata.cdc](transactions/scripts/get_nft_metadata.cdc)**
+**Source: [get_nft_metadata.cdc](../scripts/get_nft_metadata.cdc)**
 
 ```swift
 import ExampleNFT from "..."
@@ -174,7 +174,7 @@ let nftType = nft.getType()
 
 ### How to implement metadata
 
-The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement metadata views.
+The [example NFT contract](../contracts/ExampleNFT.cdc) shows how to implement metadata views.
 
 ### List of common views
 
@@ -314,9 +314,25 @@ or even write your own. You'll need to replace some of the import address placeh
 
 ## Running automated tests
 
-You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
+You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. 
+
+Tests have also been written in JavaScript and can be found in `lib/js/test/tests/nft_test.js`. Similar to the tests written in Go, test helper functions can be found in `lib/js/test/templates/` directory.
+
+Entering the `make test` command from the root directory will run both Go and JavaScript test suites. If you'd like to run just one test suite, you can run `make test` from the test suite's `test/` directory (e.g. running `make test` from `lib/js/test` will run just your JavaScript tests).
 
 ## Bonus features
+
+### NFT Forwarding
+
+While this utility contract is not a standard, it is a demonstration of how an account could be configured to forward NFTs to a specified forwarding recipient's collection.
+
+The NFTForwarder resource itself can be referenced like any `NonFungibleToken.Receiver` resource, allowing a sender to deposit NFT's as they usually would. However, `deposit()` as implemented in this resource forwards the deposited NFT to the designated recipient's collection.
+
+Several transactions are included in this repo to demonstrate how to interact with the `NFTForwarder` resource. Those are:
+* `create_forwarder.cdc` - Creates the NFTForwarder resource and links the capability to `ExampleNFT.CollectionPublicPath`, where an Example NFT Collection would expect to be found.
+* `transfer_nft_to_receiver.cdc` - Transfers an NFT to the forwarder by way of `deposit()` found in NonFungibleToken.Receiver` interface. By construction of the NFTForwarder resource, the NFT deposited by the signer is further forwarded to the forwarding recipient designated in the NFTForwarder resource.
+* `change_forwarder_recipient.cdc` - Changes the designated recipient collection to which NFT will be forwarded.
+* `unlink_forwarder_link_collection.cdc` - Unlinks the forwarder resource from `ExampleNFT.CollectionPublicPath`, restoring the accounts CollectionPublic capability.
 
 **(These could each be defined as a separate interface and standard and are probably not part of the main standard) They are not implemented in this repository yet**
 
@@ -351,8 +367,8 @@ You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the 
 
 The works in these files:
 
-- [ExampleNFT.cdc](contracts/ExampleNFT.cdc)
-- [NonFungibleToken.cdc](contracts/NonFungibleToken.cdc)
+- [ExampleNFT.cdc](../contracts/ExampleNFT.cdc)
+- [NonFungibleToken.cdc](../contracts/NonFungibleToken.cdc)
 
 are under the [Unlicense](LICENSE).
 

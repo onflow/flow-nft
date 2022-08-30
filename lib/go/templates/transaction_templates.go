@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	filenameSetupAccount                 = "setup_account.cdc"
-	filenameMintNFT                      = "mint_nft.cdc"
-	filenameTransferNFT                  = "transfer_nft.cdc"
-	filenameDestroyNFT                   = "destroy_nft.cdc"
-	filenameSetupRoyalty                 = "setup_account_to_receive_royalty.cdc"
-	filenameSetupAccountFromNftReference = "setup_account_from_nft_reference.cdc"
+	filenameSetupAccount                 = "transactions/setup_account.cdc"
+	filenameMintNFT                      = "transactions/mint_nft.cdc"
+	filenameTransferNFT                  = "transactions/transfer_nft.cdc"
+	filenameDestroyNFT                   = "transactions/destroy_nft.cdc"
+	filenameSetupRoyalty                 = "transactions/setup_account_to_receive_royalty.cdc"
+	filenameSetupAccountFromNftReference = "transactions/setup_account_from_nft_reference.cdc"
 )
 
 // GenerateSetupAccountScript returns a script that instantiates a new
