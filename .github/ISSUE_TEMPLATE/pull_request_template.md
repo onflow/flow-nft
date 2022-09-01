@@ -20,6 +20,6 @@ For contributor use:
     - Major if there is a new smart contract introduced.
     - Major if there is a breaking change that is introduced in the existing contract.
     - Minor if there is a new feature addition within the existing smart contracts.
-    - Patch if there is a non breaking change fix in the existing smart contracts.
+    - Patch if there is a non breaking change in the existing smart contracts.
 -->
 - [ ] Update the version in package.json when there is a change in the smart contracts
