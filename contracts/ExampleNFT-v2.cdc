@@ -259,8 +259,15 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
     }
 
     /// public function that anyone can call to create a new empty collection
-    pub fun createEmptyCollection(): @ExampleNFT.Collection{NonFungibleToken.Collection} {
-        return <- create Collection()
+    /// Since multiple collection types can be defined in a contract,
+    /// The caller needs to specify which one they want to create
+    pub fun createEmptyCollection(collectionType: Type): @ExampleNFT.Collection{NonFungibleToken.Collection}? {
+        switch collectionType {
+            case Type<@ExampleNFT.Collection>():
+                return <- create Collection()
+            default:
+                return nil
+        }
     }
 
     /// Return the types that the contract defines
