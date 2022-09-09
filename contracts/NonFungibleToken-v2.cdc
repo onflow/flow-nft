@@ -48,28 +48,14 @@ import MetadataViews from "./MetadataViews.cdc"
 ///
 pub contract NonFungibleToken {
 
-    /// Event that is emitted when a token is withdrawn,
-    /// indicating the owner of the collection that it was withdrawn from.
-    ///
-    /// If the collection is not in an account's storage, `from` will be `nil`.
-    ///
-    pub event Withdraw(id: UInt64, from: Address?, type: Type)
-
-    /// Event that emitted when a token is deposited to a collection.
-    ///
-    /// It indicates the owner of the collection that it was deposited to.
-    ///
-    pub event Deposit(id: UInt64, to: Address?, type: Type)
-
     /// Interface that the NFTs have to conform to
     ///
-    pub resource interface NFT: MetadataViews.Resolver {
+    pub resource interface NFT { //: MetadataViews.Resolver {
         /// The unique ID that each NFT has
         pub let id: UInt64
 
         pub fun getViews(): [Type]
         pub fun resolveView(_ view: Type): AnyStruct?
-
     }
 
     /// Interface to mediate withdraws from the Collection
@@ -90,71 +76,89 @@ pub contract NonFungibleToken {
         pub fun transfer(id: UInt64, receiver: Capability<&AnyResource{Receiver}>): @AnyResource{NFT}
     }
 
-    // Interface to mediate deposits to the Collection
-    //
+    /// Interface to mediate deposits to the Collection
+    ///
     pub resource interface Receiver {
 
-        // deposit takes an NFT as an argument and adds it to the Collection
-        //
+        /// deposit takes an NFT as an argument and adds it to the Collection
+        ///
         pub fun deposit(token: @AnyResource{NFT})
 
-        /// getAcceptedTypes optionally returns a list of NFT types that this receiver accepts
-        pub fun getAcceptedTypes(): [Type]?
+        /// getAcceptedTypes returns a list of NFT types that this receiver accepts
+        pub fun getAcceptedTypes(): [Type]
     }
 
-    // Interface that an account would commonly 
-    // publish for their collection
-    pub resource interface CollectionPublic: MetadataViews.ResolverCollection {
+    /// Interface that an account would commonly 
+    /// publish for their collection
+    pub resource interface CollectionPublic { //: MetadataViews.ResolverCollection {
         pub fun deposit(token: @AnyResource{NFT})
         pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &AnyResource{NFT}
     }
 
-    // Requirement for the concrete resource type
-    // to be declared in the implementing contract
-    //
-    pub resource interface Collection: Provider, Receiver, Transferable, CollectionPublic {
+    /// Requirement for the concrete resource type
+    /// to be declared in the implementing contract
+    ///
+    pub resource interface Collection { //: Provider, Receiver, Transferable, CollectionPublic, MetadataViews.ResolverCollection {
 
         /// Paths for the collection
-        pub let StoragePath: StoragePath
-        pub let PublicPath: PublicPath
-        pub let PrivateProviderPath: PrivatePath
+        pub let storagePath: StoragePath
+        pub let publicPath: PublicPath
+        pub let privateProviderPath: PrivatePath
 
-        // Dictionary to hold the NFTs in the Collection
-        access(self) var ownedNFTs: @{UInt64: AnyResource{NFT}}
+        /// Dictionary to hold the NFTs in the Collection
+        access(contract) var ownedNFTs: @{UInt64: {NFT}}
 
         /// Returns the NFT types that this collection can store
-        pub fun getNFTTypes(): [Type]
+        pub fun getAcceptedTypes(): [Type]
 
-        // withdraw removes an NFT from the collection and moves it to the caller
+        /// withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @AnyResource{NFT}
 
-        // deposit takes a NFT and adds it to the collections dictionary
-        // and adds the ID to the id array
+        /// deposit takes a NFT and adds it to the collections dictionary
+        /// and adds the ID to the id array
         pub fun deposit(token: @AnyResource{NFT})
 
-        // getIDs returns an array of the IDs that are in the collection
+        /// Function for a direct transfer instead of having to do a deposit and withdrawal
+        ///
+        pub fun transfer(id: UInt64, recipient: Capability<&{NonFungibleToken.Receiver}>): Bool
+
+        /// getIDs returns an array of the IDs that are in the collection
         pub fun getIDs(): [UInt64]
 
         /// Returns a subset of the IDs in case the collection is very large
         /// parameters are nil if the caller wants to go all the way to the end of the range
-        pub fun getIDsPaginated(subsetBeginning: UInt64?, subsetEnd: UInt64?): [UInt64]
+        pub fun getIDsPaginated(subsetBeginning: Int?, subsetEnd: Int?): [UInt64]
 
-        // Returns a borrowed reference to an NFT in the collection
-        // so that the caller can read data and call methods from it
+        /// Returns a borrowed reference to an NFT in the collection
+        /// so that the caller can read data and call methods from it
         pub fun borrowNFT(id: UInt64): &AnyResource{NFT} {
             pre {
                 self.ownedNFTs[id] != nil: "NFT does not exist in the collection!"
             }
         }
 
-        // createEmptyCollection creates an empty Collection
-        // and returns it to the caller so that they can own NFTs
-        pub fun createEmptyCollection(): @Collection {
+        /// From the MetadataViews Contract
+        /// borrows a reference to get metadata views for the NFTs that the contract contains
+        pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}
+
+        /// createEmptyCollection creates an empty Collection
+        /// and returns it to the caller so that they can own NFTs
+        pub fun createEmptyCollection(): @{Collection} {
             post {
                 result.getIDs().length == 0: "The created collection must be empty!"
             }
         }
+    }
+
+    /// Verifies that the array of types are actually collection types
+    pub fun verifyCollectionTypes(_ types: [Type]): Bool {
+        for type in types {
+            if !type.isSubtype(of: Type<@{NonFungibleToken.Collection}>()) {
+                return false
+            }
+        }
+        return true
     }
 }
