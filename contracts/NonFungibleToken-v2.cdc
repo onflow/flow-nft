@@ -108,7 +108,9 @@ pub contract NonFungibleToken {
         pub let privateProviderPath: PrivatePath
 
         /// Dictionary to hold the NFTs in the Collection
-        access(contract) var ownedNFTs: @{UInt64: {NFT}}
+        /// Normally we would require that the collection specify
+        /// a specific dictionary to store the NFTs, but this isn't necessary any more
+        /// as long as all the other functions are there
 
         /// Returns the NFT types that this collection can store
         pub fun getAcceptedTypes(): [Type]
@@ -127,17 +129,9 @@ pub contract NonFungibleToken {
         /// getIDs returns an array of the IDs that are in the collection
         pub fun getIDs(): [UInt64]
 
-        /// Returns a subset of the IDs in case the collection is very large
-        /// parameters are nil if the caller wants to go all the way to the end of the range
-        pub fun getIDsPaginated(subsetBeginning: Int?, subsetEnd: Int?): [UInt64]
-
         /// Returns a borrowed reference to an NFT in the collection
         /// so that the caller can read data and call methods from it
-        pub fun borrowNFT(id: UInt64): &AnyResource{NFT} {
-            pre {
-                self.ownedNFTs[id] != nil: "NFT does not exist in the collection!"
-            }
-        }
+        pub fun borrowNFT(id: UInt64): &AnyResource{NonFungibleToken.NFT}?
 
         /// From the MetadataViews Contract
         /// borrows a reference to get metadata views for the NFTs that the contract contains

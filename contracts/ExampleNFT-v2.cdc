@@ -221,24 +221,10 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
             return self.ownedNFTs.keys
         }
 
-        /// Returns a subset of the IDs in case the collection is very large
-        /// parameters are nil if the caller wants to go all the way to the end of the range
-        pub fun getIDsPaginated(subsetBeginning: Int?, subsetEnd: Int?): [UInt64] {
-            let idsArray = self.getIDs()
-
-            if subsetBeginning == nil && subsetEnd == nil {
-                return idsArray
-            } else if subsetEnd == nil {
-                return idsArray.slice(from: subsetBeginning!, upTo: idsArray.length-1)
-            } else {
-                return idsArray.slice(from: 0, upTo: subsetEnd!)
-            }
-        }
-
         /// borrowNFT gets a reference to an NFT in the collection
         /// so that the caller can read its metadata and call its methods
-        pub fun borrowNFT(id: UInt64): &ExampleNFT.NFT{NonFungibleToken.NFT} {
-            return (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)!
+        pub fun borrowNFT(id: UInt64): &AnyResource{NonFungibleToken.NFT}? {
+            return (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)
         }
 
         /// Borrow the view resolver for the specified NFT ID
