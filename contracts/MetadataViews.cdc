@@ -88,6 +88,68 @@ pub contract MetadataViews {
         )
     }
 
+    /// NFTViewV2 is an enhancement of NFTView with additional information
+    /// including the medias view as an optional field
+    ///
+    pub struct NFTViewV2 {
+        pub let id: UInt64
+        pub let uuid: UInt64
+        pub let display: Display?
+        pub let externalURL: ExternalURL?
+        pub let collectionData: NFTCollectionData?
+        pub let collectionDisplay: NFTCollectionDisplay?
+        pub let royalties: Royalties?
+        pub let traits: Traits?
+        pub let medias: Medias?
+
+        init(
+            id : UInt64,
+            uuid : UInt64,
+            display : Display?,
+            externalURL : ExternalURL?,
+            collectionData : NFTCollectionData?,
+            collectionDisplay : NFTCollectionDisplay?,
+            royalties : Royalties?,
+            traits: Traits?,
+            medias: Medias?
+        ) {
+            self.id = id
+            self.uuid = uuid
+            self.display = display
+            self.externalURL = externalURL
+            self.collectionData = collectionData
+            self.collectionDisplay = collectionDisplay
+            self.royalties = royalties
+            self.traits = traits
+            self.medias = medias
+        }
+    }
+
+    /// Helper to get an NFT view 
+    ///
+    /// @param id: The NFT id
+    /// @param viewResolver: A reference to the resolver resource
+    /// @return A NFTView struct
+    ///
+    pub fun getNFTViewV2(id: UInt64, viewResolver: &{Resolver}) : NFTViewV2 {
+        let nftView = viewResolver.resolveView(Type<NFTViewV2>())
+        if nftView != nil {
+            return nftView! as! NFTViewV2
+        }
+
+        return NFTViewV2(
+            id : id,
+            uuid: viewResolver.uuid,
+            display: self.getDisplay(viewResolver),
+            externalURL : self.getExternalURL(viewResolver),
+            collectionData : self.getNFTCollectionData(viewResolver),
+            collectionDisplay : self.getNFTCollectionDisplay(viewResolver),
+            royalties : self.getRoyalties(viewResolver),
+            traits : self.getTraits(viewResolver),
+            medias : self.getMedias(viewResolver)
+        )
+    }
+
     /// Display is a basic view that includes the name, description and
     /// thumbnail for an object. Most objects should implement this view.
     ///
