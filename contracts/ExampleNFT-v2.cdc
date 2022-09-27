@@ -11,7 +11,7 @@
 */
 
 import NonFungibleToken from "./NonFungibleToken-v2.cdc"
-import NonFungibleTokenInterface from "./ExampleNFT-v2-ContractInterface.cdc"
+import NonFungibleTokenInterface from "./NonFungibleToken-v2-ContractInterface.cdc"
 import MetadataViews from "./MetadataViews.cdc"
 
 pub contract ExampleNFT: NonFungibleTokenInterface {
@@ -103,34 +103,9 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
                 case Type<MetadataViews.ExternalURL>():
                     return MetadataViews.ExternalURL("https://example-nft.onflow.org/".concat(self.id.toString()))
                 case Type<MetadataViews.NFTCollectionData>():
-                    return MetadataViews.NFTCollectionData(
-                        storagePath: /storage/cadenceExampleNFTCollection,
-                        publicPath: /public/cadenceExampleNFTCollection,
-                        providerPath: /private/exampleNFTCollection,
-                        publicCollection: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic}>(),
-                        publicLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
-                        providerLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>(),
-                        createEmptyCollectionFunction: (fun (): @{NonFungibleToken.Collection} {
-                            return <-ExampleNFT.createEmptyCollection()
-                        })
-                    )
+                    return ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
                 case Type<MetadataViews.NFTCollectionDisplay>():
-                    let media = MetadataViews.Media(
-                        file: MetadataViews.HTTPFile(
-                            url: "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
-                        ),
-                        mediaType: "image/svg+xml"
-                    )
-                    return MetadataViews.NFTCollectionDisplay(
-                        name: "The Example Collection",
-                        description: "This collection is used as an example to help you develop your next Flow NFT.",
-                        externalURL: MetadataViews.ExternalURL("https://example-nft.onflow.org"),
-                        squareImage: media,
-                        bannerImage: media,
-                        socials: {
-                            "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
-                        }
-                    )
+                    return ExampleNFT.getCollectionDisplay(nftType: Type<@ExampleNFT.NFT>())
                 case Type<MetadataViews.Traits>():
                     // exclude mintedTime and foo to show other uses of Traits
                     let excludedTraits = ["mintedTime", "foo"]
@@ -158,22 +133,22 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
         access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT{NonFungibleToken.NFT}}
 
         /// Paths where this collection should be stored and linked
-        pub let storagePath: StoragePath
-        pub let publicPath: PublicPath
+        pub let defaultStoragePath: StoragePath
+        pub let defaultPublicPath: PublicPath
         pub let privateProviderPath: PrivatePath
 
         init () {
             self.ownedNFTs <- {}
-            self.storagePath = /storage/cadenceExampleNFTCollection
-            self.publicPath = /public/cadenceExampleNFTCollection
+            self.defaultStoragePath = /storage/cadenceExampleNFTCollection
+            self.defaultPublicPath = /public/cadenceExampleNFTCollection
             self.privateProviderPath = /private/cadenceExampleNFTCollection
         }
 
         /// Returns the NFT types that this collection can store
-        pub fun getAcceptedTypes(): [Type] {
-            let types: [Type] = []
-            types[0] = Type<@ExampleNFT.NFT>()
-            return types
+        pub fun getAcceptedTypes(): {Type: Bool} {
+            return {
+                Type<@ExampleNFT.NFT>(): true
+            }
         }
 
         // withdraw removes an NFT from the collection and moves it to the caller
@@ -258,17 +233,17 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
 
     /// Return the types that the contract defines
     pub fun getNFTTypes(): [Type] {
-        let types: [Type] = []
-        types[0] = Type<@ExampleNFT.NFT>()
-        return types
+        return [
+            Type<@ExampleNFT.NFT>()
+        ]
     }
 
     /// get a list of all the NFT collection types that the contract defines
     /// could include a post-condition that verifies that each Type is an NFT collection type
     pub fun getCollectionTypes(): [Type] {
-        let types: [Type] = []
-        types[0] = Type<@ExampleNFT.Collection>()
-        return types
+        return [
+            Type<@ExampleNFT.Collection>()
+        ]
     }
 
     /// tells what collection type should be used for the specified NFT type
@@ -372,14 +347,14 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
-        let storagePath = collection.storagePath
-        let publicPath = collection.publicPath
-        self.account.save(<-collection, to: storagePath)
+        let defaultStoragePath = collection.defaultStoragePath
+        let defaultPublicPath = collection.defaultPublicPath
+        self.account.save(<-collection, to: defaultStoragePath)
 
         // create a public capability for the collection
         self.account.link<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>(
-            publicPath,
-            target: storagePath
+            defaultPublicPath,
+            target: defaultStoragePath
         )
 
         // Create a Minter resource and save it to storage
