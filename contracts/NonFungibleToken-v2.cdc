@@ -73,7 +73,7 @@ pub contract NonFungibleToken {
     ///
     pub resource interface Transferable {
         /// withdraw removes an NFT from the collection and moves it to the caller
-        pub fun transfer(id: UInt64, receiver: Capability<&AnyResource{Receiver}>): @AnyResource{NFT}
+        pub fun transfer(id: UInt64, receiver: Capability<&AnyResource{Receiver}>): Bool
     }
 
     /// Interface to mediate deposits to the Collection
@@ -92,9 +92,17 @@ pub contract NonFungibleToken {
     /// publish for their collection
     pub resource interface CollectionPublic { //: MetadataViews.ResolverCollection {
         pub fun deposit(token: @AnyResource{NFT})
+        pub fun getAcceptedTypes(): {Type: Bool}
         pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}
         pub fun getIDs(): [UInt64]
-        pub fun borrowNFT(id: UInt64): &AnyResource{NFT}
+        pub fun borrowNFT(id: UInt64): &AnyResource{NFT}? {
+            // If the result isn't nil, the id of the returned reference
+            // should be the same as the argument to the function
+            post {
+                (result == nil) || (result?.id == id): 
+                    "Cannot borrow NFT reference: The ID of the returned reference is incorrect"
+            }
+        }
     }
 
     /// Requirement for the concrete resource type
@@ -103,17 +111,17 @@ pub contract NonFungibleToken {
     pub resource interface Collection { //: Provider, Receiver, Transferable, CollectionPublic, MetadataViews.ResolverCollection {
 
         /// Paths for the collection
-        pub let storagePath: StoragePath
+        pub let defaultStoragePath: StoragePath
         pub let publicPath: PublicPath
-        pub let privateProviderPath: PrivatePath
 
-        /// Dictionary to hold the NFTs in the Collection
         /// Normally we would require that the collection specify
         /// a specific dictionary to store the NFTs, but this isn't necessary any more
         /// as long as all the other functions are there
 
         /// Returns the NFT types that this collection can store
-        pub fun getAcceptedTypes(): [Type]
+        /// If the collection can accept any NFT type, it should return
+        /// a one element dictionary with the key type as `@AnyResource{NonFungibleToken.NFT}`
+        pub fun getAcceptedTypes(): {Type: Bool}
 
         /// withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @AnyResource{NFT}
