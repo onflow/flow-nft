@@ -12,37 +12,32 @@ func main() {
 	color.Green("This is a demo of what overflow can do for an NFT project, in this case the example is a modified version of flow-nft repo")
 
 	color.Green("In order to start overflow with a default in memory client you simply run")
-	color.Cyan(`o := Overflow(
-		StopOnError(),
-		PrintInteractionResults(),
-	)`)
-	color.Green("This will start overflow in embedded mode, and also instruct it to stop if there are errors after scripts/transactions and print the results of them with the embedded emulator log. ")
-
+	fmt.Println("")
+	color.Cyan(`o := Overflow()`)
+	color.Green("")
+	color.Green("This will start overflow in embedded mode, if any interaction error occur the job will terminate in embedded mode")
 	pause()
-	o := Overflow(
-		WithGlobalPrintOptions(),
-		WithFlowForNewUsers(10.0),
-	)
+	o := Overflow()
 
 	fmt.Println("")
-	color.Green(`We now have an running version of 'Overflow' in embedded mode, it automatically deployed all contracts for the serviceAccount that was specified in flow.json and created all other empty accounts. 
-
-In our case we deployed contracts and created the users alice and bob.`)
-
+	color.Green(`We now have an running version of 'Overflow' in embedded mode, ready to be interacted with. All stakeholders are created with the default amount of flow and contracts are deployed.`)
 	pause()
 
-	color.Green("Running an transaction in overflow is don by calling the `Tx` method on the `o` or overflow object")
+	color.Green("Running an transaction in overflow is done by calling the `Tx` method on the `o` or overflow object")
+	color.Green(`We now have an running version of 'Overflow' in embedded mode, ready to be interacted with`)
+	fmt.Println("")
 	color.Cyan(`o.Tx("setup_account", WithSigner("alice"))`)
 	color.Green("")
-	color.Green("that line will run the transaction `setup_account` from the `transactions/` folder, sign is as the demo user `alice` it will also print out the result in a nice terse way")
-
-	color.Green("note that when we refer to users by name in overflow we do not use the network prefix, this is so that you can have the same stakeholders on mainnet/testnet if you want to without chaning the code. So in flow.json the account for alice is called 'emulator-alice'")
+	color.Green("This will run the transaction `setup_account` from the `transactions/` folder, sign is as the demo user `alice` it will also print out the result in a nice terse way")
+	color.Green("")
+	color.Green("Note that when we refer to users by name in overflow we do not use the network prefix, this is so that you can have the same stakeholders on mainnet/testnet if you want to without chaning the code. So in flow.json the account for alice is called 'emulator-alice'")
 
 	pause()
 	o.Tx("setup_account", WithSigner("alice"))
 
-	color.Green("so we now have set up alice, lets set up bob and also setup their royalty receivers")
+	color.Green("Now we have set up alice, lets set up bob and also setup their royalty receivers")
 
+	color.Green("")
 	color.Cyan(`
 	o.Tx("setup_account", 
 		WithSigner("bob")
@@ -58,6 +53,7 @@ In our case we deployed contracts and created the users alice and bob.`)
 	)	
 	`)
 
+	color.Green("")
 	o.Tx("setup_account",
 		WithSigner("bob"),
 	)
@@ -91,7 +87,7 @@ In overflow v1 all arguments are _named_ that is you mention them by their name 
 		GetIdFromEvent("Deposit", "id")
 		`)
 
-	color.Green("Most arguments in overflow are sent using the `Arg` method but there are some other helpfull methods, in this case we use `Addresses` to erturn a list of addresses. As you can see we can use the logical name of the account in flow.json and it will replace that with the address in the transaction")
+	color.Green("Most arguments in overflow are sent using the `Arg` method but there are some other helpfull methods, in this case we use `Addresses` to return a list of addresses. As you can see we can use the logical name of the account in flow.json and it will replace that with the address in the transaction")
 
 	color.Green("We can also see that after we have run and printed the result we can fetch out data from the events in the transaction, in this case we fetch out the first entry of an event that has the suffix Deposit and we fetch the id `id` field as an UInt64. This is a convenience method that was added since this is a very normal pattern")
 

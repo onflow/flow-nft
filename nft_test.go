@@ -67,7 +67,7 @@ func TestNFT(t *testing.T) {
 		setupFlowRoyalty(WithSigner("bob")).AssertSuccess(t)
 		nft := mintNft(WithArg("recipient", "alice")).AssertSuccess(t)
 
-		nft.AssertEvent(t, "ExampleNFT.Deposit", OverflowEvent{
+		nft.AssertEvent(t, "ExampleNFT.Deposit", map[string]interface{}{
 			"id": uint64(1),
 		})
 
