@@ -46,7 +46,35 @@ import MetadataViews from "./MetadataViews.cdc"
 /// The main NFT contract interface. Other NFT contracts will
 /// import and implement this interface
 ///
-pub contract NonFungibleToken {
+pub contract interface NonFungibleToken {
+
+    /// Event that is emitted when a token is withdrawn,
+    /// indicating the owner of the collection that it was withdrawn from.
+    ///
+    /// If the collection is not in an account's storage, `from` will be `nil`.
+    ///
+    pub event Withdraw(id: UInt64, from: Address?, type: Type)
+
+    /// Event that emitted when a token is deposited to a collection.
+    ///
+    /// It indicates the owner of the collection that it was deposited to.
+    ///
+    pub event Deposit(id: UInt64, to: Address?, type: Type)
+
+    /// Transfer
+    ///
+    /// The event that is emitted when tokens are transferred from one account to another
+    pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type)
+
+    /// Mint
+    ///
+    /// The event that should be emitted when an NFT is minted
+    pub event Mint(id: UInt64, type: Type)
+
+    /// Destroy
+    ///
+    /// The event that should be emitted when an NFT is destroyed
+    pub event Destroy(id: UInt64, type: Type)
 
     /// Interface that the NFTs have to conform to
     ///
@@ -110,9 +138,11 @@ pub contract NonFungibleToken {
     ///
     pub resource interface Collection { //: Provider, Receiver, Transferable, CollectionPublic, MetadataViews.ResolverCollection {
 
-        /// Paths for the collection
-        pub let defaultStoragePath: StoragePath
-        pub let publicPath: PublicPath
+        /// Return the default storage path for the collection
+        pub fun getDefaultStoragePath(): StoragePath
+
+        /// Return the default public path for the collection
+        pub fun getDefaultPublicPath(): PublicPath
 
         /// Normally we would require that the collection specify
         /// a specific dictionary to store the NFTs, but this isn't necessary any more
@@ -154,13 +184,25 @@ pub contract NonFungibleToken {
         }
     }
 
-    /// Verifies that the array of types are actually collection types
-    pub fun verifyCollectionTypes(_ types: [Type]): Bool {
-        for type in types {
-            if !type.isSubtype(of: Type<@{NonFungibleToken.Collection}>()) {
-                return false
-            }
+    /// Return the types that the contract defines
+    pub fun getNFTTypes(): [Type] {
+        post {
+            result.length > 0: "Must indicate what non-fungible token types this contract defines"
         }
-        return true
     }
+
+    /// get a list of all the NFT collection types that the contract defines
+    /// could include a post-condition that verifies that each Type is an NFT collection type
+    pub fun getCollectionTypes(): [Type]
+
+    /// tells what collection type should be used for the specified NFT type
+    /// return `nil` if no collection type exists for the specified NFT type
+    pub fun getCollectionTypeForNftType(nftType: Type): Type?
+
+    /// resolve a type to its CollectionData so you know where to store it
+    /// Returns `nil` if no collection type exists for the specified NFT type
+    pub fun getCollectionData(nftType: Type): MetadataViews.NFTCollectionData?
+
+    /// Returns the CollectionDisplay view for the NFT type that is specified 
+    pub fun getCollectionDisplay(nftType: Type): MetadataViews.NFTCollectionDisplay?
 }
