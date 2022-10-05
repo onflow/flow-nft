@@ -11,16 +11,17 @@
 */
 
 import NonFungibleToken from "./NonFungibleToken-v2.cdc"
-import NonFungibleTokenInterface from "./NonFungibleToken-v2-ContractInterface.cdc"
 import MetadataViews from "./MetadataViews.cdc"
 
-pub contract ExampleNFT: NonFungibleTokenInterface {
+pub contract ExampleNFT: NonFungibleToken {
 
     /// Standard events from the NonFungibleTokenInterface
 
     pub event Withdraw(id: UInt64, from: Address?, type: Type)
     pub event Deposit(id: UInt64, to: Address?, type: Type)
     pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type)
+    pub event Mint(id: UInt64, type: Type)
+    pub event Destroy(id: UInt64, type: Type)
 
     /// Path where the minter should be stored
     /// The standard paths for the collection are stored in the collection resource type
@@ -132,16 +133,18 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
         /// NFT is a resource type with an `UInt64` ID field
         access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT{NonFungibleToken.NFT}}
 
-        /// Paths where this collection should be stored and linked
-        pub let defaultStoragePath: StoragePath
-        pub let defaultPublicPath: PublicPath
-        pub let privateProviderPath: PrivatePath
+        /// Return the default storage path for the collection
+        pub fun getDefaultStoragePath(): StoragePath {
+            return /storage/cadenceExampleNFTCollection
+        }
+
+        /// Return the default public path for the collection
+        pub fun getDefaultPublicPath(): PublicPath {
+            return /public/cadenceExampleNFTCollection
+        }
 
         init () {
             self.ownedNFTs <- {}
-            self.defaultStoragePath = /storage/cadenceExampleNFTCollection
-            self.defaultPublicPath = /public/cadenceExampleNFTCollection
-            self.privateProviderPath = /private/cadenceExampleNFTCollection
         }
 
         /// Returns the NFT types that this collection can store
@@ -151,7 +154,7 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
             }
         }
 
-        // withdraw removes an NFT from the collection and moves it to the caller
+        /// withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @ExampleNFT.NFT{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
 
@@ -160,8 +163,8 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
             return <-token
         }
 
-        // deposit takes a NFT and adds it to the collections dictionary
-        // and adds the ID to the id array
+        /// deposit takes a NFT and adds it to the collections dictionary
+        /// and adds the ID to the id array
         pub fun deposit(token: @AnyResource{NonFungibleToken.NFT}) {
             let token <- token as! @ExampleNFT.NFT
 
@@ -303,13 +306,13 @@ pub contract ExampleNFT: NonFungibleTokenInterface {
         }
     }
 
-    // Resource that an admin or something similar would own to be
-    // able to mint new NFTs
-    //
+    /// Resource that an admin or something similar would own to be
+    /// able to mint new NFTs
+    ///
     pub resource NFTMinter {
 
-        // mintNFT mints a new NFT with a new ID
-        // and deposit it in the recipients collection using their collection reference
+        /// mintNFT mints a new NFT with a new ID
+        /// and deposit it in the recipients collection using their collection reference
         pub fun mintNFT(
             recipient: &{NonFungibleToken.CollectionPublic},
             name: String,
