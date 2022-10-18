@@ -15,7 +15,7 @@ import MetadataViews from "./MetadataViews.cdc"
 
 pub contract ExampleNFT: NonFungibleToken {
 
-    /// Standard events from the NonFungibleTokenInterface
+    /// Standard events from the NonFungibleToken Interface
 
     pub event Withdraw(id: UInt64, from: Address?, type: Type)
     pub event Deposit(id: UInt64, to: Address?, type: Type)
@@ -128,7 +128,7 @@ pub contract ExampleNFT: NonFungibleToken {
         }
     }
 
-    pub resource Collection: NonFungibleToken.Collection, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
+    pub resource Collection: NonFungibleToken.Collection, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.Transferor, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         /// dictionary of NFT conforming tokens
         /// NFT is a resource type with an `UInt64` ID field
         access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT{NonFungibleToken.NFT}}
@@ -178,12 +178,12 @@ pub contract ExampleNFT: NonFungibleToken {
 
         /// Function for a direct transfer instead of having to do a deposit and withdrawal
         ///
-        pub fun transfer(id: UInt64, recipient: Capability<&{NonFungibleToken.Receiver}>): Bool {
+        pub fun transfer(id: UInt64, receiver: Capability<&AnyResource{NonFungibleToken.Receiver}>): Bool {
             let token <- self.withdraw(withdrawID: id)
 
             // If we can't borrow a receiver reference, don't panic, just return the NFT
             // and return true for an error
-            if let receiverRef = recipient.borrow() {
+            if let receiverRef = receiver.borrow() {
                 emit Transfer(id: token.id, from: self.owner?.address, to: receiverRef.owner?.address, type: token.getType())
                 receiverRef.deposit(token: <-token)
 

@@ -4,11 +4,11 @@
 
 ## `NonFungibleToken` contract interface
 
-The interface that all Non-Fungible Token contracts could conform to.
+The interface that all Non-Fungible Token contracts should conform to.
 If a user wants to deploy a new NFT contract, their contract would need
 to implement the NonFungibleToken interface.
 
-Their contract would have to follow all the rules and naming
+Their contract must follow all the rules and naming
 that the interface specifies.
 
 ## `NFT` resource
@@ -63,7 +63,8 @@ pub contract interface NonFungibleToken {
 
     /// Transfer
     ///
-    /// The event that is emitted when tokens are transferred from one account to another
+    /// The event that should be emitted when tokens are transferred from one account to another
+    ///
     pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type)
 
     /// Mint
@@ -76,11 +77,11 @@ pub contract interface NonFungibleToken {
     /// The event that should be emitted when an NFT is destroyed
     pub event Destroy(id: UInt64, type: Type)
 
-    /// Interface that the NFTs have to conform to
+    /// Interface that the NFTs must conform to
     ///
     pub resource interface NFT { //: MetadataViews.Resolver {
         /// The unique ID that each NFT has
-        pub let id: UInt64
+        pub fun getID(): UInt64
 
         pub fun getViews(): [Type]
         pub fun resolveView(_ view: Type): AnyStruct?
@@ -92,14 +93,14 @@ pub contract interface NonFungibleToken {
         /// withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @AnyResource{NFT} {
             post {
-                result.id == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
+                result.getID() == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
             }
         }
     }
 
-    /// Interface to mediate withdraws from the Collection
+    /// Interface to mediate withdrawals from the Collection
     ///
-    pub resource interface Transferable {
+    pub resource interface Transferor {
         /// withdraw removes an NFT from the collection and moves it to the caller
         pub fun transfer(id: UInt64, receiver: Capability<&AnyResource{Receiver}>): Bool
     }
@@ -113,7 +114,7 @@ pub contract interface NonFungibleToken {
         pub fun deposit(token: @AnyResource{NFT})
 
         /// getAcceptedTypes returns a list of NFT types that this receiver accepts
-        pub fun getAcceptedTypes(): [Type]
+        pub fun getAcceptedTypes(): {Type: Bool}
     }
 
     /// Interface that an account would commonly 
@@ -127,7 +128,7 @@ pub contract interface NonFungibleToken {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
             post {
-                (result == nil) || (result?.id == id): 
+                (result == nil) || (result?.getID() == id): 
                     "Cannot borrow NFT reference: The ID of the returned reference is incorrect"
             }
         }
@@ -136,7 +137,7 @@ pub contract interface NonFungibleToken {
     /// Requirement for the concrete resource type
     /// to be declared in the implementing contract
     ///
-    pub resource interface Collection { //: Provider, Receiver, Transferable, CollectionPublic, MetadataViews.ResolverCollection {
+    pub resource interface Collection { //: Provider, Receiver, Transferor, CollectionPublic, MetadataViews.ResolverCollection {
 
         /// Return the default storage path for the collection
         pub fun getDefaultStoragePath(): StoragePath
@@ -162,7 +163,7 @@ pub contract interface NonFungibleToken {
 
         /// Function for a direct transfer instead of having to do a deposit and withdrawal
         ///
-        pub fun transfer(id: UInt64, recipient: Capability<&{NonFungibleToken.Receiver}>): Bool
+        pub fun transfer(id: UInt64, receiver: Capability<&AnyResource{NonFungibleToken.Receiver}>): Bool
 
         /// getIDs returns an array of the IDs that are in the collection
         pub fun getIDs(): [UInt64]
