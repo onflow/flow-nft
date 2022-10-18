@@ -189,7 +189,7 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 | `Serial`    | Serial number for an NFT.                  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L258-L270)|
 | `Royalty`   | A Royalty Cut for a given NFT.             | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L286-L323) |
 | `Royalties` | Wrapper for multiple Royalty views.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L325-L352) | :white_check_mark: |
-| `Media`     | Represents a file with an correspoiding mediaType | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L378-L395)|
+| `Media`     | Represents a file with a corresponding mediaType | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L378-L395)|
 | `Medias`    | Wrapper for multiple Media views.          | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L397-L407)|
 | `License`   | Represents a license according to https://spdx.org/licenses/ | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L423-L432)|
 | `ExternalURL`| Exposes a URL to an NFT on an external site. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L448-L458)| :white_check_mark: |
@@ -201,9 +201,9 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 
 ## Core views
 
-The views marked as `Core views` are considered the minimun required views to provide a full picture of any NFT. If you want your NFT to be featured on the [Flow NFT Catalog](https://nft-catalog.vercel.app/) it should implement all of them as a pre-requisite.
+The views marked as `Core views` are considered the minimum required views to provide a full picture of any NFT. If you want your NFT to be featured on the [Flow NFT Catalog](https://nft-catalog.vercel.app/) it should implement all of them as a pre-requisite.
 
-## Allways prefer wrappers over single views
+## Always prefer wrappers over single views
 
 When exposing a view that could have multiple occurrences on a single NFT, such as `Edition`, `Royalty`, `Media` or `Trait` the wrapper view should always be used, even if there is only a single occurrence. The wrapper view is always the plural version of the single view name and can be found below the main view definition in the `MetadataViews` contract.
 
@@ -211,7 +211,7 @@ When resolving the view, the wrapper view should be the returned value, instead 
 
 ### Example
 
-#### Prefered
+#### Preferred
 
 ```cadence
 pub fun resolveView(_ view: Type): AnyStruct? {
@@ -265,7 +265,7 @@ pub struct Royalties {
 }
 ```
 
-and the royalty can indicate whatever fungible token it wants to accept via the type of the generic `{FungibleToken.Reciever}` capability that it specifies:
+and the royalty can indicate whatever fungible token it wants to accept via the type of the generic `{FungibleToken.Receiver}` capability that it specifies:
 
 ```cadence
 pub struct Royalty {
@@ -350,7 +350,7 @@ but without most of the downsides.
 - Events are defined in the contract for withdrawing and depositing, so a recipient will always be notified that someone has sent them tokens with their own deposit event.
 - This version can support batch transfers of NFTs. Even though it isn't explicitly defined in the contract, a batch transfer can be done within a transaction by just withdrawing all the tokens to transfer, then depositing them wherever they need to be, all atomically.
 - Transfers can trigger actions because users can define custom `Receivers` to execute certain code when a token is sent.
-- Easy ownership indexing: rathing than iterating through all tokens to find which ones you own, you have them all stored in your account's collection and can get the list of the ones you own instantly.
+- Easy ownership indexing: rather than iterating through all tokens to find which ones you own, you have them all stored in your account's collection and can get the list of the ones you own instantly.
 
 ## How to test the standard
 
