@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/onflow/flow-nft#readme",
   "dependencies": {
-    "@changesets/cli": "^2.23.0"
+    "@changesets/cli": "^2.23.0",
+    "package.json": "^2.0.1"
   }
 }
