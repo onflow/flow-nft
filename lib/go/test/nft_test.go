@@ -90,6 +90,8 @@ func TestCreateNFT(t *testing.T) {
 func TestTransferNFT(t *testing.T) {
 	b, accountKeys := newTestSetup(t)
 
+	serviceSigner, _ := b.ServiceKey().Signer()
+
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
@@ -120,7 +122,7 @@ func TestTransferNFT(t *testing.T) {
 				joshAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				joshSigner,
 			},
 			false,
@@ -153,7 +155,7 @@ func TestTransferNFT(t *testing.T) {
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				exampleNFTSigner,
 			},
 			true,
@@ -190,7 +192,7 @@ func TestTransferNFT(t *testing.T) {
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				exampleNFTSigner,
 			},
 			false,
@@ -239,7 +241,7 @@ func TestTransferNFT(t *testing.T) {
 				joshAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				joshSigner,
 			},
 			false,
