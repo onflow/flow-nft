@@ -71,6 +71,24 @@ pub contract interface NonFungibleToken {
     pub resource interface INFT {
         // The unique ID that each NFT has
         pub let id: UInt64
+
+        /// Function that returns all the Metadata Views implemented by a Non Fungible Token
+        ///
+        /// @return An array of Types defining the implemented views. This value will be used by
+        ///         developers to know which parameter to pass to the resolveView() method.
+        ///
+        pub fun getViews(): [Type] {
+            return []
+        }
+
+        /// Function that resolves a metadata view for this token.
+        ///
+        /// @param view: The Type of the desired view.
+        /// @return A structure representing the requested view.
+        ///
+        pub fun resolveView(_ view: Type): AnyStruct? {
+            return nil
+        }
     }
 
     // Requirement that all conforming NFT smart contracts have
@@ -105,6 +123,10 @@ pub contract interface NonFungibleToken {
         pub fun deposit(token: @NFT)
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NFT
+        /// Safe way to borrow a reference to an NFT that does not panic
+        pub fun borrowNFTSafe(id: UInt64): &NFT? {
+            return nil
+        }
     }
 
     // Requirement for the concrete resource type
