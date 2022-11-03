@@ -98,6 +98,8 @@ func TestTransferNFT(t *testing.T) {
 	// Create a new account to test transfers
 	joshAddress, _, joshSigner := newAccountWithAddress(b, accountKeys)
 
+	serviceSigner, _ := b.ServiceKey().Signer()
+
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
 		accountKeys,
@@ -120,7 +122,7 @@ func TestTransferNFT(t *testing.T) {
 				joshAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				joshSigner,
 			},
 			false,
@@ -153,7 +155,7 @@ func TestTransferNFT(t *testing.T) {
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				exampleNFTSigner,
 			},
 			true,
@@ -190,7 +192,7 @@ func TestTransferNFT(t *testing.T) {
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				exampleNFTSigner,
 			},
 			false,
@@ -239,7 +241,7 @@ func TestTransferNFT(t *testing.T) {
 				joshAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				joshSigner,
 			},
 			false,

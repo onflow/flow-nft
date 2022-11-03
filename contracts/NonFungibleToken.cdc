@@ -103,7 +103,7 @@ pub contract interface NonFungibleToken {
     // publish for their collection
     pub resource interface CollectionPublic {
         pub fun deposit(token: @NFT)
-        pub fun getIDs(): [UInt64]
+        pub view fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NFT
     }
 
@@ -123,7 +123,7 @@ pub contract interface NonFungibleToken {
         pub fun deposit(token: @NFT)
 
         // getIDs returns an array of the IDs that are in the collection
-        pub fun getIDs(): [UInt64]
+        pub view fun getIDs(): [UInt64]
 
         // Returns a borrowed reference to an NFT in the collection
         // so that the caller can read data and call methods from it

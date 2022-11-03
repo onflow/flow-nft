@@ -65,6 +65,8 @@ func mintExampleNFT(
 	tx.AddArgument(cadence.NewArray(royaltyDescriptions))
 	tx.AddArgument(cadence.NewArray(royaltyBeneficiaries))
 
+	serviceSigner, _ := b.ServiceKey().Signer()
+
 	signAndSubmit(
 		t, b, tx,
 		[]flow.Address{
@@ -72,7 +74,7 @@ func mintExampleNFT(
 			exampleNFTAddress,
 		},
 		[]crypto.Signer{
-			b.ServiceKey().Signer(),
+			serviceSigner,
 			exampleNFTSigner,
 		},
 		false,
@@ -129,6 +131,8 @@ func setupRoyaltyReceiver(
 	vaultPath := cadence.Path{Domain: "storage", Identifier: "flowTokenVault"}
 	tx.AddArgument(vaultPath)
 
+	serviceSigner, _ := b.ServiceKey().Signer()
+
 	signAndSubmit(
 		t, b, tx,
 		[]flow.Address{
@@ -136,7 +140,7 @@ func setupRoyaltyReceiver(
 			authorizerAddress,
 		},
 		[]crypto.Signer{
-			b.ServiceKey().Signer(),
+			serviceSigner,
 			authorizerSigner,
 		},
 		false,

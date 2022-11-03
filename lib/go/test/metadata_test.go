@@ -33,6 +33,8 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 		vaultPath := cadence.Path{Domain: "storage", Identifier: "missingVault"}
 		tx.AddArgument(vaultPath)
 
+		serviceSigner, _ := b.ServiceKey().Signer()
+
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
@@ -40,7 +42,7 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				exampleNFTSigner,
 			},
 			true,
@@ -348,6 +350,8 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 		tx.AddArgument(cadence.Path{Domain: "public", Identifier: "exampleNFTCollection"})
 		tx.AddArgument(cadence.NewUInt64(0))
 
+		serviceSigner, _ := b.ServiceKey().Signer()
+
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
@@ -355,7 +359,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 				aAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				aSigner,
 			},
 			false,

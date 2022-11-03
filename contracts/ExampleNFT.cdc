@@ -142,7 +142,7 @@ pub contract ExampleNFT: NonFungibleToken {
 
     pub resource interface ExampleNFTCollectionPublic {
         pub fun deposit(token: @NonFungibleToken.NFT)
-        pub fun getIDs(): [UInt64]
+        pub view fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
         pub fun borrowExampleNFT(id: UInt64): &ExampleNFT.NFT? {
             post {
@@ -186,7 +186,7 @@ pub contract ExampleNFT: NonFungibleToken {
         }
 
         // getIDs returns an array of the IDs that are in the collection
-        pub fun getIDs(): [UInt64] {
+        pub view fun getIDs(): [UInt64] {
             return self.ownedNFTs.keys
         }
 
