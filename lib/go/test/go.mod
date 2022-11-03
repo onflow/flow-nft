@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/onflow/cadence v0.29.0-stable-cadence
-	github.com/onflow/flow-emulator v0.38.2-0.20221027205358-7107a3d7f301
+	github.com/onflow/flow-emulator v0.38.2-0.20221102220852-0dc3a33fa3bb
 	github.com/onflow/flow-go-sdk v0.29.0
 	github.com/onflow/flow-nft/lib/go/contracts v0.0.0-20220727161549-d59b1e547ac4
 	github.com/onflow/flow-nft/lib/go/templates v0.0.0-00010101000000-000000000000
