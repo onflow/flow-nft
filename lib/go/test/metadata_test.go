@@ -153,23 +153,22 @@ func TestGetNFTMetadata(t *testing.T) {
 		assert.Equal(t, cadence.NewUInt64(editionNum), nftResult.Fields[20].(cadence.Struct).Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), nftResult.Fields[20].(cadence.Struct).Fields[2])
 
-		minterName, _ := cadence.NewString("minter")
-
 		traitsView := nftResult.Fields[21].(cadence.Struct)
 		traits := traitsView.Fields[0].(cadence.Array)
 
-		mintTrait := traits.Values[0].(cadence.Struct)
-		assert.Equal(t, minterName, mintTrait.Fields[0])
-		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
-
 		blockNumberName, _ := cadence.NewString("mintedBlock")
-		blockNumberTrait := traits.Values[1].(cadence.Struct)
+		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
 		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
+
+		minterName, _ := cadence.NewString("minter")
+		mintTrait := traits.Values[1].(cadence.Struct)
+		assert.Equal(t, minterName, mintTrait.Fields[0])
+		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
 
 		mintedTimeName, _ := cadence.NewString("mintedTime")
 		mintedTimeDisplayType, _ := cadence.NewString("Date")
@@ -279,23 +278,22 @@ func TestGetNFTView(t *testing.T) {
 		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[16])
 		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[17])
 
-		minterName, _ := cadence.NewString("minter")
-
 		traitsView := nftResult.Fields[19].(cadence.Struct)
 		traits := traitsView.Fields[0].(cadence.Array)
 
-		mintTrait := traits.Values[0].(cadence.Struct)
-		assert.Equal(t, minterName, mintTrait.Fields[0])
-		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
-
 		blockNumberName, _ := cadence.NewString("mintedBlock")
-		blockNumberTrait := traits.Values[1].(cadence.Struct)
+		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
 		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
+
+		minterName, _ := cadence.NewString("minter")
+		mintTrait := traits.Values[1].(cadence.Struct)
+		assert.Equal(t, minterName, mintTrait.Fields[0])
+		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
 
 		mintedTimeName, _ := cadence.NewString("mintedTime")
 		mintedTimeDisplayType, _ := cadence.NewString("Date")
