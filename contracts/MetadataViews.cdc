@@ -26,7 +26,7 @@ pub contract MetadataViews {
     ///
     pub resource interface ResolverCollection {
         pub fun borrowViewResolver(id: UInt64): &{Resolver}
-        pub fun getIDs(): [UInt64]
+        pub view fun getIDs(): [UInt64]
     }
 
     /// NFTView wraps all Core views along `id` and `uuid` fields, and is used 
