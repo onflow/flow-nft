@@ -4,6 +4,6 @@ go 1.16
 
 require (
 	github.com/kevinburke/go-bindata v3.22.0+incompatible
-	github.com/onflow/flow-go-sdk v0.24.0
-	github.com/stretchr/testify v1.7.0
+	github.com/onflow/flow-go-sdk v0.29.0-stable-cadence-4
+	github.com/stretchr/testify v1.7.5
 )
