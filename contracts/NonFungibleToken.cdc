@@ -41,33 +41,37 @@ Collection to complete the transfer.
 
 */
 
-// The main NFT contract interface. Other NFT contracts will
-// import and implement this interface
-//
+/// The main NFT contract interface. Other NFT contracts will
+/// import and implement this interface
+///
 pub contract interface NonFungibleToken {
 
-    // The total number of tokens of this type in existence
+    /// The total number of tokens of this type in existence
     pub var totalSupply: UInt64
 
-    // Event that emitted when the NFT contract is initialized
-    //
+    /// Event that emitted when the NFT contract is initialized
+    ///
     pub event ContractInitialized()
 
-    // Event that is emitted when a token is withdrawn,
-    // indicating the owner of the collection that it was withdrawn from.
-    //
-    // If the collection is not in an account's storage, `from` will be `nil`.
-    //
+    /// Event that is emitted when a token is withdrawn,
+    /// indicating the owner of the collection that it was withdrawn from.
+    ///
+    /// If the collection is not in an account's storage, `from` will be `nil`.
+    ///
     pub event Withdraw(id: UInt64, from: Address?)
 
-    // Event that emitted when a token is deposited to a collection.
-    //
-    // It indicates the owner of the collection that it was deposited to.
-    //
+    /// Event that emitted when a token is deposited to a collection.
+    ///
+    /// It indicates the owner of the collection that it was deposited to.
+    ///
     pub event Deposit(id: UInt64, to: Address?)
 
-    // Interface that the NFTs have to conform to
-    //
+    /// Interface that the NFTs have to conform to
+    /// The metadata views methods are included here temporarily
+    /// because enforcing the metadata interfaces in the standard
+    /// would break many contracts in an upgrade. Those breaking changes
+    /// are being saved for the stable cadence milestone
+    ///
     pub resource interface INFT {
         // The unique ID that each NFT has
         pub let id: UInt64
