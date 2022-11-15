@@ -302,7 +302,7 @@ but without most of the downsides.
 
 If you want to test out these contracts, we recommend either testing them
 with the [Flow Playground](https://play.onflow.org)
-or with the [Visual Studio Code Extension](https://github.com/onflow/flow/blob/master/docs/vscode-extension.md#cadence-visual-studio-code-extension).
+or with the [Visual Studio Code Extension](https://developers.flow.com/tools/vscode-extension).
 
 The steps to follow are:
 
