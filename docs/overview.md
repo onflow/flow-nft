@@ -370,7 +370,7 @@ The works in these files:
 - [ExampleNFT.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/ExampleNFT.cdc)
 - [NonFungibleToken.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/NonFungibleToken.cdc)
 
-are under the [Unlicense](LICENSE).
+are under the [Unlicense](https://github.com/onflow/flow-nft/blob/master/LICENSE).
 
 ## Deploying updates
 
