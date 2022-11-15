@@ -33,5 +33,10 @@
   "homepage": "https://github.com/onflow/flow-nft#readme",
   "dependencies": {
     "@changesets/cli": "^2.23.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.20.2",
+    "@onflow/flow-js-testing": "^0.3.0-alpha.17",
+    "jest": "^29.3.1"
   }
 }
