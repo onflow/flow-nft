@@ -1,21 +1,21 @@
 # Struct `NFTCollectionData`
 
 ```cadence
-struct NFTCollectionData {
+pub struct NFTCollectionData {
 
-    storagePath:  StoragePath
+    pub let storagePath: StoragePath
 
-    publicPath:  PublicPath
+    pub let publicPath: PublicPath
 
-    providerPath:  PrivatePath
+    pub let providerPath: PrivatePath
 
-    publicCollection:  Type
+    pub let publicCollection: Type
 
-    publicLinkedType:  Type
+    pub let publicLinkedType: Type
 
-    providerLinkedType:  Type
+    pub let providerLinkedType: Type
 
-    createEmptyCollection:  ((): @NonFungibleToken.Collection)
+    pub let createEmptyCollection: ((): @NonFungibleToken.Collection)
 }
 ```
 
@@ -26,7 +26,7 @@ storage and public capabilities.
 ### Initializer
 
 ```cadence
-func init(storagePath StoragePath, publicPath PublicPath, providerPath PrivatePath, publicCollection Type, publicLinkedType Type, providerLinkedType Type, createEmptyCollectionFunction ((): @NonFungibleToken.Collection))
+init(storagePath: StoragePath, publicPath: PublicPath, providerPath: PrivatePath, publicCollection: Type, publicLinkedType: Type, providerLinkedType: Type, createEmptyCollectionFunction: ((): @NonFungibleToken.Collection))
 ```
 
 

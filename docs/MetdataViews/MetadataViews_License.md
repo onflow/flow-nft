@@ -1,9 +1,9 @@
 # Struct `License`
 
 ```cadence
-struct License {
+pub struct License {
 
-    spdxIdentifier:  String
+    pub let spdxIdentifier: String
 }
 ```
 
@@ -13,7 +13,7 @@ This view can be used if the content of an NFT is licensed.
 ### Initializer
 
 ```cadence
-func init(_ String)
+init(_: String)
 ```
 
 

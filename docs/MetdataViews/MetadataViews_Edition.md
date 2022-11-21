@@ -1,13 +1,13 @@
 # Struct `Edition`
 
 ```cadence
-struct Edition {
+pub struct Edition {
 
-    name:  String?
+    pub let name: String?
 
-    number:  UInt64
+    pub let number: UInt64
 
-    max:  UInt64?
+    pub let max: UInt64?
 }
 ```
 
@@ -20,7 +20,7 @@ information is returned as an arbitrary sized array
 ### Initializer
 
 ```cadence
-func init(name String?, number UInt64, max UInt64?)
+init(name: String?, number: UInt64, max: UInt64?)
 ```
 
 

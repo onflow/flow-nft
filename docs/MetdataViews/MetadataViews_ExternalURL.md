@@ -1,9 +1,9 @@
 # Struct `ExternalURL`
 
 ```cadence
-struct ExternalURL {
+pub struct ExternalURL {
 
-    url:  String
+    pub let url: String
 }
 ```
 
@@ -14,7 +14,7 @@ to the original link for an NFT.
 ### Initializer
 
 ```cadence
-func init(_ String)
+init(_: String)
 ```
 
 

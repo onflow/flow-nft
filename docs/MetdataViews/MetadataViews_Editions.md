@@ -1,9 +1,9 @@
 # Struct `Editions`
 
 ```cadence
-struct Editions {
+pub struct Editions {
 
-    infoList:  [Edition]
+    pub let infoList: [Edition]
 }
 ```
 
@@ -12,7 +12,7 @@ Wrapper view for multiple Edition views
 ### Initializer
 
 ```cadence
-func init(_ [Edition])
+init(_: [Edition])
 ```
 
 

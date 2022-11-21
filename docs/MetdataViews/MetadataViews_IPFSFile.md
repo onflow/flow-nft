@@ -1,11 +1,11 @@
 # Struct `IPFSFile`
 
 ```cadence
-struct IPFSFile {
+pub struct IPFSFile {
 
-    cid:  String
+    pub let cid: String
 
-    path:  String?
+    pub let path: String?
 }
 ```
 
@@ -21,16 +21,16 @@ Implemented Interfaces:
 ### Initializer
 
 ```cadence
-func init(cid String, path String?)
+init(cid: String, path: String?)
 ```
 
 
 ## Functions
 
-### fun `uri()`
+### `uri()`
 
 ```cadence
-func uri(): String
+fun uri(): String
 ```
 This function returns the IPFS native URL for this file.
 Ref: https://docs.ipfs.io/how-to/address-ipfs-on-web/#native-urls

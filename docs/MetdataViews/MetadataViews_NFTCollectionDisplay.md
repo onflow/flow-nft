@@ -1,19 +1,19 @@
 # Struct `NFTCollectionDisplay`
 
 ```cadence
-struct NFTCollectionDisplay {
+pub struct NFTCollectionDisplay {
 
-    name:  String
+    pub let name: String
 
-    description:  String
+    pub let description: String
 
-    externalURL:  ExternalURL
+    pub let externalURL: ExternalURL
 
-    squareImage:  Media
+    pub let squareImage: Media
 
-    bannerImage:  Media
+    pub let bannerImage: Media
 
-    socials:  {String: ExternalURL}
+    pub let socials: {String: ExternalURL}
 }
 ```
 
@@ -24,7 +24,7 @@ graphics of the NFT collection this NFT belongs to.
 ### Initializer
 
 ```cadence
-func init(name String, description String, externalURL ExternalURL, squareImage Media, bannerImage Media, socials {String: ExternalURL})
+init(name: String, description: String, externalURL: ExternalURL, squareImage: Media, bannerImage: Media, socials: {String: ExternalURL})
 ```
 
 

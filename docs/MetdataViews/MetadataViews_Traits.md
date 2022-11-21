@@ -1,9 +1,9 @@
 # Struct `Traits`
 
 ```cadence
-struct Traits {
+pub struct Traits {
 
-    traits:  [Trait]
+    pub let traits: [Trait]
 }
 ```
 
@@ -14,16 +14,16 @@ some contextualized data about each trait.
 ### Initializer
 
 ```cadence
-func init(_ [Trait])
+init(_: [Trait])
 ```
 
 
 ## Functions
 
-### fun `addTrait()`
+### `addTrait()`
 
 ```cadence
-func addTrait(_ Trait)
+fun addTrait(_: Trait)
 ```
 Adds a single Trait to the Traits view
 

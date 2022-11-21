@@ -1,9 +1,9 @@
 # Resource `Collection`
 
 ```cadence
-resource Collection {
+pub resource Collection {
 
-    ownedNFTs:  {UInt64: NFT}
+    pub var ownedNFTs: {UInt64: NFT}
 }
 ```
 
@@ -17,38 +17,40 @@ Implemented Interfaces:
 
 ## Functions
 
-### fun `withdraw()`
+### `withdraw()`
 
 ```cadence
-func withdraw(withdrawID UInt64): NFT
+fun withdraw(withdrawID: UInt64): NFT
 ```
 Removes an NFT from the collection and moves it to the caller
 
-param withdrawID: The ID of the NFT that will be withdrawn
-return The resource containing the desired NFT
+Parameters:
+  - withdrawID : _The ID of the NFT that will be withdrawn_
+
+Returns: The resource containing the desired NFT
 
 ---
 
-### fun `deposit()`
+### `deposit()`
 
 ```cadence
-func deposit(token NFT)
+fun deposit(token: NFT)
 ```
 
 ---
 
-### fun `getIDs()`
+### `getIDs()`
 
 ```cadence
-func getIDs(): [UInt64]
+fun getIDs(): [UInt64]
 ```
 
 ---
 
-### fun `borrowNFT()`
+### `borrowNFT()`
 
 ```cadence
-func borrowNFT(id UInt64): &NFT
+fun borrowNFT(id: UInt64): &NFT
 ```
 
 ---

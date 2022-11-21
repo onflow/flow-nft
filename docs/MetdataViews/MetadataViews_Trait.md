@@ -1,15 +1,15 @@
 # Struct `Trait`
 
 ```cadence
-struct Trait {
+pub struct Trait {
 
-    name:  String
+    pub let name: String
 
-    value:  AnyStruct
+    pub let value: AnyStruct
 
-    displayType:  String?
+    pub let displayType: String?
 
-    rarity:  Rarity?
+    pub let rarity: Rarity?
 }
 ```
 
@@ -20,7 +20,7 @@ contextualized data about the trait
 ### Initializer
 
 ```cadence
-func init(name String, value AnyStruct, displayType String?, rarity Rarity?)
+init(name: String, value: AnyStruct, displayType: String?, rarity: Rarity?)
 ```
 
 

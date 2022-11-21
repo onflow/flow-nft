@@ -1,9 +1,9 @@
 # Struct `Medias`
 
 ```cadence
-struct Medias {
+pub struct Medias {
 
-    items:  [Media]
+    pub let items: [Media]
 }
 ```
 
@@ -12,7 +12,7 @@ Wrapper view for multiple media views
 ### Initializer
 
 ```cadence
-func init(_ [Media])
+init(_: [Media])
 ```
 
 

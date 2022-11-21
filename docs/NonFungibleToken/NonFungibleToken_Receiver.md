@@ -1,20 +1,21 @@
 # Resource Interface `Receiver`
 
 ```cadence
-resource interface Receiver {
+pub resource interface Receiver {
 }
 ```
 
 Interface to mediate deposits to the Collection
 ## Functions
 
-### fun `deposit()`
+### `deposit()`
 
 ```cadence
-func deposit(token NFT)
+fun deposit(token: NFT)
 ```
 Adds an NFT to the resource implementing it
 
-param token: The NFT resource that will be deposited
+Parameters:
+  - token : _The NFT resource that will be deposited_
 
 ---

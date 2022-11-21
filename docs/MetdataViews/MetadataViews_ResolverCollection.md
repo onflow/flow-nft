@@ -1,25 +1,25 @@
 # Resource Interface `ResolverCollection`
 
 ```cadence
-resource interface ResolverCollection {
+pub resource interface ResolverCollection {
 }
 ```
 
 A group of view resolvers indexed by ID.
 ## Functions
 
-### fun `borrowViewResolver()`
+### `borrowViewResolver()`
 
 ```cadence
-func borrowViewResolver(id UInt64): &{Resolver}
+fun borrowViewResolver(id: UInt64): &{Resolver}
 ```
 
 ---
 
-### fun `getIDs()`
+### `getIDs()`
 
 ```cadence
-func getIDs(): [UInt64]
+fun getIDs(): [UInt64]
 ```
 
 ---

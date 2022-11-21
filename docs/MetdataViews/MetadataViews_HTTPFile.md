@@ -1,9 +1,9 @@
 # Struct `HTTPFile`
 
 ```cadence
-struct HTTPFile {
+pub struct HTTPFile {
 
-    url:  String
+    pub let url: String
 }
 ```
 
@@ -16,16 +16,16 @@ Implemented Interfaces:
 ### Initializer
 
 ```cadence
-func init(url String)
+init(url: String)
 ```
 
 
 ## Functions
 
-### fun `uri()`
+### `uri()`
 
 ```cadence
-func uri(): String
+fun uri(): String
 ```
 
 ---

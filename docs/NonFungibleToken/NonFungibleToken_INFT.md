@@ -1,9 +1,9 @@
 # Resource Interface `INFT`
 
 ```cadence
-resource interface INFT {
+pub resource interface INFT {
 
-    id:  UInt64
+    pub let id: UInt64
 }
 ```
 
@@ -14,10 +14,10 @@ would break many contracts in an upgrade. Those breaking changes
 are being saved for the stable cadence milestone
 ## Functions
 
-### fun `getViews()`
+### `getViews()`
 
 ```cadence
-func getViews(): [Type]
+fun getViews(): [Type]
 ```
 Function that returns all the Metadata Views implemented by a Non Fungible Token
 
@@ -27,10 +27,10 @@ Returns: An array of Types defining the implemented views. This value will be us
 
 ---
 
-### fun `resolveView()`
+### `resolveView()`
 
 ```cadence
-func resolveView(_ Type): AnyStruct?
+fun resolveView(_: Type): AnyStruct?
 ```
 Function that resolves a metadata view for this token.
 
