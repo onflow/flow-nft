@@ -1,13 +1,13 @@
 # Struct `Display`
 
 ```cadence
-struct Display {
+pub struct Display {
 
-    name:  String
+    pub let name: String
 
-    description:  String
+    pub let description: String
 
-    thumbnail:  AnyStruct{File}
+    pub let thumbnail: AnyStruct{File}
 }
 ```
 
@@ -17,7 +17,7 @@ thumbnail for an object. Most objects should implement this view.
 ### Initializer
 
 ```cadence
-func init(name String, description String, thumbnail AnyStruct{File})
+init(name: String, description: String, thumbnail: AnyStruct{File})
 ```
 
 

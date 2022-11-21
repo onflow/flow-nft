@@ -1,7 +1,7 @@
 # Resource Interface `Resolver`
 
 ```cadence
-resource interface Resolver {
+pub resource interface Resolver {
 }
 ```
 
@@ -10,18 +10,18 @@ resource (e.g. an NFT) can implement this interface to provide access to
 the views that it supports.
 ## Functions
 
-### fun `getViews()`
+### `getViews()`
 
 ```cadence
-func getViews(): [Type]
+fun getViews(): [Type]
 ```
 
 ---
 
-### fun `resolveView()`
+### `resolveView()`
 
 ```cadence
-func resolveView(_ Type): AnyStruct?
+fun resolveView(_: Type): AnyStruct?
 ```
 
 ---

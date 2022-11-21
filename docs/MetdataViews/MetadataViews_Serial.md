@@ -1,9 +1,9 @@
 # Struct `Serial`
 
 ```cadence
-struct Serial {
+pub struct Serial {
 
-    number:  UInt64
+    pub let number: UInt64
 }
 ```
 
@@ -16,7 +16,7 @@ other NFTs within that project
 ### Initializer
 
 ```cadence
-func init(_ UInt64)
+init(_: UInt64)
 ```
 
 

@@ -1,7 +1,7 @@
 # Resource Interface `CollectionPublic`
 
 ```cadence
-resource interface CollectionPublic {
+pub resource interface CollectionPublic {
 }
 ```
 
@@ -9,34 +9,34 @@ Interface that an account would commonly
 publish for their collection
 ## Functions
 
-### fun `deposit()`
+### `deposit()`
 
 ```cadence
-func deposit(token NFT)
+fun deposit(token: NFT)
 ```
 
 ---
 
-### fun `getIDs()`
+### `getIDs()`
 
 ```cadence
-func getIDs(): [UInt64]
+fun getIDs(): [UInt64]
 ```
 
 ---
 
-### fun `borrowNFT()`
+### `borrowNFT()`
 
 ```cadence
-func borrowNFT(id UInt64): &NFT
+fun borrowNFT(id: UInt64): &NFT
 ```
 
 ---
 
-### fun `borrowNFTSafe()`
+### `borrowNFTSafe()`
 
 ```cadence
-func borrowNFTSafe(id UInt64): &NFT?
+fun borrowNFTSafe(id: UInt64): &NFT?
 ```
 
 ---

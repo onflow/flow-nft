@@ -1,13 +1,13 @@
 # Struct `Rarity`
 
 ```cadence
-struct Rarity {
+pub struct Rarity {
 
-    score:  UFix64?
+    pub let score: UFix64?
 
-    max:  UFix64?
+    pub let max: UFix64?
 
-    description:  String?
+    pub let description: String?
 }
 ```
 
@@ -18,7 +18,7 @@ have both
 ### Initializer
 
 ```cadence
-func init(score UFix64?, max UFix64?, description String?)
+init(score: UFix64?, max: UFix64?, description: String?)
 ```
 
 

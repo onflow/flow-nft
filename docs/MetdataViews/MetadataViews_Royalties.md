@@ -1,9 +1,9 @@
 # Struct `Royalties`
 
 ```cadence
-struct Royalties {
+pub struct Royalties {
 
-    cutInfos:  [Royalty]
+    priv let cutInfos: [Royalty]
 }
 ```
 
@@ -14,16 +14,16 @@ and are expected to pay royalties based on these specifications.
 ### Initializer
 
 ```cadence
-func init(_ [Royalty])
+init(_: [Royalty])
 ```
 
 
 ## Functions
 
-### fun `getRoyalties()`
+### `getRoyalties()`
 
 ```cadence
-func getRoyalties(): [Royalty]
+fun getRoyalties(): [Royalty]
 ```
 Return the cutInfos list
 

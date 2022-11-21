@@ -1,23 +1,23 @@
 # Struct `NFTView`
 
 ```cadence
-struct NFTView {
+pub struct NFTView {
 
-    id:  UInt64
+    pub let id: UInt64
 
-    uuid:  UInt64
+    pub let uuid: UInt64
 
-    display:  Display?
+    pub let display: Display?
 
-    externalURL:  ExternalURL?
+    pub let externalURL: ExternalURL?
 
-    collectionData:  NFTCollectionData?
+    pub let collectionData: NFTCollectionData?
 
-    collectionDisplay:  NFTCollectionDisplay?
+    pub let collectionDisplay: NFTCollectionDisplay?
 
-    royalties:  Royalties?
+    pub let royalties: Royalties?
 
-    traits:  Traits?
+    pub let traits: Traits?
 }
 ```
 
@@ -28,7 +28,7 @@ view.
 ### Initializer
 
 ```cadence
-func init(id UInt64, uuid UInt64, display Display?, externalURL ExternalURL?, collectionData NFTCollectionData?, collectionDisplay NFTCollectionDisplay?, royalties Royalties?, traits Traits?)
+init(id: UInt64, uuid: UInt64, display: Display?, externalURL: ExternalURL?, collectionData: NFTCollectionData?, collectionDisplay: NFTCollectionDisplay?, royalties: Royalties?, traits: Traits?)
 ```
 
 

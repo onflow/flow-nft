@@ -1,7 +1,7 @@
 # Contract `MetadataViews`
 
 ```cadence
-contract MetadataViews {
+pub contract MetadataViews {
 }
 ```
 
@@ -16,10 +16,10 @@ a different kind of metadata, such as a creator biography
 or a JPEG image file.
 ## Interfaces
     
-### resource interface `Resolver`
+### `Resolver`
 
 ```cadence
-resource interface Resolver {
+pub resource interface Resolver {
 }
 ```
 Provides access to a set of metadata views. A struct or
@@ -30,10 +30,10 @@ the views that it supports.
 
 ---
     
-### resource interface `ResolverCollection`
+### `ResolverCollection`
 
 ```cadence
-resource interface ResolverCollection {
+pub resource interface ResolverCollection {
 }
 ```
 A group of view resolvers indexed by ID.
@@ -42,10 +42,10 @@ A group of view resolvers indexed by ID.
 
 ---
     
-### struct interface `File`
+### `File`
 
 ```cadence
-struct interface File {
+pub struct interface File {
 }
 ```
 Generic interface that represents a file stored on or off chain. Files
@@ -56,26 +56,26 @@ can be used to references images, videos and other media.
 ---
 ## Structs & Resources
 
-### struct `NFTView`
+### `NFTView`
 
 ```cadence
-struct NFTView {
+pub struct NFTView {
 
-    id:  UInt64
+    pub let id: UInt64
 
-    uuid:  UInt64
+    pub let uuid: UInt64
 
-    display:  Display?
+    pub let display: Display?
 
-    externalURL:  ExternalURL?
+    pub let externalURL: ExternalURL?
 
-    collectionData:  NFTCollectionData?
+    pub let collectionData: NFTCollectionData?
 
-    collectionDisplay:  NFTCollectionDisplay?
+    pub let collectionDisplay: NFTCollectionDisplay?
 
-    royalties:  Royalties?
+    pub let royalties: Royalties?
 
-    traits:  Traits?
+    pub let traits: Traits?
 }
 ```
 NFTView wraps all Core views along `id` and `uuid` fields, and is used
@@ -86,16 +86,16 @@ view.
 
 ---
 
-### struct `Display`
+### `Display`
 
 ```cadence
-struct Display {
+pub struct Display {
 
-    name:  String
+    pub let name: String
 
-    description:  String
+    pub let description: String
 
-    thumbnail:  AnyStruct{File}
+    pub let thumbnail: AnyStruct{File}
 }
 ```
 Display is a basic view that includes the name, description and
@@ -105,12 +105,12 @@ thumbnail for an object. Most objects should implement this view.
 
 ---
 
-### struct `HTTPFile`
+### `HTTPFile`
 
 ```cadence
-struct HTTPFile {
+pub struct HTTPFile {
 
-    url:  String
+    pub let url: String
 }
 ```
 View to expose a file that is accessible at an HTTP (or HTTPS) URL.
@@ -119,14 +119,14 @@ View to expose a file that is accessible at an HTTP (or HTTPS) URL.
 
 ---
 
-### struct `IPFSFile`
+### `IPFSFile`
 
 ```cadence
-struct IPFSFile {
+pub struct IPFSFile {
 
-    cid:  String
+    pub let cid: String
 
-    path:  String?
+    pub let path: String?
 }
 ```
 View to expose a file stored on IPFS.
@@ -138,16 +138,16 @@ to find and load the image via an IPFS gateway.
 
 ---
 
-### struct `Edition`
+### `Edition`
 
 ```cadence
-struct Edition {
+pub struct Edition {
 
-    name:  String?
+    pub let name: String?
 
-    number:  UInt64
+    pub let number: UInt64
 
-    max:  UInt64?
+    pub let max: UInt64?
 }
 ```
 Optional view for collections that issue multiple objects
@@ -160,12 +160,12 @@ information is returned as an arbitrary sized array
 
 ---
 
-### struct `Editions`
+### `Editions`
 
 ```cadence
-struct Editions {
+pub struct Editions {
 
-    infoList:  [Edition]
+    pub let infoList: [Edition]
 }
 ```
 Wrapper view for multiple Edition views
@@ -174,12 +174,12 @@ Wrapper view for multiple Edition views
 
 ---
 
-### struct `Serial`
+### `Serial`
 
 ```cadence
-struct Serial {
+pub struct Serial {
 
-    number:  UInt64
+    pub let number: UInt64
 }
 ```
 View representing a project-defined serial number for a specific NFT
@@ -192,16 +192,16 @@ other NFTs within that project
 
 ---
 
-### struct `Royalty`
+### `Royalty`
 
 ```cadence
-struct Royalty {
+pub struct Royalty {
 
-    receiver:  Capability<&AnyResource{FungibleToken.Receiver}>
+    pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
 
-    cut:  UFix64
+    pub let cut: UFix64
 
-    description:  String
+    pub let description: String
 }
 ```
 View that defines the composable royalty standard that gives marketplaces a
@@ -211,12 +211,12 @@ unified interface to support NFT royalties.
 
 ---
 
-### struct `Royalties`
+### `Royalties`
 
 ```cadence
-struct Royalties {
+pub struct Royalties {
 
-    cutInfos:  [Royalty]
+    priv let cutInfos: [Royalty]
 }
 ```
 Wrapper view for multiple Royalty views.
@@ -227,14 +227,14 @@ and are expected to pay royalties based on these specifications.
 
 ---
 
-### struct `Media`
+### `Media`
 
 ```cadence
-struct Media {
+pub struct Media {
 
-    file:  AnyStruct{File}
+    pub let file: AnyStruct{File}
 
-    mediaType:  String
+    pub let mediaType: String
 }
 ```
 View to represent, a file with an correspoiding mediaType.
@@ -243,12 +243,12 @@ View to represent, a file with an correspoiding mediaType.
 
 ---
 
-### struct `Medias`
+### `Medias`
 
 ```cadence
-struct Medias {
+pub struct Medias {
 
-    items:  [Media]
+    pub let items: [Media]
 }
 ```
 Wrapper view for multiple media views
@@ -257,12 +257,12 @@ Wrapper view for multiple media views
 
 ---
 
-### struct `License`
+### `License`
 
 ```cadence
-struct License {
+pub struct License {
 
-    spdxIdentifier:  String
+    pub let spdxIdentifier: String
 }
 ```
 View to represent a license according to https://spdx.org/licenses/
@@ -272,12 +272,12 @@ This view can be used if the content of an NFT is licensed.
 
 ---
 
-### struct `ExternalURL`
+### `ExternalURL`
 
 ```cadence
-struct ExternalURL {
+pub struct ExternalURL {
 
-    url:  String
+    pub let url: String
 }
 ```
 View to expose a URL to this item on an external site.
@@ -288,24 +288,24 @@ to the original link for an NFT.
 
 ---
 
-### struct `NFTCollectionData`
+### `NFTCollectionData`
 
 ```cadence
-struct NFTCollectionData {
+pub struct NFTCollectionData {
 
-    storagePath:  StoragePath
+    pub let storagePath: StoragePath
 
-    publicPath:  PublicPath
+    pub let publicPath: PublicPath
 
-    providerPath:  PrivatePath
+    pub let providerPath: PrivatePath
 
-    publicCollection:  Type
+    pub let publicCollection: Type
 
-    publicLinkedType:  Type
+    pub let publicLinkedType: Type
 
-    providerLinkedType:  Type
+    pub let providerLinkedType: Type
 
-    createEmptyCollection:  ((): @NonFungibleToken.Collection)
+    pub let createEmptyCollection: ((): @NonFungibleToken.Collection)
 }
 ```
 View to expose the information needed store and retrieve an NFT.
@@ -316,22 +316,22 @@ storage and public capabilities.
 
 ---
 
-### struct `NFTCollectionDisplay`
+### `NFTCollectionDisplay`
 
 ```cadence
-struct NFTCollectionDisplay {
+pub struct NFTCollectionDisplay {
 
-    name:  String
+    pub let name: String
 
-    description:  String
+    pub let description: String
 
-    externalURL:  ExternalURL
+    pub let externalURL: ExternalURL
 
-    squareImage:  Media
+    pub let squareImage: Media
 
-    bannerImage:  Media
+    pub let bannerImage: Media
 
-    socials:  {String: ExternalURL}
+    pub let socials: {String: ExternalURL}
 }
 ```
 View to expose the information needed to showcase this NFT's
@@ -342,16 +342,16 @@ graphics of the NFT collection this NFT belongs to.
 
 ---
 
-### struct `Rarity`
+### `Rarity`
 
 ```cadence
-struct Rarity {
+pub struct Rarity {
 
-    score:  UFix64?
+    pub let score: UFix64?
 
-    max:  UFix64?
+    pub let max: UFix64?
 
-    description:  String?
+    pub let description: String?
 }
 ```
 View to expose rarity information for a single rarity
@@ -362,18 +362,18 @@ have both
 
 ---
 
-### struct `Trait`
+### `Trait`
 
 ```cadence
-struct Trait {
+pub struct Trait {
 
-    name:  String
+    pub let name: String
 
-    value:  AnyStruct
+    pub let value: AnyStruct
 
-    displayType:  String?
+    pub let displayType: String?
 
-    rarity:  Rarity?
+    pub let rarity: Rarity?
 }
 ```
 View to represent a single field of metadata on an NFT.
@@ -384,12 +384,12 @@ contextualized data about the trait
 
 ---
 
-### struct `Traits`
+### `Traits`
 
 ```cadence
-struct Traits {
+pub struct Traits {
 
-    traits:  [Trait]
+    pub let traits: [Trait]
 }
 ```
 Wrapper view to return all the traits on an NFT.
@@ -401,10 +401,10 @@ some contextualized data about each trait.
 ---
 ## Functions
 
-### fun `getNFTView()`
+### `getNFTView()`
 
 ```cadence
-func getNFTView(id UInt64, viewResolver &{Resolver}): NFTView
+fun getNFTView(id: UInt64, viewResolver: &{Resolver}): NFTView
 ```
 Helper to get an NFT view
 
@@ -416,10 +416,10 @@ Returns: A NFTView struct
 
 ---
 
-### fun `getDisplay()`
+### `getDisplay()`
 
 ```cadence
-func getDisplay(_ &{Resolver}): Display?
+fun getDisplay(_: &{Resolver}): Display?
 ```
 Helper to get Display in a typesafe way
 
@@ -430,10 +430,10 @@ Returns: An optional Display struct
 
 ---
 
-### fun `getEditions()`
+### `getEditions()`
 
 ```cadence
-func getEditions(_ &{Resolver}): Editions?
+fun getEditions(_: &{Resolver}): Editions?
 ```
 Helper to get Editions in a typesafe way
 
@@ -444,10 +444,10 @@ Returns: An optional Editions struct
 
 ---
 
-### fun `getSerial()`
+### `getSerial()`
 
 ```cadence
-func getSerial(_ &{Resolver}): Serial?
+fun getSerial(_: &{Resolver}): Serial?
 ```
 Helper to get Serial in a typesafe way
 
@@ -458,10 +458,10 @@ Returns: An optional Serial struct
 
 ---
 
-### fun `getRoyalties()`
+### `getRoyalties()`
 
 ```cadence
-func getRoyalties(_ &{Resolver}): Royalties?
+fun getRoyalties(_: &{Resolver}): Royalties?
 ```
 Helper to get Royalties in a typesafe way
 
@@ -472,10 +472,10 @@ Returns: A optional Royalties struct
 
 ---
 
-### fun `getRoyaltyReceiverPublicPath()`
+### `getRoyaltyReceiverPublicPath()`
 
 ```cadence
-func getRoyaltyReceiverPublicPath(): PublicPath
+fun getRoyaltyReceiverPublicPath(): PublicPath
 ```
 Get the path that should be used for receiving royalties
 This is a path that will eventually be used for a generic switchboard receiver,
@@ -485,10 +485,10 @@ Returns: The PublicPath for the generic FT receiver
 
 ---
 
-### fun `getMedias()`
+### `getMedias()`
 
 ```cadence
-func getMedias(_ &{Resolver}): Medias?
+fun getMedias(_: &{Resolver}): Medias?
 ```
 Helper to get Medias in a typesafe way
 
@@ -499,10 +499,10 @@ Returns: A optional Medias struct
 
 ---
 
-### fun `getLicense()`
+### `getLicense()`
 
 ```cadence
-func getLicense(_ &{Resolver}): License?
+fun getLicense(_: &{Resolver}): License?
 ```
 Helper to get License in a typesafe way
 
@@ -513,10 +513,10 @@ Returns: A optional License struct
 
 ---
 
-### fun `getExternalURL()`
+### `getExternalURL()`
 
 ```cadence
-func getExternalURL(_ &{Resolver}): ExternalURL?
+fun getExternalURL(_: &{Resolver}): ExternalURL?
 ```
 Helper to get ExternalURL in a typesafe way
 
@@ -527,10 +527,10 @@ Returns: A optional ExternalURL struct
 
 ---
 
-### fun `getNFTCollectionData()`
+### `getNFTCollectionData()`
 
 ```cadence
-func getNFTCollectionData(_ &{Resolver}): NFTCollectionData?
+fun getNFTCollectionData(_: &{Resolver}): NFTCollectionData?
 ```
 Helper to get NFTCollectionData in a way that will return an typed Optional
 
@@ -541,10 +541,10 @@ Returns: A optional NFTCollectionData struct
 
 ---
 
-### fun `getNFTCollectionDisplay()`
+### `getNFTCollectionDisplay()`
 
 ```cadence
-func getNFTCollectionDisplay(_ &{Resolver}): NFTCollectionDisplay?
+fun getNFTCollectionDisplay(_: &{Resolver}): NFTCollectionDisplay?
 ```
 Helper to get NFTCollectionDisplay in a way that will return a typed
 Optional
@@ -556,10 +556,10 @@ Returns: A optional NFTCollection struct
 
 ---
 
-### fun `getRarity()`
+### `getRarity()`
 
 ```cadence
-func getRarity(_ &{Resolver}): Rarity?
+fun getRarity(_: &{Resolver}): Rarity?
 ```
 Helper to get Rarity view in a typesafe way
 
@@ -570,10 +570,10 @@ Returns: A optional Rarity struct
 
 ---
 
-### fun `getTraits()`
+### `getTraits()`
 
 ```cadence
-func getTraits(_ &{Resolver}): Traits?
+fun getTraits(_: &{Resolver}): Traits?
 ```
 Helper to get Traits view in a typesafe way
 
@@ -584,10 +584,10 @@ Returns: A optional Traits struct
 
 ---
 
-### fun `dictToTraits()`
+### `dictToTraits()`
 
 ```cadence
-func dictToTraits(dict {String: AnyStruct}, excludedNames [String]?): Traits
+fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits
 ```
 Helper function to easily convert a dictionary to traits. For NFT
 collections that do not need either of the optional values of a Trait,

@@ -1,11 +1,11 @@
 # Struct `Media`
 
 ```cadence
-struct Media {
+pub struct Media {
 
-    file:  AnyStruct{File}
+    pub let file: AnyStruct{File}
 
-    mediaType:  String
+    pub let mediaType: String
 }
 ```
 
@@ -14,7 +14,7 @@ View to represent, a file with an correspoiding mediaType.
 ### Initializer
 
 ```cadence
-func init(file AnyStruct{File}, mediaType String)
+init(file: AnyStruct{File}, mediaType: String)
 ```
 
 
