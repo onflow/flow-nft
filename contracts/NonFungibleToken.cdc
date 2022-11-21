@@ -107,8 +107,8 @@ pub contract interface NonFungibleToken {
     pub resource interface Provider {
         /// Removes an NFT from the resource implementing it and moves it to the caller
         ///
-        /// param withdrawID: The ID of the NFT that will be removed
-        /// return The NFT resource removed from the implementing resource
+        /// @param withdrawID: The ID of the NFT that will be removed
+        /// @return The NFT resource removed from the implementing resource
         ///
         pub fun withdraw(withdrawID: UInt64): @NFT {
             post {
@@ -123,7 +123,7 @@ pub contract interface NonFungibleToken {
 
         /// Adds an NFT to the resource implementing it
         ///
-        /// param token: The NFT resource that will be deposited
+        /// @param token: The NFT resource that will be deposited
         ///
         pub fun deposit(token: @NFT)
     }
@@ -137,8 +137,8 @@ pub contract interface NonFungibleToken {
         pub fun borrowNFT(id: UInt64): &NFT
         /// Safe way to borrow a reference to an NFT that does not panic
         ///
-        /// param id: The ID of the NFT that want to be borrowed
-        /// return An optional reference to the desired NFT, will be nil if the passed id does not exist
+        /// @param id: The ID of the NFT that want to be borrowed
+        /// @return An optional reference to the desired NFT, will be nil if the passed id does not exist
         ///
         pub fun borrowNFTSafe(id: UInt64): &NFT? {
             return nil
@@ -155,29 +155,29 @@ pub contract interface NonFungibleToken {
 
         /// Removes an NFT from the collection and moves it to the caller
         ///
-        /// param withdrawID: The ID of the NFT that will be withdrawn
-        /// return The resource containing the desired NFT
+        /// @param withdrawID: The ID of the NFT that will be withdrawn
+        /// @return The resource containing the desired NFT
         ///
         pub fun withdraw(withdrawID: UInt64): @NFT
 
         /// Takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the ID array
         /// 
-        /// param token: An NFT resource
+        /// @param token: An NFT resource
         ///
         pub fun deposit(token: @NFT)
 
         /// Returns an array of the IDs that are in the collection
         ///
-        /// return An array containing all the IDs on the collection
+        /// @return An array containing all the IDs on the collection
         ///
         pub fun getIDs(): [UInt64]
 
         /// Returns a borrowed reference to an NFT in the collection
         /// so that the caller can read data and call methods from it
         ///
-        /// param id: The ID of the NFT that want to be borrowed
-        /// return A reference to the NFT
+        /// @param id: The ID of the NFT that want to be borrowed
+        /// @return A reference to the NFT
         ///
         pub fun borrowNFT(id: UInt64): &NFT {
             pre {
@@ -188,7 +188,7 @@ pub contract interface NonFungibleToken {
 
     /// Creates an empty Collection and returns it to the caller so that they can own NFTs
     ///
-    /// return A new Collection resource
+    /// @return A new Collection resource
     /// 
     pub fun createEmptyCollection(): @Collection {
         post {
@@ -196,3 +196,4 @@ pub contract interface NonFungibleToken {
         }
     }
 }
+ 
