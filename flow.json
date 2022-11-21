@@ -6,7 +6,6 @@
     }
   },
   "contracts": {
-    "MetadataViews": "./contracts/MetadataViews.cdc",
     "NonFungibleToken": {
       "source": "./contracts/NonFungibleToken.cdc",
       "aliases": {
@@ -15,14 +14,10 @@
         "mainnet": "0x1d7e57aa55817448"
       }
     },
-    "FungibleToken": {
-      "source": "./contracts/utility/FungibleToken.cdc",
-      "aliases": {
-        "emulator": "0xee82856bf20e2aa6",
-        "testnet": "0x9a0766d93b6608b7",
-        "mainnet": "0xf233dcee88fe0abe"
-      }
-    }
+    "MetadataViews": "./contracts/MetadataViews.cdc",
+    "ExampleNFT": "./contracts/ExampleNFT.cdc",
+    "FungibleToken": "./contracts/utility/FungibleToken.cdc",
+    "NFTForwarding": "./contracts/utility/NFTForwarding.cdc"
   },
   "networks": {
     "emulator": "127.0.0.1:3569",
@@ -33,21 +28,16 @@
     "emulator-account": {
       "address": "0xf8d6e0586b0a20c7",
       "key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
-    },
-    "testnet-account": {
-      "address": "0x631e88ae7f1d7c20",
-      "key": "${TESTNET_PRIVATE_KEY}"
     }
   },
   "deployments": {
-    "testnet": {
-      "testnet-account": [
-        "MetadataViews"
-      ]
-    },
-    "mainnet": {
-      "mainnet-account": [
-        "MetadataViews"
+    "emulator": {
+      "emulator-account": [
+        "NonFungibleToken",
+        "ExampleNFT",
+        "MetadataViews",
+        "FungibleToken",
+        "NFTForwarding"
       ]
     }
   }
