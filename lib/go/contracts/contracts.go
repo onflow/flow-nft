@@ -19,15 +19,22 @@ var (
 )
 
 const (
-	filenameNonFungibleToken = "NonFungibleToken.cdc"
-	filenameExampleNFT       = "ExampleNFT.cdc"
-	filenameMetadataViews    = "MetadataViews.cdc"
-	filenameFungibleToken    = "utility/FungibleToken.cdc"
+	filenameNonFungibleToken    = "NonFungibleToken.cdc"
+	filenameOldNonFungibleToken = "utility/NonFungibleToken_old.cdc"
+	filenameExampleNFT          = "ExampleNFT.cdc"
+	filenameMetadataViews       = "MetadataViews.cdc"
+	filenameFungibleToken       = "utility/FungibleToken.cdc"
 )
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleToken() []byte {
 	return assets.MustAsset(filenameNonFungibleToken)
+}
+
+// OldNonFungibleToken returns the old NonFungibleToken contract interface
+// without default implementations
+func OldNonFungibleToken() []byte {
+	return assets.MustAsset(filenameOldNonFungibleToken)
 }
 
 // ExampleNFT returns the ExampleNFT contract.
