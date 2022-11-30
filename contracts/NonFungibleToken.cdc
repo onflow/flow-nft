@@ -141,6 +141,9 @@ pub contract interface NonFungibleToken {
         /// @return An optional reference to the desired NFT, will be nil if the passed id does not exist
         ///
         pub fun borrowNFTSafe(id: UInt64): &NFT? {
+            post {
+                result == nil || result!.id == id: "The returned reference's ID does not match the requested ID"
+            }
             return nil
         }
     }
