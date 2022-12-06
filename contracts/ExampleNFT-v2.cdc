@@ -17,11 +17,11 @@ pub contract ExampleNFT: NonFungibleToken {
 
     /// Standard events from the NonFungibleToken Interface
 
-    pub event Withdraw(id: UInt64, from: Address?, type: Type)
-    pub event Deposit(id: UInt64, to: Address?, type: Type)
-    pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type)
-    pub event Mint(id: UInt64, type: Type)
-    pub event Destroy(id: UInt64, type: Type)
+    pub event Withdraw(id: UInt64, from: Address?, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Deposit(id: UInt64, to: Address?, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Mint(id: UInt64, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Destroy(id: UInt64, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
 
     /// Path where the minter should be stored
     /// The standard paths for the collection are stored in the collection resource type
@@ -133,18 +133,24 @@ pub contract ExampleNFT: NonFungibleToken {
         /// NFT is a resource type with an `UInt64` ID field
         access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT{NonFungibleToken.NFT}}
 
+        access(self) var storagePath: StoragePath
+        access(self) var publicPath: PublicPath
+
         /// Return the default storage path for the collection
-        pub fun getDefaultStoragePath(): StoragePath {
-            return /storage/cadenceExampleNFTCollection
+        pub fun getDefaultStoragePath(): StoragePath? {
+            return self.storagePath
         }
 
         /// Return the default public path for the collection
-        pub fun getDefaultPublicPath(): PublicPath {
-            return /public/cadenceExampleNFTCollection
+        pub fun getDefaultPublicPath(): PublicPath? {
+            return self.publicPath
         }
 
         init () {
             self.ownedNFTs <- {}
+            let identifier = "cadenceExampleNFTCollection"
+            self.storagePath = StoragePath(identifier: identifier)
+            self.publicPath = PublicPath(identifier: identifier)
         }
 
         /// Returns the NFT types that this collection can store
@@ -158,7 +164,7 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun withdraw(withdrawID: UInt64): @ExampleNFT.NFT{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
 
-            emit Withdraw(id: token.id, from: self.owner?.address, type: token.getType())
+            emit Withdraw(id: token.id, from: self.owner?.address, type: token.getType(), displayView: token.resolveView(MetadataViews.Type<MetadataViews.Display>()), serialView: token.resolveView(MetadataViews.Type<MetadataViews.Serial>())
 
             return <-token
         }
@@ -168,7 +174,7 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun deposit(token: @AnyResource{NonFungibleToken.NFT}) {
             let token <- token as! @ExampleNFT.NFT
 
-            emit Deposit(id: token.id, to: self.owner?.address, type: token.getType())
+            emit Deposit(id: token.id, to: self.owner?.address, type: token.getType(), displayView: token.resolveView(MetadataViews.Type<MetadataViews.Display>(), serialView: token.resolveView(MetadataViews.Type<MetadataViews.Serial>())
 
             // add the new token to the dictionary which removes the old one
             let oldToken <- self.ownedNFTs[token.id] <- token
@@ -184,7 +190,7 @@ pub contract ExampleNFT: NonFungibleToken {
             // If we can't borrow a receiver reference, don't panic, just return the NFT
             // and return true for an error
             if let receiverRef = receiver.borrow() {
-                emit Transfer(id: token.id, from: self.owner?.address, to: receiverRef.owner?.address, type: token.getType())
+                emit Transfer(id: token.id, from: self.owner?.address, to: receiverRef.owner?.address, type: token.getType()displayView: token.resolveView(MetadataViews.Type<MetadataViews.Display>(), serialView: token.resolveView(MetadataViews.Type<MetadataViews.Serial>())
                 receiverRef.deposit(token: <-token)
 
                 return false
@@ -206,7 +212,7 @@ pub contract ExampleNFT: NonFungibleToken {
         }
 
         /// Borrow the view resolver for the specified NFT ID
-        pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
+        pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver}? {
             let nft = (&self.ownedNFTs[id] as &ExampleNFT.NFT?)!
             let exampleNFT = nft as! &ExampleNFT.NFT
             return exampleNFT as &AnyResource{MetadataViews.Resolver}
@@ -265,9 +271,10 @@ pub contract ExampleNFT: NonFungibleToken {
     pub fun getCollectionData(nftType: Type): MetadataViews.NFTCollectionData? {
         switch nftType {
             case Type<@ExampleNFT.NFT>():
-                return MetadataViews.NFTCollectionData(
-                    storagePath: /storage/cadenceExampleNFTCollection,
-                    publicPath: /public/cadenceExampleNFTCollection,
+                let temporaryCollection <- createEmptyCollection(collectionType: Type<@ExampleNFT.Collection>())
+                let collectionData = MetadataViews.NFTCollectionData(
+                    storagePath: temporaryCollection.getDefaultStoragePath,
+                    publicPath: temporaryCollection.getDefaultPublicPath,
                     providerPath: /private/exampleNFTCollection,
                     publicCollection: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic}>(),
                     publicLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
@@ -276,6 +283,8 @@ pub contract ExampleNFT: NonFungibleToken {
                         return <-ExampleNFT.createEmptyCollection()
                     })
                 )
+                destroy temporaryCollection
+                return collectionData
             default:
                 return nil
         }
