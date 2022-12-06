@@ -25,7 +25,7 @@ pub contract MetadataViews {
     /// A group of view resolvers indexed by ID.
     ///
     pub resource interface ResolverCollection {
-        pub fun borrowViewResolver(id: UInt64): &{Resolver}
+        pub fun borrowViewResolver(id: UInt64): &{Resolver}?
         pub fun getIDs(): [UInt64]
     }
 
