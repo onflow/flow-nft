@@ -9,6 +9,7 @@ import (
 
 func main() {
 
+	fmt.Print("\033[H\033[2J")
 	color.Green("This is a demo of what overflow can do for an NFT project, in this case the example is a modified version of flow-nft repo")
 
 	color.Green("In order to start overflow with a default in memory client you simply run")
@@ -121,5 +122,5 @@ func pause() {
 	fmt.Println()
 	color.Yellow("press any key to continue")
 	fmt.Scanln()
-	fmt.Println()
+	fmt.Print("\033[H\033[2J")
 }
