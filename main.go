@@ -109,7 +109,7 @@ In overflow v1 all arguments are _named_ that is you mention them by their name 
 	pause()
 
 	color.Green("A script is run in very much the same way as a Transaction only it uses the `Script` method like the following example")
-	color.Cyan(`o.Script("get_nft_metadata", Arg("address", "alice"), Arg("id", id))`)
+	color.Cyan(`o.Script("get_nft_metadata", WithArg("address", "alice"), WithArg("id", id))`)
 
 	pause()
 	o.Script("get_nft_metadata", WithArg("address", "alice"), WithArg("id", id))
