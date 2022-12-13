@@ -1,6 +1,6 @@
 {
   "name": "@onflow/flow-nft",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "standard implementation of the non fungible token on flow blockchain",
   "main": "index.js",
   "directories": {
@@ -32,7 +32,8 @@
   },
   "homepage": "https://github.com/onflow/flow-nft#readme",
   "dependencies": {
-    "@changesets/cli": "^2.23.0"
+    "@changesets/cli": "^2.23.0",
+    "package.json": "^2.0.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",

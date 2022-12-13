@@ -33,6 +33,8 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 		vaultPath := cadence.Path{Domain: "storage", Identifier: "missingVault"}
 		tx.AddArgument(vaultPath)
 
+		serviceSigner, _ := b.ServiceKey().Signer()
+
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
@@ -40,7 +42,7 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				exampleNFTSigner,
 			},
 			true,
@@ -156,18 +158,18 @@ func TestGetNFTMetadata(t *testing.T) {
 		traitsView := nftResult.Fields[21].(cadence.Struct)
 		traits := traitsView.Fields[0].(cadence.Array)
 
-		mintTrait := traits.Values[0].(cadence.Struct)
-		assert.Equal(t, minterName, mintTrait.Fields[0])
-		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
-
 		blockNumberName, _ := cadence.NewString("mintedBlock")
-		blockNumberTrait := traits.Values[1].(cadence.Struct)
+		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
 		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
+
+		mintTrait := traits.Values[1].(cadence.Struct)
+		assert.Equal(t, minterName, mintTrait.Fields[0])
+		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
 
 		mintedTimeName, _ := cadence.NewString("mintedTime")
 		mintedTimeDisplayType, _ := cadence.NewString("Date")
@@ -282,18 +284,18 @@ func TestGetNFTView(t *testing.T) {
 		traitsView := nftResult.Fields[19].(cadence.Struct)
 		traits := traitsView.Fields[0].(cadence.Array)
 
-		mintTrait := traits.Values[0].(cadence.Struct)
-		assert.Equal(t, minterName, mintTrait.Fields[0])
-		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
-
 		blockNumberName, _ := cadence.NewString("mintedBlock")
-		blockNumberTrait := traits.Values[1].(cadence.Struct)
+		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
 		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
+
+		mintTrait := traits.Values[1].(cadence.Struct)
+		assert.Equal(t, minterName, mintTrait.Fields[0])
+		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
 
 		mintedTimeName, _ := cadence.NewString("mintedTime")
 		mintedTimeDisplayType, _ := cadence.NewString("Date")
@@ -348,6 +350,8 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 		tx.AddArgument(cadence.Path{Domain: "public", Identifier: "exampleNFTCollection"})
 		tx.AddArgument(cadence.NewUInt64(0))
 
+		serviceSigner, _ := b.ServiceKey().Signer()
+
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
@@ -355,7 +359,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 				aAddress,
 			},
 			[]crypto.Signer{
-				b.ServiceKey().Signer(),
+				serviceSigner,
 				aSigner,
 			},
 			false,
