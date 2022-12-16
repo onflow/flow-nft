@@ -210,4 +210,12 @@ pub contract interface NonFungibleToken {
 
     /// Returns the CollectionDisplay view for the NFT type that is specified 
     pub fun getCollectionDisplay(nftType: Type): MetadataViews.NFTCollectionDisplay?
+
+    /// createEmptyCollection creates an empty Collection
+    /// and returns it to the caller so that they can own NFTs
+    pub fun createEmptyCollection(collectionType: Type): @{Collection} {
+        post {
+            result.getIDs().length == 0: "The created collection must be empty!"
+        }
+    }
 }
