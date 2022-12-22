@@ -1,7 +1,7 @@
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 import ExampleNFT from "../contracts/ExampleNFT.cdc"
 import MetadataViews from "../contracts/MetadataViews.cdc"
-import FungibleToken from "./utility/FungibleToken.cdc"
+import FungibleToken from "../contracts/utility/FungibleToken.cdc"
 
 /// This script uses the NFTMinter resource to mint a new NFT
 /// It must be run with the account that has the minter resource
@@ -14,7 +14,7 @@ transaction(
     thumbnail: String,
     cuts: [UFix64],
     royaltyDescriptions: [String],
-    royaltyBeneficiaries: [Address] 
+    royaltyBeneficiaries: [Address]
 ) {
 
     /// local variable for storing the minter reference
@@ -84,4 +84,3 @@ transaction(
         ExampleNFT.totalSupply == self.mintingIDBefore + 1: "The total supply should have been increased by 1"
     }
 }
- 
