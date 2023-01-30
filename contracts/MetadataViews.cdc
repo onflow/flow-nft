@@ -695,6 +695,28 @@ pub contract MetadataViews {
         }
     }
 
+    // Taken from GaiaPackNFT https://flow-view-source.com/mainnet/account/0xfdae91e14e960079/contract/GaiaPackNFT
+    // AllDay Packs have a subset of these so it should be safe to use this more verbose set
+    pub enum PackStatus: UInt8 {
+        pub case Sealed
+        pub case RevealRequested
+        pub case Revealed
+        pub case OpenRequested
+        pub case Opened
+    }
+
+    pub struct Pack {
+        pub let status: PackStatus
+
+        pub fun isOpen(): Bool {
+            return self.status == PackStatus.Opened
+        }
+
+        init(_ status: PackStatus) {
+            self.status = status
+        }
+    }
+
     /// Helper to get Traits view in a typesafe way
     ///
     /// @param viewResolver: A reference to the resolver resource
