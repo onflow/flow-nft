@@ -115,6 +115,9 @@ pub contract interface NonFungibleToken {
 
         /// getAcceptedTypes returns a list of NFT types that this receiver accepts
         pub fun getAcceptedTypes(): {Type: Bool}
+
+        /// Returns whether or not the given type is accepted by the collection
+        pub fun isAcceptedType(type: Type): Bool
     }
 
     /// Interface that an account would commonly 
@@ -122,6 +125,7 @@ pub contract interface NonFungibleToken {
     pub resource interface CollectionPublic { //: MetadataViews.ResolverCollection {
         pub fun deposit(token: @AnyResource{NFT})
         pub fun getAcceptedTypes(): {Type: Bool}
+        pub fun isAcceptedType(type: Type): Bool
         pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}?
         pub fun getDefaultStoragePath(): StoragePath?
         pub fun getDefaultPublicPath(): PublicPath?
@@ -155,6 +159,9 @@ pub contract interface NonFungibleToken {
         /// If the collection can accept any NFT type, it should return
         /// a one element dictionary with the key type as `@AnyResource{NonFungibleToken.NFT}`
         pub fun getAcceptedTypes(): {Type: Bool}
+
+        /// Returns whether or not the given type is accepted by the collection
+        pub fun isAcceptedType(type: Type): Bool
 
         /// createEmptyCollection creates an empty Collection
         /// and returns it to the caller so that they can own NFTs
