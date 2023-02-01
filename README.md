@@ -18,6 +18,18 @@ provides an ideal programming model for non-fungible tokens (NFTs).
 Users are able to store their NFT objects directly in their accounts and transact
 peer-to-peer. Learn more in this [blog post about resources](https://medium.com/dapperlabs/resource-oriented-programming-bee4d69c8f8e).
 
+## Import Addresses
+
+The `NonFungibleToken` and `MetadataViews` contracts are already deployed
+on various networks. You can import them in your contracts from these addresses.
+There is no need to deploy them yourself.
+
+| Network         | Contract Address     |
+| --------------- | -------------------- |
+| Emulator/Canary | `0xf8d6e0586b0a20c7` |
+| Testnet         | `0x631e88ae7f1d7c20` |
+| Mainnet         | `0x1d7e57aa55817448` |
+
 ## Core features
 
 The `NonFungibleToken` contract defines the following set of functionality
