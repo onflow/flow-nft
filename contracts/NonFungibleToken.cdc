@@ -27,7 +27,7 @@ These interfaces declare functions with some pre and post conditions
 that require the Collection to follow certain naming and behavior standards.
 
 They are separate because it gives the user the ability to share a reference
-to their Collection that only exposes the fields and functions in one or morehttps://f.dnz.dev/0xe81193c424cfd3fb/Templates
+to their Collection that only exposes the fields and functions in one or more
 of the interfaces. It also gives users the ability to make custom resources
 that implement these interfaces to do various things with the tokens.
 
