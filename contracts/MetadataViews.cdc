@@ -20,6 +20,11 @@ pub contract MetadataViews {
     pub resource interface Resolver {
         pub fun getViews(): [Type]
         pub fun resolveView(_ view: Type): AnyStruct?
+
+				/// Borrow the subcollection if this resolver has any sub nfts in it
+				pub fun borrowSubCollection() : &{ResolverCollection}? {
+					return nil
+				}
     }
 
     /// A group of view resolvers indexed by ID.

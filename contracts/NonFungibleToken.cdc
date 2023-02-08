@@ -27,7 +27,7 @@ These interfaces declare functions with some pre and post conditions
 that require the Collection to follow certain naming and behavior standards.
 
 They are separate because it gives the user the ability to share a reference
-to their Collection that only exposes the fields and functions in one or more
+to their Collection that only exposes the fields and functions in one or morehttps://f.dnz.dev/0xe81193c424cfd3fb/Templates
 of the interfaces. It also gives users the ability to make custom resources
 that implement these interfaces to do various things with the tokens.
 
@@ -92,6 +92,24 @@ pub contract interface NonFungibleToken {
         ///
         pub fun resolveView(_ view: Type): AnyStruct? {
             return nil
+        }
+
+        /// Returns an array of the IDs that are in the collection
+        ///
+        /// @return An array containing all the IDs on the collection
+        ///
+        pub fun getChildren(): [UInt64] {
+					return []
+				}
+
+        /// Returns a borrowed reference to an NFT in the collection
+        /// so that the caller can read data and call methods from it
+        ///
+        /// @param id: The ID of the NFT that want to be borrowed
+        /// @return A reference to the NFT
+        ///
+        pub fun borrowChildNFT(id: UInt64): &NFT? {
+					return nil
         }
     }
 
