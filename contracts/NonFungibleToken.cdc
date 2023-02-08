@@ -96,13 +96,13 @@ pub contract interface NonFungibleToken {
 
         /// Returns an array of the IDs that are in the collection
         ///
-        /// @return An array containing all the IDs on the collection
+        /// @return An array containing all the child IDs on the nft
         ///
         pub fun getChildren(): [UInt64] {
             return []
         }
 
-        /// Returns a borrowed reference to an NFT in the collection
+        /// Returns a borrowed reference to an child NFT of this NFT
         /// so that the caller can read data and call methods from it
         ///
         /// @param id: The ID of the NFT that want to be borrowed
