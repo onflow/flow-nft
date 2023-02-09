@@ -18,15 +18,7 @@ func main() {
 	color.Green("")
 	color.Green("This will start overflow in embedded mode, if any interaction error occur the job will terminate in embedded mode")
 	pause()
-<<<<<<< HEAD
 	o := Overflow()
-=======
-	o := Overflow(
-		WithPanicOnError(),
-		WithPrintResults(),
-	)
->>>>>>> 53f13ae (fixed tests)
-
 	fmt.Println("")
 	color.Green(`We now have an running version of 'Overflow' in embedded mode, ready to be interacted with. All stakeholders are created with the default amount of flow and contracts are deployed.`)
 	pause()

@@ -19,11 +19,11 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 		WithSigner("alice"),
 	).AssertSuccess(t)
 
-	t.Run("Should not be able to setup a royalty receiver for a vault that doesn't exist", func(t *testing.T) {
-		setupAccount(WithSigner("alice")).AssertSuccess(t)
-		setupRoyalty(WithSigner("alice"), WithArg("vaultPath", "/storage/missingVault")).
-			AssertFailure(t, "A vault for the specified fungible token path does not exist")
-	})
+	o.Tx("setup_account_to_receive_royalty",
+		WithSigner("alice"),
+		WithArg("vaultPath", "/storage/missingVault"),
+	).AssertFailure(t, "A vault for the specified fungible token path does not exist")
+
 }
 
 func TestGetNFTMetadata(t *testing.T) {
