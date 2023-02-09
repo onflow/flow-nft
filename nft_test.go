@@ -5,6 +5,7 @@ import (
 
 	. "github.com/bjartek/overflow"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNFT(t *testing.T) {
@@ -26,7 +27,7 @@ func TestNFT(t *testing.T) {
 
 	t.Run("Should have properly initialized fields after deployment", func(t *testing.T) {
 		result, err := o.Script("get_total_supply").GetAsJson()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "0", result)
 	})
 
@@ -40,11 +41,11 @@ func TestNFT(t *testing.T) {
 
 		o.Script("borrow_nft", WithArg("address", "alice"), WithArg("id", "0")).GetAsInterface()
 		supply, err := o.Script("get_total_supply").GetAsJson()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "1", supply)
 
 		collectionLegnth, err := o.Script("get_collection_length", WithArg("address", "alice")).GetAsJson()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "1", collectionLegnth)
 	})
 
@@ -72,7 +73,7 @@ func TestNFT(t *testing.T) {
 		})
 
 		id, err := nft.GetIdFromEvent("ExampleNFT.Deposit", "id")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		o.Tx("transfer_nft", WithSigner("alice"), WithArg("recipient", "bob"), WithArg("withdrawID", id)).AssertSuccess(t)
 
@@ -84,15 +85,16 @@ func TestNFT(t *testing.T) {
 		setupAccount(WithSigner("alice")).AssertSuccess(t)
 		setupFlowRoyalty(WithSigner("alice")).AssertSuccess(t)
 		id, err := mintNft(WithArg("recipient", "alice")).AssertSuccess(t).GetIdFromEvent("A.f8d6e0586b0a20c7.ExampleNFT.Deposit", "id")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		destroyNFT(WithSigner("alice"), WithArg("id", id)).AssertSuccess(t)
 		supply, err := o.Script("get_total_supply").GetAsJson()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "3", supply)
 
 		collectionLength, err := o.Script("get_collection_length", WithArg("address", "alice")).GetAsJson()
-		assert.NoError(t, err)
+		require.NoError(t, err)
+		assert.Equal(t, "3", supply)
 		assert.Equal(t, "1", collectionLength)
 
 	})

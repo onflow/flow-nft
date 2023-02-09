@@ -7,6 +7,7 @@ import (
 	. "github.com/bjartek/overflow"
 	"github.com/onflow/cadence"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSetupRoyaltyReceiver(t *testing.T) {
@@ -18,10 +19,11 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 		WithSigner("alice"),
 	).AssertSuccess(t)
 
-	o.Tx("setup_account_to_receive_royalty",
-		WithSigner("alice"),
-		WithArg("vaultPath", "/storage/missingVault"),
-	).AssertFailure(t, "A vault for the specified fungible token path does not exist")
+	t.Run("Should not be able to setup a royalty receiver for a vault that doesn't exist", func(t *testing.T) {
+		setupAccount(WithSigner("alice")).AssertSuccess(t)
+		setupRoyalty(WithSigner("alice"), WithArg("vaultPath", "/storage/missingVault")).
+			AssertFailure(t, "A vault for the specified fungible token path does not exist")
+	})
 }
 
 func TestGetNFTMetadata(t *testing.T) {
@@ -45,7 +47,7 @@ func TestGetNFTMetadata(t *testing.T) {
 		WithAddresses("royaltyBeneficiaries", "alice", "bob"))
 
 	id, err := mintNft(WithArg("recipient", "alice")).AssertSuccess(t).GetIdFromEvent("A.f8d6e0586b0a20c7.ExampleNFT.Deposit", "id")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	t.Run("Should be able to verify the metadata of the minted NFT through the Display View", func(t *testing.T) {
 
@@ -102,9 +104,9 @@ func TestGetNFTMetadata(t *testing.T) {
   "thumbnail": "example.jpeg",
   "traits": {
    "traits": [
-    {
-     "name": "minter",
-     "value": "0x01cf0e2f2f715450",
+ 		{
+     "name": "mintedBlock",
+     "value": 15,
      "rarity": {
       "description": "",
       "max": 0,
@@ -112,8 +114,8 @@ func TestGetNFTMetadata(t *testing.T) {
      }
     },
     {
-     "name": "mintedBlock",
-     "value": 12,
+     "name": "minter",
+     "value": "0x01cf0e2f2f715450",
      "rarity": {
       "description": "",
       "max": 0,
@@ -165,7 +167,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 		WithAddresses("royaltyBeneficiaries", "alice", "alice"))
 
 	id, err := mintNft(WithArg("recipient", "alice")).AssertSuccess(t).GetIdFromEvent("A.f8d6e0586b0a20c7.ExampleNFT.Deposit", "id")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	t.Run("Should be able to setup an account using the NFTCollectionData metadata view of a referenced NFT", func(t *testing.T) {
 
