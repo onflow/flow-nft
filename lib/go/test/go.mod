@@ -27,7 +27,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/ef-ds/deque v1.0.4 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
-	github.com/ethereum/go-ethereum v1.9.13 // indirect
+	github.com/ethereum/go-ethereum v1.10.22 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/fxamacker/cbor/v2 v2.4.1-0.20220515183430-ad2eae63303f // indirect
 	github.com/fxamacker/circlehash v0.3.0 // indirect
@@ -39,12 +39,12 @@ require (
 	github.com/go-test/deep v1.0.8 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/golang/snappy v0.0.3 // indirect
+	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
-	github.com/hashicorp/golang-lru v0.5.4 // indirect
+	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
