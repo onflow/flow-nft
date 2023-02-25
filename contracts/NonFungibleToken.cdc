@@ -93,6 +93,24 @@ pub contract interface NonFungibleToken {
         pub fun resolveView(_ view: Type): AnyStruct? {
             return nil
         }
+
+        /// Returns an array of the IDs that are in the collection
+        ///
+        /// @return An array containing all the child IDs on the nft
+        ///
+        pub fun getChildren(): [UInt64] {
+            return []
+        }
+
+        /// Returns a borrowed reference to an child NFT of this NFT
+        /// so that the caller can read data and call methods from it
+        ///
+        /// @param id: The ID of the NFT that want to be borrowed
+        /// @return A reference to the NFT
+        ///
+        pub fun borrowChildNFT(id: UInt64): &NFT? {
+            return nil
+        }
     }
 
     /// Requirement that all conforming NFT smart contracts have
