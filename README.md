@@ -328,6 +328,35 @@ to your chosen fungible token for now. Then, use that public path for your royal
 and in the future, you will be able to easily update the link at that path to use the
 fungible token switchboard instead.
 
+## Contract metadata
+
+Now that contract borrowing is released, you can also implement the [Resolver](./contracts/Resolver.cdc) interface on your contract
+and resolve views from there. As an example, you might want to allow your contract to resolve NFTCollectionData and NFTCollectionDisplay
+so that platforms do not need to find an NFT that belongs to your contract to get information about how to set up or show your collection
+
+```cadence
+import Resolver from 0xf8d6e0586b0a20c7
+import MetadataViews from 0xf8d6e0586b0a20c7
+
+pub fun main(addr: Address, name: String): AnyStruct? {
+  let t = Type<MetadataViews.NFTCollectionData>()
+  let borrowedContract = getAccount(addr).contracts.borrow<&Resolver>(name: name) ?? panic("contract could not be borrowed")
+
+  let view = borrowedContract.resolveView(t)
+  if view == nil {
+    return nil
+  }
+
+  let cd = view! as! MetadataViews.NFTCollectionData
+  return cd.storagePath
+}
+```
+
+Will Return
+```cadence
+{"domain":"storage","identifier":"exampleNFTCollection"}
+```
+
 ## How to propose a new view
 
 Please open a pull request to propose a new metadata view or changes to an existing view.
