@@ -16,6 +16,7 @@ var (
 	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
 	placeholderMetadataViews    = regexp.MustCompile(`"[^"\s].*/MetadataViews.cdc"`)
 	placeholderFungibleToken    = regexp.MustCompile(`"[^"\s].*/FungibleToken.cdc"`)
+	placeholderResolverToken    = regexp.MustCompile(`"[^"\s].*/Resolver.cdc"`)
 )
 
 const (
@@ -23,6 +24,7 @@ const (
 	filenameOldNonFungibleToken = "utility/NonFungibleToken_old.cdc"
 	filenameExampleNFT          = "ExampleNFT.cdc"
 	filenameMetadataViews       = "MetadataViews.cdc"
+	filenameResolver            = "Resolver.cdc"
 	filenameFungibleToken       = "utility/FungibleToken.cdc"
 )
 
@@ -40,11 +42,12 @@ func OldNonFungibleToken() []byte {
 // ExampleNFT returns the ExampleNFT contract.
 //
 // The returned contract will import the NonFungibleToken contract from the specified address.
-func ExampleNFT(nftAddress, metadataAddress flow.Address) []byte {
+func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
+	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
 
 	return []byte(code)
 }
@@ -55,6 +58,11 @@ func MetadataViews(ftAddress flow.Address, nftAddress flow.Address) []byte {
 	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress.String())
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 
+	return []byte(code)
+}
+
+func Resolver() []byte {
+	code := assets.MustAssetString(filenameResolver)
 	return []byte(code)
 }
 

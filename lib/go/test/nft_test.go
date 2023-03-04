@@ -21,7 +21,7 @@ func TestNFTDeployment(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, _ := accountKeys.NewWithSigner()
-	nftAddress, _, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, _, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
 
 	t.Run("Should have properly initialized fields after deployment", func(t *testing.T) {
 
@@ -42,7 +42,7 @@ func TestCreateNFT(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
 
 	t.Run("Should be able to mint a token", func(t *testing.T) {
 
@@ -97,7 +97,7 @@ func TestTransferNFT(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
 
 	// Create a new account to test transfers
 	joshAddress, _, joshSigner := newAccountWithAddress(b, accountKeys)

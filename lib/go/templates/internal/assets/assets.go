@@ -3,6 +3,7 @@
 // ../../../scripts/borrow_nft.cdc (581B)
 // ../../../scripts/get_collection_ids.cdc (557B)
 // ../../../scripts/get_collection_length.cdc (465B)
+// ../../../scripts/get_contract_storage_path.cdc (526B)
 // ../../../scripts/get_nft_metadata.cdc (5.673kB)
 // ../../../scripts/get_nft_view.cdc (4.482kB)
 // ../../../scripts/get_total_supply.cdc (118B)
@@ -143,6 +144,26 @@ func scriptsGet_collection_lengthCdc() (*asset, error) {
 
 	info := bindataFileInfo{name: "scripts/get_collection_length.cdc", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
 	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0xc0, 0x89, 0xcd, 0xef, 0x5d, 0x12, 0xb7, 0x51, 0x37, 0xc7, 0x80, 0x78, 0xf2, 0x33, 0x27, 0xa0, 0x48, 0xa5, 0xb7, 0x52, 0x63, 0x43, 0xcd, 0x14, 0xbe, 0x1b, 0x93, 0xd9, 0x22, 0x5f, 0x57, 0x8f}}
+	return a, nil
+}
+
+var _scriptsGet_contract_storage_pathCdc = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x84\x90\x4f\x6b\xf2\x40\x10\xc6\xef\xfb\x29\x1e\x73\x78\x49\xe0\x65\xbd\x8b\x51\xc4\xd2\x5b\x4b\xa9\xd2\xfb\xba\x3b\xda\x85\x64\x37\xcc\x4e\x14\x29\x7e\xf7\xa2\xf9\xd3\x4a\x29\xbd\xe4\x30\x79\x7e\xf3\xfc\x66\x7d\xdd\x44\x16\x3c\x91\x18\x67\xc4\xbc\x79\x3a\x25\xec\x39\xd6\xc8\xb4\x9e\x6a\x3d\xb5\x31\x08\x1b\x2b\x69\x7a\x97\xd1\xd6\xd9\x4c\xf5\xf4\x2b\xa5\x58\x1d\x89\x7f\x01\x87\xdf\x1d\xa3\x9a\x76\x87\x7d\x1b\x50\x1b\x1f\x72\xe3\x1c\xcf\xb0\x72\x8e\x29\xa5\xff\x08\xa6\xa6\x19\x36\xc2\x3e\x1c\x8a\x19\x56\xe1\xbc\x11\x6e\xad\x2c\xf1\xa1\x00\xa0\x22\x81\xa0\xc4\xf6\xdc\xd0\xfc\x5e\xe8\xf9\x71\xbb\x8e\x55\x45\x56\x7c\x0c\x0f\x46\xcc\x22\x2f\x46\x66\x17\x99\xe3\x89\xdc\xba\x97\x42\x89\x03\xc9\xca\xda\xd8\x06\xb9\x49\x14\x7a\x14\xd6\x5d\x7a\xfe\x6f\x10\x5f\xe4\x9d\xd7\xf5\x5b\x60\xb9\x44\x63\x82\xb7\x79\x36\x10\xb0\xb1\xad\x1c\x42\x14\xec\x68\xec\xca\x0a\x35\xf6\x1f\x3d\x9d\x50\xfe\xd0\xd0\xdc\x35\x5c\x2f\xc8\xa5\xd3\xf5\xfb\x3e\x5d\x22\xf8\xaa\xbf\x1b\x60\x92\x96\xc3\x75\x74\x1b\x5c\xbe\x76\x5b\x87\xf2\x86\x4c\x60\xd2\x04\x7f\xbc\x8a\xfa\xb6\xcc\x3a\x9d\x24\xb2\x39\xd0\x8b\x91\x77\x75\x51\x9f\x01\x00\x00\xff\xff\xcd\xf4\x01\xfa\x0e\x02\x00\x00"
+
+func scriptsGet_contract_storage_pathCdcBytes() ([]byte, error) {
+	return bindataRead(
+		_scriptsGet_contract_storage_pathCdc,
+		"scripts/get_contract_storage_path.cdc",
+	)
+}
+
+func scriptsGet_contract_storage_pathCdc() (*asset, error) {
+	bytes, err := scriptsGet_contract_storage_pathCdcBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "scripts/get_contract_storage_path.cdc", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x42, 0xa7, 0xdd, 0xfa, 0xfa, 0x75, 0xae, 0xea, 0x1a, 0xca, 0xc4, 0x56, 0x66, 0x7d, 0x76, 0xf7, 0x19, 0x5, 0x6b, 0x28, 0x11, 0xa8, 0xe9, 0x3b, 0x95, 0xe1, 0xa7, 0x6d, 0xdc, 0x84, 0x1d, 0x8a}}
 	return a, nil
 }
 
@@ -520,6 +541,7 @@ var _bindata = map[string]func() (*asset, error){
 	"scripts/borrow_nft.cdc":                                          scriptsBorrow_nftCdc,
 	"scripts/get_collection_ids.cdc":                                  scriptsGet_collection_idsCdc,
 	"scripts/get_collection_length.cdc":                               scriptsGet_collection_lengthCdc,
+	"scripts/get_contract_storage_path.cdc":                           scriptsGet_contract_storage_pathCdc,
 	"scripts/get_nft_metadata.cdc":                                    scriptsGet_nft_metadataCdc,
 	"scripts/get_nft_view.cdc":                                        scriptsGet_nft_viewCdc,
 	"scripts/get_total_supply.cdc":                                    scriptsGet_total_supplyCdc,
@@ -584,6 +606,7 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		"borrow_nft.cdc": {scriptsBorrow_nftCdc, map[string]*bintree{}},
 		"get_collection_ids.cdc": {scriptsGet_collection_idsCdc, map[string]*bintree{}},
 		"get_collection_length.cdc": {scriptsGet_collection_lengthCdc, map[string]*bintree{}},
+		"get_contract_storage_path.cdc": {scriptsGet_contract_storage_pathCdc, map[string]*bintree{}},
 		"get_nft_metadata.cdc": {scriptsGet_nft_metadataCdc, map[string]*bintree{}},
 		"get_nft_view.cdc": {scriptsGet_nft_viewCdc, map[string]*bintree{}},
 		"get_total_supply.cdc": {scriptsGet_total_supplyCdc, map[string]*bintree{}},

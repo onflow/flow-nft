@@ -169,7 +169,7 @@ let owner: Address = nft.owner!.address!
 // Inspect the type of this NFT to verify its origin
 let nftType = nft.getType()
 
-// `nftType.identifier` is `A.f3fcd2c1a78f5eee.ExampleNFT.NFT`
+// `nftType.identifier` is `A.e03daebed8ca0615.ExampleNFT.NFT`
 ```
 
 ### How to implement metadata
