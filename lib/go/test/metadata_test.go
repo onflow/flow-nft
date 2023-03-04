@@ -18,7 +18,7 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 	b, accountKeys := newTestSetup(t)
 
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	_, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+	_, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
 
 	t.Run("Should not be able to setup a royalty receiver for a vault that doesn't exist", func(t *testing.T) {
 
@@ -56,7 +56,7 @@ func TestGetNFTMetadata(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
@@ -113,8 +113,8 @@ func TestGetNFTMetadata(t *testing.T) {
 		// Verify NFTCollectionData results are as expected
 		const (
 			pathName                = "exampleNFTCollection"
-			collectionType          = "A.f3fcd2c1a78f5eee.ExampleNFT.Collection"
-			collectionPublicType    = "A.f3fcd2c1a78f5eee.ExampleNFT.ExampleNFTCollectionPublic"
+			collectionType          = "A.e03daebed8ca0615.ExampleNFT.Collection"
+			collectionPublicType    = "A.e03daebed8ca0615.ExampleNFT.ExampleNFTCollectionPublic"
 			nftCollectionPublicType = "A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic"
 			nftReceiverType         = "A.01cf0e2f2f715450.NonFungibleToken.Receiver"
 			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
@@ -161,7 +161,7 @@ func TestGetNFTMetadata(t *testing.T) {
 		blockNumberName, _ := cadence.NewString("mintedBlock")
 		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
-		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewUInt64(15), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 
@@ -201,7 +201,7 @@ func TestGetNFTView(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
@@ -252,8 +252,8 @@ func TestGetNFTView(t *testing.T) {
 		// Verify NFTCollectionData results are as expected
 		const (
 			pathName                = "exampleNFTCollection"
-			collectionType          = "A.f3fcd2c1a78f5eee.ExampleNFT.Collection"
-			collectionPublicType    = "A.f3fcd2c1a78f5eee.ExampleNFT.ExampleNFTCollectionPublic"
+			collectionType          = "A.e03daebed8ca0615.ExampleNFT.Collection"
+			collectionPublicType    = "A.e03daebed8ca0615.ExampleNFT.ExampleNFTCollectionPublic"
 			nftCollectionPublicType = "A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic"
 			nftReceiverType         = "A.01cf0e2f2f715450.NonFungibleToken.Receiver"
 			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
@@ -287,7 +287,7 @@ func TestGetNFTView(t *testing.T) {
 		blockNumberName, _ := cadence.NewString("mintedBlock")
 		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
-		assert.Equal(t, cadence.NewUInt64(13), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewUInt64(15), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 
@@ -331,7 +331,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,

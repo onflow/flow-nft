@@ -87,19 +87,20 @@ func deployNFTContracts(
 	t *testing.T,
 	b *emulator.Blockchain,
 	exampleNFTAccountKey *flow.AccountKey,
-) (flow.Address, flow.Address, flow.Address) {
+) (flow.Address, flow.Address, flow.Address, flow.Address) {
 
 	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
 	metadataAddress := deploy(t, b, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress))
+	resolverAddress := deploy(t, b, "Resolver", contracts.Resolver())
 
 	exampleNFTAddress := deploy(
 		t, b,
 		"ExampleNFT",
-		contracts.ExampleNFT(nftAddress, metadataAddress),
+		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress),
 		exampleNFTAccountKey,
 	)
 
-	return nftAddress, metadataAddress, exampleNFTAddress
+	return nftAddress, metadataAddress, exampleNFTAddress, resolverAddress
 }
 
 // Assers that the ExampleNFT collection in the specified user's account
