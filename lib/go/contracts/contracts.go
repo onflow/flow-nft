@@ -16,7 +16,7 @@ var (
 	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
 	placeholderMetadataViews    = regexp.MustCompile(`"[^"\s].*/MetadataViews.cdc"`)
 	placeholderFungibleToken    = regexp.MustCompile(`"[^"\s].*/FungibleToken.cdc"`)
-	placeholderResolverToken    = regexp.MustCompile(`"[^"\s].*/Resolver.cdc"`)
+	placeholderResolverToken    = regexp.MustCompile(`"[^"\s].*/ViewResolver.cdc"`)
 )
 
 const (
@@ -24,7 +24,7 @@ const (
 	filenameOldNonFungibleToken = "utility/NonFungibleToken_old.cdc"
 	filenameExampleNFT          = "ExampleNFT.cdc"
 	filenameMetadataViews       = "MetadataViews.cdc"
-	filenameResolver            = "Resolver.cdc"
+	filenameResolver            = "ViewResolver.cdc"
 	filenameFungibleToken       = "utility/FungibleToken.cdc"
 )
 

@@ -332,15 +332,15 @@ fungible token switchboard instead.
 
 Now that contract borrowing is released, you can also implement the [Resolver](./contracts/Resolver.cdc) interface on your contract
 and resolve views from there. As an example, you might want to allow your contract to resolve NFTCollectionData and NFTCollectionDisplay
-so that platforms do not need to find an NFT that belongs to your contract to get information about how to set up or show your collection
+so that platforms do not need to find an NFT that belongs to your contract to get information about how to set up or show your collection.
 
 ```cadence
-import Resolver from 0xf8d6e0586b0a20c7
+import ViewResolver from 0xf8d6e0586b0a20c7
 import MetadataViews from 0xf8d6e0586b0a20c7
 
 pub fun main(addr: Address, name: String): AnyStruct? {
   let t = Type<MetadataViews.NFTCollectionData>()
-  let borrowedContract = getAccount(addr).contracts.borrow<&Resolver>(name: name) ?? panic("contract could not be borrowed")
+  let borrowedContract = getAccount(addr).contracts.borrow<&ViewResolver>(name: name) ?? panic("contract could not be borrowed")
 
   let view = borrowedContract.resolveView(t)
   if view == nil {

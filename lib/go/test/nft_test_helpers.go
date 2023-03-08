@@ -91,7 +91,7 @@ func deployNFTContracts(
 
 	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
 	metadataAddress := deploy(t, b, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress))
-	resolverAddress := deploy(t, b, "Resolver", contracts.Resolver())
+	resolverAddress := deploy(t, b, "ViewResolver", contracts.Resolver())
 
 	exampleNFTAddress := deploy(
 		t, b,
