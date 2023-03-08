@@ -1,9 +1,9 @@
 import MetadataViews from "../../contracts/MetadataViews.cdc"
-import Resolver from "../../contracts/Resolver.cdc"
+import ViewResolver from "../../contracts/ViewResolver.cdc"
 
 pub fun main(addr: Address, name: String): AnyStruct? {
     let t = Type<MetadataViews.NFTCollectionData>()
-    let borrowedContract = getAccount(addr).contracts.borrow<&Resolver>(name: name) ?? panic("contract could not be borrowed")
+    let borrowedContract = getAccount(addr).contracts.borrow<&ViewResolver>(name: name) ?? panic("contract could not be borrowed")
 
     let view = borrowedContract.resolveView(t)
     if view == nil {

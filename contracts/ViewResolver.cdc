@@ -3,7 +3,7 @@
 //
 // This will allow you to obtain information about a contract without necessarily knowing anything about it.
 // All you need is its address and name and you're good to go!
-pub contract interface Resolver {
+pub contract interface ViewResolver {
     /// Function that returns all the Metadata Views implemented by the resolving contract
     ///
     /// @return An array of Types defining the implemented views. This value will be used by

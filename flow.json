@@ -15,7 +15,7 @@
       }
     },
     "MetadataViews": "./contracts/MetadataViews.cdc",
-    "Resolver": "./contracts/Resolver.cdc",
+    "ViewResolver": "./contracts/ViewResolver.cdc",
     "ExampleNFT": "./contracts/ExampleNFT.cdc",
     "FungibleToken": "./contracts/utility/FungibleToken.cdc",
     "NFTForwarding": "./contracts/utility/NFTForwarding.cdc"
@@ -35,7 +35,7 @@
     "emulator": {
       "emulator-account": [
         "NonFungibleToken",
-        "Resolver",
+        "ViewResolver",
         "ExampleNFT",
         "MetadataViews",
         "FungibleToken",

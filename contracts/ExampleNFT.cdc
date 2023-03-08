@@ -11,9 +11,9 @@
 
 import NonFungibleToken from "./NonFungibleToken.cdc"
 import MetadataViews from "./MetadataViews.cdc"
-import Resolver from "./Resolver.cdc"
+import ViewResolver from "./ViewResolver.cdc"
 
-pub contract ExampleNFT: NonFungibleToken, Resolver {
+pub contract ExampleNFT: NonFungibleToken, ViewResolver {
 
     /// Total supply of ExampleNFTs in existence
     pub var totalSupply: UInt64
