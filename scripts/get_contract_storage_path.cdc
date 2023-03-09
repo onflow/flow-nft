@@ -1,7 +1,7 @@
 import MetadataViews from "../../contracts/MetadataViews.cdc"
 import ViewResolver from "../../contracts/ViewResolver.cdc"
 
-pub fun main(addr: Address, name: String): AnyStruct? {
+pub fun main(addr: Address, name: String): StoragePath? {
     let t = Type<MetadataViews.NFTCollectionData>()
     let borrowedContract = getAccount(addr).contracts.borrow<&ViewResolver>(name: name) ?? panic("contract could not be borrowed")
 
@@ -13,3 +13,4 @@ pub fun main(addr: Address, name: String): AnyStruct? {
     let cd = view! as! MetadataViews.NFTCollectionData
     return cd.storagePath
 }
+ 

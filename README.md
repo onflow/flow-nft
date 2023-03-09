@@ -338,7 +338,7 @@ so that platforms do not need to find an NFT that belongs to your contract to ge
 import ViewResolver from 0xf8d6e0586b0a20c7
 import MetadataViews from 0xf8d6e0586b0a20c7
 
-pub fun main(addr: Address, name: String): AnyStruct? {
+pub fun main(addr: Address, name: String): StoragePath? {
   let t = Type<MetadataViews.NFTCollectionData>()
   let borrowedContract = getAccount(addr).contracts.borrow<&ViewResolver>(name: name) ?? panic("contract could not be borrowed")
 
