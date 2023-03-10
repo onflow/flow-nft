@@ -1,5 +1,5 @@
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
+import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
+import ExampleNFT from "../../contracts/ExampleNFT.cdc"
 
 /// This transaction is for transferring an NFT from
 /// one account to another using the recipient's Receiver resource
