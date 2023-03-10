@@ -24,6 +24,8 @@ The `NonFungibleToken` and `MetadataViews` contracts are already deployed
 on various networks. You can import them in your contracts from these addresses.
 There is no need to deploy them yourself.
 
+Note: With the emulator, you must use the -contracts flag to deploy these contracts.
+
 | Network         | Contract Address     |
 | --------------- | -------------------- |
 | Emulator/Canary | `0xf8d6e0586b0a20c7` |
