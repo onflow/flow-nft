@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/onflow/cadence"
@@ -10,6 +11,7 @@ import (
 	"github.com/onflow/flow-emulator/emulator"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
+	sdktemplates "github.com/onflow/flow-go-sdk/templates"
 	"github.com/onflow/flow-go-sdk/test"
 	"github.com/stretchr/testify/assert"
 
@@ -89,12 +91,49 @@ func deployNFTContracts(
 	t *testing.T,
 	b emulator.Emulator,
 	adapter *adapters.SDKAdapter,
+	accountKeys *test.AccountKeys,
 	exampleNFTAccountKey *flow.AccountKey,
 ) (flow.Address, flow.Address, flow.Address, flow.Address) {
 
-	nftAddress := deploy(t, b, adapter, "NonFungibleToken", contracts.NonFungibleToken())
+	nftAccountKey, nftSigner := accountKeys.NewWithSigner()
+
+	// Deploy the NonFungibleToken contract interface
+	nftAddress, err := adapter.CreateAccount(context.Background(), []*flow.AccountKey{nftAccountKey}, []sdktemplates.Contract{
+		{
+			Name:   "NonFungibleToken",
+			Source: string(contracts.OldNonFungibleToken()),
+		},
+	})
+	if !assert.NoError(t, err) {
+		t.Log(err.Error())
+	}
+	_, err = b.CommitBlock()
+	assert.NoError(t, err)
+
 	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress))
 	resolverAddress := deploy(t, b, adapter, "ViewResolver", contracts.Resolver())
+
+	// Upgrade to the V2 NFT standard
+	tx := createTxWithTemplateAndAuthorizer(b, templates.GenerateUpgradeNFTContract(), nftAddress)
+
+	nftV2Code := contracts.NonFungibleTokenV2(metadataAddress)
+	cadenceCode := bytesToCadenceArray(nftV2Code)
+	tx.AddRawArgument(jsoncdc.MustEncode(cadenceCode))
+
+	serviceSigner, _ := b.ServiceKey().Signer()
+
+	signAndSubmit(
+		t, b, tx,
+		[]flow.Address{
+			b.ServiceKey().Address,
+			nftAddress,
+		},
+		[]crypto.Signer{
+			serviceSigner,
+			nftSigner,
+		},
+		false,
+	)
 
 	exampleNFTAddress := deploy(
 		t, b, adapter,

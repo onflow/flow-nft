@@ -13,16 +13,18 @@ import (
 )
 
 var (
-	placeholderNonFungibleToken = regexp.MustCompile(`"NonFungibleToken"`)
-	placeholderMetadataViews    = regexp.MustCompile(`"MetadataViews"`)
-	placeholderFungibleToken    = regexp.MustCompile(`"FungibleToken"`)
-	placeholderResolverToken    = regexp.MustCompile(`"ViewResolver"`)
+	placeholderNonFungibleToken   = regexp.MustCompile(`"NonFungibleToken"`)
+	placeholderNonFungibleTokenV2 = regexp.MustCompile(`"NonFungibleToken-v2"`)
+	placeholderMetadataViews      = regexp.MustCompile(`"MetadataViews"`)
+	placeholderFungibleToken      = regexp.MustCompile(`"FungibleToken"`)
+	placeholderResolverToken      = regexp.MustCompile(`"ViewResolver"`)
 )
 
 const (
 	filenameNonFungibleToken    = "NonFungibleToken.cdc"
-	filenameOldNonFungibleToken = "utility/NonFungibleToken_old.cdc"
-	filenameExampleNFT          = "ExampleNFT.cdc"
+	filenameNonFungibleTokenV2  = "NonFungibleToken-v2.cdc"
+	filenameOldNonFungibleToken = "NonFungibleToken.cdc"
+	filenameExampleNFT          = "ExampleNFT-v2.cdc"
 	filenameMetadataViews       = "MetadataViews.cdc"
 	filenameResolver            = "ViewResolver.cdc"
 	filenameFungibleToken       = "utility/FungibleToken.cdc"
@@ -30,7 +32,15 @@ const (
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleToken() []byte {
-	return assets.MustAsset(filenameNonFungibleToken)
+	code := assets.MustAssetString(filenameNonFungibleToken)
+	return []byte(code)
+}
+
+// NonFungibleToken returns the NonFungibleToken contract interface.
+func NonFungibleTokenV2(metadataViewsAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameNonFungibleToken)
+	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataViewsAddress.String())
+	return []byte(code)
 }
 
 // OldNonFungibleToken returns the old NonFungibleToken contract interface
@@ -45,7 +55,7 @@ func OldNonFungibleToken() []byte {
 func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
+	code = placeholderNonFungibleTokenV2.ReplaceAllString(code, "0x"+nftAddress.String())
 	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
 	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
 
