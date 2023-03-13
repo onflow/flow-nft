@@ -19,7 +19,7 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 	b, adapter, accountKeys := newTestSetup(t)
 
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	_, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
+	_, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
 
 	t.Run("Should not be able to setup a royalty receiver for a vault that doesn't exist", func(t *testing.T) {
 
@@ -57,7 +57,7 @@ func TestGetNFTMetadata(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
@@ -202,7 +202,7 @@ func TestGetNFTView(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
@@ -332,7 +332,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,

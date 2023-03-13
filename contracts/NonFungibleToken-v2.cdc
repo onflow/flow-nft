@@ -53,29 +53,39 @@ pub contract interface NonFungibleToken {
     ///
     /// If the collection is not in an account's storage, `from` will be `nil`.
     ///
-    pub event Withdraw(id: UInt64, from: Address?, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Withdraw(id: UInt64, from: Address?, type: Type, 
+                       displayView: MetadataViews.Display?, 
+                       serialView: MetadataViews.Serial?)
 
     /// Event that emitted when a token is deposited to a collection.
     ///
     /// It indicates the owner of the collection that it was deposited to.
     ///
-    pub event Deposit(id: UInt64, to: Address?, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Deposit(id: UInt64, to: Address?, type: Type,
+                      displayView: MetadataViews.Display?,
+                      serialView: MetadataViews.Serial?)
 
     /// Transfer
     ///
     /// The event that should be emitted when tokens are transferred from one account to another
     ///
-    pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type,
+                       displayView: MetadataViews.Display?,
+                       serialView: MetadataViews.Serial?)
 
     /// Mint
     ///
     /// The event that should be emitted when an NFT is minted
-    pub event Mint(id: UInt64, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Mint(id: UInt64, type: Type,
+                   displayView: MetadataViews.Display?,
+                   serialView: MetadataViews.Serial?)
 
     /// Destroy
     ///
     /// The event that should be emitted when an NFT is destroyed
-    pub event Destroy(id: UInt64, type: Type, displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Destroy(id: UInt64, type: Type,
+                      displayView: MetadataViews.Display?,
+                      serialView: MetadataViews.Serial?)
 
     /// Interface that the NFTs must conform to
     ///
@@ -83,15 +93,19 @@ pub contract interface NonFungibleToken {
         /// The unique ID that each NFT has
         pub fun getID(): UInt64
 
-        pub fun getViews(): [Type]
-        pub fun resolveView(_ view: Type): AnyStruct?
+        pub fun getViews(): [Type] {
+            return []
+        }
+        pub fun resolveView(_ view: Type): AnyStruct? {
+            return nil
+        }
     }
 
     /// Interface to mediate withdraws from the Collection
     ///
     pub resource interface Provider {
         /// withdraw removes an NFT from the collection and moves it to the caller
-        pub fun withdraw(withdrawID: UInt64): @AnyResource{NFT} {
+        pub fun withdraw(withdrawID: UInt64): @AnyResource{INFT} {
             post {
                 result.getID() == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
             }
@@ -111,32 +125,41 @@ pub contract interface NonFungibleToken {
 
         /// deposit takes an NFT as an argument and adds it to the Collection
         ///
-        pub fun deposit(token: @AnyResource{NFT})
+        pub fun deposit(token: @AnyResource{INFT})
 
-        /// getAcceptedTypes returns a list of NFT types that this receiver accepts
-        pub fun getAcceptedTypes(): {Type: Bool}
+        /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
+        pub fun getSupportedNFTTypes(): {Type: Bool} {
+            return {}
+        }
 
         /// Returns whether or not the given type is accepted by the collection
-        pub fun isAcceptedType(type: Type): Bool
+        pub fun isSupportedNFTType(type: Type): Bool {
+            return false
+        }
     }
 
     /// Interface that an account would commonly 
     /// publish for their collection
     pub resource interface CollectionPublic { //: MetadataViews.ResolverCollection {
-        pub fun deposit(token: @AnyResource{NFT})
-        pub fun getAcceptedTypes(): {Type: Bool}
-        pub fun isAcceptedType(type: Type): Bool
+        pub fun deposit(token: @AnyResource{INFT})
+        pub fun getSupportedNFTTypes(): {Type: Bool}
+        pub fun isSupportedNFTType(type: Type): Bool
         pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}?
         pub fun getDefaultStoragePath(): StoragePath?
         pub fun getDefaultPublicPath(): PublicPath?
         pub fun getIDs(): [UInt64]
-        pub fun borrowNFT(id: UInt64): &AnyResource{NFT}? {
-            // If the result isn't nil, the id of the returned reference
-            // should be the same as the argument to the function
+        pub fun borrowNFT(id: UInt64): &AnyResource{INFT}
+        /// Safe way to borrow a reference to an NFT that does not panic
+        ///
+        /// @param id: The ID of the NFT that want to be borrowed
+        /// @return An optional reference to the desired NFT, will be nil if the passed id does not exist
+        ///
+        pub fun borrowNFTSafe(id: UInt64): &{INFT}? {
             post {
                 (result == nil) || (result?.getID() == id): 
-                    "Cannot borrow NFT reference: The ID of the returned reference is incorrect"
+                    "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
             }
+            return nil
         }
     }
 
@@ -158,25 +181,25 @@ pub contract interface NonFungibleToken {
         /// Returns the NFT types that this collection can store
         /// If the collection can accept any NFT type, it should return
         /// a one element dictionary with the key type as `@AnyResource{NonFungibleToken.NFT}`
-        pub fun getAcceptedTypes(): {Type: Bool}
+        pub fun getSupportedNFTTypes(): {Type: Bool}
 
         /// Returns whether or not the given type is accepted by the collection
-        pub fun isAcceptedType(type: Type): Bool
+        pub fun isSupportedNFTType(type: Type): Bool
 
         /// createEmptyCollection creates an empty Collection
         /// and returns it to the caller so that they can own NFTs
-        pub fun createEmptyCollection(): @{Collection} {
+        pub fun createEmptyCollection(): @{NFTCollection} {
             post {
                 result.getIDs().length == 0: "The created collection must be empty!"
             }
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
-        pub fun withdraw(withdrawID: UInt64): @AnyResource{NFT}
+        pub fun withdraw(_ withdrawID: UInt64): @AnyResource{INFT}
 
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
-        pub fun deposit(token: @AnyResource{NFT})
+        pub fun deposit(token: @AnyResource{INFT})
 
         /// Function for a direct transfer instead of having to do a deposit and withdrawal
         ///
@@ -187,13 +210,19 @@ pub contract interface NonFungibleToken {
 
         /// Returns a borrowed reference to an NFT in the collection
         /// so that the caller can read data and call methods from it
-        pub fun borrowNFT(id: UInt64): &AnyResource{NonFungibleToken.NFT}?
+        pub fun borrowNFT(_ id: UInt64): &AnyResource{NonFungibleToken.INFT}?
 
         /// From the MetadataViews Contract
         /// borrows a reference to get metadata views for the NFTs that the contract contains
-        pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}?
+        pub fun borrowViewResolver(_ id: UInt64): &{MetadataViews.Resolver}?
 
-
+        pub fun borrowNFTSafe(id: UInt64): &{INFT}? {
+            post {
+                (result == nil) || (result?.getID() == id): 
+                    "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
+            }
+            return nil
+        }
     }
 
     /// Return the types that the contract defines
@@ -220,7 +249,7 @@ pub contract interface NonFungibleToken {
 
     /// createEmptyCollection creates an empty Collection
     /// and returns it to the caller so that they can own NFTs
-    pub fun createEmptyCollection(collectionType: Type): @{Collection} {
+    pub fun createEmptyCollection(collectionType: Type): @{NFTCollection} {
         post {
             result.getIDs().length == 0: "The created collection must be empty!"
         }
