@@ -17,22 +17,22 @@ pub contract ExampleNFT: NonFungibleToken {
 
     /// Standard events from the NonFungibleToken Interface
 
-    pub event Withdraw(id: UInt64, from: Address?, type: Type,
+    pub event Withdraw(id: UInt64, uuid: UInt64, from: Address?, type: Type,
                        displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
 
-    pub event Deposit(id: UInt64, to: Address?, type: Type,
+    pub event Deposit(id: UInt64, uuid: UInt64, to: Address?, type: Type,
                       displayView: MetadataViews.Display?,
                       serialView: MetadataViews.Serial?)
 
-    pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type,
+    pub event Transfer(id: UInt64, uuid: UInt64, from: Address?, to: Address?, type: Type,
                        displayView: MetadataViews.Display?,
                        serialView: MetadataViews.Serial?)
 
-    pub event Mint(id: UInt64, type: Type,
+    pub event Mint(id: UInt64, uuid: UInt64, type: Type,
                    displayView: MetadataViews.Display?,
                    serialView: MetadataViews.Serial?)
 
-    pub event Destroy(id: UInt64, type: Type,
+    pub event Destroy(id: UInt64, uuid: UInt64, type: Type,
                       displayView: MetadataViews.Display?,
                       serialView: MetadataViews.Serial?)
 
@@ -412,7 +412,7 @@ pub contract ExampleNFT: NonFungibleToken {
         self.account.save(<-collection, to: defaultStoragePath)
 
         // create a public capability for the collection
-        self.account.link<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>(
+        self.account.link<&ExampleNFT.Collection{NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>(
             defaultPublicPath,
             target: defaultStoragePath
         )
