@@ -53,7 +53,7 @@ pub contract interface NonFungibleToken {
     ///
     /// If the collection is not in an account's storage, `from` will be `nil`.
     ///
-    pub event Withdraw(id: UInt64, from: Address?, type: Type, 
+    pub event Withdraw(id: UInt64, uuid: UInt64, from: Address?, type: Type, 
                        displayView: MetadataViews.Display?, 
                        serialView: MetadataViews.Serial?)
 
@@ -61,7 +61,7 @@ pub contract interface NonFungibleToken {
     ///
     /// It indicates the owner of the collection that it was deposited to.
     ///
-    pub event Deposit(id: UInt64, to: Address?, type: Type,
+    pub event Deposit(id: UInt64, uuid: UInt64, to: Address?, type: Type,
                       displayView: MetadataViews.Display?,
                       serialView: MetadataViews.Serial?)
 
@@ -69,14 +69,14 @@ pub contract interface NonFungibleToken {
     ///
     /// The event that should be emitted when tokens are transferred from one account to another
     ///
-    pub event Transfer(id: UInt64, from: Address?, to: Address?, type: Type,
+    pub event Transfer(id: UInt64, uuid: UInt64, from: Address?, to: Address?, type: Type,
                        displayView: MetadataViews.Display?,
                        serialView: MetadataViews.Serial?)
 
     /// Mint
     ///
     /// The event that should be emitted when an NFT is minted
-    pub event Mint(id: UInt64, type: Type,
+    pub event Mint(id: UInt64, uuid: UInt64, type: Type,
                    displayView: MetadataViews.Display?,
                    serialView: MetadataViews.Serial?)
 
@@ -91,7 +91,9 @@ pub contract interface NonFungibleToken {
     ///
     pub resource interface NFT: MetadataViews.Resolver {
         /// The unique ID that each NFT has
-        pub fun getID(): UInt64
+        pub fun getID(): UInt64 {
+            return self.uuid
+        }
 
         pub fun getViews(): [Type] {
             return []
@@ -125,7 +127,7 @@ pub contract interface NonFungibleToken {
 
         /// deposit takes an NFT as an argument and adds it to the Collection
         ///
-        pub fun deposit(token: @AnyResource{INFT})
+        pub fun deposit(token: @AnyResource{NFT})
 
         /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
         pub fun getSupportedNFTTypes(): {Type: Bool} {
@@ -133,6 +135,7 @@ pub contract interface NonFungibleToken {
         }
 
         /// Returns whether or not the given type is accepted by the collection
+        /// A collection that can accept any type should just return true by default
         pub fun isSupportedNFTType(type: Type): Bool {
             return false
         }
@@ -141,20 +144,20 @@ pub contract interface NonFungibleToken {
     /// Interface that an account would commonly 
     /// publish for their collection
     pub resource interface CollectionPublic { //: MetadataViews.ResolverCollection {
-        pub fun deposit(token: @AnyResource{INFT})
+        pub fun deposit(token: @AnyResource{NFT})
         pub fun getSupportedNFTTypes(): {Type: Bool}
         pub fun isSupportedNFTType(type: Type): Bool
         pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}?
         pub fun getDefaultStoragePath(): StoragePath?
         pub fun getDefaultPublicPath(): PublicPath?
         pub fun getIDs(): [UInt64]
-        pub fun borrowNFT(id: UInt64): &AnyResource{INFT}
+        pub fun borrowNFT(id: UInt64): &AnyResource{NFT}
         /// Safe way to borrow a reference to an NFT that does not panic
         ///
         /// @param id: The ID of the NFT that want to be borrowed
         /// @return An optional reference to the desired NFT, will be nil if the passed id does not exist
         ///
-        pub fun borrowNFTSafe(id: UInt64): &{INFT}? {
+        pub fun borrowNFTSafe(id: UInt64): &{NFT}? {
             post {
                 (result == nil) || (result?.getID() == id): 
                     "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
@@ -195,7 +198,7 @@ pub contract interface NonFungibleToken {
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
-        pub fun withdraw(_ withdrawID: UInt64): @AnyResource{INFT}
+        pub fun withdraw(_ withdrawID: UInt64): @AnyResource{NFT}
 
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
@@ -210,13 +213,13 @@ pub contract interface NonFungibleToken {
 
         /// Returns a borrowed reference to an NFT in the collection
         /// so that the caller can read data and call methods from it
-        pub fun borrowNFT(_ id: UInt64): &AnyResource{NonFungibleToken.INFT}?
+        pub fun borrowNFT(_ id: UInt64): &AnyResource{NonFungibleToken.NFT}?
 
         /// From the MetadataViews Contract
         /// borrows a reference to get metadata views for the NFTs that the contract contains
         pub fun borrowViewResolver(_ id: UInt64): &{MetadataViews.Resolver}?
 
-        pub fun borrowNFTSafe(id: UInt64): &{INFT}? {
+        pub fun borrowNFTSafe(id: UInt64): &{NFT}? {
             post {
                 (result == nil) || (result?.getID() == id): 
                     "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
