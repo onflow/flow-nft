@@ -106,7 +106,7 @@ func TestGetNFTMetadata(t *testing.T) {
    "traits": [
  		{
      "name": "mintedBlock",
-     "value": 15,
+     "value": 12,
      "rarity": {
       "description": "",
       "max": 0,
