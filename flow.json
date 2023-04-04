@@ -7,7 +7,7 @@
   },
   "contracts": {
     "MetadataViews": "./contracts/MetadataViews.cdc",
-		"ExampleNFT": "./contracts/ExampleNFT.cdc",
+    "ExampleNFT": "./contracts/ExampleNFT.cdc",
     "NonFungibleToken": {
       "source": "./contracts/NonFungibleToken.cdc",
       "aliases": {
@@ -37,22 +37,22 @@
     },
     "emulator-alice": {
       "address": "0x01cf0e2f2f715450",
-			"key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
+      "key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
     },
-		"emulator-bob": {
+    "emulator-bob": {
       "address": "0x179b6b1cb6755e31",
-			"key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
+      "key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
     }
-   },
+  },
   "deployments": {
     "emulator": {
       "emulator-account": [
         "MetadataViews",
-				"ExampleNFT",
-				"NonFungibleToken"
+        "ExampleNFT",
+        "NonFungibleToken"
       ],
-			"emulator-alice" : [], 
-			"emulator-bob" : []
+      "emulator-alice" : [], 
+      "emulator-bob" : []
     }
-	}
+  }
 }
