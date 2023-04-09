@@ -1,5 +1,5 @@
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "ExampleNFT"
 
 /// This transaction is for transferring an NFT from
 /// one account to another using the recipient's Receiver resource

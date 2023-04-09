@@ -1,6 +1,6 @@
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
-import NFTForwarding from "NFTForwarding"
+import "NonFungibleToken"
+import "ExampleNFT"
+import "NFTForwarding"
 
 /// This transaction is what an account would run
 /// to change the NFTForwarder recipient

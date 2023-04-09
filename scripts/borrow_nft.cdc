@@ -1,5 +1,5 @@
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "ExampleNFT"
 
 // This script borrows an NFT from a collection
 pub fun main(address: Address, id: UInt64) {

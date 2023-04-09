@@ -1,5 +1,5 @@
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "ExampleNFT"
 
 /// This transaction withdraws an NFT from the signers collection and destroys it
 

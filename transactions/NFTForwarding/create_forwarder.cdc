@@ -1,7 +1,7 @@
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
-import ExampleNFT from "ExampleNFT"
-import NFTForwarding from "NFTForwarding"
+import "NonFungibleToken"
+import "MetadataViews"
+import "ExampleNFT"
+import "NFTForwarding"
 
 /// This transaction is what an account would run
 /// to set itself up to forward NFTs to a designated

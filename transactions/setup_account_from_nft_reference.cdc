@@ -1,6 +1,6 @@
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "MetadataViews"
+import "ExampleNFT"
 
 /// This transaction is what an account would run
 /// to set itself up to receive NFTs. This function

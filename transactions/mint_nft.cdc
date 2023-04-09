@@ -1,7 +1,7 @@
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
-import MetadataViews from "MetadataViews"
-import FungibleToken from "FungibleToken"
+import "NonFungibleToken"
+import "ExampleNFT"
+import "MetadataViews"
+import "FungibleToken"
 
 /// This script uses the NFTMinter resource to mint a new NFT
 /// It must be run with the account that has the minter resource

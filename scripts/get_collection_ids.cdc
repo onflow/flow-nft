@@ -1,5 +1,5 @@
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "ExampleNFT"
 
 /// Script to get NFT IDs in an account's collection
 ///
