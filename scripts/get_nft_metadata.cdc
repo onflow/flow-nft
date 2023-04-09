@@ -1,5 +1,5 @@
-import ExampleNFT from "../../contracts/ExampleNFT.cdc"
-import MetadataViews from "../../contracts/MetadataViews.cdc"
+import ExampleNFT from "ExampleNFT"
+import MetadataViews from "MetadataViews"
 
 /// This script gets all the view-based metadata associated with the specified NFT
 /// and returns it as a single struct

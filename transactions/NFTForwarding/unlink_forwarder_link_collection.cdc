@@ -1,7 +1,7 @@
-import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
-import MetadataViews from "../../contracts/MetadataViews.cdc"
-import ExampleNFT from "../../contracts/ExampleNFT.cdc"
-import NFTForwarding from "../../contracts/utility/NFTForwarding.cdc"
+import NonFungibleToken from "NonFungibleToken"
+import MetadataViews from "MetadataViews"
+import ExampleNFT from "ExampleNFT"
+import NFTForwarding from "NFTForwarding"
 
 /// This transaction is what an account would run
 /// to link a collection to its public storage

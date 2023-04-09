@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
-	placeholderExampleNFT       = regexp.MustCompile(`"[^"\s].*/ExampleNFT.cdc"`)
-	placeholderMetadataViews    = regexp.MustCompile(`"[^"\s].*/MetadataViews.cdc"`)
-	placeholderFungibleToken    = regexp.MustCompile(`"[^"\s].*/FungibleToken.cdc"`)
+	placeholderNonFungibleToken = regexp.MustCompile(`"NonFungibleToken"`)
+	placeholderExampleNFT       = regexp.MustCompile(`"ExampleNFT"`)
+	placeholderMetadataViews    = regexp.MustCompile(`"MetadataViews"`)
+	placeholderFungibleToken    = regexp.MustCompile(`"FungibleToken"`)
 )
 
 func replaceAddresses(code string, nftAddress, exampleNFTAddress, metadataAddress, ftAddress flow.Address) []byte {
