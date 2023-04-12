@@ -26,6 +26,7 @@ const (
 	filenameOldNonFungibleToken = "NonFungibleToken.cdc"
 	filenameExampleNFT          = "ExampleNFT-v2.cdc"
 	filenameMetadataViews       = "MetadataViews.cdc"
+	filenameNFTMetadataViews    = "NFTMetadataViews.cdc"
 	filenameResolver            = "ViewResolver.cdc"
 	filenameFungibleToken       = "utility/FungibleToken.cdc"
 )
@@ -52,21 +53,32 @@ func OldNonFungibleToken() []byte {
 // ExampleNFT returns the ExampleNFT contract.
 //
 // The returned contract will import the NonFungibleToken contract from the specified address.
-func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byte {
+func ExampleNFT(nftAddress, metadataAddress, nftMetadataAddress, resolverAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
 	code = placeholderNonFungibleTokenV2.ReplaceAllString(code, "0x"+nftAddress.String())
 	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
+	code = placeholderNFTMetadataViews.ReplaceAllString(code, "0x"+nftMetadataAddress.String())
 	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
 
 	return []byte(code)
 }
 
-func MetadataViews(ftAddress flow.Address, nftAddress flow.Address) []byte {
+func MetadataViews() []byte { //ftAddress flow.Address, nftAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameMetadataViews)
+
+	// code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress.String())
+	// code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
+
+	return []byte(code)
+}
+
+func NFTMetadataViews(ftAddress flow.Address, nftAddress, metadataViewsAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameNFTMetadataViews)
 
 	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress.String())
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
+	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataViewsAddress.String())
 
 	return []byte(code)
 }

@@ -12,29 +12,27 @@
 
 import NonFungibleToken from "./NonFungibleToken-v2.cdc"
 import MetadataViews from "./MetadataViews.cdc"
+import NFTMetadataViews from "./NFTMetadataViews.cdc"
+import ViewResolver from "./ViewResolver.cdc"
 
-pub contract ExampleNFT: NonFungibleToken {
+pub contract ExampleNFT: NonFungibleToken, ViewResolver {
 
     /// Standard events from the NonFungibleToken Interface
 
-    pub event Withdraw(id: UInt64, uuid: UInt64, from: Address?, type: Type,
-                       displayView: MetadataViews.Display?, serialView: MetadataViews.Serial?)
+    pub event Withdraw(id: UInt64, uuid: UInt64, from: Address?, type: String,
+                       name: String, thumbnailURI: String?)
 
-    pub event Deposit(id: UInt64, uuid: UInt64, to: Address?, type: Type,
-                      displayView: MetadataViews.Display?,
-                      serialView: MetadataViews.Serial?)
+    pub event Deposit(id: UInt64, uuid: UInt64, to: Address?, type: String,
+                      name: String, thumbnailURI: String?)
 
-    pub event Transfer(id: UInt64, uuid: UInt64, from: Address?, to: Address?, type: Type,
-                       displayView: MetadataViews.Display?,
-                       serialView: MetadataViews.Serial?)
+    pub event Transfer(id: UInt64, uuid: UInt64, from: Address?, to: Address?, type: String,
+                       name: String, thumbnailURI: String?)
 
-    pub event Mint(id: UInt64, uuid: UInt64, type: Type,
-                   displayView: MetadataViews.Display?,
-                   serialView: MetadataViews.Serial?)
+    pub event Mint(id: UInt64, uuid: UInt64, type: String,
+                   name: String, thumbnailURI: String?)
 
-    pub event Destroy(id: UInt64, uuid: UInt64, type: Type,
-                      displayView: MetadataViews.Display?,
-                      serialView: MetadataViews.Serial?)
+    pub event Destroy(id: UInt64, uuid: UInt64, type: String,
+                      name: String, thumbnailURI: String?)
 
     /// Path where the minter should be stored
     /// The standard paths for the collection are stored in the collection resource type
@@ -55,7 +53,7 @@ pub contract ExampleNFT: NonFungibleToken {
         pub let thumbnail: String
 
         /// For the Royalties metadata view
-        access(self) let royalties: [MetadataViews.Royalty]
+        access(self) let royalties: [NFTMetadataViews.Royalty]
 
         /// Generic dictionary of traits the NFT has
         access(self) let metadata: {String: AnyStruct}
@@ -64,7 +62,7 @@ pub contract ExampleNFT: NonFungibleToken {
             name: String,
             description: String,
             thumbnail: String,
-            royalties: [MetadataViews.Royalty],
+            royalties: [NFTMetadataViews.Royalty],
             metadata: {String: AnyStruct},
         ) {
             self.id = self.uuid
@@ -78,14 +76,19 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
-                Type<MetadataViews.Royalties>(),
+                Type<NFTMetadataViews.Royalties>(),
                 Type<MetadataViews.Editions>(),
                 Type<MetadataViews.ExternalURL>(),
-                Type<MetadataViews.NFTCollectionData>(),
-                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<NFTMetadataViews.NFTCollectionData>(),
+                Type<NFTMetadataViews.NFTCollectionDisplay>(),
                 Type<MetadataViews.Serial>(),
-                Type<MetadataViews.Traits>()
+                Type<NFTMetadataViews.Traits>()
             ]
+        }
+
+        destroy() {
+            emit Destroy(id: self.id, uuid: self.uuid, type: self.getType().identifier,
+                      name: self.name, thumbnailURI: self.thumbnail)
         }
 
         pub fun resolveView(_ view: Type): AnyStruct? {
@@ -110,28 +113,28 @@ pub contract ExampleNFT: NonFungibleToken {
                     return MetadataViews.Serial(
                         self.id
                     )
-                case Type<MetadataViews.Royalties>():
-                    return MetadataViews.Royalties(
+                case Type<NFTMetadataViews.Royalties>():
+                    return NFTMetadataViews.Royalties(
                         self.royalties
                     )
                 case Type<MetadataViews.ExternalURL>():
                     return MetadataViews.ExternalURL("https://example-nft.onflow.org/".concat(self.id.toString()))
-                case Type<MetadataViews.NFTCollectionData>():
+                case Type<NFTMetadataViews.NFTCollectionData>():
                     return ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
-                case Type<MetadataViews.NFTCollectionDisplay>():
+                case Type<NFTMetadataViews.NFTCollectionDisplay>():
                     return ExampleNFT.getCollectionDisplay(nftType: Type<@ExampleNFT.NFT>())
-                case Type<MetadataViews.Traits>():
+                case Type<NFTMetadataViews.Traits>():
                     // exclude mintedTime and foo to show other uses of Traits
                     let excludedTraits = ["mintedTime", "foo"]
-                    let traitsView = MetadataViews.dictToTraits(dict: self.metadata, excludedNames: excludedTraits)
+                    let traitsView = NFTMetadataViews.dictToTraits(dict: self.metadata, excludedNames: excludedTraits)
 
                     // mintedTime is a unix timestamp, we should mark it with a displayType so platforms know how to show it.
-                    let mintedTimeTrait = MetadataViews.Trait(name: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
+                    let mintedTimeTrait = NFTMetadataViews.Trait(name: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
                     traitsView.addTrait(mintedTimeTrait)
 
                     // foo is a trait with its own rarity
-                    let fooTraitRarity = MetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
-                    let fooTrait = MetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
+                    let fooTraitRarity = NFTMetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
+                    let fooTrait = NFTMetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
                     traitsView.addTrait(fooTrait)
                     
                     return traitsView
@@ -141,7 +144,7 @@ pub contract ExampleNFT: NonFungibleToken {
         }
     }
 
-    pub resource Collection: NonFungibleToken.NFTCollection, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.Transferor, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
+    pub resource Collection: NonFungibleToken.Collection, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.Transferor, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         /// dictionary of NFT conforming tokens
         /// NFT is a resource type with an `UInt64` ID field
         access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT{NonFungibleToken.NFT}}
@@ -162,27 +165,60 @@ pub contract ExampleNFT: NonFungibleToken {
         init () {
             self.ownedNFTs <- {}
             let identifier = "cadenceExampleNFTCollection"
-            self.storagePath = StoragePath(identifier: identifier)
-            self.publicPath = PublicPath(identifier: identifier)
+            self.storagePath = StoragePath(identifier: identifier)!
+            self.publicPath = PublicPath(identifier: identifier)!
         }
 
-        /// Returns the NFT types that this collection can store
-        pub fun getAcceptedTypes(): {Type: Bool} {
-            return {
-                Type<@ExampleNFT.NFT>(): true
-            }
+        /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
+        pub fun getSupportedNFTTypes(): {Type: Bool} {
+            let supportedTypes: {Type: Bool} = {}
+            supportedTypes[Type<@ExampleNFT.NFT>()] = true
+            return supportedTypes
+        }
+
+        /// Returns whether or not the given type is accepted by the collection
+        /// A collection that can accept any type should just return true by default
+        pub fun isSupportedNFTType(type: Type): Bool {
+           if type == Type<@ExampleNFT.NFT>() {
+            return true
+           } else {
+            return false
+           }
+        }
+
+        /// Indicates that the collection is using UUID to key the NFT dictionary
+        pub fun usesUUID(): Bool {
+            return true
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
-        pub fun withdraw(withdrawID: UInt64): @ExampleNFT.NFT{NonFungibleToken.NFT} {
+        pub fun withdraw(withdrawID: UInt64): @AnyResource{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
                 ?? panic("Could not withdraw an NFT with the provided ID from the collection")
 
-            emit Withdraw(id: token.id, from: self.owner?.address, type: token.getType(),
-                          displayView: token.resolveView(MetadataViews.Type<MetadataViews.Display>()),
-                          serialView: token.resolveView(MetadataViews.Type<MetadataViews.Serial>()))
+            let displayView = token.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
+
+            emit Withdraw(id: token.getID(), uuid: token.uuid, from: self.owner?.address, type: token.getType().identifier,
+                          name: displayView.name, thumbnailURI: displayView.thumbnail.uri())
 
             return <-token
+        }
+
+        /// withdrawWithUUID removes an NFT from the collection, using its UUID, and moves it to the caller
+        pub fun withdrawWithUUID(_ uuid: UInt64): @AnyResource{NonFungibleToken.NFT} {
+            return <-self.withdraw(withdrawID: uuid)
+        }
+
+        /// withdrawWithType removes an NFT from the collection, using its Type and ID and moves it to the caller
+        /// This would be used by a collection that can store multiple NFT types
+        pub fun withdrawWithType(type: Type, withdrawID: UInt64): @AnyResource{NonFungibleToken.NFT} {
+            return <-self.withdraw(withdrawID: withdrawID)
+        }
+
+        /// withdrawWithTypeAndUUID removes an NFT from the collection using its type and uuid and moves it to the caller
+        /// This would be used by a collection that can store multiple NFT types
+        pub fun withdrawWithTypeAndUUID(type: Type, uuid: UInt64): @AnyResource{NonFungibleToken.NFT} {
+            return <-self.withdraw(withdrawID: uuid)
         }
 
         /// deposit takes a NFT and adds it to the collections dictionary
@@ -190,9 +226,8 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun deposit(token: @AnyResource{NonFungibleToken.NFT}) {
             let token <- token as! @ExampleNFT.NFT
 
-            emit Deposit(id: token.id, to: self.owner?.address, type: token.getType(),
-                         displayView: token.resolveView(MetadataViews.Type<MetadataViews.Display>(),
-                         serialView: token.resolveView(MetadataViews.Type<MetadataViews.Serial>())))
+            emit Deposit(id: token.id, uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier,
+                         name: token.name, thumbnailURI: token.thumbnail)
 
             // add the new token to the dictionary which removes the old one
             let oldToken <- self.ownedNFTs[token.id] <- token
@@ -205,13 +240,14 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun transfer(id: UInt64, receiver: Capability<&AnyResource{NonFungibleToken.Receiver}>): Bool {
             let token <- self.withdraw(withdrawID: id)
 
+            let displayView = token.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
+
             // If we can't borrow a receiver reference, don't panic, just return the NFT
             // and return true for an error
             if let receiverRef = receiver.borrow() {
-                emit Transfer(id: token.id, from: self.owner?.address, to: receiverRef.owner?.address,
-                              type: token.getType(),
-                              displayView: token.resolveView(MetadataViews.Type<MetadataViews.Display>(),
-                              serialView: token.resolveView(MetadataViews.Type<MetadataViews.Serial>())))
+                emit Transfer(id: token.getID(), uuid: token.uuid, from: self.owner?.address, to: receiverRef.owner?.address,
+                              type: token.getType().identifier,
+                              name: displayView.name, thumbnailURI: displayView.thumbnail.uri())
 
                 receiverRef.deposit(token: <-token)
 
@@ -227,21 +263,34 @@ pub contract ExampleNFT: NonFungibleToken {
             return self.ownedNFTs.keys
         }
 
+        pub fun getIDsWithTypes(): {Type: [UInt64]} {
+            let typeIDs: {Type: [UInt64]} = {}
+            typeIDs[Type<@ExampleNFT.NFT>()] = self.getIDs()
+            return typeIDs
+        }
+
         /// borrowNFT gets a reference to an NFT in the collection
         /// so that the caller can read its metadata and call its methods
-        pub fun borrowNFT(id: UInt64): &AnyResource{NonFungibleToken.NFT}? {
+        pub fun borrowNFT(_ id: UInt64): &AnyResource{NonFungibleToken.NFT} {
+            let nftRef = (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)
+                ?? panic("Could not borrow a reference to an NFT with the specified ID")
+
+            return nftRef
+        }
+
+        pub fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
             return (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)
         }
 
         /// Borrow the view resolver for the specified NFT ID
-        pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver}? {
+        pub fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}? {
             let nft = (&self.ownedNFTs[id] as &ExampleNFT.NFT?)!
             let exampleNFT = nft as! &ExampleNFT.NFT
             return exampleNFT as &AnyResource{MetadataViews.Resolver}
         }
 
         /// public function that anyone can call to create a new empty collection
-        pub fun createEmptyCollection(): @ExampleNFT.Collection{NonFungibleToken.NFTCollection} {
+        pub fun createEmptyCollection(): @AnyResource{NonFungibleToken.Collection} {
             return <- create ExampleNFT.Collection()
         }
 
@@ -253,12 +302,12 @@ pub contract ExampleNFT: NonFungibleToken {
     /// public function that anyone can call to create a new empty collection
     /// Since multiple collection types can be defined in a contract,
     /// The caller needs to specify which one they want to create
-    pub fun createEmptyCollection(collectionType: Type): @ExampleNFT.Collection{NonFungibleToken.NFTCollection}? {
+    pub fun createEmptyCollection(collectionType: Type): @{NonFungibleToken.Collection} {
         switch collectionType {
             case Type<@ExampleNFT.Collection>():
                 return <- create Collection()
             default:
-                return nil
+                return <- create Collection()
         }
     }
 
@@ -269,8 +318,8 @@ pub contract ExampleNFT: NonFungibleToken {
     ///
     pub fun getViews(): [Type] {
         return [
-            Type<MetadataViews.NFTCollectionData>(),
-            Type<MetadataViews.NFTCollectionDisplay>()
+            Type<NFTMetadataViews.NFTCollectionData>(),
+            Type<NFTMetadataViews.NFTCollectionDisplay>()
         ]
     }
 
@@ -281,10 +330,10 @@ pub contract ExampleNFT: NonFungibleToken {
     ///
     pub fun resolveView(_ view: Type): AnyStruct? {
         switch view {
-            case Type<MetadataViews.NFTCollectionData>():
+            case Type<NFTMetadataViews.NFTCollectionData>():
                 return ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
-            case Type<MetadataViews.NFTCollectionDisplay>():
-                return ExampmeNFT.getCollectionDisplay(nftType: Type<@ExampleNFT.NFT>())
+            case Type<NFTMetadataViews.NFTCollectionDisplay>():
+                return ExampleNFT.getCollectionDisplay(nftType: Type<@ExampleNFT.NFT>())
         }
         return nil
     }
@@ -317,19 +366,19 @@ pub contract ExampleNFT: NonFungibleToken {
 
     /// resolve a type to its CollectionData so you know where to store it
     /// Returns `nil` if no collection type exists for the specified NFT type
-    pub fun getCollectionData(nftType: Type): MetadataViews.NFTCollectionData? {
+    pub fun getCollectionData(nftType: Type): NFTMetadataViews.NFTCollectionData? {
         switch nftType {
             case Type<@ExampleNFT.NFT>():
                 let collectionRef = self.account.borrow<&ExampleNFT.Collection>(from: /storage/cadenceExampleNFTCollection)
                     ?? panic("Could not borrow a reference to the stored collection")
-                let collectionData = MetadataViews.NFTCollectionData(
-                    storagePath: collectionRef.getDefaultStoragePath,
-                    publicPath: collectionRef.getDefaultPublicPath,
+                let collectionData = NFTMetadataViews.NFTCollectionData(
+                    storagePath: collectionRef.getDefaultStoragePath()!,
+                    publicPath: collectionRef.getDefaultPublicPath()!,
                     providerPath: /private/exampleNFTCollection,
                     publicCollection: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic}>(),
                     publicLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
                     providerLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>(),
-                    createEmptyCollectionFunction: (fun (): @{NonFungibleToken.NFTCollection} {
+                    createEmptyCollectionFunction: (fun (): @{NonFungibleToken.Collection} {
                         return <-collectionRef.createEmptyCollection()
                     })
                 )
@@ -340,7 +389,7 @@ pub contract ExampleNFT: NonFungibleToken {
     }
 
     /// Returns the CollectionDisplay view for the NFT type that is specified 
-    pub fun getCollectionDisplay(nftType: Type): MetadataViews.NFTCollectionDisplay? {
+    pub fun getCollectionDisplay(nftType: Type): NFTMetadataViews.NFTCollectionDisplay? {
         switch nftType {
             case Type<@ExampleNFT.NFT>():
                 let media = MetadataViews.Media(
@@ -349,7 +398,7 @@ pub contract ExampleNFT: NonFungibleToken {
                     ),
                     mediaType: "image/svg+xml"
                 )
-                return MetadataViews.NFTCollectionDisplay(
+                return NFTMetadataViews.NFTCollectionDisplay(
                     name: "The Example Collection",
                     description: "This collection is used as an example to help you develop your next Flow NFT.",
                     externalURL: MetadataViews.ExternalURL("https://example-nft.onflow.org"),
@@ -375,14 +424,13 @@ pub contract ExampleNFT: NonFungibleToken {
             name: String,
             description: String,
             thumbnail: String,
-            royalties: [MetadataViews.Royalty]
+            royalties: [NFTMetadataViews.Royalty]
         ): @ExampleNFT.NFT {
 
             let metadata: {String: AnyStruct} = {}
             let currentBlock = getCurrentBlock()
             metadata["mintedBlock"] = currentBlock.height
             metadata["mintedTime"] = currentBlock.timestamp
-            metadata["minter"] = recipient.owner!.address
 
             // this piece of metadata will be used to show embedding rarity into a trait
             metadata["foo"] = "bar"
@@ -396,6 +444,9 @@ pub contract ExampleNFT: NonFungibleToken {
                 metadata: metadata,
             )
 
+            emit Mint(id: newNFT.id, uuid: newNFT.uuid, type: newNFT.getType().identifier,
+                   name: newNFT.name, thumbnailURI: newNFT.thumbnail)
+
             return <-newNFT
         }
     }
@@ -407,8 +458,8 @@ pub contract ExampleNFT: NonFungibleToken {
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
-        let defaultStoragePath = collection.defaultStoragePath
-        let defaultPublicPath = collection.defaultPublicPath
+        let defaultStoragePath = collection.getDefaultStoragePath()!
+        let defaultPublicPath = collection.getDefaultPublicPath()!
         self.account.save(<-collection, to: defaultStoragePath)
 
         // create a public capability for the collection
