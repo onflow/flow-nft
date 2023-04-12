@@ -95,13 +95,15 @@ func deployNFTContracts(
 	exampleNFTAccountKey *flow.AccountKey,
 ) (flow.Address, flow.Address, flow.Address, flow.Address) {
 
-	nftAccountKey, nftSigner := accountKeys.NewWithSigner()
+	nftAccountKey, _ := accountKeys.NewWithSigner()
+
+	metadataAddress := deploy(t, b, "MetadataViews", contracts.MetadataViews())
 
 	// Deploy the NonFungibleToken contract interface
 	nftAddress, err := adapter.CreateAccount(context.Background(), []*flow.AccountKey{nftAccountKey}, []sdktemplates.Contract{
 		{
 			Name:   "NonFungibleToken",
-			Source: string(contracts.OldNonFungibleToken()),
+			Source: string(contracts.NonFungibleToken(metadataAddress)),
 		},
 	})
 	if !assert.NoError(t, err) {
@@ -110,35 +112,35 @@ func deployNFTContracts(
 	_, err = b.CommitBlock()
 	assert.NoError(t, err)
 
-	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress))
+	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress, metadataAddress))
 	resolverAddress := deploy(t, b, adapter, "ViewResolver", contracts.Resolver())
 
 	// Upgrade to the V2 NFT standard
-	tx := createTxWithTemplateAndAuthorizer(b, templates.GenerateUpgradeNFTContract(), nftAddress)
+	// tx := createTxWithTemplateAndAuthorizer(b, templates.GenerateUpgradeNFTContract(), nftAddress)
 
 	nftV2Code := contracts.NonFungibleTokenV2(metadataAddress)
 	cadenceCode := bytesToCadenceArray(nftV2Code)
 	tx.AddRawArgument(jsoncdc.MustEncode(cadenceCode))
 
-	serviceSigner, _ := b.ServiceKey().Signer()
+	// serviceSigner, _ := b.ServiceKey().Signer()
 
-	signAndSubmit(
-		t, b, tx,
-		[]flow.Address{
-			b.ServiceKey().Address,
-			nftAddress,
-		},
-		[]crypto.Signer{
-			serviceSigner,
-			nftSigner,
-		},
-		false,
-	)
+	// signAndSubmit(
+	// 	t, b, tx,
+	// 	[]flow.Address{
+	// 		b.ServiceKey().Address,
+	// 		nftAddress,
+	// 	},
+	// 	[]crypto.Signer{
+	// 		serviceSigner,
+	// 		nftSigner,
+	// 	},
+	// 	false,
+	// )
 
 	exampleNFTAddress := deploy(
 		t, b, adapter,
 		"ExampleNFT",
-		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress),
+		contracts.ExampleNFT(nftAddress, metadataAddress, nftMetadataAddress, resolverAddress),
 		exampleNFTAccountKey,
 	)
 

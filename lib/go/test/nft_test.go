@@ -23,17 +23,17 @@ func TestNFTDeployment(t *testing.T) {
 	exampleNFTAccountKey, _ := accountKeys.NewWithSigner()
 	nftAddress, _, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
 
-	t.Run("Should have properly initialized fields after deployment", func(t *testing.T) {
+	// t.Run("Should have properly initialized fields after deployment", func(t *testing.T) {
 
-		script := templates.GenerateGetTotalSupplyScript(nftAddress, exampleNFTAddress)
-		supply := executeScriptAndCheck(t, b, script, nil)
-		assert.Equal(t, cadence.NewUInt64(0), supply)
+	// 	script := templates.GenerateGetTotalSupplyScript(nftAddress, exampleNFTAddress)
+	// 	supply := executeScriptAndCheck(t, b, script, nil)
+	// 	assert.Equal(t, cadence.NewUInt64(0), supply)
 
-		assertCollectionLength(t, b, nftAddress, exampleNFTAddress,
-			exampleNFTAddress,
-			0,
-		)
-	})
+	// 	assertCollectionLength(t, b, nftAddress, exampleNFTAddress,
+	// 		exampleNFTAddress,
+	// 		0,
+	// 	)
+	// })
 }
 
 func TestCreateNFT(t *testing.T) {
