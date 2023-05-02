@@ -13,11 +13,12 @@
 
 import NonFungibleToken from "./NonFungibleToken-v2.cdc"
 import MetadataViews from "./MetadataViews.cdc"
+import ViewResolver from "./ViewResolver.cdc"
 
 pub contract BasicNFT {
 
     /// The only thing that an NFT really needs to have is this resource definition
-    pub resource NFT: NonFungibleToken.NFT, MetadataViews.Resolver {
+    pub resource NFT: NonFungibleToken.NFT, ViewResolver.Resolver {
         /// Arbitrary trait mapping metadata
         access(self) let metadata: {String: AnyStruct}
     
