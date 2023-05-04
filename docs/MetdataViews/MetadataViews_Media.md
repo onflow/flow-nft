@@ -1,20 +1,3 @@
-# Struct `Media`
+# This document has been moved to a new location:
 
-```cadence
-pub struct Media {
-
-    pub let file: AnyStruct{File}
-
-    pub let mediaType: String
-}
-```
-
-View to represent, a file with an correspoiding mediaType.
-
-### Initializer
-
-```cadence
-init(file: AnyStruct{File}, mediaType: String)
-```
-
-
+https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/MetdataViews/MetadataViews_Media.md
