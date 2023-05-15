@@ -1,3 +1,15 @@
-# This document has been moved to a new location:
+# Resource `NFT`
 
-https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/NonFungibleToken/NonFungibleToken_NFT.md
+```cadence
+pub resource NFT {
+
+    pub let id: UInt64
+}
+```
+
+Requirement that all conforming NFT smart contracts have
+to define a resource called NFT that conforms to INFT
+
+Implemented Interfaces:
+  - `INFT`
+
