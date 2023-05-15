@@ -1,3 +1,25 @@
-# This document has been moved to a new location:
+# Resource Interface `ResolverCollection`
 
-https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/MetdataViews/MetadataViews_ResolverCollection.md
+```cadence
+pub resource interface ResolverCollection {
+}
+```
+
+A group of view resolvers indexed by ID.
+## Functions
+
+### `borrowViewResolver()`
+
+```cadence
+fun borrowViewResolver(id: UInt64): &{Resolver}
+```
+
+---
+
+### `getIDs()`
+
+```cadence
+fun getIDs(): [UInt64]
+```
+
+---
