@@ -1,18 +1,3 @@
-# Struct `Medias`
+# This document has been moved to a new location:
 
-```cadence
-pub struct Medias {
-
-    pub let items: [Media]
-}
-```
-
-Wrapper view for multiple media views
-
-### Initializer
-
-```cadence
-init(_: [Media])
-```
-
-
+https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/MetdataViews/MetadataViews_Medias.md

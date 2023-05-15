@@ -1,23 +1,3 @@
-# Struct `Display`
+# This document has been moved to a new location:
 
-```cadence
-pub struct Display {
-
-    pub let name: String
-
-    pub let description: String
-
-    pub let thumbnail: AnyStruct{File}
-}
-```
-
-Display is a basic view that includes the name, description and
-thumbnail for an object. Most objects should implement this view.
-
-### Initializer
-
-```cadence
-init(name: String, description: String, thumbnail: AnyStruct{File})
-```
-
-
+https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/MetdataViews/MetadataViews_Display.md

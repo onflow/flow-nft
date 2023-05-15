@@ -1,31 +1,3 @@
-# Struct `HTTPFile`
+# This document has been moved to a new location:
 
-```cadence
-pub struct HTTPFile {
-
-    pub let url: String
-}
-```
-
-View to expose a file that is accessible at an HTTP (or HTTPS) URL.
-
-Implemented Interfaces:
-  - `File`
-
-
-### Initializer
-
-```cadence
-init(url: String)
-```
-
-
-## Functions
-
-### `uri()`
-
-```cadence
-fun uri(): String
-```
-
----
+https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/MetdataViews/MetadataViews_HTTPFile.md

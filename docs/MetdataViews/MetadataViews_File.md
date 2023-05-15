@@ -1,18 +1,3 @@
-# Struct Interface `File`
+# This document has been moved to a new location:
 
-```cadence
-pub struct interface File {
-}
-```
-
-Generic interface that represents a file stored on or off chain. Files
-can be used to references images, videos and other media.
-## Functions
-
-### `uri()`
-
-```cadence
-fun uri(): String
-```
-
----
+https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/MetdataViews/MetadataViews_File.md

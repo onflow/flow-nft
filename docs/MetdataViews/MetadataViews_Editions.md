@@ -1,18 +1,3 @@
-# Struct `Editions`
+# This document has been moved to a new location:
 
-```cadence
-pub struct Editions {
-
-    pub let infoList: [Edition]
-}
-```
-
-Wrapper view for multiple Edition views
-
-### Initializer
-
-```cadence
-init(_: [Edition])
-```
-
-
+https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/MetdataViews/MetadataViews_Editions.md

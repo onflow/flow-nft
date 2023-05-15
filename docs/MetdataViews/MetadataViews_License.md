@@ -1,19 +1,3 @@
-# Struct `License`
+# This document has been moved to a new location:
 
-```cadence
-pub struct License {
-
-    pub let spdxIdentifier: String
-}
-```
-
-View to represent a license according to https://spdx.org/licenses/
-This view can be used if the content of an NFT is licensed.
-
-### Initializer
-
-```cadence
-init(_: String)
-```
-
-
+https://github.com/onflow/docs/tree/main/docs/concepts/token-standards/flow-nft/MetdataViews/MetadataViews_License.md
