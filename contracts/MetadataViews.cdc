@@ -4,7 +4,7 @@ import NonFungibleToken from "./NonFungibleToken.cdc"
 /// This contract implements the metadata standard proposed
 /// in FLIP-0636.
 /// 
-/// Ref: https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md
+/// Ref: https://github.com/onflow/flips/blob/main/application/20210916-nft-metadata.md
 /// 
 /// Structs and resources can implement one or more
 /// metadata types, called views. Each view type represents
