@@ -118,7 +118,7 @@ let ids = collection.getIDs()
 ## NFT Metadata
 
 NFT metadata is represented in a flexible and modular way using
-the [standard proposed in FLIP-0636](https://github.com/onflow/flow/blob/master/flips/20210916-nft-metadata.md).
+the [standard proposed in FLIP-0636](https://github.com/onflow/flips/blob/main/application/20210916-nft-metadata.md).
 
 When writing an NFT contract,
 you should implement the [`MetadataViews.Resolver`](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L3-L6)interface,
