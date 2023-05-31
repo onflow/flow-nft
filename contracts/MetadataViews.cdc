@@ -739,35 +739,35 @@ pub contract MetadataViews {
 
     /// A struct to expose license information according to https://forum.onflow.org/t/flow-nft-license-project/4716
     pub struct NFTLicense {
-        pub let licenses: {String:Bool}
+        pub let licenses: [String]
 
         init() {
-            self.licenses={}
+            self.licenses=[]
         }
 
 
         access(contract) fun personalUse() :NFTLicense{
-            self.licenses["NLP-PER"]=true
+            self.licenses.append("NLP-PER")
             return self
         }
 
         access(contract) fun votingRights() :NFTLicense{
-            self.licenses["NFL-VOTE"]=true
+            self.licenses.append("NFL-VOTE")
             return self
         }
 
         access(contract) fun commercialRights() :NFTLicense{
-            self.licenses["NFL-COM"]=true
+            self.licenses.append("NFL-COM")
             return self
         }
 
         access(contract) fun additionalContentExperienceRights() :NFTLicense{
-            self.licenses["NLP-ALP"]=true
+            self.licenses.append("NLP-ALP")
             return self
         }
 
         access(contract) fun merchandisingRights() :NFTLicense{
-            self.licenses["NLP-MERCH"]
+            self.licenses.append("NLP-MERCH")
             return self
         }
 
