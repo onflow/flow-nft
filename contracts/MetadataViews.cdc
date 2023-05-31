@@ -288,7 +288,7 @@ pub contract MetadataViews {
         }
         return nil
     }
-    
+
     /// View that defines the composable royalty standard that gives marketplaces a 
     /// unified interface to support NFT royalties.
     ///
@@ -395,8 +395,8 @@ pub contract MetadataViews {
         pub let mediaType: String
 
         init(file: AnyStruct{File}, mediaType: String) {
-          self.file=file
-          self.mediaType=mediaType
+            self.file=file
+            self.mediaType=mediaType
         }
     }
 
@@ -640,7 +640,7 @@ pub contract MetadataViews {
     /// @return A optional Rarity struct
     ///
     pub fun getRarity(_ viewResolver: &{Resolver}) : Rarity? {
-        if let view = viewResolver.resolveView(Type<Rarity>()) {
+        if let vTiew = viewResolver.resolveView(Type<Rarity>()) {
             if let v = view as? Rarity {
                 return v
             }
@@ -686,7 +686,7 @@ pub contract MetadataViews {
         init(_ traits: [Trait]) {
             self.traits = traits
         }
-            
+
         /// Adds a single Trait to the Traits view
         /// 
         /// @param Trait: The trait struct to be added
@@ -737,5 +737,90 @@ pub contract MetadataViews {
         return Traits(traits)
     }
 
+    /// A struct to expose license information according to https://forum.onflow.org/t/flow-nft-license-project/4716
+    pub struct NFTLicense {
+        pub let licenses: {String:Bool}
+
+        init() {
+            self.licenses={}
+        }
+
+
+        access(contract) fun personalUse() :NFTLicense{
+            self.licenses["NLP-PER"]=true
+            return self
+        }
+
+        access(contract) fun votingRights() :NFTLicense{
+            self.licenses["NFL-VOTE"]=true
+            return self
+        }
+
+        access(contract) fun commercialRights() :NFTLicense{
+            self.licenses["NFL-COM"]=true
+            return self
+        }
+
+        access(contract) fun additionalContentExperienceRights() :NFTLicense{
+            self.licenses["NLP-ALP"]=true
+            return self
+        }
+
+        access(contract) fun merchandisingRights() :NFTLicense{
+            self.licenses["NLP-MERCH"]
+            return self
+        }
+
+    }
+
+    pub fun nlpUtil() :NFTLicense {
+        return NFTLicense().personalUse().votingRights().additionalContentExperienceRights()
+    }
+
+    pub fun nlpVoteMerch() :NFTLicense {
+        return NFTLicense().personalUse().votingRights().merchandisingRights()
+    }
+
+    pub fun nlpVoteCom() :NFTLicense{
+        return NFTLicense().personalUse().votingRights().commercialRights()
+    }
+
+    pub fun nlpAceMerch() :NFTLicense {
+        return NFTLicense().personalUse().additionalContentExperienceRights().merchandisingRights()
+    }
+
+    pub fun nlpAceCom():NFTLicense{
+        return NFTLicense().personalUse().additionalContentExperienceRights().commercialRights()
+    }
+
+    pub fun nlpUtilMerch():NFTLicense {
+        return NFTLicense().personalUse().votingRights().additionalContentExperienceRights().merchandisingRights()
+    }
+
+    pub fun nlpUtilCom():NFTLicense{
+        return NFTLicense().personalUse().votingRights().additionalContentExperienceRights().commercialRights()
+    }
+
+    pub fun nlpAce() : NFTLicense{
+        return NFTLicense().additionalContentExperienceRights()
+    }
+
+    pub fun nlpPer() : NFTLicense{
+        return NFTLicense().personalUse()
+    }
+
+    pub fun nlpVote() : NFTLicense {
+        return NFTLicense().votingRights()
+    }
+
+    pub fun nlpCom() : NFTLicense{
+        return NFTLicense().commercialRights()
+    }
+
+    pub fun nlpMerch() :NFTLicense {
+        return NFTLicense().merchandisingRights()
+    }
+
+
 }
- 
+
