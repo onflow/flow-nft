@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
-	placeholderMetadataViews    = regexp.MustCompile(`"[^"\s].*/MetadataViews.cdc"`)
-	placeholderFungibleToken    = regexp.MustCompile(`"[^"\s].*/FungibleToken.cdc"`)
-	placeholderResolverToken    = regexp.MustCompile(`"[^"\s].*/ViewResolver.cdc"`)
+	placeholderNonFungibleToken = regexp.MustCompile(`"NonFungibleToken"`)
+	placeholderMetadataViews    = regexp.MustCompile(`"MetadataViews"`)
+	placeholderFungibleToken    = regexp.MustCompile(`"FungibleToken"`)
+	placeholderResolverToken    = regexp.MustCompile(`"ViewResolver"`)
 )
 
 const (

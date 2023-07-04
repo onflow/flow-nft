@@ -1,9 +1,9 @@
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
-import MetadataViews from "../contracts/MetadataViews.cdc"
-
 /// This transaction is what an account would run
 /// to set itself up to receive NFTs
+
+import NonFungibleToken from "NonFungibleToken"
+import ExampleNFT from "ExampleNFT"
+import MetadataViews from "MetadataViews"
 
 transaction {
 

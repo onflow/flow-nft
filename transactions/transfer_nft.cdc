@@ -1,8 +1,8 @@
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
-
 /// This transaction is for transferring and NFT from
 /// one account to another
+
+import NonFungibleToken from "NonFungibleToken"
+import ExampleNFT from "ExampleNFT"
 
 transaction(recipient: Address, withdrawID: UInt64) {
 

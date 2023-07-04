@@ -1,7 +1,7 @@
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
-
 /// This transaction withdraws an NFT from the signers collection and destroys it
+
+import NonFungibleToken from "NonFungibleToken"
+import ExampleNFT from "ExampleNFT"
 
 transaction(id: UInt64) {
 
