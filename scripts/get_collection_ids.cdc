@@ -1,8 +1,8 @@
-import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
-import ExampleNFT from "../../contracts/ExampleNFT.cdc"
-
 /// Script to get NFT IDs in an account's collection
-///
+
+import NonFungibleToken from "NonFungibleToken"
+import ExampleNFT from "ExampleNFT"
+
 pub fun main(address: Address, collectionPublicPath: PublicPath): [UInt64] {
     let account = getAccount(address)
 

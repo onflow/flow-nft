@@ -1,18 +1,18 @@
 package templates
 
-import "regexp"
-
-//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../ -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../scripts/... ../../../transactions/...
-
 import (
+	"regexp"
+
 	"github.com/onflow/flow-go-sdk"
 )
 
+//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../ -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../scripts/... ../../../transactions/...
+
 var (
-	placeholderNonFungibleToken = regexp.MustCompile(`"[^"\s].*/NonFungibleToken.cdc"`)
-	placeholderExampleNFT       = regexp.MustCompile(`"[^"\s].*/ExampleNFT.cdc"`)
-	placeholderMetadataViews    = regexp.MustCompile(`"[^"\s].*/MetadataViews.cdc"`)
-	placeholderFungibleToken    = regexp.MustCompile(`"[^"\s].*/FungibleToken.cdc"`)
+	placeholderNonFungibleToken = regexp.MustCompile(`"NonFungibleToken"`)
+	placeholderExampleNFT       = regexp.MustCompile(`"ExampleNFT"`)
+	placeholderMetadataViews    = regexp.MustCompile(`"MetadataViews"`)
+	placeholderFungibleToken    = regexp.MustCompile(`"FungibleToken"`)
 )
 
 func replaceAddresses(code string, nftAddress, exampleNFTAddress, metadataAddress, ftAddress flow.Address) []byte {

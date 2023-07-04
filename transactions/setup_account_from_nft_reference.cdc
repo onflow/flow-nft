@@ -1,11 +1,11 @@
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
-
 /// This transaction is what an account would run
 /// to set itself up to receive NFTs. This function
 /// uses views to know where to set up the collection
 /// in storage and to create the empty collection.
+
+import NonFungibleToken from "NonFungibleToken"
+import MetadataViews from "MetadataViews"
+import ExampleNFT from "ExampleNFT"
 
 transaction(address: Address, publicPath: PublicPath, id: UInt64) {
 

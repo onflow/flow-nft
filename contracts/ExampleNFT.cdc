@@ -1,4 +1,4 @@
-/* 
+/*
 *
 *  This is an example implementation of a Flow Non-Fungible Token
 *  It is not part of the official standard but it assumed to be
@@ -6,12 +6,12 @@
 *
 *  This contract does not implement any sophisticated classification
 *  system for its NFTs. It defines a simple NFT with minimal metadata.
-*   
+*
 */
 
-import NonFungibleToken from "./NonFungibleToken.cdc"
-import MetadataViews from "./MetadataViews.cdc"
-import ViewResolver from "./ViewResolver.cdc"
+import NonFungibleToken from "NonFungibleToken"
+import MetadataViews from "MetadataViews"
+import ViewResolver from "ViewResolver"
 
 pub contract ExampleNFT: NonFungibleToken, ViewResolver {
 
@@ -32,12 +32,12 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
     pub let CollectionPublicPath: PublicPath
     pub let MinterStoragePath: StoragePath
 
-    /// The core resource that represents a Non Fungible Token. 
+    /// The core resource that represents a Non Fungible Token.
     /// New instances will be created using the NFTMinter resource
     /// and stored in the Collection resource
     ///
     pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
-        
+
         /// The unique ID that each NFT has
         pub let id: UInt64
 
@@ -47,7 +47,7 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
         pub let thumbnail: String
         access(self) let royalties: [MetadataViews.Royalty]
         access(self) let metadata: {String: AnyStruct}
-    
+
         init(
             id: UInt64,
             name: String,
@@ -157,7 +157,7 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
                     let fooTraitRarity = MetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
                     let fooTrait = MetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
                     traitsView.addTrait(fooTrait)
-                    
+
                     return traitsView
 
             }
@@ -208,7 +208,7 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
         /// Adds an NFT to the collections dictionary and adds the ID to the id array
         ///
         /// @param token: The NFT resource to be included in the collection
-        /// 
+        ///
         pub fun deposit(token: @NonFungibleToken.NFT) {
             let token <- token as! @ExampleNFT.NFT
 
@@ -230,7 +230,7 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
             return self.ownedNFTs.keys
         }
 
-        /// Gets a reference to an NFT in the collection so that 
+        /// Gets a reference to an NFT in the collection so that
         /// the caller can read its metadata and call its methods
         ///
         /// @param id: The ID of the wanted NFT
@@ -239,13 +239,13 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
             return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
         }
- 
-        /// Gets a reference to an NFT in the collection so that 
+
+        /// Gets a reference to an NFT in the collection so that
         /// the caller can read its metadata and call its methods
         ///
         /// @param id: The ID of the wanted NFT
         /// @return A reference to the wanted NFT resource
-        ///        
+        ///
         pub fun borrowExampleNFT(id: UInt64): &ExampleNFT.NFT? {
             if self.ownedNFTs[id] != nil {
                 // Create an authorized reference to allow downcasting
@@ -262,7 +262,7 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
         ///
         /// @param id: The ID of the wanted NFT
         /// @return The resource reference conforming to the Resolver interface
-        /// 
+        ///
         pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
             let nft = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
             let exampleNFT = nft as! &ExampleNFT.NFT
@@ -294,8 +294,8 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
         /// @param name: The name for the NFT metadata
         /// @param description: The description for the NFT metadata
         /// @param thumbnail: The thumbnail for the NFT metadata
-        /// @param royalties: An array of Royalty structs, see MetadataViews docs 
-        ///     
+        /// @param royalties: An array of Royalty structs, see MetadataViews docs
+        ///
         pub fun mintNFT(
             recipient: &{NonFungibleToken.CollectionPublic},
             name: String,
@@ -355,6 +355,16 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
                     ),
                     mediaType: "image/svg+xml"
                 )
+                return MetadataViews.NFTCollectionDisplay(
+                    name: "The Example Collection",
+                    description: "This collection is used as an example to help you develop your next Flow NFT.",
+                    externalURL: MetadataViews.ExternalURL("https://example-nft.onflow.org"),
+                    squareImage: media,
+                    bannerImage: media,
+                    socials: {
+                        "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
+                    }
+                )
         }
         return nil
     }
@@ -397,4 +407,3 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
         emit ContractInitialized()
     }
 }
- 

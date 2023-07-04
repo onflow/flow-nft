@@ -1,11 +1,11 @@
-import FungibleToken from "./utility/FungibleToken.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import FungibleToken from "FungibleToken"
+import NonFungibleToken from "NonFungibleToken"
 
 /// This contract implements the metadata standard proposed
 /// in FLIP-0636.
-/// 
+///
 /// Ref: https://github.com/onflow/flips/blob/main/application/20210916-nft-metadata.md
-/// 
+///
 /// Structs and resources can implement one or more
 /// metadata types, called views. Each view type represents
 /// a different kind of metadata, such as a creator biography
@@ -13,8 +13,8 @@ import NonFungibleToken from "./NonFungibleToken.cdc"
 ///
 pub contract MetadataViews {
 
-    /// Provides access to a set of metadata views. A struct or 
-    /// resource (e.g. an NFT) can implement this interface to provide access to 
+    /// Provides access to a set of metadata views. A struct or
+    /// resource (e.g. an NFT) can implement this interface to provide access to
     /// the views that it supports.
     ///
     pub resource interface Resolver {
@@ -29,8 +29,8 @@ pub contract MetadataViews {
         pub fun getIDs(): [UInt64]
     }
 
-    /// NFTView wraps all Core views along `id` and `uuid` fields, and is used 
-    /// to give a complete picture of an NFT. Most NFTs should implement this 
+    /// NFTView wraps all Core views along `id` and `uuid` fields, and is used
+    /// to give a complete picture of an NFT. Most NFTs should implement this
     /// view.
     ///
     pub struct NFTView {
@@ -64,7 +64,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// Helper to get an NFT view 
+    /// Helper to get an NFT view
     ///
     /// @param id: The NFT id
     /// @param viewResolver: A reference to the resolver resource
@@ -93,14 +93,14 @@ pub contract MetadataViews {
     ///
     pub struct Display {
 
-        /// The name of the object. 
+        /// The name of the object.
         ///
         /// This field will be displayed in lists and therefore should
         /// be short an concise.
         ///
         pub let name: String
 
-        /// A written description of the object. 
+        /// A written description of the object.
         ///
         /// This field will be displayed in a detailed view of the object,
         /// so can be more verbose (e.g. a paragraph instead of a single line).
@@ -139,14 +139,14 @@ pub contract MetadataViews {
         return nil
     }
 
-    /// Generic interface that represents a file stored on or off chain. Files 
+    /// Generic interface that represents a file stored on or off chain. Files
     /// can be used to references images, videos and other media.
     ///
     pub struct interface File {
         pub fun uri(): String
     }
 
-    /// View to expose a file that is accessible at an HTTP (or HTTPS) URL. 
+    /// View to expose a file that is accessible at an HTTP (or HTTPS) URL.
     ///
     pub struct HTTPFile: File {
         pub let url: String
@@ -201,9 +201,9 @@ pub contract MetadataViews {
     }
 
     /// Optional view for collections that issue multiple objects
-    /// with the same or similar metadata, for example an X of 100 set. This 
+    /// with the same or similar metadata, for example an X of 100 set. This
     /// information is useful for wallets and marketplaces.
-    /// An NFT might be part of multiple editions, which is why the edition 
+    /// An NFT might be part of multiple editions, which is why the edition
     /// information is returned as an arbitrary sized array
     ///
     pub struct Edition {
@@ -221,7 +221,7 @@ pub contract MetadataViews {
         /// This field should only be provided for limited-editioned objects.
         /// For an "24 of 100 (#24/100)" item, max is 100.
         /// For an item with unlimited edition, max should be set to nil.
-        /// 
+        ///
         pub let max: UInt64?
 
         init(name: String?, number: UInt64, max: UInt64?) {
@@ -235,7 +235,7 @@ pub contract MetadataViews {
     }
 
     /// Wrapper view for multiple Edition views
-    /// 
+    ///
     pub struct Editions {
 
         /// An arbitrary-sized list for any number of editions
@@ -263,8 +263,8 @@ pub contract MetadataViews {
 
     /// View representing a project-defined serial number for a specific NFT
     /// Projects have different definitions for what a serial number should be
-    /// Some may use the NFTs regular ID and some may use a different 
-    /// classification system. The serial number is expected to be unique among 
+    /// Some may use the NFTs regular ID and some may use a different
+    /// classification system. The serial number is expected to be unique among
     /// other NFTs within that project
     ///
     pub struct Serial {
@@ -288,28 +288,28 @@ pub contract MetadataViews {
         }
         return nil
     }
-    
-    /// View that defines the composable royalty standard that gives marketplaces a 
+
+    /// View that defines the composable royalty standard that gives marketplaces a
     /// unified interface to support NFT royalties.
     ///
     pub struct Royalty {
 
         /// Generic FungibleToken Receiver for the beneficiary of the royalty
         /// Can get the concrete type of the receiver with receiver.getType()
-        /// Recommendation - Users should create a new link for a FlowToken 
-        /// receiver for this using `getRoyaltyReceiverPublicPath()`, and not 
-        /// use the default FlowToken receiver. This will allow users to update 
+        /// Recommendation - Users should create a new link for a FlowToken
+        /// receiver for this using `getRoyaltyReceiverPublicPath()`, and not
+        /// use the default FlowToken receiver. This will allow users to update
         /// the capability in the future to use a more generic capability
         pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
 
-        /// Multiplier used to calculate the amount of sale value transferred to 
-        /// royalty receiver. Note - It should be between 0.0 and 1.0 
-        /// Ex - If the sale value is x and multiplier is 0.56 then the royalty 
+        /// Multiplier used to calculate the amount of sale value transferred to
+        /// royalty receiver. Note - It should be between 0.0 and 1.0
+        /// Ex - If the sale value is x and multiplier is 0.56 then the royalty
         /// value would be 0.56 * x.
         /// Generally percentage get represented in terms of basis points
-        /// in solidity based smart contracts while cadence offers `UFix64` 
-        /// that already supports the basis points use case because its 
-        /// operations are entirely deterministic integer operations and support 
+        /// in solidity based smart contracts while cadence offers `UFix64`
+        /// that already supports the basis points use case because its
+        /// operations are entirely deterministic integer operations and support
         /// up to 8 points of precision.
         pub let cut: UFix64
 
@@ -329,7 +329,7 @@ pub contract MetadataViews {
     }
 
     /// Wrapper view for multiple Royalty views.
-    /// Marketplaces can query this `Royalties` struct from NFTs 
+    /// Marketplaces can query this `Royalties` struct from NFTs
     /// and are expected to pay royalties based on these specifications.
     ///
     pub struct Royalties {
@@ -389,7 +389,7 @@ pub contract MetadataViews {
         ///
         pub let file: AnyStruct{File}
 
-        /// media-type comes on the form of type/subtype as described here 
+        /// media-type comes on the form of type/subtype as described here
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
         ///
         pub let mediaType: String
@@ -452,7 +452,7 @@ pub contract MetadataViews {
     }
 
     /// View to expose a URL to this item on an external site.
-    /// This can be used by applications like .find and Blocto to direct users 
+    /// This can be used by applications like .find and Blocto to direct users
     /// to the original link for an NFT or a project page that describes the NFT collection.
     /// eg https://www.my-nft-project.com/overview-of-nft-collection
     ///
@@ -479,7 +479,7 @@ pub contract MetadataViews {
     }
 
     /// View to expose the information needed store and retrieve an NFT.
-    /// This can be used by applications to setup a NFT collection with proper 
+    /// This can be used by applications to setup a NFT collection with proper
     /// storage and public capabilities.
     ///
     pub struct NFTCollectionData {
@@ -552,7 +552,7 @@ pub contract MetadataViews {
     }
 
     /// View to expose the information needed to showcase this NFT's
-    /// collection. This can be used by applications to give an overview and 
+    /// collection. This can be used by applications to give an overview and
     /// graphics of the NFT collection this NFT belongs to.
     ///
     pub struct NFTCollectionDisplay {
@@ -592,7 +592,7 @@ pub contract MetadataViews {
         }
     }
 
-    /// Helper to get NFTCollectionDisplay in a way that will return a typed 
+    /// Helper to get NFTCollectionDisplay in a way that will return a typed
     /// Optional
     ///
     /// @param viewResolver: A reference to the resolver resource
@@ -608,7 +608,7 @@ pub contract MetadataViews {
     }
 
     /// View to expose rarity information for a single rarity
-    /// Note that a rarity needs to have either score or description but it can 
+    /// Note that a rarity needs to have either score or description but it can
     /// have both
     ///
     pub struct Rarity {
@@ -686,9 +686,9 @@ pub contract MetadataViews {
         init(_ traits: [Trait]) {
             self.traits = traits
         }
-            
+
         /// Adds a single Trait to the Traits view
-        /// 
+        ///
         /// @param Trait: The trait struct to be added
         ///
         pub fun addTrait(_ t: Trait) {
@@ -710,8 +710,8 @@ pub contract MetadataViews {
         return nil
     }
 
-    /// Helper function to easily convert a dictionary to traits. For NFT 
-    /// collections that do not need either of the optional values of a Trait, 
+    /// Helper function to easily convert a dictionary to traits. For NFT
+    /// collections that do not need either of the optional values of a Trait,
     /// this method should suffice to give them an array of valid traits.
     ///
     /// @param dict: The dictionary to be converted to Traits
@@ -738,4 +738,3 @@ pub contract MetadataViews {
     }
 
 }
- 

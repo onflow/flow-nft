@@ -1,9 +1,9 @@
-import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
-import ExampleNFT from "../../contracts/ExampleNFT.cdc"
-import NFTForwarding from "../../contracts/utility/NFTForwarding.cdc"
-
 /// This transaction is what an account would run
 /// to change the NFTForwarder recipient
+
+import NonFungibleToken from "NonFungibleToken"
+import ExampleNFT from "ExampleNFT"
+import NFTForwarding from "NFTForwarding"
 
 transaction(newRecipientAddress: Address) {
 

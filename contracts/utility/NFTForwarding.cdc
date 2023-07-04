@@ -11,7 +11,7 @@
 /// To create an NFTForwarder resource, an account calls the createNewNFTForwarder
 /// function, passing the Receiver Capability to which NFTs will be forwarded.
 
-import NonFungibleToken from "../NonFungibleToken.cdc"
+import NonFungibleToken from "NonFungibleToken"
 
 pub contract NFTForwarding {
 
@@ -88,4 +88,3 @@ pub contract NFTForwarding {
     }
 
 }
- 
