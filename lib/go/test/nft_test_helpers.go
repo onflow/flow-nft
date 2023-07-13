@@ -5,7 +5,9 @@ import (
 
 	"github.com/onflow/cadence"
 	jsoncdc "github.com/onflow/cadence/encoding/json"
-	"github.com/onflow/flow-emulator"
+	"github.com/onflow/cadence/runtime/common"
+	"github.com/onflow/flow-emulator/adapters"
+	"github.com/onflow/flow-emulator/emulator"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/onflow/flow-go-sdk/test"
@@ -19,7 +21,7 @@ import (
 // with standard metadata fields and royalty cuts
 func mintExampleNFT(
 	t *testing.T,
-	b *emulator.Blockchain,
+	b emulator.Emulator,
 	accountKeys *test.AccountKeys,
 	nftAddress, metadataAddress, exampleNFTAddress flow.Address,
 	exampleNFTAccountKey *flow.AccountKey,
@@ -85,16 +87,17 @@ func mintExampleNFT(
 // and returns their addresses
 func deployNFTContracts(
 	t *testing.T,
-	b *emulator.Blockchain,
+	b emulator.Emulator,
+	adapter *adapters.SDKAdapter,
 	exampleNFTAccountKey *flow.AccountKey,
 ) (flow.Address, flow.Address, flow.Address, flow.Address) {
 
-	nftAddress := deploy(t, b, "NonFungibleToken", contracts.NonFungibleToken())
-	metadataAddress := deploy(t, b, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress))
-	resolverAddress := deploy(t, b, "ViewResolver", contracts.Resolver())
+	nftAddress := deploy(t, b, adapter, "NonFungibleToken", contracts.NonFungibleToken())
+	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress))
+	resolverAddress := deploy(t, b, adapter, "ViewResolver", contracts.Resolver())
 
 	exampleNFTAddress := deploy(
-		t, b,
+		t, b, adapter,
 		"ExampleNFT",
 		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress),
 		exampleNFTAccountKey,
@@ -107,7 +110,7 @@ func deployNFTContracts(
 // is the expected length
 func assertCollectionLength(
 	t *testing.T,
-	b *emulator.Blockchain,
+	b emulator.Emulator,
 	nftAddress flow.Address, exampleNFTAddress flow.Address,
 	collectionAddress flow.Address,
 	expectedLength int,
@@ -120,7 +123,7 @@ func assertCollectionLength(
 // Sets up an account with the generic royalty receiver in place of their Flow token receiver
 func setupRoyaltyReceiver(
 	t *testing.T,
-	b *emulator.Blockchain,
+	b emulator.Emulator,
 	metadataAddress flow.Address,
 	authorizerAddress flow.Address,
 	authorizerSigner crypto.Signer,
@@ -129,7 +132,7 @@ func setupRoyaltyReceiver(
 	script := templates.GenerateSetupAccountToReceiveRoyaltyScript(metadataAddress, flow.HexToAddress(emulatorFTAddress))
 	tx := createTxWithTemplateAndAuthorizer(b, script, authorizerAddress)
 
-	vaultPath := cadence.Path{Domain: "storage", Identifier: "flowTokenVault"}
+	vaultPath := cadence.Path{Domain: common.PathDomainStorage, Identifier: "flowTokenVault"}
 	tx.AddArgument(vaultPath)
 
 	serviceSigner, _ := b.ServiceKey().Signer()

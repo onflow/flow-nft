@@ -1,17 +1,21 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"testing"
 
 	"github.com/onflow/cadence"
 	jsoncdc "github.com/onflow/cadence/encoding/json"
-	"github.com/onflow/flow-emulator"
+	"github.com/onflow/flow-emulator/adapters"
+	"github.com/onflow/flow-emulator/convert"
+	"github.com/onflow/flow-emulator/emulator"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
 	sdktemplates "github.com/onflow/flow-go-sdk/templates"
 	"github.com/onflow/flow-go-sdk/test"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -22,23 +26,23 @@ const (
 
 // Sets up testing and emulator objects and initialize the emulator default addresses
 //
-func newTestSetup(t *testing.T) (*emulator.Blockchain, *test.AccountKeys) {
+func newTestSetup(t *testing.T) (emulator.Emulator, *adapters.SDKAdapter, *test.AccountKeys) {
 	// Set for parallel processing
 	t.Parallel()
 
 	// Create a new emulator instance
-	b := newBlockchain()
+	b, adapter := newBlockchain()
 
 	// Create a new account key generator object to generate keys
 	// for test accounts
 	accountKeys := test.AccountKeyGenerator()
 
-	return b, accountKeys
+	return b, adapter, accountKeys
 }
 
 // newBlockchain returns an emulator blockchain for testing.
-func newBlockchain(opts ...emulator.Option) *emulator.Blockchain {
-	b, err := emulator.NewBlockchain(
+func newBlockchain(opts ...emulator.Option) (emulator.Emulator, *adapters.SDKAdapter) {
+	b, err := emulator.New(
 		append(
 			[]emulator.Option{
 				emulator.WithStorageLimitEnabled(false),
@@ -49,14 +53,19 @@ func newBlockchain(opts ...emulator.Option) *emulator.Blockchain {
 	if err != nil {
 		panic(err)
 	}
-	return b
+
+	logger := zerolog.Nop()
+	adapter := adapters.NewSDKAdapter(&logger, b)
+	return b, adapter
 }
 
 // Create a new, empty account for testing
 // and return the address, public keys, and signer objects
-func newAccountWithAddress(b *emulator.Blockchain, accountKeys *test.AccountKeys) (flow.Address, *flow.AccountKey, crypto.Signer) {
+func newAccountWithAddress(b emulator.Emulator, accountKeys *test.AccountKeys) (flow.Address, *flow.AccountKey, crypto.Signer) {
 	newAccountKey, newSigner := accountKeys.NewWithSigner()
-	newAddress, _ := b.CreateAccount([]*flow.AccountKey{newAccountKey}, nil)
+	logger := zerolog.Nop()
+	adapter := adapters.NewSDKAdapter(&logger, b)
+	newAddress, _ := adapter.CreateAccount(context.Background(), []*flow.AccountKey{newAccountKey}, nil)
 
 	return newAddress, newAccountKey, newSigner
 }
@@ -64,12 +73,13 @@ func newAccountWithAddress(b *emulator.Blockchain, accountKeys *test.AccountKeys
 // Deploy a contract to a new account with the specified name, code, and keys
 func deploy(
 	t *testing.T,
-	b *emulator.Blockchain,
+	b emulator.Emulator,
+	adapter *adapters.SDKAdapter,
 	name string,
 	code []byte,
 	keys ...*flow.AccountKey,
 ) flow.Address {
-	address, err := b.CreateAccount(
+	address, err := adapter.CreateAccount(context.Background(),
 		keys,
 		[]sdktemplates.Contract{
 			{
@@ -85,7 +95,7 @@ func deploy(
 
 // Create a transaction object with the specified address as the authorizer
 func createTxWithTemplateAndAuthorizer(
-	b *emulator.Blockchain,
+	b emulator.Emulator,
 	script []byte,
 	authorizerAddress flow.Address,
 ) *flow.Transaction {
@@ -110,7 +120,7 @@ func createTxWithTemplateAndAuthorizer(
 // This function asserts the correct result and commits the block if it passed.
 func signAndSubmit(
 	t *testing.T,
-	b *emulator.Blockchain,
+	b emulator.Emulator,
 	tx *flow.Transaction,
 	signerAddresses []flow.Address,
 	signers []crypto.Signer,
@@ -136,12 +146,13 @@ func signAndSubmit(
 // Submit submits a transaction and checks if it fails or not.
 func Submit(
 	t *testing.T,
-	b *emulator.Blockchain,
+	b emulator.Emulator,
 	tx *flow.Transaction,
 	shouldRevert bool,
 ) {
 	// submit the signed transaction
-	err := b.AddTransaction(*tx)
+	flowTx := convert.SDKTransactionToFlow(*tx)
+	err := b.AddTransaction(*flowTx)
 	require.NoError(t, err)
 
 	result, err := b.ExecuteNextTransaction()
@@ -160,7 +171,7 @@ func Submit(
 }
 
 // executeScriptAndCheck executes a script and checks to make sure that it succeeded.
-func executeScriptAndCheck(t *testing.T, b *emulator.Blockchain, script []byte, arguments [][]byte) cadence.Value {
+func executeScriptAndCheck(t *testing.T, b emulator.Emulator, script []byte, arguments [][]byte) cadence.Value {
 	result, err := b.ExecuteScript(script, arguments)
 	require.NoError(t, err)
 

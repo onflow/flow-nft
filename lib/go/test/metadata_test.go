@@ -7,6 +7,7 @@ import (
 
 	"github.com/onflow/cadence"
 	jsoncdc "github.com/onflow/cadence/encoding/json"
+	"github.com/onflow/cadence/runtime/common"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/stretchr/testify/assert"
@@ -15,10 +16,10 @@ import (
 )
 
 func TestSetupRoyaltyReceiver(t *testing.T) {
-	b, accountKeys := newTestSetup(t)
+	b, adapter, accountKeys := newTestSetup(t)
 
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	_, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
+	_, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
 
 	t.Run("Should not be able to setup a royalty receiver for a vault that doesn't exist", func(t *testing.T) {
 
@@ -30,7 +31,7 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 
 		// Here we use a storage path that points to nothing, so it will fail
 		// The positive case is handled in the `mintExampleNFT()` test case
-		vaultPath := cadence.Path{Domain: "storage", Identifier: "missingVault"}
+		vaultPath := cadence.Path{Domain: common.PathDomainStorage, Identifier: "missingVault"}
 		tx.AddArgument(vaultPath)
 
 		serviceSigner, _ := b.ServiceKey().Signer()
@@ -51,12 +52,12 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 }
 
 func TestGetNFTMetadata(t *testing.T) {
-	b, accountKeys := newTestSetup(t)
+	b, adapter, accountKeys := newTestSetup(t)
 
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
@@ -120,9 +121,9 @@ func TestGetNFTMetadata(t *testing.T) {
 			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
 			providerType            = "A.01cf0e2f2f715450.NonFungibleToken.Provider"
 		)
-		assert.Equal(t, cadence.Path{Domain: "public", Identifier: pathName}, nftResult.Fields[8])
-		assert.Equal(t, cadence.Path{Domain: "storage", Identifier: pathName}, nftResult.Fields[9])
-		assert.Equal(t, cadence.Path{Domain: "private", Identifier: pathName}, nftResult.Fields[10])
+		assert.Equal(t, cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}, nftResult.Fields[8])
+		assert.Equal(t, cadence.Path{Domain: common.PathDomainStorage, Identifier: pathName}, nftResult.Fields[9])
+		assert.Equal(t, cadence.Path{Domain: common.PathDomainPrivate, Identifier: pathName}, nftResult.Fields[10])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[11])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[12])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[13])
@@ -196,12 +197,12 @@ func TestGetNFTMetadata(t *testing.T) {
 }
 
 func TestGetNFTView(t *testing.T) {
-	b, accountKeys := newTestSetup(t)
+	b, adapter, accountKeys := newTestSetup(t)
 
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
@@ -259,9 +260,9 @@ func TestGetNFTView(t *testing.T) {
 			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
 			providerType            = "A.01cf0e2f2f715450.NonFungibleToken.Provider"
 		)
-		assert.Equal(t, cadence.Path{Domain: "public", Identifier: pathName}, nftResult.Fields[7])
-		assert.Equal(t, cadence.Path{Domain: "storage", Identifier: pathName}, nftResult.Fields[8])
-		assert.Equal(t, cadence.Path{Domain: "private", Identifier: pathName}, nftResult.Fields[9])
+		assert.Equal(t, cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}, nftResult.Fields[7])
+		assert.Equal(t, cadence.Path{Domain: common.PathDomainStorage, Identifier: pathName}, nftResult.Fields[8])
+		assert.Equal(t, cadence.Path{Domain: common.PathDomainPrivate, Identifier: pathName}, nftResult.Fields[9])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[10])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[11])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[12])
@@ -323,7 +324,7 @@ func TestGetNFTView(t *testing.T) {
 }
 
 func TestSetupCollectionFromNFTReference(t *testing.T) {
-	b, accountKeys := newTestSetup(t)
+	b, adapter, accountKeys := newTestSetup(t)
 
 	// Create a new account to setting up a new account
 	aAddress, _, aSigner := newAccountWithAddress(b, accountKeys)
@@ -331,7 +332,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
@@ -347,7 +348,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 		tx := createTxWithTemplateAndAuthorizer(b, script, aAddress)
 
 		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.Path{Domain: "public", Identifier: "exampleNFTCollection"})
+		tx.AddArgument(cadence.Path{Domain: common.PathDomainPublic, Identifier: "exampleNFTCollection"})
 		tx.AddArgument(cadence.NewUInt64(0))
 
 		serviceSigner, _ := b.ServiceKey().Signer()

@@ -16,12 +16,12 @@ import (
 )
 
 func TestNFTDeployment(t *testing.T) {
-	b, accountKeys := newTestSetup(t)
+	b, adapter, accountKeys := newTestSetup(t)
 
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, _ := accountKeys.NewWithSigner()
-	nftAddress, _, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, _, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
 
 	t.Run("Should have properly initialized fields after deployment", func(t *testing.T) {
 
@@ -37,12 +37,12 @@ func TestNFTDeployment(t *testing.T) {
 }
 
 func TestCreateNFT(t *testing.T) {
-	b, accountKeys := newTestSetup(t)
+	b, adapter, accountKeys := newTestSetup(t)
 
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
 
 	t.Run("Should be able to mint a token", func(t *testing.T) {
 
@@ -90,14 +90,14 @@ func TestCreateNFT(t *testing.T) {
 }
 
 func TestTransferNFT(t *testing.T) {
-	b, accountKeys := newTestSetup(t)
+	b, adapter, accountKeys := newTestSetup(t)
 
 	serviceSigner, _ := b.ServiceKey().Signer()
 
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, exampleNFTAccountKey)
 
 	// Create a new account to test transfers
 	joshAddress, _, joshSigner := newAccountWithAddress(b, accountKeys)
@@ -271,7 +271,7 @@ func TestTransferNFT(t *testing.T) {
 // Placeholder test to be used when testing upgrades to the NFT standard
 //
 // func TestUpgradeNFT(t *testing.T) {
-// 	b, accountKeys := newTestSetup(t)
+// 	b, adapter, accountKeys := newTestSetup(t)
 
 // 	serviceSigner, _ := b.ServiceKey().Signer()
 
