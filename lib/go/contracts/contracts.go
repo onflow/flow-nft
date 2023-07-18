@@ -36,7 +36,7 @@ const (
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleToken() []byte {
-	code := assets.MustAssetString(filenameNonFungibleTokenV2)
+	code := assets.MustAssetString(filenameNonFungibleToken)
 	return []byte(code)
 }
 
