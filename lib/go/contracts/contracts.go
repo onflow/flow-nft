@@ -42,7 +42,7 @@ func NonFungibleToken() []byte {
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleTokenV2(resolverAddress flow.Address) []byte {
-	code := assets.MustAssetString(filenameNonFungibleToken)
+	code := assets.MustAssetString(filenameNonFungibleTokenV2)
 	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
 	return []byte(code)
 }
