@@ -122,7 +122,7 @@ access(all) contract NonFungibleToken {
 
         destroy() {
             pre {
-                NonFungibleToken.emitNFTDestroy(id: self.getID(), uuid: self.uuid, type: self.getType().identifier)
+                //NonFungibleToken.emitNFTDestroy(id: self.getID(), uuid: self.uuid, type: self.getType().identifier)
             }
         }
     }
@@ -143,7 +143,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdraw(withdrawID: UInt64): @AnyResource{NFT} {
             post {
                 result.getID() == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
-                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                //NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
 
@@ -161,7 +161,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdrawWithUUID(_ uuid: UInt64): @AnyResource{NFT} {
             post {
                 result == nil || result!.uuid == uuid: "The ID of the withdrawn token must be the same as the requested ID"
-                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                //NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
 
@@ -170,7 +170,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdrawWithType(type: Type, withdrawID: UInt64): @AnyResource{NFT} {
             post {
                 result == nil || result.getID() == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
-                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                //NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
 
@@ -179,7 +179,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdrawWithTypeAndUUID(type: Type, uuid: UInt64): @AnyResource{NFT} {
             post {
                 result == nil || result!.uuid == uuid: "The ID of the withdrawn token must be the same as the requested ID"
-                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                //NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
     }
@@ -291,7 +291,7 @@ access(all) contract NonFungibleToken {
                 // because the `Collection` interface is almost always the final destination
                 // of tokens and deposit emissions from custom receivers could be confusing
                 // and hard to reconcile to event listeners
-                NonFungibleToken.emitNFTDeposit(id: token.getID(), uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier)
+                //NonFungibleToken.emitNFTDeposit(id: token.getID(), uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier)
             }
         }
 
@@ -301,7 +301,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun transfer(id: UInt64, receiver: Capability<&AnyResource{NonFungibleToken.Receiver}>): Bool {
             pre {
                 receiver.check(): "Could not borrow a reference to the NFT receiver"
-                NonFungibleToken.emitNFTTransfer(id: id, uuid: self.borrowNFTSafe(id: id)?.uuid, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.borrowNFT(id).getType().identifier)
+                //NonFungibleToken.emitNFTTransfer(id: id, uuid: self.borrowNFTSafe(id: id)?.uuid, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.borrowNFT(id).getType().identifier)
             }
         }
 
