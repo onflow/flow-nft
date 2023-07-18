@@ -386,20 +386,18 @@ access(all) contract MetadataViews {
     ///         keys that are not wanted to become `Traits`
     /// @return The generated Traits view
     ///
-    access(all) view fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
-        var dictCopy = dict
-
+    access(all) fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
         // Collection owners might not want all the fields in their metadata included.
         // They might want to handle some specially, or they might just not want them included at all.
         if excludedNames != nil {
             for k in excludedNames! {
-                dictCopy.remove(key: k)
+                dict.remove(key: k)
             }
         }
 
         let traits: [Trait] = []
-        for k in dictCopy.keys {
-            let trait = Trait(name: k, value: dictCopy[k]!, displayType: nil, rarity: nil)
+        for k in dict.keys {
+            let trait = Trait(name: k, value: dict[k]!, displayType: nil, rarity: nil)
             traits.append(trait)
         }
 
