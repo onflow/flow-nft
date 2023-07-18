@@ -11,14 +11,14 @@
 *   
 */
 
-import NonFungibleToken from "./NonFungibleToken-v2.cdc"
-import MetadataViews from "./MetadataViews.cdc"
-import ViewResolver from "./ViewResolver.cdc"
+import NonFungibleToken from "NonFungibleToken"
+import MetadataViews from "MetadataViews"
+import ViewResolver from "ViewResolver"
 
-pub contract BasicNFT {
+access(all) contract BasicNFT {
 
     /// The only thing that an NFT really needs to have is this resource definition
-    pub resource NFT: NonFungibleToken.NFT, ViewResolver.Resolver {
+    access(all) resource NFT: NonFungibleToken.NFT, ViewResolver.Resolver {
         /// Arbitrary trait mapping metadata
         access(self) let metadata: {String: AnyStruct}
     
@@ -29,10 +29,10 @@ pub contract BasicNFT {
         }
 
         /// Gets the ID of the NFT, which here is the UUID
-        pub fun getID(): UInt64 { return self.uuid }
+        access(all) view fun getID(): UInt64 { return self.uuid }
     
         /// Uses the basic NFT views
-        pub fun getViews(): [Type] {
+        access(all) view fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
                 Type<MetadataViews.Serial>(),
@@ -40,7 +40,7 @@ pub contract BasicNFT {
             ]
         }
 
-        pub fun resolveView(_ view: Type): AnyStruct? {
+        access(all) view fun resolveView(_ view: Type): AnyStruct? {
             switch view {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
@@ -62,14 +62,14 @@ pub contract BasicNFT {
     }
 
     /// Return the NFT types that the contract defines
-    pub fun getNFTTypes(): [Type] {
+    access(all) view fun getNFTTypes(): [Type] {
         return [
             Type<@BasicNFT.NFT>()
         ]
     }
 
-    pub resource NFTMinter {
-        pub fun mintNFT(metadata: {String: AnyStruct}): @BasicNFT.NFT {
+    access(all) resource NFTMinter {
+        access(all) fun mintNFT(metadata: {String: AnyStruct}): @BasicNFT.NFT {
            return <- create NFT(metadata: metadata)
         }
     }

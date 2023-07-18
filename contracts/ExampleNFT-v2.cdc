@@ -10,30 +10,30 @@
 *   
 */
 
-import NonFungibleToken from "./NonFungibleToken-v2.cdc"
-import MultipleNFT from "./MultipleNFT.cdc"
-import ViewResolver from "./ViewResolver.cdc"
-import MetadataViews from "./MetadataViews.cdc"
+import NonFungibleToken from "NonFungibleToken-v2"
+import MultipleNFT from "MultipleNFT"
+import ViewResolver from "ViewResolver"
+import MetadataViews from "MetadataViews"
 
-pub contract ExampleNFT: MultipleNFT, ViewResolver {
+access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
 
     /// Path where the minter should be stored
     /// The standard paths for the collection are stored in the collection resource type
-    pub let MinterStoragePath: StoragePath
+    access(all) let MinterStoragePath: StoragePath
 
     /// We choose the name NFT here, but this type can have any name now
     /// because the interface does not require it to have a specific name any more
-    pub resource NFT: NonFungibleToken.NFT, ViewResolver.Resolver {
+    access(all) resource NFT: NonFungibleToken.NFT, ViewResolver.Resolver {
 
         /// The ID of the NFT
         /// Could be a project specific ID, or the UUID
         /// Here we choose the UUID
-        pub let id: UInt64
+        access(all) let id: UInt64
 
         /// From the Display metadata view
-        pub let name: String
-        pub let description: String
-        pub let thumbnail: String
+        access(all) let name: String
+        access(all) let description: String
+        access(all) let thumbnail: String
 
         /// For the Royalties metadata view
         access(self) let royalties: [MetadataViews.Royalty]
@@ -56,7 +56,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
             self.metadata = metadata
         }
     
-        pub fun getViews(): [Type] {
+        access(all) view fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
                 Type<MetadataViews.Royalties>(),
@@ -69,7 +69,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
             ]
         }
 
-        pub fun resolveView(_ view: Type): AnyStruct? {
+        access(all) view fun resolveView(_ view: Type): AnyStruct? {
             switch view {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
@@ -122,7 +122,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
         }
     }
 
-    pub resource Collection: NonFungibleToken.Collection, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.Transferor, NonFungibleToken.CollectionPublic, ViewResolver.ResolverCollection {
+    access(all) resource Collection: NonFungibleToken.Collection {
         /// dictionary of NFT conforming tokens
         /// NFT is a resource type with an `UInt64` ID field
         access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT{NonFungibleToken.NFT}}
@@ -131,12 +131,12 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
         access(self) var publicPath: PublicPath
 
         /// Return the default storage path for the collection
-        pub fun getDefaultStoragePath(): StoragePath? {
+        access(all) view fun getDefaultStoragePath(): StoragePath? {
             return self.storagePath
         }
 
         /// Return the default public path for the collection
-        pub fun getDefaultPublicPath(): PublicPath? {
+        access(all) view fun getDefaultPublicPath(): PublicPath? {
             return self.publicPath
         }
 
@@ -148,7 +148,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
         }
 
         /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
-        pub fun getSupportedNFTTypes(): {Type: Bool} {
+        access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
             let supportedTypes: {Type: Bool} = {}
             supportedTypes[Type<@ExampleNFT.NFT>()] = true
             return supportedTypes
@@ -156,7 +156,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
 
         /// Returns whether or not the given type is accepted by the collection
         /// A collection that can accept any type should just return true by default
-        pub fun isSupportedNFTType(type: Type): Bool {
+        access(all) view fun isSupportedNFTType(type: Type): Bool {
            if type == Type<@ExampleNFT.NFT>() {
             return true
            } else {
@@ -165,12 +165,12 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
         }
 
         /// Indicates that the collection is using UUID to key the NFT dictionary
-        pub fun usesUUID(): Bool {
+        access(all) view fun usesUUID(): Bool {
             return true
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
-        pub fun withdraw(withdrawID: UInt64): @AnyResource{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdraw(withdrawID: UInt64): @AnyResource{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
                 ?? panic("Could not withdraw an NFT with the provided ID from the collection")
 
@@ -180,25 +180,25 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
         }
 
         /// withdrawWithUUID removes an NFT from the collection, using its UUID, and moves it to the caller
-        pub fun withdrawWithUUID(_ uuid: UInt64): @AnyResource{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdrawWithUUID(_ uuid: UInt64): @AnyResource{NonFungibleToken.NFT} {
             return <-self.withdraw(withdrawID: uuid)
         }
 
         /// withdrawWithType removes an NFT from the collection, using its Type and ID and moves it to the caller
         /// This would be used by a collection that can store multiple NFT types
-        pub fun withdrawWithType(type: Type, withdrawID: UInt64): @AnyResource{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdrawWithType(type: Type, withdrawID: UInt64): @AnyResource{NonFungibleToken.NFT} {
             return <-self.withdraw(withdrawID: withdrawID)
         }
 
         /// withdrawWithTypeAndUUID removes an NFT from the collection using its type and uuid and moves it to the caller
         /// This would be used by a collection that can store multiple NFT types
-        pub fun withdrawWithTypeAndUUID(type: Type, uuid: UInt64): @AnyResource{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdrawWithTypeAndUUID(type: Type, uuid: UInt64): @AnyResource{NonFungibleToken.NFT} {
             return <-self.withdraw(withdrawID: uuid)
         }
 
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
-        pub fun deposit(token: @AnyResource{NonFungibleToken.NFT}) {
+        access(all) fun deposit(token: @AnyResource{NonFungibleToken.NFT}) {
             let token <- token as! @ExampleNFT.NFT
 
             // add the new token to the dictionary which removes the old one
@@ -209,7 +209,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
 
         /// Function for a direct transfer instead of having to do a deposit and withdrawal
         ///
-        pub fun transfer(id: UInt64, receiver: Capability<&AnyResource{NonFungibleToken.Receiver}>): Bool {
+        access(NonFungibleToken.Withdrawable) fun transfer(id: UInt64, receiver: Capability<&AnyResource{NonFungibleToken.Receiver}>): Bool {
             let token <- self.withdraw(withdrawID: id)
 
             let displayView = token.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
@@ -228,11 +228,11 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
         }
 
         /// getIDs returns an array of the IDs that are in the collection
-        pub fun getIDs(): [UInt64] {
+        access(all) view fun getIDs(): [UInt64] {
             return self.ownedNFTs.keys
         }
 
-        pub fun getIDsWithTypes(): {Type: [UInt64]} {
+        access(all) view fun getIDsWithTypes(): {Type: [UInt64]} {
             let typeIDs: {Type: [UInt64]} = {}
             typeIDs[Type<@ExampleNFT.NFT>()] = self.getIDs()
             return typeIDs
@@ -240,26 +240,26 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
 
         /// borrowNFT gets a reference to an NFT in the collection
         /// so that the caller can read its metadata and call its methods
-        pub fun borrowNFT(_ id: UInt64): &AnyResource{NonFungibleToken.NFT} {
+        access(all) view fun borrowNFT(_ id: UInt64): &AnyResource{NonFungibleToken.NFT} {
             let nftRef = (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)
                 ?? panic("Could not borrow a reference to an NFT with the specified ID")
 
             return nftRef
         }
 
-        pub fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
+        access(all) view fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
             return (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)
         }
 
         /// Borrow the view resolver for the specified NFT ID
-        pub fun borrowViewResolver(id: UInt64): &{ViewResolver.Resolver}? {
+        access(all) view fun borrowViewResolver(id: UInt64): &{ViewResolver.Resolver}? {
             let nft = (&self.ownedNFTs[id] as &ExampleNFT.NFT?)!
             let exampleNFT = nft as! &ExampleNFT.NFT
             return exampleNFT as &AnyResource{ViewResolver.Resolver}
         }
 
         /// public function that anyone can call to create a new empty collection
-        pub fun createEmptyCollection(): @AnyResource{NonFungibleToken.Collection} {
+        access(all) fun createEmptyCollection(): @AnyResource{NonFungibleToken.Collection} {
             return <- create ExampleNFT.Collection()
         }
 
@@ -271,7 +271,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
     /// public function that anyone can call to create a new empty collection
     /// Since multiple collection types can be defined in a contract,
     /// The caller needs to specify which one they want to create
-    pub fun createEmptyCollection(collectionType: Type): @{NonFungibleToken.Collection} {
+    access(all) fun createEmptyCollection(collectionType: Type): @{NonFungibleToken.Collection} {
         switch collectionType {
             case Type<@ExampleNFT.Collection>():
                 return <- create Collection()
@@ -285,7 +285,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
     /// @return An array of Types defining the implemented views. This value will be used by
     ///         developers to know which parameter to pass to the resolveView() method.
     ///
-    pub fun getViews(): [Type] {
+    access(all) view fun getViews(): [Type] {
         return [
             Type<MetadataViews.NFTCollectionData>(),
             Type<MetadataViews.NFTCollectionDisplay>()
@@ -297,7 +297,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
     /// @param view: The Type of the desired view.
     /// @return A structure representing the requested view.
     ///
-    pub fun resolveView(_ view: Type): AnyStruct? {
+    access(all) view fun resolveView(_ view: Type): AnyStruct? {
         switch view {
             case Type<MetadataViews.NFTCollectionData>():
                 return ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
@@ -308,7 +308,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
     }
 
     /// Return the NFT types that the contract defines
-    pub fun getNFTTypes(): [Type] {
+    access(all) view fun getNFTTypes(): [Type] {
         return [
             Type<@ExampleNFT.NFT>()
         ]
@@ -316,7 +316,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
 
     /// get a list of all the NFT collection types that the contract defines
     /// could include a post-condition that verifies that each Type is an NFT collection type
-    pub fun getCollectionTypes(): [Type] {
+    access(all) view fun getCollectionTypes(): [Type] {
         return [
             Type<@ExampleNFT.Collection>()
         ]
@@ -324,7 +324,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
 
     /// tells what collection type should be used for the specified NFT type
     /// return `nil` if no collection type exists for the specified NFT type
-    pub fun getCollectionTypeForNftType(nftType: Type): Type? {
+    access(all) view fun getCollectionTypeForNftType(nftType: Type): Type? {
         switch nftType {
             case Type<@ExampleNFT.NFT>():
                 return Type<@ExampleNFT.Collection>()
@@ -335,7 +335,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
 
     /// resolve a type to its CollectionData so you know where to store it
     /// Returns `nil` if no collection type exists for the specified NFT type
-    pub fun getCollectionData(nftType: Type): MetadataViews.NFTCollectionData? {
+    access(all) view fun getCollectionData(nftType: Type): MetadataViews.NFTCollectionData? {
         switch nftType {
             case Type<@ExampleNFT.NFT>():
                 let collectionRef = self.account.borrow<&ExampleNFT.Collection>(from: /storage/cadenceExampleNFTCollection)
@@ -347,7 +347,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
                     publicCollection: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic}>(),
                     publicLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,ViewResolver.ResolverCollection}>(),
                     providerLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,ViewResolver.ResolverCollection}>(),
-                    createEmptyCollectionFunction: (fun (): @{NonFungibleToken.Collection} {
+                    createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
                         return <-collectionRef.createEmptyCollection()
                     })
                 )
@@ -358,7 +358,7 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
     }
 
     /// Returns the CollectionDisplay view for the NFT type that is specified 
-    pub fun getCollectionDisplay(nftType: Type): MetadataViews.NFTCollectionDisplay? {
+    access(all) view fun getCollectionDisplay(nftType: Type): MetadataViews.NFTCollectionDisplay? {
         switch nftType {
             case Type<@ExampleNFT.NFT>():
                 let media = MetadataViews.Media(
@@ -385,11 +385,11 @@ pub contract ExampleNFT: MultipleNFT, ViewResolver {
     /// Resource that an admin or something similar would own to be
     /// able to mint new NFTs
     ///
-    pub resource NFTMinter {
+    access(all) resource NFTMinter {
 
         /// mintNFT mints a new NFT with a new ID
         /// and returns it to the calling context
-        pub fun mintNFT(
+        access(all) fun mintNFT(
             name: String,
             description: String,
             thumbnail: String,

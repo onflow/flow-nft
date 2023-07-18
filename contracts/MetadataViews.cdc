@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 import FungibleToken from "FungibleToken"
 import NonFungibleToken from "NonFungibleToken"
-=======
-import FungibleToken from "./utility/FungibleToken.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
-import ViewResolver from "./ViewResolver.cdc"
->>>>>>> a5dac3a (use events in interfaces)
+import ViewResolver from "ViewResolver"
 
 /// This contract implements the metadata standard proposed
 /// in FLIP-0636.
@@ -17,52 +12,33 @@ import ViewResolver from "./ViewResolver.cdc"
 /// a different kind of metadata, such as a creator biography
 /// or a JPEG image file.
 ///
-pub contract MetadataViews {
+access(all) contract MetadataViews {
 
-<<<<<<< HEAD
-    /// Provides access to a set of metadata views. A struct or
-    /// resource (e.g. an NFT) can implement this interface to provide access to
-    /// the views that it supports.
-    ///
-    pub resource interface Resolver {
-        pub fun getViews(): [Type]
-        pub fun resolveView(_ view: Type): AnyStruct?
-    }
-
-    /// A group of view resolvers indexed by ID.
-    ///
-    pub resource interface ResolverCollection {
-        pub fun borrowViewResolver(id: UInt64): &{Resolver}?
-        pub fun getIDs(): [UInt64]
-    }
-
-=======
->>>>>>> a5dac3a (use events in interfaces)
     /// Display is a basic view that includes the name, description and
     /// thumbnail for an object. Most objects should implement this view.
     ///
-    pub struct Display {
+    access(all) struct Display {
 
         /// The name of the object.
         ///
         /// This field will be displayed in lists and therefore should
         /// be short an concise.
         ///
-        pub let name: String
+        access(all) let name: String
 
         /// A written description of the object.
         ///
         /// This field will be displayed in a detailed view of the object,
         /// so can be more verbose (e.g. a paragraph instead of a single line).
         ///
-        pub let description: String
+        access(all) let description: String
 
         /// A small thumbnail representation of the object.
         ///
         /// This field should be a web-friendly file (i.e JPEG, PNG)
         /// that can be displayed in lists, link previews, etc.
         ///
-        pub let thumbnail: AnyStruct{File}
+        access(all) let thumbnail: AnyStruct{File}
 
         init(
             name: String,
@@ -80,7 +56,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return An optional Display struct
     ///
-    pub fun getDisplay(_ viewResolver: &{ViewResolver.Resolver}) : Display? {
+    access(all) view fun getDisplay(_ viewResolver: &{ViewResolver.Resolver}) : Display? {
         if let view = viewResolver.resolveView(Type<Display>()) {
             if let v = view as? Display {
                 return v
@@ -92,20 +68,20 @@ pub contract MetadataViews {
     /// Generic interface that represents a file stored on or off chain. Files
     /// can be used to references images, videos and other media.
     ///
-    pub struct interface File {
-        pub fun uri(): String
+    access(all) struct interface File {
+        access(all) view fun uri(): String
     }
 
     /// View to expose a file that is accessible at an HTTP (or HTTPS) URL.
     ///
-    pub struct HTTPFile: File {
-        pub let url: String
+    access(all) struct HTTPFile: File {
+        access(all) let url: String
 
         init(url: String) {
             self.url = url
         }
 
-        pub fun uri(): String {
+        access(all) view fun uri(): String {
             return self.url
         }
     }
@@ -115,13 +91,13 @@ pub contract MetadataViews {
     /// rather than a direct URI. A client application can use this CID
     /// to find and load the image via an IPFS gateway.
     ///
-    pub struct IPFSFile: File {
+    access(all) struct IPFSFile: File {
 
         /// CID is the content identifier for this IPFS file.
         ///
         /// Ref: https://docs.ipfs.io/concepts/content-addressing/
         ///
-        pub let cid: String
+        access(all) let cid: String
 
         /// Path is an optional path to the file resource in an IPFS directory.
         ///
@@ -129,7 +105,7 @@ pub contract MetadataViews {
         ///
         /// Ref: https://docs.ipfs.io/concepts/file-systems/
         ///
-        pub let path: String?
+        access(all) let path: String?
 
         init(cid: String, path: String?) {
             self.cid = cid
@@ -141,7 +117,7 @@ pub contract MetadataViews {
         ///
         /// @return The string containing the file uri
         ///
-        pub fun uri(): String {
+        access(all) view fun uri(): String {
             if let path = self.path {
                 return "ipfs://".concat(self.cid).concat("/").concat(path)
             }
@@ -152,16 +128,16 @@ pub contract MetadataViews {
 
     /// View to represent a file with an correspoiding mediaType.
     ///
-    pub struct Media {
+    access(all) struct Media {
 
         /// File for the media
         ///
-        pub let file: AnyStruct{File}
+        access(all) let file: AnyStruct{File}
 
         /// media-type comes on the form of type/subtype as described here 
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
         ///
-        pub let mediaType: String
+        access(all) let mediaType: String
 
         init(file: AnyStruct{File}, mediaType: String) {
           self.file=file
@@ -171,10 +147,10 @@ pub contract MetadataViews {
 
     /// Wrapper view for multiple media views
     ///
-    pub struct Medias {
+    access(all) struct Medias {
 
         /// An arbitrary-sized list for any number of Media items
-        pub let items: [Media]
+        access(all) let items: [Media]
 
         init(_ items: [Media]) {
             self.items = items
@@ -186,7 +162,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional Medias struct
     ///
-    pub fun getMedias(_ viewResolver: &{ViewResolver.Resolver}) : Medias? {
+    access(all) view fun getMedias(_ viewResolver: &{ViewResolver.Resolver}) : Medias? {
         if let view = viewResolver.resolveView(Type<Medias>()) {
             if let v = view as? Medias {
                 return v
@@ -198,8 +174,8 @@ pub contract MetadataViews {
     /// View to represent a license according to https://spdx.org/licenses/
     /// This view can be used if the content of an NFT is licensed.
     ///
-    pub struct License {
-        pub let spdxIdentifier: String
+    access(all) struct License {
+        access(all) let spdxIdentifier: String
 
         init(_ identifier: String) {
             self.spdxIdentifier = identifier
@@ -211,7 +187,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional License struct
     ///
-    pub fun getLicense(_ viewResolver: &{ViewResolver.Resolver}) : License? {
+    access(all) view fun getLicense(_ viewResolver: &{ViewResolver.Resolver}) : License? {
         if let view = viewResolver.resolveView(Type<License>()) {
             if let v = view as? License {
                 return v
@@ -225,8 +201,8 @@ pub contract MetadataViews {
     /// to the original link for an NFT or a project page that describes the NFT collection.
     /// eg https://www.my-nft-project.com/overview-of-nft-collection
     ///
-    pub struct ExternalURL {
-        pub let url: String
+    access(all) struct ExternalURL {
+        access(all) let url: String
 
         init(_ url: String) {
             self.url=url
@@ -238,7 +214,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional ExternalURL struct
     ///
-    pub fun getExternalURL(_ viewResolver: &{ViewResolver.Resolver}) : ExternalURL? {
+    access(all) view fun getExternalURL(_ viewResolver: &{ViewResolver.Resolver}) : ExternalURL? {
         if let view = viewResolver.resolveView(Type<ExternalURL>()) {
             if let v = view as? ExternalURL {
                 return v
@@ -250,7 +226,7 @@ pub contract MetadataViews {
     /// View that defines the composable royalty standard that gives marketplaces a 
     /// unified interface to support NFT royalties.
     ///
-    pub struct Royalty {
+    access(all) struct Royalty {
 
         /// Generic FungibleToken Receiver for the beneficiary of the royalty
         /// Can get the concrete type of the receiver with receiver.getType()
@@ -258,7 +234,7 @@ pub contract MetadataViews {
         /// receiver for this using `getRoyaltyReceiverPublicPath()`, and not 
         /// use the default FlowToken receiver. This will allow users to update 
         /// the capability in the future to use a more generic capability
-        pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
+        access(all) let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
 
         /// Multiplier used to calculate the amount of sale value transferred to 
         /// royalty receiver. Note - It should be between 0.0 and 1.0 
@@ -269,12 +245,12 @@ pub contract MetadataViews {
         /// that already supports the basis points use case because its 
         /// operations are entirely deterministic integer operations and support 
         /// up to 8 points of precision.
-        pub let cut: UFix64
+        access(all) let cut: UFix64
 
         /// Optional description: This can be the cause of paying the royalty,
         /// the relationship between the `wallet` and the NFT, or anything else
         /// that the owner might want to specify.
-        pub let description: String
+        access(all) let description: String
 
         init(receiver: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
             pre {
@@ -290,12 +266,12 @@ pub contract MetadataViews {
     /// Marketplaces can query this `Royalties` struct from NFTs 
     /// and are expected to pay royalties based on these specifications.
     ///
-    pub struct Royalties {
+    access(all) struct Royalties {
 
         /// Array that tracks the individual royalties
         access(self) let cutInfos: [Royalty]
 
-        pub init(_ cutInfos: [Royalty]) {
+        access(all) init(_ cutInfos: [Royalty]) {
             // Validate that sum of all cut multipliers should not be greater than 1.0
             var totalCut = 0.0
             for royalty in cutInfos {
@@ -310,7 +286,7 @@ pub contract MetadataViews {
         ///
         /// @return An array containing all the royalties structs
         ///
-        pub fun getRoyalties(): [Royalty] {
+        access(all) view fun getRoyalties(): [Royalty] {
             return self.cutInfos
         }
     }
@@ -320,7 +296,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional Royalties struct
     ///
-    pub fun getRoyalties(_ viewResolver: &{ViewResolver.Resolver}) : Royalties? {
+    access(all) view fun getRoyalties(_ viewResolver: &{ViewResolver.Resolver}) : Royalties? {
         if let view = viewResolver.resolveView(Type<Royalties>()) {
             if let v = view as? Royalties {
                 return v
@@ -335,7 +311,7 @@ pub contract MetadataViews {
     ///
     /// @return The PublicPath for the generic FT receiver
     ///
-    pub fun getRoyaltyReceiverPublicPath(): PublicPath {
+    access(all) view fun getRoyaltyReceiverPublicPath(): PublicPath {
         return /public/GenericFTReceiver
     }
 
@@ -343,22 +319,22 @@ pub contract MetadataViews {
     /// This is used to get traits of individual key/value pairs along with some
     /// contextualized data about the trait
     ///
-    pub struct Trait {
+    access(all) struct Trait {
         // The name of the trait. Like Background, Eyes, Hair, etc.
-        pub let name: String
+        access(all) let name: String
 
         // The underlying value of the trait, the rest of the fields of a trait provide context to the value.
-        pub let value: AnyStruct
+        access(all) let value: AnyStruct
 
         // displayType is used to show some context about what this name and value represent
         // for instance, you could set value to a unix timestamp, and specify displayType as "Date" to tell
         // platforms to consume this trait as a date and not a number
-        pub let displayType: String?
+        access(all) let displayType: String?
 
         // Rarity can also be used directly on an attribute.
         //
         // This is optional because not all attributes need to contribute to the NFT's rarity.
-        pub let rarity: Rarity?
+        access(all) let rarity: Rarity?
 
         init(name: String, value: AnyStruct, displayType: String?, rarity: Rarity?) {
             self.name = name
@@ -371,8 +347,8 @@ pub contract MetadataViews {
     /// Wrapper view to return all the traits on an NFT.
     /// This is used to return traits as individual key/value pairs along with
     /// some contextualized data about each trait.
-    pub struct Traits {
-        pub let traits: [Trait]
+    access(all) struct Traits {
+        access(all) let traits: [Trait]
 
         init(_ traits: [Trait]) {
             self.traits = traits
@@ -382,7 +358,7 @@ pub contract MetadataViews {
         /// 
         /// @param Trait: The trait struct to be added
         ///
-        pub fun addTrait(_ t: Trait) {
+        access(all) view fun addTrait(_ t: Trait) {
             self.traits.append(t)
         }
     }
@@ -392,7 +368,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional Traits struct
     ///
-    pub fun getTraits(_ viewResolver: &{ViewResolver.Resolver}) : Traits? {
+    access(all) view fun getTraits(_ viewResolver: &{ViewResolver.Resolver}) : Traits? {
         if let view = viewResolver.resolveView(Type<Traits>()) {
             if let v = view as? Traits {
                 return v
@@ -410,7 +386,7 @@ pub contract MetadataViews {
     ///         keys that are not wanted to become `Traits`
     /// @return The generated Traits view
     ///
-    pub fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
+    access(all) view fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
         // Collection owners might not want all the fields in their metadata included.
         // They might want to handle some specially, or they might just not want them included at all.
         if excludedNames != nil {
@@ -434,23 +410,23 @@ pub contract MetadataViews {
     /// An NFT might be part of multiple editions, which is why the edition
     /// information is returned as an arbitrary sized array
     ///
-    pub struct Edition {
+    access(all) struct Edition {
 
         /// The name of the edition
         /// For example, this could be Set, Play, Series,
         /// or any other way a project could classify its editions
-        pub let name: String?
+        access(all) let name: String?
 
         /// The edition number of the object.
         /// For an "24 of 100 (#24/100)" item, the number is 24.
-        pub let number: UInt64
+        access(all) let number: UInt64
 
         /// The max edition number of this type of objects.
         /// This field should only be provided for limited-editioned objects.
         /// For an "24 of 100 (#24/100)" item, max is 100.
         /// For an item with unlimited edition, max should be set to nil.
         ///
-        pub let max: UInt64?
+        access(all) let max: UInt64?
 
         init(name: String?, number: UInt64, max: UInt64?) {
             if max != nil {
@@ -464,11 +440,11 @@ pub contract MetadataViews {
 
     /// Wrapper view for multiple Edition views
     ///
-    pub struct Editions {
+    access(all) struct Editions {
 
         /// An arbitrary-sized list for any number of editions
         /// that the NFT might be a part of
-        pub let infoList: [Edition]
+        access(all) let infoList: [Edition]
 
         init(_ infoList: [Edition]) {
             self.infoList = infoList
@@ -480,7 +456,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return An optional Editions struct
     ///
-    pub fun getEditions(_ viewResolver: &{ViewResolver.Resolver}) : Editions? {
+    access(all) view fun getEditions(_ viewResolver: &{ViewResolver.Resolver}) : Editions? {
         if let view = viewResolver.resolveView(Type<Editions>()) {
             if let v = view as? Editions {
                 return v
@@ -495,8 +471,8 @@ pub contract MetadataViews {
     /// classification system. The serial number is expected to be unique among
     /// other NFTs within that project
     ///
-    pub struct Serial {
-        pub let number: UInt64
+    access(all) struct Serial {
+        access(all) let number: UInt64
 
         init(_ number: UInt64) {
             self.number = number
@@ -508,7 +484,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return An optional Serial struct
     ///
-    pub fun getSerial(_ viewResolver: &{ViewResolver.Resolver}) : Serial? {
+    access(all) view fun getSerial(_ viewResolver: &{ViewResolver.Resolver}) : Serial? {
         if let view = viewResolver.resolveView(Type<Serial>()) {
             if let v = view as? Serial {
                 return v
@@ -521,29 +497,22 @@ pub contract MetadataViews {
     /// Note that a rarity needs to have either score or description but it can 
     /// have both
     ///
-    pub struct Rarity {
+    access(all) struct Rarity {
         /// The score of the rarity as a number
-        pub let score: UFix64?
+        access(all) let score: UFix64?
 
         /// The maximum value of score
-        pub let max: UFix64?
+        access(all) let max: UFix64?
 
         /// The description of the rarity as a string.
         ///
         /// This could be Legendary, Epic, Rare, Uncommon, Common or any other string value
-        pub let description: String?
+        access(all) let description: String?
 
-<<<<<<< HEAD
-        /// media-type comes on the form of type/subtype as described here
-        /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
-        ///
-        pub let mediaType: String
-=======
         init(score: UFix64?, max: UFix64?, description: String?) {
             if score == nil && description == nil {
                 panic("A Rarity needs to set score, description or both")
             }
->>>>>>> a5dac3a (use events in interfaces)
 
             self.score = score
             self.max = max
@@ -556,7 +525,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional Rarity struct
     ///
-    pub fun getRarity(_ viewResolver: &{ViewResolver.Resolver}) : Rarity? {
+    access(all) view fun getRarity(_ viewResolver: &{ViewResolver.Resolver}) : Rarity? {
         if let view = viewResolver.resolveView(Type<Rarity>()) {
             if let v = view as? Rarity {
                 return v
@@ -569,15 +538,15 @@ pub contract MetadataViews {
     /// to give a complete picture of an NFT. Most NFTs should implement this 
     /// view.
     ///
-    pub struct NFTView {
-        pub let id: UInt64
-        pub let uuid: UInt64
-        pub let display: MetadataViews.Display?
-        pub let externalURL: MetadataViews.ExternalURL?
-        pub let collectionData: NFTCollectionData?
-        pub let collectionDisplay: NFTCollectionDisplay?
-        pub let royalties: Royalties?
-        pub let traits: Traits?
+    access(all) struct NFTView {
+        access(all) let id: UInt64
+        access(all) let uuid: UInt64
+        access(all) let display: MetadataViews.Display?
+        access(all) let externalURL: MetadataViews.ExternalURL?
+        access(all) let collectionData: NFTCollectionData?
+        access(all) let collectionDisplay: NFTCollectionDisplay?
+        access(all) let royalties: Royalties?
+        access(all) let traits: Traits?
 
         init(
             id : UInt64,
@@ -606,7 +575,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A NFTView struct
     ///
-    pub fun getNFTView(id: UInt64, viewResolver: &{ViewResolver.Resolver}) : NFTView {
+    access(all) view fun getNFTView(id: UInt64, viewResolver: &{ViewResolver.Resolver}) : NFTView {
         let nftView = viewResolver.resolveView(Type<NFTView>())
         if nftView != nil {
             return nftView! as! NFTView
@@ -628,37 +597,37 @@ pub contract MetadataViews {
     /// This can be used by applications to setup a NFT collection with proper 
     /// storage and public capabilities.
     ///
-    pub struct NFTCollectionData {
+    access(all) struct NFTCollectionData {
         /// Path in storage where this NFT is recommended to be stored.
-        pub let storagePath: StoragePath
+        access(all) let storagePath: StoragePath
 
         /// Public path which must be linked to expose public capabilities of this NFT
         /// including standard NFT interfaces and metadataviews interfaces
-        pub let publicPath: PublicPath
+        access(all) let publicPath: PublicPath
 
         /// Private path which should be linked to expose the provider
         /// capability to withdraw NFTs from the collection holding NFTs
-        pub let providerPath: PrivatePath
+        access(all) let providerPath: PrivatePath
 
         /// Public collection type that is expected to provide sufficient read-only access to standard
         /// functions (deposit + getIDs + borrowNFT)
         /// This field is for backwards compatibility with collections that have not used the standard
         /// NonFungibleToken.CollectionPublic interface when setting up collections. For new
         /// collections, this may be set to be equal to the type specified in `publicLinkedType`.
-        pub let publicCollection: Type
+        access(all) let publicCollection: Type
 
         /// Type that should be linked at the aforementioned public path. This is normally a
         /// restricted type with many interfaces. Notably the `NFT.CollectionPublic`,
         /// `NFT.Receiver`, and `ViewResolver.ResolverCollection` interfaces are required.
-        pub let publicLinkedType: Type
+        access(all) let publicLinkedType: Type
 
         /// Type that should be linked at the aforementioned private path. This is normally
         /// a restricted type with at a minimum the `NFT.Provider` interface
-        pub let providerLinkedType: Type
+        access(all) let providerLinkedType: Type
 
         /// Function that allows creation of an empty NFT collection that is intended to store
         /// this NFT.
-        pub let createEmptyCollection: ((): @AnyResource{NonFungibleToken.Collection})
+        access(all) let createEmptyCollection: fun(): @AnyResource{NonFungibleToken.Collection}
 
         init(
             storagePath: StoragePath,
@@ -667,7 +636,7 @@ pub contract MetadataViews {
             publicCollection: Type,
             publicLinkedType: Type,
             providerLinkedType: Type,
-            createEmptyCollectionFunction: ((): @AnyResource{NonFungibleToken.Collection})
+            createEmptyCollectionFunction: fun(): @AnyResource{NonFungibleToken.Collection}
         ) {
             pre {
                 publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, ViewResolver.ResolverCollection}>()): "Public type must include NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, and ViewResolver.ResolverCollection interfaces."
@@ -688,7 +657,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional NFTCollectionData struct
     ///
-    pub fun getNFTCollectionData(_ viewResolver: &{ViewResolver.Resolver}) : NFTCollectionData? {
+    access(all) view fun getNFTCollectionData(_ viewResolver: &{ViewResolver.Resolver}) : NFTCollectionData? {
         if let view = viewResolver.resolveView(Type<NFTCollectionData>()) {
             if let v = view as? NFTCollectionData {
                 return v
@@ -697,36 +666,29 @@ pub contract MetadataViews {
         return nil
     }
 
-<<<<<<< HEAD
-    /// View to expose a URL to this item on an external site.
-    /// This can be used by applications like .find and Blocto to direct users
-    /// to the original link for an NFT or a project page that describes the NFT collection.
-    /// eg https://www.my-nft-project.com/overview-of-nft-collection
-=======
     /// View to expose the information needed to showcase this NFT's
     /// collection. This can be used by applications to give an overview and 
     /// graphics of the NFT collection this NFT belongs to.
->>>>>>> a5dac3a (use events in interfaces)
     ///
-    pub struct NFTCollectionDisplay {
+    access(all) struct NFTCollectionDisplay {
         // Name that should be used when displaying this NFT collection.
-        pub let name: String
+        access(all) let name: String
 
         // Description that should be used to give an overview of this collection.
-        pub let description: String
+        access(all) let description: String
 
         // External link to a URL to view more information about this collection.
-        pub let externalURL: MetadataViews.ExternalURL
+        access(all) let externalURL: MetadataViews.ExternalURL
 
         // Square-sized image to represent this collection.
-        pub let squareImage: MetadataViews.Media
+        access(all) let squareImage: MetadataViews.Media
 
         // Banner-sized image for this collection, recommended to have a size near 1200x630.
-        pub let bannerImage: MetadataViews.Media
+        access(all) let bannerImage: MetadataViews.Media
 
         // Social links to reach this collection's social homepages.
         // Possible keys may be "instagram", "twitter", "discord", etc.
-        pub let socials: {String: MetadataViews.ExternalURL}
+        access(all) let socials: {String: MetadataViews.ExternalURL}
 
         init(
             name: String,
@@ -751,7 +713,7 @@ pub contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional NFTCollection struct
     ///
-    pub fun getNFTCollectionDisplay(_ viewResolver: &{ViewResolver.Resolver}) : NFTCollectionDisplay? {
+    access(all) view fun getNFTCollectionDisplay(_ viewResolver: &{ViewResolver.Resolver}) : NFTCollectionDisplay? {
         if let view = viewResolver.resolveView(Type<NFTCollectionDisplay>()) {
             if let v = view as? NFTCollectionDisplay {
                 return v
