@@ -285,15 +285,16 @@ access(all) contract NonFungibleToken {
 
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
-        access(all) fun deposit(token: @AnyResource{NonFungibleToken.NFT}) {
-            pre {
-                // We emit the deposit event in the `Collection` interface
-                // because the `Collection` interface is almost always the final destination
-                // of tokens and deposit emissions from custom receivers could be confusing
-                // and hard to reconcile to event listeners
-                //NonFungibleToken.emitNFTDeposit(id: token.getID(), uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier)
-            }
-        }
+        access(all) fun deposit(token: @AnyResource{NonFungibleToken.NFT}) 
+        // {
+        //     pre {
+        //         // We emit the deposit event in the `Collection` interface
+        //         // because the `Collection` interface is almost always the final destination
+        //         // of tokens and deposit emissions from custom receivers could be confusing
+        //         // and hard to reconcile to event listeners
+        //         //NonFungibleToken.emitNFTDeposit(id: token.getID(), uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier)
+        //     }
+        // }
 
         /// Function for a direct transfer instead of having to do a deposit and withdrawal
         /// This can and should return false if the transfer doesn't succeed and true if it does succeed
