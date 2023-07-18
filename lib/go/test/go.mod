@@ -3,9 +3,9 @@ module github.com/onflow/flow-nft/lib/go/test
 go 1.18
 
 require (
-	github.com/onflow/cadence v0.39.14
-	github.com/onflow/flow-emulator v0.52.0
-	github.com/onflow/flow-go-sdk v0.41.9
+	github.com/onflow/cadence v0.39.13-stable-cadence
+	github.com/onflow/flow-emulator v0.38.1
+	github.com/onflow/flow-go-sdk v0.41.7-stable-cadence
 	github.com/onflow/flow-nft/lib/go/contracts v1.1.0
 	github.com/onflow/flow-nft/lib/go/templates v0.0.0-00010101000000-000000000000
 	github.com/rs/zerolog v1.29.0

@@ -2,21 +2,18 @@
 
 # The Flow Fungible Token standard
 
-## `FungibleToken` contract interface
+## `FungibleToken` contract
 
-The interface that all fungible token contracts would have to conform to.
+The Fungible Token standard is no longer an interface
+that all fungible token contracts would have to conform to.
+
 If a users wants to deploy a new token contract, their contract
-would need to implement the FungibleToken interface.
+does not need to implement the FungibleToken interface, but their tokens
+do need to implement the interfaces defined in this contract.
 
-Their contract would have to follow all the rules and naming
-that the interface specifies.
+## `Vault` resource interface
 
-## `Vault` resource
-
-Each account that owns tokens would need to have an instance
-of the Vault resource stored in their account storage.
-
-The Vault resource has methods that the owner and other users can call.
+Each fungible token resource type needs to implement the `Vault` resource interface.
 
 ## `Provider`, `Receiver`, and `Balance` resource interfaces
 
@@ -32,43 +29,52 @@ these interfaces to do various things with the tokens.
 For example, a faucet can be implemented by conforming
 to the Provider interface.
 
-By using resources and interfaces, users of FungibleToken contracts
-can send and receive tokens peer-to-peer, without having to interact
-with a central ledger smart contract. To send tokens to another user,
-a user would simply withdraw the tokens from their Vault, then call
-the deposit function on another user's Vault to complete the transfer.
-
 */
+
+import ViewResolver from "ViewResolver"
 
 /// FungibleToken
 ///
-/// The interface that fungible token contracts implement.
-///
-pub contract interface FungibleToken {
+/// Fungible Token implementations are no longer required to implement the fungible token
+/// interface. We still have it as an interface here because there are some useful
+/// utility methods that many projects will still want to have on their contracts,
+/// but they are by no means required. all that is required is that the token
+/// implements the `Vault` interface
+access(all) contract FungibleToken {
 
-    /// The total number of tokens in existence.
-    /// It is up to the implementer to ensure that the total supply
-    /// stays accurate and up to date
-    ///
-    pub var totalSupply: UFix64
+    // An entitlement for allowing the withdrawal of tokens from a Vault
+    access(all) entitlement Withdrawable
 
-    /// TokensInitialized
-    ///
-    /// The event that is emitted when the contract is created
-    ///
-    pub event TokensInitialized(initialSupply: UFix64)
-
-    /// TokensWithdrawn
-    ///
     /// The event that is emitted when tokens are withdrawn from a Vault
-    ///
-    pub event TokensWithdrawn(amount: UFix64, from: Address?)
+    access(all) event Withdraw(amount: UFix64, from: Address?, type: String)
+    access(self) fun emitWithdrawEvent(amount: UFix64, from: Address?, type: String): Bool {
+        emit Withdraw(amount: amount, from: from, type: type)
+        return true
+    }
 
-    /// TokensDeposited
-    ///
-    /// The event that is emitted when tokens are deposited into a Vault
-    ///
-    pub event TokensDeposited(amount: UFix64, to: Address?)
+    /// The event that is emitted when tokens are deposited to a Vault
+    access(all) event Deposit(amount: UFix64, to: Address?, type: String)
+    access(self) fun emitDepositEvent(amount: UFix64, to: Address?, type: String): Bool {
+        emit Deposit(amount: amount, to: to, type: type)
+        return true
+    }
+
+    /// The event that is emitted when tokens are transferred from one account to another
+    access(all) event Transfer(amount: UFix64, from: Address?, to: Address?, type: String)
+    access(self) fun emitTransferEvent(amount: UFix64, from: Address?, to: Address?, type: String): Bool {
+        emit Transfer(amount: amount, from: from, to: to, type: type)
+        return true
+    }
+
+    /// Event emitted when tokens are destroyed
+    access(all) event Burn(amount: UFix64, type: String)
+
+    access(self) fun emitBurnEvent(amount: UFix64, type: String): Bool {
+        if amount >= 0.0 {
+            emit Burn(amount: amount, type: type)
+        }
+        return true
+    }
 
     /// Provider
     ///
@@ -79,7 +85,7 @@ pub contract interface FungibleToken {
     /// because it leaves open the possibility of creating custom providers
     /// that do not necessarily need their own balance.
     ///
-    pub resource interface Provider {
+    access(all) resource interface Provider {
 
         /// withdraw subtracts tokens from the owner's Vault
         /// and returns a Vault with the removed tokens.
@@ -96,11 +102,12 @@ pub contract interface FungibleToken {
         /// capability that allows all users to access the provider
         /// resource through a reference.
         ///
-        pub fun withdraw(amount: UFix64): @Vault {
+        access(Withdrawable) fun withdraw(amount: UFix64): @AnyResource{Vault} {
             post {
                 // `result` refers to the return value
-                result.balance == amount:
+                result.getBalance() == amount:
                     "Withdrawal amount must be the same as the balance of the withdrawn Vault"
+                FungibleToken.emitWithdrawEvent(amount: amount, from: self.owner?.address, type: self.getType().identifier)
             }
         }
     }
@@ -115,91 +122,146 @@ pub contract interface FungibleToken {
     /// can do custom things with the tokens, like split them up and
     /// send them to different places.
     ///
-    pub resource interface Receiver {
+    access(all) resource interface Receiver {
 
         /// deposit takes a Vault and deposits it into the implementing resource type
         ///
-        pub fun deposit(from: @Vault)
+        access(all) fun deposit(from: @AnyResource{Vault})
+
+        /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
+        access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
+            // Below check is implemented to make sure that run-time type would
+            // only get returned when the parent resource conforms with `FungibleToken.Vault`. 
+            if self.getType().isSubtype(of: Type<@AnyResource{FungibleToken.Vault}>()) {
+                return {self.getType(): true}
+            } else {
+                // Return an empty dictionary as the default value for resource who don't
+                // implement `FungibleToken.Vault`, such as `FungibleTokenSwitchboard`, `TokenForwarder` etc.
+                return {}
+            }
+        }
+
+        /// Returns whether or not the given type is accepted by the Receiver
+        /// A vault that can accept any type should just return true by default
+        access(all) view fun isSupportedVaultType(type: Type): Bool {
+            return false
+        }
     }
 
-    /// Balance
-    ///
-    /// The interface that contains the `balance` field of the Vault
-    /// and enforces that when new Vaults are created, the balance
-    /// is initialized correctly.
-    ///
-    pub resource interface Balance {
-
-        /// The total balance of a vault
+    access(all) resource interface Transferor {
+        /// Function for a direct transfer instead of having to do a deposit and withdrawal
         ///
-        pub var balance: UFix64
-
-        init(balance: UFix64) {
-            post {
-                self.balance == balance:
-                    "Balance must be initialized to the initial balance"
+        access(all) fun transfer(amount: UFix64, receiver: Capability<&{FungibleToken.Receiver}>) {
+            pre {
+                receiver.check(): "Could not borrow a reference to the NFT receiver"
             }
         }
     }
 
+    /// Balance
+    ///
+    /// This interface is now a general purpose metadata interface because
+    /// a public interface is needed to get metadata, but adding a whole new interface
+    /// for every account to upgrade to is probably too much of a breaking change
+    access(all) resource interface Balance { //: ViewResolver.Resolver {
+
+        /// Method to get the balance
+        /// The balance could be a derived field,
+        /// so there is no need to require an explicit field
+        access(all) view fun getBalance(): UFix64
+
+        access(all) view fun getSupportedVaultTypes(): {Type: Bool}
+        access(all) view fun isSupportedVaultType(type: Type): Bool
+
+        /// ViewResolver Methods
+        ///
+        access(all) view fun getViews(): [Type]
+        access(all) view fun resolveView(_ view: Type): AnyStruct?
+    }
+
     /// Vault
     ///
-    /// The resource that contains the functions to send and receive tokens.
+    /// Ideally, this interface would also conform to Receiver, Balance, Transferor, Provider, and Resolver
+    /// but that is not supported yet
     ///
-    pub resource Vault: Provider, Receiver, Balance {
+    access(all) resource interface Vault { //: Receiver, Balance, Transferor, Provider, ViewResolver.Resolver {
 
-        // The declaration of a concrete type in a contract interface means that
-        // every Fungible Token contract that implements the FungibleToken interface
-        // must define a concrete `Vault` resource that conforms to the `Provider`, `Receiver`,
-        // and `Balance` interfaces, and declares their required fields and functions
+        /// Get the balance of the vault
+        access(all) view fun getBalance(): UFix64
 
-        /// The total balance of the vault
-        ///
-        pub var balance: UFix64
+        /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
+        access(all) view fun getSupportedVaultTypes(): {Type: Bool}
 
-        // The conforming type must declare an initializer
-        // that allows prioviding the initial balance of the Vault
-        //
-        init(balance: UFix64)
+        access(all) view fun isSupportedVaultType(type: Type): Bool
+
+        /// Returns the storage path where the vault should typically be stored
+        access(all) view fun getDefaultStoragePath(): StoragePath? {
+            return nil
+        }
+
+        /// Returns the public path where this vault should have a public capability
+        access(all) view fun getDefaultPublicPath(): PublicPath? {
+            return nil
+        }
+
+        access(all) view fun getViews(): [Type]
+        access(all) view fun resolveView(_ view: Type): AnyStruct?
 
         /// withdraw subtracts `amount` from the Vault's balance
         /// and returns a new Vault with the subtracted balance
         ///
-        pub fun withdraw(amount: UFix64): @Vault {
+        access(Withdrawable) fun withdraw(amount: UFix64): @AnyResource{Vault} {
             pre {
-                self.balance >= amount:
+                self.getBalance() >= amount:
                     "Amount withdrawn must be less than or equal than the balance of the Vault"
             }
             post {
                 // use the special function `before` to get the value of the `balance` field
                 // at the beginning of the function execution
                 //
-                self.balance == before(self.balance) - amount:
-                    "New Vault balance must be the difference of the previous balance and the withdrawn Vault"
+                self.getBalance() == before(self.getBalance()) - amount:
+                    "New Vault balance must be the difference of the previous balance and the withdrawn Vault balance"
             }
         }
 
         /// deposit takes a Vault and adds its balance to the balance of this Vault
         ///
-        pub fun deposit(from: @Vault) {
+        access(all) fun deposit(from: @AnyResource{FungibleToken.Vault}) {
             // Assert that the concrete type of the deposited vault is the same
             // as the vault that is accepting the deposit
             pre {
                 from.isInstance(self.getType()): 
                     "Cannot deposit an incompatible token type"
+                FungibleToken.emitDepositEvent(amount: from.getBalance(), to: self.owner?.address, type: from.getType().identifier)
             }
             post {
-                self.balance == before(self.balance) + before(from.balance):
+                self.getBalance() == before(self.getBalance()) + before(from.getBalance()):
                     "New Vault balance must be the sum of the previous balance and the deposited Vault"
             }
         }
-    }
 
-    /// createEmptyVault allows any user to create a new Vault that has a zero balance
-    ///
-    pub fun createEmptyVault(): @Vault {
-        post {
-            result.balance == 0.0: "The newly created Vault must have zero balance"
+        /// Function for a direct transfer instead of having to do a deposit and withdrawal
+        ///
+        access(all) fun transfer(amount: UFix64, receiver: Capability<&{FungibleToken.Receiver}>) {
+            post {
+                self.getBalance() == before(self.getBalance()) - amount:
+                    "New Vault balance from the sender must be the difference of the previous balance and the withdrawn Vault balance"
+                FungibleToken.emitTransferEvent(amount: amount, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.getType().identifier)
+            }
+        }
+
+        /// createEmptyVault allows any user to create a new Vault that has a zero balance
+        ///
+        access(all) fun createEmptyVault(): @AnyResource{Vault} {
+            post {
+                result.getBalance() == 0.0: "The newly created Vault must have zero balance"
+            }
+        }
+
+        destroy() {
+            pre {
+                FungibleToken.emitBurnEvent(amount: self.getBalance(), type: self.getType().identifier)
+            }
         }
     }
 }
