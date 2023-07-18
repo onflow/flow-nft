@@ -40,7 +40,7 @@ access(all) contract MetadataViews {
         ///
         access(all) let thumbnail: AnyStruct{File}
 
-        init(
+        view init(
             name: String,
             description: String,
             thumbnail: AnyStruct{File}
@@ -77,7 +77,7 @@ access(all) contract MetadataViews {
     access(all) struct HTTPFile: File {
         access(all) let url: String
 
-        init(url: String) {
+        view init(url: String) {
             self.url = url
         }
 
@@ -107,7 +107,7 @@ access(all) contract MetadataViews {
         ///
         access(all) let path: String?
 
-        init(cid: String, path: String?) {
+        view init(cid: String, path: String?) {
             self.cid = cid
             self.path = path
         }
@@ -139,7 +139,7 @@ access(all) contract MetadataViews {
         ///
         access(all) let mediaType: String
 
-        init(file: AnyStruct{File}, mediaType: String) {
+        view init(file: AnyStruct{File}, mediaType: String) {
           self.file=file
           self.mediaType=mediaType
         }
@@ -152,7 +152,7 @@ access(all) contract MetadataViews {
         /// An arbitrary-sized list for any number of Media items
         access(all) let items: [Media]
 
-        init(_ items: [Media]) {
+        view init(_ items: [Media]) {
             self.items = items
         }
     }
@@ -177,7 +177,7 @@ access(all) contract MetadataViews {
     access(all) struct License {
         access(all) let spdxIdentifier: String
 
-        init(_ identifier: String) {
+        view init(_ identifier: String) {
             self.spdxIdentifier = identifier
         }
     }
@@ -204,7 +204,7 @@ access(all) contract MetadataViews {
     access(all) struct ExternalURL {
         access(all) let url: String
 
-        init(_ url: String) {
+        view init(_ url: String) {
             self.url=url
         }
     }
@@ -252,7 +252,7 @@ access(all) contract MetadataViews {
         /// that the owner might want to specify.
         access(all) let description: String
 
-        init(receiver: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
+        view init(receiver: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
             pre {
                 cut >= 0.0 && cut <= 1.0 : "Cut value should be in valid range i.e [0,1]"
             }
@@ -271,7 +271,7 @@ access(all) contract MetadataViews {
         /// Array that tracks the individual royalties
         access(self) let cutInfos: [Royalty]
 
-        access(all) init(_ cutInfos: [Royalty]) {
+        access(all) view init(_ cutInfos: [Royalty]) {
             // Validate that sum of all cut multipliers should not be greater than 1.0
             var totalCut = 0.0
             for royalty in cutInfos {
@@ -336,7 +336,7 @@ access(all) contract MetadataViews {
         // This is optional because not all attributes need to contribute to the NFT's rarity.
         access(all) let rarity: Rarity?
 
-        init(name: String, value: AnyStruct, displayType: String?, rarity: Rarity?) {
+        view init(name: String, value: AnyStruct, displayType: String?, rarity: Rarity?) {
             self.name = name
             self.value = value
             self.displayType = displayType
@@ -350,7 +350,7 @@ access(all) contract MetadataViews {
     access(all) struct Traits {
         access(all) let traits: [Trait]
 
-        init(_ traits: [Trait]) {
+        view init(_ traits: [Trait]) {
             self.traits = traits
         }
             
@@ -358,7 +358,7 @@ access(all) contract MetadataViews {
         /// 
         /// @param Trait: The trait struct to be added
         ///
-        access(all) view fun addTrait(_ t: Trait) {
+        access(all) fun addTrait(_ t: Trait) {
             self.traits.append(t)
         }
     }
@@ -387,17 +387,19 @@ access(all) contract MetadataViews {
     /// @return The generated Traits view
     ///
     access(all) view fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
+        var dictCopy = dict
+
         // Collection owners might not want all the fields in their metadata included.
         // They might want to handle some specially, or they might just not want them included at all.
         if excludedNames != nil {
             for k in excludedNames! {
-                dict.remove(key: k)
+                dictCopy.remove(key: k)
             }
         }
 
         let traits: [Trait] = []
-        for k in dict.keys {
-            let trait = Trait(name: k, value: dict[k]!, displayType: nil, rarity: nil)
+        for k in dictCopy.keys {
+            let trait = Trait(name: k, value: dictCopy[k]!, displayType: nil, rarity: nil)
             traits.append(trait)
         }
 
@@ -428,7 +430,7 @@ access(all) contract MetadataViews {
         ///
         access(all) let max: UInt64?
 
-        init(name: String?, number: UInt64, max: UInt64?) {
+        view init(name: String?, number: UInt64, max: UInt64?) {
             if max != nil {
                 assert(number <= max!, message: "The number cannot be greater than the max number!")
             }
@@ -446,7 +448,7 @@ access(all) contract MetadataViews {
         /// that the NFT might be a part of
         access(all) let infoList: [Edition]
 
-        init(_ infoList: [Edition]) {
+        view init(_ infoList: [Edition]) {
             self.infoList = infoList
         }
     }
@@ -474,7 +476,7 @@ access(all) contract MetadataViews {
     access(all) struct Serial {
         access(all) let number: UInt64
 
-        init(_ number: UInt64) {
+        view init(_ number: UInt64) {
             self.number = number
         }
     }
@@ -509,7 +511,7 @@ access(all) contract MetadataViews {
         /// This could be Legendary, Epic, Rare, Uncommon, Common or any other string value
         access(all) let description: String?
 
-        init(score: UFix64?, max: UFix64?, description: String?) {
+        view init(score: UFix64?, max: UFix64?, description: String?) {
             if score == nil && description == nil {
                 panic("A Rarity needs to set score, description or both")
             }
@@ -548,7 +550,7 @@ access(all) contract MetadataViews {
         access(all) let royalties: Royalties?
         access(all) let traits: Traits?
 
-        init(
+        view init(
             id : UInt64,
             uuid : UInt64,
             display : MetadataViews.Display?,
@@ -629,7 +631,7 @@ access(all) contract MetadataViews {
         /// this NFT.
         access(all) let createEmptyCollection: fun(): @AnyResource{NonFungibleToken.Collection}
 
-        init(
+        view init(
             storagePath: StoragePath,
             publicPath: PublicPath,
             providerPath: PrivatePath,
@@ -690,7 +692,7 @@ access(all) contract MetadataViews {
         // Possible keys may be "instagram", "twitter", "discord", etc.
         access(all) let socials: {String: MetadataViews.ExternalURL}
 
-        init(
+        view init(
             name: String,
             description: String,
             externalURL: MetadataViews.ExternalURL,
