@@ -40,7 +40,7 @@ access(all) contract BasicNFT {
             ]
         }
 
-        access(all) view fun resolveView(_ view: Type): AnyStruct? {
+        access(all) fun resolveView(_ view: Type): AnyStruct? {
             switch view {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
