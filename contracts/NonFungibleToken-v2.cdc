@@ -116,7 +116,7 @@ access(all) contract NonFungibleToken {
         access(all) view fun getViews(): [Type] {
             return []
         }
-        access(all) view fun resolveView(_ view: Type): AnyStruct? {
+        access(all) fun resolveView(_ view: Type): AnyStruct? {
             return nil
         }
 

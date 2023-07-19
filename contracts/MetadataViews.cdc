@@ -56,7 +56,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return An optional Display struct
     ///
-    access(all) view fun getDisplay(_ viewResolver: &{ViewResolver.Resolver}) : Display? {
+    access(all) fun getDisplay(_ viewResolver: &{ViewResolver.Resolver}) : Display? {
         if let view = viewResolver.resolveView(Type<Display>()) {
             if let v = view as? Display {
                 return v
@@ -162,7 +162,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional Medias struct
     ///
-    access(all) view fun getMedias(_ viewResolver: &{ViewResolver.Resolver}) : Medias? {
+    access(all) fun getMedias(_ viewResolver: &{ViewResolver.Resolver}) : Medias? {
         if let view = viewResolver.resolveView(Type<Medias>()) {
             if let v = view as? Medias {
                 return v
@@ -187,7 +187,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional License struct
     ///
-    access(all) view fun getLicense(_ viewResolver: &{ViewResolver.Resolver}) : License? {
+    access(all) fun getLicense(_ viewResolver: &{ViewResolver.Resolver}) : License? {
         if let view = viewResolver.resolveView(Type<License>()) {
             if let v = view as? License {
                 return v
@@ -214,7 +214,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional ExternalURL struct
     ///
-    access(all) view fun getExternalURL(_ viewResolver: &{ViewResolver.Resolver}) : ExternalURL? {
+    access(all) fun getExternalURL(_ viewResolver: &{ViewResolver.Resolver}) : ExternalURL? {
         if let view = viewResolver.resolveView(Type<ExternalURL>()) {
             if let v = view as? ExternalURL {
                 return v
@@ -296,7 +296,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional Royalties struct
     ///
-    access(all) view fun getRoyalties(_ viewResolver: &{ViewResolver.Resolver}) : Royalties? {
+    access(all) fun getRoyalties(_ viewResolver: &{ViewResolver.Resolver}) : Royalties? {
         if let view = viewResolver.resolveView(Type<Royalties>()) {
             if let v = view as? Royalties {
                 return v
@@ -368,7 +368,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional Traits struct
     ///
-    access(all) view fun getTraits(_ viewResolver: &{ViewResolver.Resolver}) : Traits? {
+    access(all) fun getTraits(_ viewResolver: &{ViewResolver.Resolver}) : Traits? {
         if let view = viewResolver.resolveView(Type<Traits>()) {
             if let v = view as? Traits {
                 return v
@@ -456,7 +456,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return An optional Editions struct
     ///
-    access(all) view fun getEditions(_ viewResolver: &{ViewResolver.Resolver}) : Editions? {
+    access(all) fun getEditions(_ viewResolver: &{ViewResolver.Resolver}) : Editions? {
         if let view = viewResolver.resolveView(Type<Editions>()) {
             if let v = view as? Editions {
                 return v
@@ -484,7 +484,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return An optional Serial struct
     ///
-    access(all) view fun getSerial(_ viewResolver: &{ViewResolver.Resolver}) : Serial? {
+    access(all) fun getSerial(_ viewResolver: &{ViewResolver.Resolver}) : Serial? {
         if let view = viewResolver.resolveView(Type<Serial>()) {
             if let v = view as? Serial {
                 return v
@@ -525,7 +525,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional Rarity struct
     ///
-    access(all) view fun getRarity(_ viewResolver: &{ViewResolver.Resolver}) : Rarity? {
+    access(all) fun getRarity(_ viewResolver: &{ViewResolver.Resolver}) : Rarity? {
         if let view = viewResolver.resolveView(Type<Rarity>()) {
             if let v = view as? Rarity {
                 return v
@@ -575,7 +575,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A NFTView struct
     ///
-    access(all) view fun getNFTView(id: UInt64, viewResolver: &{ViewResolver.Resolver}) : NFTView {
+    access(all) fun getNFTView(id: UInt64, viewResolver: &{ViewResolver.Resolver}) : NFTView {
         let nftView = viewResolver.resolveView(Type<NFTView>())
         if nftView != nil {
             return nftView! as! NFTView
@@ -657,7 +657,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional NFTCollectionData struct
     ///
-    access(all) view fun getNFTCollectionData(_ viewResolver: &{ViewResolver.Resolver}) : NFTCollectionData? {
+    access(all) fun getNFTCollectionData(_ viewResolver: &{ViewResolver.Resolver}) : NFTCollectionData? {
         if let view = viewResolver.resolveView(Type<NFTCollectionData>()) {
             if let v = view as? NFTCollectionData {
                 return v
@@ -713,7 +713,7 @@ access(all) contract MetadataViews {
     /// @param viewResolver: A reference to the resolver resource
     /// @return A optional NFTCollection struct
     ///
-    access(all) view fun getNFTCollectionDisplay(_ viewResolver: &{ViewResolver.Resolver}) : NFTCollectionDisplay? {
+    access(all) fun getNFTCollectionDisplay(_ viewResolver: &{ViewResolver.Resolver}) : NFTCollectionDisplay? {
         if let view = viewResolver.resolveView(Type<NFTCollectionDisplay>()) {
             if let v = view as? NFTCollectionDisplay {
                 return v

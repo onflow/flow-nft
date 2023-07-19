@@ -18,7 +18,7 @@ access(all) contract interface ViewResolver {
     /// @param view: The Type of the desired view.
     /// @return A structure representing the requested view.
     ///
-    access(all) view fun resolveView(_ view: Type): AnyStruct? {
+    access(all) fun resolveView(_ view: Type): AnyStruct? {
         return nil
     }
 
@@ -28,7 +28,7 @@ access(all) contract interface ViewResolver {
     ///
     access(all) resource interface Resolver {
         access(all) view fun getViews(): [Type]
-        access(all) view fun resolveView(_ view: Type): AnyStruct?
+        access(all) fun resolveView(_ view: Type): AnyStruct?
     }
 
     /// A group of view resolvers indexed by ID.

@@ -174,8 +174,6 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
             let token <- self.ownedNFTs.remove(key: withdrawID)
                 ?? panic("Could not withdraw an NFT with the provided ID from the collection")
 
-            let displayView = token.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
-
             return <-token
         }
 
@@ -297,7 +295,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
     /// @param view: The Type of the desired view.
     /// @return A structure representing the requested view.
     ///
-    access(all) view fun resolveView(_ view: Type): AnyStruct? {
+    access(all) fun resolveView(_ view: Type): AnyStruct? {
         switch view {
             case Type<MetadataViews.NFTCollectionData>():
                 return ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
