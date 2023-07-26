@@ -253,10 +253,10 @@ access(all) contract ExampleNFT: NonFungibleToken, ViewResolver {
         /// @param id: The ID of the wanted NFT
         /// @return The resource reference conforming to the Resolver interface
         ///
-        access(all) view fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
+        access(all) view fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver} {
             let nft = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
             let exampleNFT = nft as! &ExampleNFT.NFT
-            return exampleNFT as &AnyResource{MetadataViews.Resolver}
+            return exampleNFT as &{MetadataViews.Resolver}
         }
 
         destroy() {

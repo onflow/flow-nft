@@ -234,7 +234,7 @@ access(all) contract MetadataViews {
         /// receiver for this using `getRoyaltyReceiverPublicPath()`, and not 
         /// use the default FlowToken receiver. This will allow users to update 
         /// the capability in the future to use a more generic capability
-        access(all) let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
+        access(all) let receiver: Capability<&{FungibleToken.Receiver}>
 
         /// Multiplier used to calculate the amount of sale value transferred to 
         /// royalty receiver. Note - It should be between 0.0 and 1.0 
@@ -252,7 +252,7 @@ access(all) contract MetadataViews {
         /// that the owner might want to specify.
         access(all) let description: String
 
-        view init(receiver: Capability<&AnyResource{FungibleToken.Receiver}>, cut: UFix64, description: String) {
+        view init(receiver: Capability<&{FungibleToken.Receiver}>, cut: UFix64, description: String) {
             pre {
                 cut >= 0.0 && cut <= 1.0 : "Cut value should be in valid range i.e [0,1]"
             }
@@ -627,7 +627,7 @@ access(all) contract MetadataViews {
 
         /// Function that allows creation of an empty NFT collection that is intended to store
         /// this NFT.
-        access(all) let createEmptyCollection: fun(): @AnyResource{NonFungibleToken.Collection}
+        access(all) let createEmptyCollection: fun(): @{NonFungibleToken.Collection}
 
         view init(
             storagePath: StoragePath,
@@ -636,7 +636,7 @@ access(all) contract MetadataViews {
             publicCollection: Type,
             publicLinkedType: Type,
             providerLinkedType: Type,
-            createEmptyCollectionFunction: fun(): @AnyResource{NonFungibleToken.Collection}
+            createEmptyCollectionFunction: fun(): @{NonFungibleToken.Collection}
         ) {
             pre {
                 publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, ViewResolver.ResolverCollection}>()): "Public type must include NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, and ViewResolver.ResolverCollection interfaces."
