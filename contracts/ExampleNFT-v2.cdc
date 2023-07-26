@@ -170,7 +170,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
-        access(NonFungibleToken.Withdrawable) fun withdraw(withdrawID: UInt64): @AnyResource{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
                 ?? panic("Could not withdraw an NFT with the provided ID from the collection")
 
@@ -178,25 +178,25 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
         }
 
         /// withdrawWithUUID removes an NFT from the collection, using its UUID, and moves it to the caller
-        access(NonFungibleToken.Withdrawable) fun withdrawWithUUID(_ uuid: UInt64): @AnyResource{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdrawWithUUID(_ uuid: UInt64): @{NonFungibleToken.NFT} {
             return <-self.withdraw(withdrawID: uuid)
         }
 
         /// withdrawWithType removes an NFT from the collection, using its Type and ID and moves it to the caller
         /// This would be used by a collection that can store multiple NFT types
-        access(NonFungibleToken.Withdrawable) fun withdrawWithType(type: Type, withdrawID: UInt64): @AnyResource{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdrawWithType(type: Type, withdrawID: UInt64): @{NonFungibleToken.NFT} {
             return <-self.withdraw(withdrawID: withdrawID)
         }
 
         /// withdrawWithTypeAndUUID removes an NFT from the collection using its type and uuid and moves it to the caller
         /// This would be used by a collection that can store multiple NFT types
-        access(NonFungibleToken.Withdrawable) fun withdrawWithTypeAndUUID(type: Type, uuid: UInt64): @AnyResource{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdrawWithTypeAndUUID(type: Type, uuid: UInt64): @{NonFungibleToken.NFT} {
             return <-self.withdraw(withdrawID: uuid)
         }
 
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
-        access(all) fun deposit(token: @AnyResource{NonFungibleToken.NFT}) {
+        access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
             let token <- token as! @ExampleNFT.NFT
 
             // add the new token to the dictionary which removes the old one
@@ -207,7 +207,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
 
         /// Function for a direct transfer instead of having to do a deposit and withdrawal
         ///
-        access(NonFungibleToken.Withdrawable) fun transfer(id: UInt64, receiver: Capability<&AnyResource{NonFungibleToken.Receiver}>): Bool {
+        access(NonFungibleToken.Withdrawable) fun transfer(id: UInt64, receiver: Capability<&{NonFungibleToken.Receiver}>): Bool {
             let token <- self.withdraw(withdrawID: id)
 
             let displayView = token.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
@@ -238,7 +238,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
 
         /// borrowNFT gets a reference to an NFT in the collection
         /// so that the caller can read its metadata and call its methods
-        access(all) view fun borrowNFT(_ id: UInt64): &AnyResource{NonFungibleToken.NFT} {
+        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT} {
             let nftRef = (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)
                 ?? panic("Could not borrow a reference to an NFT with the specified ID")
 
@@ -253,11 +253,11 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
         access(all) view fun borrowViewResolver(id: UInt64): &{ViewResolver.Resolver}? {
             let nft = (&self.ownedNFTs[id] as &ExampleNFT.NFT?)!
             let exampleNFT = nft as! &ExampleNFT.NFT
-            return exampleNFT as &AnyResource{ViewResolver.Resolver}
+            return exampleNFT as &{ViewResolver.Resolver}
         }
 
         /// public function that anyone can call to create a new empty collection
-        access(all) fun createEmptyCollection(): @AnyResource{NonFungibleToken.Collection} {
+        access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
             return <- create ExampleNFT.Collection()
         }
 
