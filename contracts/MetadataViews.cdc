@@ -38,12 +38,12 @@ access(all) contract MetadataViews {
         /// This field should be a web-friendly file (i.e JPEG, PNG)
         /// that can be displayed in lists, link previews, etc.
         ///
-        access(all) let thumbnail: AnyStruct{File}
+        access(all) let thumbnail: {File}
 
         view init(
             name: String,
             description: String,
-            thumbnail: AnyStruct{File}
+            thumbnail: {File}
         ) {
             self.name = name
             self.description = description
@@ -132,14 +132,14 @@ access(all) contract MetadataViews {
 
         /// File for the media
         ///
-        access(all) let file: AnyStruct{File}
+        access(all) let file: {File}
 
         /// media-type comes on the form of type/subtype as described here 
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
         ///
         access(all) let mediaType: String
 
-        view init(file: AnyStruct{File}, mediaType: String) {
+        view init(file: {File}, mediaType: String) {
           self.file=file
           self.mediaType=mediaType
         }
