@@ -116,21 +116,6 @@ func deployNFTContracts(
 
 	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress, resolverAddress))
 
-	// serviceSigner, _ := b.ServiceKey().Signer()
-
-	// signAndSubmit(
-	// 	t, b, tx,
-	// 	[]flow.Address{
-	// 		b.ServiceKey().Address,
-	// 		nftAddress,
-	// 	},
-	// 	[]crypto.Signer{
-	// 		serviceSigner,
-	// 		nftSigner,
-	// 	},
-	// 	false,
-	// )
-
 	exampleNFTAddress := deploy(
 		t, b, adapter,
 		"ExampleNFT",

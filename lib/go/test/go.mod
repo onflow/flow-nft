@@ -3,7 +3,7 @@ module github.com/onflow/flow-nft/lib/go/test
 go 1.18
 
 require (
-	github.com/onflow/cadence v0.39.13-stable-cadence.0.20230719215202-3311f5f8189b
+	github.com/onflow/cadence v0.39.13-stable-cadence.0.20230811182010-c66466eb6b1a
 	github.com/onflow/flow-emulator v0.54.1-0.20230810231813-53e63bcc9c8f
 	github.com/onflow/flow-go-sdk v0.41.10-0.20230719221154-2a4946e41c23
 	github.com/onflow/flow-nft/lib/go/contracts v1.1.1-0.20230726191152-4293bb676808
