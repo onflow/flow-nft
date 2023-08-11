@@ -59,7 +59,7 @@ func OldNonFungibleToken() []byte {
 func ExampleNFT(nftAddress, metadataAddress, resolverAddress, multipleNFTAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
-	code = placeholderNonFungibleTokenV2.ReplaceAllString(code, "0x"+nftAddress.String())
+	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
 	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
 	code = placeholderMultipleNFT.ReplaceAllString(code, "0x"+multipleNFTAddress.String())
