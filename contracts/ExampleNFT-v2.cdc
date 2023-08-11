@@ -10,7 +10,7 @@
 *   
 */
 
-import NonFungibleToken from "NonFungibleToken-v2"
+import NonFungibleToken from "NonFungibleToken"
 import MultipleNFT from "MultipleNFT"
 import ViewResolver from "ViewResolver"
 import MetadataViews from "MetadataViews"
@@ -125,7 +125,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
     access(all) resource Collection: NonFungibleToken.Collection {
         /// dictionary of NFT conforming tokens
         /// NFT is a resource type with an `UInt64` ID field
-        access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT{NonFungibleToken.NFT}}
+        access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT}
 
         access(self) var storagePath: StoragePath
         access(self) var publicPath: PublicPath
@@ -239,14 +239,14 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
         /// borrowNFT gets a reference to an NFT in the collection
         /// so that the caller can read its metadata and call its methods
         access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT} {
-            let nftRef = (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)
+            let nftRef = (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)
                 ?? panic("Could not borrow a reference to an NFT with the specified ID")
 
             return nftRef
         }
 
         access(all) view fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
-            return (&self.ownedNFTs[id] as &ExampleNFT.NFT{NonFungibleToken.NFT}?)
+            return (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)
         }
 
         /// Borrow the view resolver for the specified NFT ID
@@ -342,9 +342,9 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
                     storagePath: collectionRef.getDefaultStoragePath()!,
                     publicPath: collectionRef.getDefaultPublicPath()!,
                     providerPath: /private/exampleNFTCollection,
-                    publicCollection: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic}>(),
-                    publicLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,ViewResolver.ResolverCollection}>(),
-                    providerLinkedType: Type<&ExampleNFT.Collection{NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,ViewResolver.ResolverCollection}>(),
+                    publicCollection: Type<&ExampleNFT.Collection>(),
+                    publicLinkedType: Type<&ExampleNFT.Collection>(),
+                    providerLinkedType: Type<&ExampleNFT.Collection>(),
                     createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
                         return <-collectionRef.createEmptyCollection()
                     })
@@ -427,7 +427,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
         self.account.save(<-collection, to: defaultStoragePath)
 
         // create a public capability for the collection
-        self.account.link<&ExampleNFT.Collection{NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, ViewResolver.ResolverCollection}>(
+        self.account.link<&ExampleNFT.Collection>(
             defaultPublicPath,
             target: defaultStoragePath
         )

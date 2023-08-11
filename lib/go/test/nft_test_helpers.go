@@ -97,13 +97,13 @@ func deployNFTContracts(
 
 	nftAccountKey, _ := accountKeys.NewWithSigner()
 
-	resolverAddress := deploy(t, b, "ViewResolver", contracts.Resolver())
+	resolverAddress := deploy(t, b, adapter, "ViewResolver", contracts.Resolver(), nftAccountKey)
 
 	// Deploy the NonFungibleToken contract interface
 	nftAddress, err := adapter.CreateAccount(context.Background(), []*flow.AccountKey{nftAccountKey}, []sdktemplates.Contract{
 		{
 			Name:   "NonFungibleToken",
-			Source: string(contracts.NonFungibleToken(resolverAddress)),
+			Source: string(contracts.NonFungibleTokenV2(resolverAddress)),
 		},
 	})
 	if !assert.NoError(t, err) {
@@ -115,13 +115,6 @@ func deployNFTContracts(
 	multipleNFTAddress := deploy(t, b, adapter, "MultipleNFT", contracts.MultipleNFT(nftAddress))
 
 	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress, resolverAddress))
-
-	// Upgrade to the V2 NFT standard
-	// tx := createTxWithTemplateAndAuthorizer(b, templates.GenerateUpgradeNFTContract(), nftAddress)
-
-	nftV2Code := contracts.NonFungibleTokenV2(metadataAddress)
-	cadenceCode := bytesToCadenceArray(nftV2Code)
-	tx.AddRawArgument(jsoncdc.MustEncode(cadenceCode))
 
 	// serviceSigner, _ := b.ServiceKey().Signer()
 

@@ -84,7 +84,7 @@ func Resolver() []byte {
 
 func MultipleNFT(nftAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameMultipleNFT)
-	code = placeholderNonFungibleTokenV2.ReplaceAllString(code, "0x"+nftAddress.String())
+	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 	return []byte(code)
 }
 
