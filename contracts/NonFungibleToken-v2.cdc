@@ -215,7 +215,7 @@ access(all) contract NonFungibleToken {
     /// Requirement for the concrete resource type
     /// to be declared in the implementing contract
     ///
-    access(all) resource interface Collection: Provider, Receiver, Transferor, CollectionPublic, ViewResolver.ResolverCollection {
+    access(all) resource interface Collection: Provider, Receiver, Transferor, ViewResolver.ResolverCollection {
 
         /// Return the default storage path for the collection
         access(all) view fun getDefaultStoragePath(): StoragePath? {
