@@ -27,15 +27,23 @@ access(all) contract interface ViewResolver {
     /// the views that it supports.
     ///
     access(all) resource interface Resolver {
-        access(all) view fun getViews(): [Type]
-        access(all) fun resolveView(_ view: Type): AnyStruct?
+        access(all) view fun getViews(): [Type] {
+            return []
+        }
+        access(all) fun resolveView(_ view: Type): AnyStruct? {
+            return nil
+        }
     }
 
     /// A group of view resolvers indexed by ID.
     ///
     access(all) resource interface ResolverCollection {
-        access(all) view fun borrowViewResolver(id: UInt64): &{Resolver}?
-        access(all) view fun getIDs(): [UInt64]
+        access(all) view fun borrowViewResolver(id: UInt64): &{Resolver}? {
+            pre { true: "dummy" }
+        }
+        access(all) view fun getIDs(): [UInt64] {
+            pre { true: "dummy" }
+        }
     }
 }
  

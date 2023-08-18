@@ -113,12 +113,12 @@ access(all) contract NonFungibleToken {
             return self.uuid
         }
 
-        access(all) view fun getViews(): [Type] {
-            return []
-        }
-        access(all) fun resolveView(_ view: Type): AnyStruct? {
-            return nil
-        }
+        // access(all) view fun getViews(): [Type] {
+        //     return []
+        // }
+        // access(all) fun resolveView(_ view: Type): AnyStruct? {
+        //     return nil
+        // }
 
         destroy() {
             pre {
@@ -200,45 +200,16 @@ access(all) contract NonFungibleToken {
         ///
         access(all) fun deposit(token: @{NFT})
 
-        /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
-        access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
-            return {}
-        }
+        // /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
+        // access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
+        //     return {}
+        // }
 
-        /// Returns whether or not the given type is accepted by the collection
-        /// A collection that can accept any type should just return true by default
-        access(all) view fun isSupportedNFTType(type: Type): Bool {
-            return false
-        }
-    }
-
-    /// Interface that an account would commonly 
-    /// publish for their collection
-    access(all) resource interface CollectionPublic { //: ViewResolver.ResolverCollection {
-        access(all) fun deposit(token: @{NFT})
-        access(all) view fun usesUUID(): Bool
-        access(all) view fun getSupportedNFTTypes(): {Type: Bool}
-        access(all) view fun isSupportedNFTType(type: Type): Bool
-        access(all) view fun borrowViewResolver(id: UInt64): &{ViewResolver.Resolver}?
-        access(all) view fun getDefaultStoragePath(): StoragePath?
-        access(all) view fun getDefaultPublicPath(): PublicPath?
-        access(all) view fun getIDs(): [UInt64]
-        access(all) view fun getIDsWithTypes(): {Type: [UInt64]} {
-            return {}
-        }
-        access(all) view fun borrowNFT(_ id: UInt64): &{NFT}
-        /// Safe way to borrow a reference to an NFT that does not panic
-        ///
-        /// @param id: The ID of the NFT that want to be borrowed
-        /// @return An optional reference to the desired NFT, will be nil if the passed id does not exist
-        ///
-        access(all) view fun borrowNFTSafe(id: UInt64): &{NFT}? {
-            post {
-                (result == nil) || (result?.getID() == id): 
-                    "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
-            }
-            return nil
-        }
+        // /// Returns whether or not the given type is accepted by the collection
+        // /// A collection that can accept any type should just return true by default
+        // access(all) view fun isSupportedNFTType(type: Type): Bool {
+        //     return false
+        // }
     }
 
     /// Requirement for the concrete resource type
@@ -263,10 +234,14 @@ access(all) contract NonFungibleToken {
         /// Returns the NFT types that this collection can store
         /// If the collection can accept any NFT type, it should return
         /// a one element dictionary with the key type as `@{NonFungibleToken.NFT}`
-        access(all) view fun getSupportedNFTTypes(): {Type: Bool}
+        access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
+            pre { true: "dummy" }
+        }
 
         /// Returns whether or not the given type is accepted by the collection
-        access(all) view fun isSupportedNFTType(type: Type): Bool
+        access(all) view fun isSupportedNFTType(type: Type): Bool {
+            pre { true: "dummy" }
+        }
 
         /// createEmptyCollection creates an empty Collection
         /// and returns it to the caller so that they can own NFTs
@@ -315,11 +290,15 @@ access(all) contract NonFungibleToken {
 
         /// Returns a borrowed reference to an NFT in the collection
         /// so that the caller can read data and call methods from it
-        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}
+        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT} {
+            pre { true: "dummy" }
+        }
 
         /// From the ViewResolver Contract
         /// borrows a reference to get metadata views for the NFTs that the contract contains
-        access(all) view fun borrowViewResolver(id: UInt64): &{ViewResolver.Resolver}?
+        access(all) view fun borrowViewResolver(id: UInt64): &{ViewResolver.Resolver}? {
+            pre { true: "dummy" }
+        }
 
         access(all) view fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
             post {
