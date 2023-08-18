@@ -3,9 +3,9 @@ module github.com/onflow/flow-nft/lib/go/test
 go 1.18
 
 require (
-	github.com/onflow/cadence v0.39.13-stable-cadence.0.20230811182010-c66466eb6b1a
-	github.com/onflow/flow-emulator v0.54.1-0.20230810231813-53e63bcc9c8f
-	github.com/onflow/flow-go-sdk v0.41.10-0.20230719221154-2a4946e41c23
+	github.com/onflow/cadence v0.39.13-stable-cadence.0.20230815215130-fc15617946a1
+	github.com/onflow/flow-emulator v0.54.1-0.20230815221351-758e3a5bb92a
+	github.com/onflow/flow-go-sdk v0.41.10-0.20230815215544-c3e9ce914aee
 	github.com/onflow/flow-nft/lib/go/contracts v1.1.1-0.20230726191152-4293bb676808
 	github.com/onflow/flow-nft/lib/go/templates v0.0.0-00010101000000-000000000000
 	github.com/rs/zerolog v1.29.0
@@ -88,7 +88,7 @@ require (
 	github.com/onflow/flow-core-contracts/lib/go/contracts v1.2.4-0.20230808220007-f00e74ca675b // indirect
 	github.com/onflow/flow-core-contracts/lib/go/templates v1.2.4-0.20230808220007-f00e74ca675b // indirect
 	github.com/onflow/flow-ft/lib/go/contracts v0.7.1-0.20230726183918-f90805445bfa // indirect
-	github.com/onflow/flow-go v0.31.1-0.20230810172105-725d883609b7 // indirect
+	github.com/onflow/flow-go v0.31.1-0.20230815221159-accf10b9fbaa // indirect
 	github.com/onflow/flow-go/crypto v0.24.9 // indirect
 	github.com/onflow/flow/protobuf/go/flow v0.3.2-0.20230628215638-83439d22e0ce // indirect
 	github.com/onflow/nft-storefront/lib/go/contracts v0.0.0-20221222181731-14b90207cead // indirect
