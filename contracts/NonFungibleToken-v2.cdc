@@ -251,9 +251,9 @@ access(all) contract NonFungibleToken {
             }
         }
 
-        access(all) view fun usesUUID(): Bool {
-            return false
-        }
+        // access(all) view fun usesUUID(): Bool {
+        //     return false
+        // }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
         access(Withdrawable) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT}
