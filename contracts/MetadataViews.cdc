@@ -610,14 +610,12 @@ access(all) contract MetadataViews {
         access(all) let providerPath: PrivatePath
 
         /// Public collection type that is expected to provide sufficient read-only access to standard
-        /// functions (deposit + getIDs + borrowNFT)
-        /// This field is for backwards compatibility with collections that have not used the standard
-        /// NonFungibleToken.CollectionPublic interface when setting up collections. For new
+        /// functions (deposit + getIDs + borrowNFT). For new
         /// collections, this may be set to be equal to the type specified in `publicLinkedType`.
         access(all) let publicCollection: Type
 
         /// Type that should be linked at the aforementioned public path. This is normally a
-        /// restricted type with many interfaces. Notably the `NFT.CollectionPublic`,
+        /// restricted type with many interfaces. Notably the
         /// `NFT.Receiver`, and `ViewResolver.ResolverCollection` interfaces are required.
         access(all) let publicLinkedType: Type
 
@@ -639,8 +637,8 @@ access(all) contract MetadataViews {
             createEmptyCollectionFunction: fun(): @{NonFungibleToken.Collection}
         ) {
             pre {
-                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, ViewResolver.ResolverCollection}>()): "Public type must include NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, and ViewResolver.ResolverCollection interfaces."
-                providerLinkedType.isSubtype(of: Type<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic, ViewResolver.ResolverCollection}>()): "Provider type must include NonFungibleToken.Provider, NonFungibleToken.CollectionPublic, and ViewResolver.ResolverCollection interface."
+                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.Receiver, ViewResolver.ResolverCollection}>()): "Public type must include NonFungibleToken.Receiver and ViewResolver.ResolverCollection interfaces."
+                providerLinkedType.isSubtype(of: Type<&{NonFungibleToken.Provider, ViewResolver.ResolverCollection}>()): "Provider type must include NonFungibleToken.Provider and ViewResolver.ResolverCollection interface."
             }
             self.storagePath=storagePath
             self.publicPath=publicPath
