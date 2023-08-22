@@ -750,6 +750,12 @@ pub contract MetadataViews {
                     return MetadataViews.nlpVoteCom()
                 case ...
     */
+    ///
+    /// The first version of the NFT license standard is only deployed
+    /// with the license names and text descriptions. Projects must refer
+    /// to the proposal and license documentation for specific descriptions of
+    /// the rights that each license grants.
+    ///
     pub struct NFTLicense {
         /// Array of the specific license identifiers
         pub let licenses: [String]
@@ -761,10 +767,14 @@ pub contract MetadataViews {
         /// Link to a description of the specific rights that the license offers
         pub var descriptionLink: Media?
 
+        /// Plain text description of the license
+        pub var description: String?
+
         init() {
             self.licenses = []
             self.badgeLink = nil
             self.descriptionLink = nil
+            self.description = nil
         }
 
         access(contract) fun setBadgeLink(link: Media) {
@@ -773,6 +783,10 @@ pub contract MetadataViews {
 
         access(contract) fun setDescriptionLink(link: Media) {
             self.descriptionLink = link
+        }
+
+        access(contract) fun setDescription(_ description: String) {
+            self.description = description
         }
 
         access(contract) fun personalUse(): NFTLicense {
@@ -804,85 +818,97 @@ pub contract MetadataViews {
 
     pub fun nlpUtil(): NFTLicense {
         let license = NFTLicense().personalUse().votingRights().additionalContentExperienceRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Personal Use Rights, Voting Rights, and ACE Rights")
         return license
     }
 
     pub fun nlpVoteMerch(): NFTLicense {
         let license = NFTLicense().personalUse().votingRights().merchandisingRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Personal Use Rights, Voting Rights, and Merch Rights")
         return license
     }
 
     pub fun nlpVoteCom(): NFTLicense {
         let license = NFTLicense().personalUse().votingRights().commercialRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Personal Use Rights, Voting Rights, and Comm Rights")
         return license
     }
 
     pub fun nlpAceMerch(): NFTLicense {
         let license = NFTLicense().personalUse().additionalContentExperienceRights().merchandisingRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Personal Use Rights, ACE Rights, and Merch Rights")
         return license
     }
 
     pub fun nlpAceCom(): NFTLicense {
         let license = NFTLicense().personalUse().additionalContentExperienceRights().commercialRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Personal Use Rights, ACE Rights, and Comm Rights")
         return license
     }
 
     pub fun nlpUtilMerch(): NFTLicense {
         let license = NFTLicense().personalUse().votingRights().additionalContentExperienceRights().merchandisingRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Personal Use Rights, Voting Rights, ACE Rights, and Merch Rights")
         return license
     }
 
     pub fun nlpUtilCom(): NFTLicense {
         let license = NFTLicense().personalUse().votingRights().additionalContentExperienceRights().commercialRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Personal Use Rights, Voting Rights, ACE Rights, and Comm Rights")
         return license
     }
 
     pub fun nlpAce(): NFTLicense {
         let license = NFTLicense().additionalContentExperienceRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer ACE Rights")
         return license
     }
 
     pub fun nlpPer(): NFTLicense {
         let license = NFTLicense().personalUse()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Personal Use Rights")
         return license
     }
 
     pub fun nlpVote(): NFTLicense {
         let license = NFTLicense().votingRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Voting Rights")
         return license
     }
 
     pub fun nlpCom(): NFTLicense {
         let license = NFTLicense().commercialRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Comm Rights")
         return license
     }
 
     pub fun nlpMerch(): NFTLicense {
         let license = NFTLicense().merchandisingRights()
-        license.setBadgeLink(link: Media(file: , mediaType: ))
-        license.setDescriptionLink(link: Media(file: , mediaType: ))
+        // license.setBadgeLink(link: Media(file: , mediaType: ))
+        // license.setDescriptionLink(link: Media(file: , mediaType: ))
+        license.setDescription("This license gives the buyer Merch Rights")
         return license
     }
 

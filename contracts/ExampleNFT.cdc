@@ -78,7 +78,8 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
                 Type<MetadataViews.NFTCollectionData>(),
                 Type<MetadataViews.NFTCollectionDisplay>(),
                 Type<MetadataViews.Serial>(),
-                Type<MetadataViews.Traits>()
+                Type<MetadataViews.Traits>(),
+                Type<MetadataViews.NFTLicense>()
             ]
         }
 
@@ -159,7 +160,8 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
                     traitsView.addTrait(fooTrait)
 
                     return traitsView
-
+                // case Type<MetadataViews.NFTLicense>():
+                //     return nil //MetadataViews.NFTLicense()
             }
             return nil
         }
