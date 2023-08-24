@@ -814,6 +814,21 @@ pub contract MetadataViews {
             return self
         }
 
+        access(all) fun equals(_ otherLicense: NFTLicense): Bool {
+            var index = 0
+            if self.licenses.length != otherLicense.licenses.length {
+                return false
+            }
+            for license in self.licenses {
+                if license != otherLicense.licenses[index] {
+                    return false
+                }
+                index = index + 1
+            }
+
+            return true
+        }
+
     }
 
     pub fun nlpUtil(): NFTLicense {
@@ -912,4 +927,12 @@ pub contract MetadataViews {
         return license
     }
 
+    pub fun getNFTLicense(_ viewResolver: &{Resolver}) : NFTLicense? {
+        if let view = viewResolver.resolveView(Type<NFTLicense>()) {
+            if let v = view as? NFTLicense {
+                return v
+            }
+        }
+        return nil
+    }
 }
