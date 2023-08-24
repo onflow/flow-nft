@@ -160,8 +160,8 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
                     traitsView.addTrait(fooTrait)
 
                     return traitsView
-                // case Type<MetadataViews.NFTLicense>():
-                //     return nil //MetadataViews.NFTLicense()
+                case Type<MetadataViews.NFTLicense>():
+                    return MetadataViews.nlpUtil()
             }
             return nil
         }
