@@ -815,18 +815,10 @@ pub contract MetadataViews {
         }
 
         access(all) fun equals(_ otherLicense: NFTLicense): Bool {
-            var index = 0
-            if self.licenses.length != otherLicense.licenses.length {
-                return false
+            if self.licenses == otherLicense.licenses {
+                return true
             }
-            for license in self.licenses {
-                if license != otherLicense.licenses[index] {
-                    return false
-                }
-                index = index + 1
-            }
-
-            return true
+            return false
         }
 
     }
