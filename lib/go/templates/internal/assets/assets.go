@@ -7,7 +7,6 @@
 // ../../../scripts/get_nft_metadata.cdc (5.663kB)
 // ../../../scripts/get_nft_view.cdc (4.443kB)
 // ../../../scripts/get_total_supply.cdc (98B)
-// ../../../scripts/verify_license.cdc (669B)
 // ../../../transactions/NFTForwarding/change_forwarder_recipient.cdc (1.365kB)
 // ../../../transactions/NFTForwarding/create_forwarder.cdc (2.575kB)
 // ../../../transactions/NFTForwarding/transfer_nft_to_receiver.cdc (1.577kB)
@@ -225,26 +224,6 @@ func scriptsGet_total_supplyCdc() (*asset, error) {
 
 	info := bindataFileInfo{name: "scripts/get_total_supply.cdc", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
 	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x98, 0xf7, 0xfd, 0x89, 0x44, 0x74, 0x88, 0x5b, 0x29, 0xd8, 0x20, 0xeb, 0x11, 0xe0, 0x17, 0xe7, 0xfc, 0x31, 0xdb, 0x36, 0x7c, 0x7a, 0xc8, 0x3e, 0x28, 0xb2, 0x81, 0xb0, 0xec, 0x29, 0xfb, 0x26}}
-	return a, nil
-}
-
-var _scriptsVerify_licenseCdc = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x8c\x91\xcd\xae\xd3\x30\x10\x85\xf7\x79\x8a\x43\x16\xc8\x96\x50\xef\x06\xb1\xa8\x28\x57\x97\x8a\x22\x24\x5a\x75\xd1\x76\xef\x38\xe3\xc6\x92\x63\x07\x67\xa2\x82\xaa\xbe\x3b\x4a\x93\xd4\x29\x2b\xb2\x9a\xcc\x9c\xef\xcc\x8f\x6d\xdd\x84\xc8\xf8\xf6\x5b\xd5\x8d\xa3\xdd\xe6\x00\x13\x43\x8d\x3c\x25\xf2\x6c\xd4\x6c\x89\x55\xa9\x58\x9d\x2c\x5d\xda\x51\xf6\x94\xcb\xb3\xac\xe9\x0a\x98\xce\xa3\x56\xd6\x0b\x55\x96\x91\xda\x76\x89\xb7\x21\xf8\x00\x5b\x2e\x71\xfc\xe1\xf9\xd3\x47\xb9\xc4\xd7\x10\x1c\xae\x19\x00\x38\x62\x28\xad\x43\xe7\x19\x2b\x9c\x89\xdf\x86\x9f\xc9\x42\x66\x0f\x99\x0e\xce\x91\x66\x1b\x3c\x56\x13\x73\x2f\xf6\xdf\xe2\x4c\xbc\x56\x8d\x2a\xac\xb3\xfc\x47\xa4\x25\x16\xeb\x07\xb6\xef\x0a\x67\xf5\x5e\x71\x25\x13\x57\x84\x18\xc3\xe5\xf3\xfb\xeb\x0c\x49\xe1\xbf\xf0\xed\x8b\x48\xec\xeb\x2b\x1a\xe5\xad\x16\xf9\x3a\x74\xae\x84\x0f\x8c\xc1\x0e\x0a\x91\x0c\x45\xf2\x9a\xc0\x01\x5c\xd1\x6c\xfc\x7c\xb6\x94\x37\xfd\xde\xa9\x36\xce\x93\x26\x10\xfd\xe5\x6c\x29\xdf\x0d\xcc\xcb\x0b\xbe\x13\xdf\x0d\x77\x9b\xc3\x4f\xab\xc9\xb7\x04\xeb\x4d\x88\xb5\xba\xdf\xc6\x84\x08\xae\x6c\xdb\xd7\xe7\x6d\x26\xed\xea\xf9\x39\xfb\xc3\x25\x27\xe1\x0d\x4f\xad\xac\x99\x61\x0b\xfa\xd5\x29\xd7\x8a\x67\xd6\xbb\xe6\x14\x98\xb6\x14\x75\x25\xa4\xc4\x15\x91\xb8\x8b\x1e\x46\xb9\x96\x70\x1b\x8c\xc6\xdc\x7f\x98\x1d\xd9\x3a\x21\x65\x76\xfb\x1b\x00\x00\xff\xff\xc2\x08\xce\xae\x9d\x02\x00\x00"
-
-func scriptsVerify_licenseCdcBytes() ([]byte, error) {
-	return bindataRead(
-		_scriptsVerify_licenseCdc,
-		"scripts/verify_license.cdc",
-	)
-}
-
-func scriptsVerify_licenseCdc() (*asset, error) {
-	bytes, err := scriptsVerify_licenseCdcBytes()
-	if err != nil {
-		return nil, err
-	}
-
-	info := bindataFileInfo{name: "scripts/verify_license.cdc", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
-	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x1, 0xff, 0x3d, 0xec, 0x23, 0x57, 0x5c, 0xc3, 0x32, 0x4a, 0x3a, 0x60, 0x3a, 0x13, 0xf6, 0x8c, 0xe, 0xf8, 0xea, 0xe, 0xb7, 0x4d, 0x59, 0x5f, 0xe5, 0x16, 0xb1, 0x69, 0x67, 0x25, 0xb, 0x93}}
 	return a, nil
 }
 
@@ -566,7 +545,6 @@ var _bindata = map[string]func() (*asset, error){
 	"scripts/get_nft_metadata.cdc":                                    scriptsGet_nft_metadataCdc,
 	"scripts/get_nft_view.cdc":                                        scriptsGet_nft_viewCdc,
 	"scripts/get_total_supply.cdc":                                    scriptsGet_total_supplyCdc,
-	"scripts/verify_license.cdc":                                      scriptsVerify_licenseCdc,
 	"transactions/NFTForwarding/change_forwarder_recipient.cdc":       transactionsNftforwardingChange_forwarder_recipientCdc,
 	"transactions/NFTForwarding/create_forwarder.cdc":                 transactionsNftforwardingCreate_forwarderCdc,
 	"transactions/NFTForwarding/transfer_nft_to_receiver.cdc":         transactionsNftforwardingTransfer_nft_to_receiverCdc,
@@ -632,7 +610,6 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		"get_nft_metadata.cdc": {scriptsGet_nft_metadataCdc, map[string]*bintree{}},
 		"get_nft_view.cdc": {scriptsGet_nft_viewCdc, map[string]*bintree{}},
 		"get_total_supply.cdc": {scriptsGet_total_supplyCdc, map[string]*bintree{}},
-		"verify_license.cdc": {scriptsVerify_licenseCdc, map[string]*bintree{}},
 	}},
 	"transactions": {nil, map[string]*bintree{
 		"NFTForwarding": {nil, map[string]*bintree{
