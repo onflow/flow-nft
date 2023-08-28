@@ -795,12 +795,12 @@ pub contract MetadataViews {
         }
 
         access(contract) fun votingRights(): NFTLicense {
-            self.rights.append("NFL-VOTE")
+            self.rights.append("NLP-VOTE")
             return self
         }
 
         access(contract) fun commercialRights(): NFTLicense {
-            self.rights.append("NFL-COM")
+            self.rights.append("NLP-COM")
             return self
         }
 
