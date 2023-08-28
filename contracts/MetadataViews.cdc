@@ -758,7 +758,7 @@ pub contract MetadataViews {
     ///
     pub struct NFTLicense {
         /// Array of the specific license identifiers
-        pub let licenses: [String]
+        pub let rights: [String]
 
         /// Link to a badge image that can be displayed alongside
         /// the asset on a webpage for a visual representation of the license
@@ -771,7 +771,7 @@ pub contract MetadataViews {
         pub var description: String?
 
         init() {
-            self.licenses = []
+            self.rights = []
             self.badgeLink = nil
             self.descriptionLink = nil
             self.description = nil
@@ -790,32 +790,32 @@ pub contract MetadataViews {
         }
 
         access(contract) fun personalUse(): NFTLicense {
-            self.licenses.append("NLP-PER")
+            self.rights.append("NLP-PER")
             return self
         }
 
         access(contract) fun votingRights(): NFTLicense {
-            self.licenses.append("NFL-VOTE")
+            self.rights.append("NFL-VOTE")
             return self
         }
 
         access(contract) fun commercialRights(): NFTLicense {
-            self.licenses.append("NFL-COM")
+            self.rights.append("NFL-COM")
             return self
         }
 
         access(contract) fun additionalContentExperienceRights(): NFTLicense {
-            self.licenses.append("NLP-ALP")
+            self.rights.append("NLP-ALP")
             return self
         }
 
         access(contract) fun merchandisingRights(): NFTLicense {
-            self.licenses.append("NLP-MERCH")
+            self.rights.append("NLP-MERCH")
             return self
         }
 
         access(all) fun equals(_ otherLicense: NFTLicense): Bool {
-            if self.licenses == otherLicense.licenses {
+            if self.rights == otherLicense.rights {
                 return true
             }
             return false
