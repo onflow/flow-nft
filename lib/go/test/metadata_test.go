@@ -68,9 +68,22 @@ func TestGetNFTMetadata(t *testing.T) {
 
 	t.Run("Should be able to verify the metadata of the minted NFT", func(t *testing.T) {
 
-		// Run a script to get the Display view for the specified NFT ID
-		script := templates.GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress)
+		// Run a script that verifies the NFTLicense view for the specified NFT ID
+		script := templates.GenerateVerifyNFTLicenseScript(nftAddress, exampleNFTAddress, metadataAddress)
 		result := executeScriptAndCheck(
+			t, b,
+			script,
+			[][]byte{
+				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
+				jsoncdc.MustEncode(cadence.NewUInt64(0)),
+			},
+		)
+
+		assert.Equal(t, cadence.Bool(true), result)
+
+		// Run a script to get the Display view for the specified NFT ID
+		script = templates.GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress)
+		result = executeScriptAndCheck(
 			t, b,
 			script,
 			[][]byte{
