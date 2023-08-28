@@ -1,0 +1,38 @@
+{
+  "name": "@onflow/flow-nft",
+  "version": "1.2.0",
+  "description": "standard implementation of the non fungible token on flow blockchain",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "files": [
+    "contracts/*",
+    "transactions/*",
+    "scripts/*"
+  ],
+  "scripts": {
+    "release": "changeset version && changeset publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onflow/flow-nft.git"
+  },
+  "keywords": [
+    "flow-nft",
+    "nft",
+    "NonFungibleToken",
+    "flow"
+  ],
+  "author": "onFlow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/onflow/flow-nft/issues"
+  },
+  "homepage": "https://github.com/onflow/flow-nft#readme",
+  "dependencies": {
+    "@changesets/cli": "^2.23.0",
+    "package.json": "^2.0.1"
+  }
+}
