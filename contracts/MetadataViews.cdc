@@ -880,10 +880,10 @@ pub contract MetadataViews {
     }
 
     pub fun nlpAce(): NFTLicense {
-        let license = NFTLicense().additionalContentExperienceRights()
+        let license = NFTLicense().personalUse().additionalContentExperienceRights()
         // license.setBadgeLink(link: Media(file: , mediaType: ))
         // license.setDescriptionLink(link: Media(file: , mediaType: ))
-        license.setDescription("This license gives the buyer ACE Rights")
+        license.setDescription("This license gives the buyer Personal Use Rights and ACE Rights")
         return license
     }
 
@@ -896,26 +896,26 @@ pub contract MetadataViews {
     }
 
     pub fun nlpVote(): NFTLicense {
-        let license = NFTLicense().votingRights()
+        let license = NFTLicense().personalUse().votingRights()
         // license.setBadgeLink(link: Media(file: , mediaType: ))
         // license.setDescriptionLink(link: Media(file: , mediaType: ))
-        license.setDescription("This license gives the buyer Voting Rights")
+        license.setDescription("This license gives the buyer Personal Use Rights and Voting Rights")
         return license
     }
 
     pub fun nlpCom(): NFTLicense {
-        let license = NFTLicense().commercialRights()
+        let license = NFTLicense().personalUse().commercialRights()
         // license.setBadgeLink(link: Media(file: , mediaType: ))
         // license.setDescriptionLink(link: Media(file: , mediaType: ))
-        license.setDescription("This license gives the buyer Comm Rights")
+        license.setDescription("This license gives the buyer Personal Use Rights and Comm Rights")
         return license
     }
 
     pub fun nlpMerch(): NFTLicense {
-        let license = NFTLicense().merchandisingRights()
+        let license = NFTLicense().personalUse().merchandisingRights()
         // license.setBadgeLink(link: Media(file: , mediaType: ))
         // license.setDescriptionLink(link: Media(file: , mediaType: ))
-        license.setDescription("This license gives the buyer Merch Rights")
+        license.setDescription("This license gives the buyer Personal Use Rights and Merch Rights")
         return license
     }
 
