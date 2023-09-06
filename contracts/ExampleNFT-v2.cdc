@@ -344,7 +344,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
                     providerPath: /private/exampleNFTCollection,
                     publicCollection: Type<&ExampleNFT.Collection>(),
                     publicLinkedType: Type<&ExampleNFT.Collection>(),
-                    providerLinkedType: Type<&ExampleNFT.Collection>(),
+                    providerLinkedType: Type<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>(),
                     createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
                         return <-collectionRef.createEmptyCollection()
                     })
