@@ -220,6 +220,14 @@ access(all) contract ExampleNFT: NonFungibleToken, ViewResolver {
             return self.ownedNFTs.keys
         }
 
+        /// Helper method for getting the number of NFTs stored in the collection
+        ///
+        /// @return An Integer representing the number of NFTs
+        ///
+        access(all) view fun getLength(): Int {
+            return self.ownedNFTs.keys.length
+        }
+
         /// Gets a reference to an NFT in the collection so that
         /// the caller can read its metadata and call its methods
         ///

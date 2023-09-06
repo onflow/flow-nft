@@ -284,6 +284,9 @@ access(all) contract NonFungibleToken {
         /// getIDs returns an array of the IDs that are in the collection
         access(all) view fun getIDs(): [UInt64]
 
+        /// Gets the amount of NFTs stored in the collection
+        access(all) view fun getLength(): Int
+
         /// getIDsWithTypes returns a list of IDs that are in the collection, keyed by type
         /// Should only be used by collections that can store multiple NFT types
         access(all) view fun getIDsWithTypes(): {Type: [UInt64]}
