@@ -9,10 +9,9 @@ import ExampleNFT from "ExampleNFT"
 
 transaction(address: Address, publicPath: PublicPath, id: UInt64) {
 
-    prepare(signer: AuthAccount) {
+    prepare(signer: auth(Capabilities, Storage) &Account) {
         let collection = getAccount(address)
-            .getCapability(publicPath)
-            .borrow<&{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>()
+            .capabilities.borrow<&{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>(publicPath)
             ?? panic("Could not borrow a reference to the collection")
 
         let resolver = collection.borrowViewResolver(id: id)!
@@ -22,12 +21,17 @@ transaction(address: Address, publicPath: PublicPath, id: UInt64) {
         let emptyCollection <- nftCollectionView.createEmptyCollection()
 
         // save it to the account
-        signer.save(<-emptyCollection, to: nftCollectionView.storagePath)
+        signer.storage.save(<-emptyCollection, to: nftCollectionView.storagePath)
 
         // create a public capability for the collection
-        signer.link<&{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic, MetadataViews.ResolverCollection}>(
-            nftCollectionView.publicPath,
-            target: nftCollectionView.storagePath
+        let collectionCap = signer.capabilities.storage
+            .issue<&{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic, MetadataViews.ResolverCollection}>(
+                nftCollectionView.storagePath
+            )
+
+        signer.capabilities.publish(
+            collectionCap
+            at: nftCollectionView.publicPath,
         )
     }
 }

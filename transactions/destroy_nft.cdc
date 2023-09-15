@@ -8,16 +8,13 @@ transaction(id: UInt64) {
     /// Reference that will be used for the owner's collection
     let collectionRef: &ExampleNFT.Collection
 
-    prepare(signer: AuthAccount) {
-
+    prepare(signer: auth(BorrowValue) &Account) {
         // borrow a reference to the owner's collection
-        self.collectionRef = signer.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
+        self.collectionRef = signer.storage.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
             ?? panic("Account does not store an object at the specified path")
-
     }
 
     execute {
-
         // withdraw the NFT from the owner's collection
         let nft <- self.collectionRef.withdraw(withdrawID: id)
 

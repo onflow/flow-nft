@@ -7,12 +7,13 @@ import NFTForwarding from "NFTForwarding"
 
 transaction {
 
-    prepare(signer: AuthAccount) {
+    prepare(signer: auth(BorrowValue) &Account) {
 
-        if signer.getCapability(ExampleNFT.CollectionPublicPath).check<&{ExampleNFT.ExampleNFTCollectionPublic}>() {
-            log("Unlinking ExampleNFTCollectionPublic from PublicPath")
-            signer.unlink(ExampleNFT.CollectionPublicPath)
+        if let cap = signer.capabilities.get<&{ExampleNFT.ExampleNFTCollectionPublic}>(ExampleNFT.CollectionPublicPath) {
+            if cap.check() {
+                log("Unpublishing ExampleNFTCollectionPublic from PublicPath")
+                signer.capabilities.unpublish(ExampleNFT.CollectionPublicPath)
+            }
         }
-
     }
 }

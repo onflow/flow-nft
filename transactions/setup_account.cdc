@@ -7,9 +7,9 @@ import MetadataViews from "MetadataViews"
 
 transaction {
 
-    prepare(signer: AuthAccount) {
+    prepare(signer: auth(BorrowValue) &Account) {
         // Return early if the account already has a collection
-        if signer.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath) != nil {
+        if signer.storage.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath) != nil {
             return
         }
 
@@ -17,12 +17,15 @@ transaction {
         let collection <- ExampleNFT.createEmptyCollection()
 
         // save it to the account
-        signer.save(<-collection, to: ExampleNFT.CollectionStoragePath)
+        signer.storage.save(<-collection, to: ExampleNFT.CollectionStoragePath)
 
         // create a public capability for the collection
-        signer.link<&{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic, MetadataViews.ResolverCollection}>(
-            ExampleNFT.CollectionPublicPath,
-            target: ExampleNFT.CollectionStoragePath
+        let collectionCap = signer.capabilities.storage.issue<&{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic, MetadataViews.ResolverCollection}>(
+            ExampleNFT.CollectionStoragePath
+        )
+        signer.capabilities.publish(
+            collectionCap
+            at: ExampleNFT.CollectionPublicPath,
         )
     }
 }

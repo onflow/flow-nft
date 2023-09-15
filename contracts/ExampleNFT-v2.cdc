@@ -261,6 +261,10 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
             return <- create ExampleNFT.Collection()
         }
 
+        access(all) view fun getLength(): Int {
+            return self.ownedNFTs.length
+        }
+
         destroy() {
             destroy self.ownedNFTs
         }
@@ -336,7 +340,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
     access(all) view fun getCollectionData(nftType: Type): MetadataViews.NFTCollectionData? {
         switch nftType {
             case Type<@ExampleNFT.NFT>():
-                let collectionRef = self.account.borrow<&ExampleNFT.Collection>(from: /storage/cadenceExampleNFTCollection)
+                let collectionRef = self.account.storage.borrow<&ExampleNFT.Collection>(from: /storage/cadenceExampleNFTCollection)
                     ?? panic("Could not borrow a reference to the stored collection")
                 let collectionData = MetadataViews.NFTCollectionData(
                     storagePath: collectionRef.getDefaultStoragePath()!,
@@ -424,17 +428,15 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
         let collection <- create Collection()
         let defaultStoragePath = collection.getDefaultStoragePath()!
         let defaultPublicPath = collection.getDefaultPublicPath()!
-        self.account.save(<-collection, to: defaultStoragePath)
+        self.account.storage.save(<-collection, to: defaultStoragePath)
 
         // create a public capability for the collection
-        self.account.link<&ExampleNFT.Collection>(
-            defaultPublicPath,
-            target: defaultStoragePath
-        )
+        let examplNFTCap = self.account.capabilities.storage.issue<&ExampleNFT.Collection>(defaultStoragePath)
+        self.account.capabilities.publish(examplNFTCap, at: defaultPublicPath)
 
         // Create a Minter resource and save it to storage
         let minter <- create NFTMinter()
-        self.account.save(<-minter, to: self.MinterStoragePath)
+        self.account.storage.save(<-minter, to: self.MinterStoragePath)
     }
 }
  

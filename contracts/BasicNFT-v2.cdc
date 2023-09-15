@@ -76,7 +76,7 @@ access(all) contract BasicNFT {
 
     init() {
         let minter <- create NFTMinter()
-        self.account.save(<-minter, to: /storage/flowBasicNFTMinterPath)
+        self.account.storage.save(<-minter, to: /storage/flowBasicNFTMinterPath)
     }
 }
  

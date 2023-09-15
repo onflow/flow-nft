@@ -12,9 +12,9 @@ transaction(recipient: Address, withdrawID: UInt64) {
     /// Reference of the collection to deposit the NFT to
     let depositRef: &{NonFungibleToken.CollectionPublic}
 
-    prepare(signer: AuthAccount) {
+    prepare(signer: auth(BorrowValue) &Account) {
         // borrow a reference to the signer's NFT collection
-        self.withdrawRef = signer
+        self.withdrawRef = signer.storage
             .borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
             ?? panic("Account does not store an object at the specified path")
 
@@ -23,8 +23,7 @@ transaction(recipient: Address, withdrawID: UInt64) {
 
         // borrow a public reference to the receivers collection
         self.depositRef = recipient
-            .getCapability(ExampleNFT.CollectionPublicPath)
-            .borrow<&{NonFungibleToken.CollectionPublic}>()
+            .capabilities.borrow<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
             ?? panic("Could not borrow a reference to the receiver's collection")
 
     }
