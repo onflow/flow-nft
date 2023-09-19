@@ -1,27 +1,27 @@
 import ExampleNFT from "ExampleNFT"
 import MetadataViews from "MetadataViews"
 
-pub struct NFTView {
-    pub let id: UInt64
-    pub let uuid: UInt64
-    pub let name: String
-    pub let description: String
-    pub let thumbnail: String
-    pub let royalties: [MetadataViews.Royalty]
-    pub let externalURL: String
-    pub let collectionPublicPath: PublicPath
-    pub let collectionStoragePath: StoragePath
-    pub let collectionProviderPath: PrivatePath
-    pub let collectionPublic: String
-    pub let collectionPublicLinkedType: String
-    pub let collectionProviderLinkedType: String
-    pub let collectionName: String
-    pub let collectionDescription: String
-    pub let collectionExternalURL: String
-    pub let collectionSquareImage: String
-    pub let collectionBannerImage: String
-    pub let collectionSocials: {String: String}
-    pub let traits: MetadataViews.Traits
+access(all) struct NFTView {
+    access(all) let id: UInt64
+    access(all) let uuid: UInt64
+    access(all) let name: String
+    access(all) let description: String
+    access(all) let thumbnail: String
+    access(all) let royalties: [MetadataViews.Royalty]
+    access(all) let externalURL: String
+    access(all) let collectionPublicPath: PublicPath
+    access(all) let collectionStoragePath: StoragePath
+    access(all) let collectionProviderPath: PrivatePath
+    access(all) let collectionPublic: String
+    access(all) let collectionPublicLinkedType: String
+    access(all) let collectionProviderLinkedType: String
+    access(all) let collectionName: String
+    access(all) let collectionDescription: String
+    access(all) let collectionExternalURL: String
+    access(all) let collectionSquareImage: String
+    access(all) let collectionBannerImage: String
+    access(all) let collectionSocials: {String: String}
+    access(all) let traits: MetadataViews.Traits
 
     init(
         id: UInt64,
@@ -68,7 +68,7 @@ pub struct NFTView {
     }
 }
 
-pub fun main(address: Address, id: UInt64): NFTView {
+access(all) fun main(address: Address, id: UInt64): NFTView {
     let account = getAccount(address)
 
     let collection = account

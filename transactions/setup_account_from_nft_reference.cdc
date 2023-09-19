@@ -30,7 +30,7 @@ transaction(address: Address, publicPath: PublicPath, id: UInt64) {
             )
 
         signer.capabilities.publish(
-            collectionCap
+            collectionCap,
             at: nftCollectionView.publicPath,
         )
     }

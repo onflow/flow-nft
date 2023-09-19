@@ -3,7 +3,7 @@
 import NonFungibleToken from "NonFungibleToken"
 import ExampleNFT from "ExampleNFT"
 
-pub fun main(address: Address, collectionPublicPath: PublicPath): [UInt64] {
+access(all) fun main(address: Address, collectionPublicPath: PublicPath): [UInt64] {
     let account = getAccount(address)
 
     let collectionRef = account

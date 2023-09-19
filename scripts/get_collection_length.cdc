@@ -1,7 +1,7 @@
 import NonFungibleToken from "NonFungibleToken"
 import ExampleNFT from "ExampleNFT"
 
-pub fun main(address: Address): Int {
+access(all) fun main(address: Address): Int {
     let account = getAccount(address)
 
     let collectionRef = account

@@ -13,7 +13,7 @@ import MetadataViews from "MetadataViews"
 
 transaction(vaultPath: StoragePath) {
 
-    prepare(signer: auth(BorrowValue) &Account) {
+    prepare(signer: auth(BorrowValue, Capabilities) &Account) {
 
         // Return early if the account doesn't have a FungibleToken Vault
         if signer.storage.borrow<&FungibleToken.Vault>(from: vaultPath) == nil {

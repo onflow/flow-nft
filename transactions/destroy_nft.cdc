@@ -10,7 +10,8 @@ transaction(id: UInt64) {
 
     prepare(signer: auth(BorrowValue) &Account) {
         // borrow a reference to the owner's collection
-        self.collectionRef = signer.storage.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
+        self.collectionRef = signer.storage
+            .borrow<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
             ?? panic("Account does not store an object at the specified path")
     }
 
