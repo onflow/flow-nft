@@ -26,7 +26,7 @@ transaction(vaultPath: StoragePath) {
             .issue<&{FungibleToken.Receiver, FungibleToken.Balance}>(vaultPath)
 
         signer.capabilities.publish(
-            capability
+            capability,
             at: MetadataViews.getRoyaltyReceiverPublicPath(),
         )
 
