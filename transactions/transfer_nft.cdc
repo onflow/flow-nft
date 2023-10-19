@@ -1,8 +1,8 @@
 /// This transaction is for transferring and NFT from
 /// one account to another
 
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "ExampleNFT"
 
 transaction(recipient: Address, withdrawID: UInt64) {
 

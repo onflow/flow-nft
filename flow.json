@@ -10,18 +10,45 @@
       "source": "./contracts/NonFungibleToken.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
+        "testing": "0x0000000000000001",
         "testnet": "0x631e88ae7f1d7c20",
         "mainnet": "0x1d7e57aa55817448"
       }
     },
-    "MetadataViews": "./contracts/MetadataViews.cdc",
-    "ViewResolver": "./contracts/ViewResolver.cdc",
-    "ExampleNFT": "./contracts/ExampleNFT.cdc",
-    "FungibleToken": "./contracts/utility/FungibleToken.cdc",
-    "NFTForwarding": "./contracts/utility/NFTForwarding.cdc"
+    "MetadataViews": {
+      "source": "./contracts/MetadataViews.cdc",
+      "aliases": {
+        "testing": "0x0000000000000001"
+      }
+    },
+    "ViewResolver": {
+      "source": "./contracts/ViewResolver.cdc",
+      "aliases": {
+        "testing": "0x0000000000000001"
+      }
+    },
+    "ExampleNFT": {
+      "source": "./contracts/ExampleNFT.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007"
+      }
+    },
+    "FungibleToken": {
+      "source": "./contracts/utility/FungibleToken.cdc",
+      "aliases": {
+        "testing": "0x0000000000000002"
+      }
+    },
+    "NFTForwarding": {
+      "source": "./contracts/utility/NFTForwarding.cdc",
+      "aliases": {
+        "testing": "0x0000000000000007"
+      }
+    }
   },
   "networks": {
     "emulator": "127.0.0.1:3569",
+    "testing": "127.0.0.1:3569",
     "mainnet": "access.mainnet.nodes.onflow.org:9000",
     "testnet": "access.devnet.nodes.onflow.org:9000"
   },

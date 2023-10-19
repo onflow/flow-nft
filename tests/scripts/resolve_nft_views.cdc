@@ -1,9 +1,9 @@
 /// This script resolves all the supported views from
 /// the ExampleNFT contract. Used for testing only.
 
-import ExampleNFT from "ExampleNFT"
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
+import "ExampleNFT"
+import "NonFungibleToken"
+import "MetadataViews"
 
 pub fun main(): Bool {
     // Call `resolveView` with invalid Type
@@ -25,6 +25,9 @@ pub fun main(): Bool {
         Type<MetadataViews.NFTCollectionData>()
     ) as! MetadataViews.NFTCollectionData?)!
 
+    // The MetadataViews.NFTCollectionData returns a function (createEmptyCollection),
+    // so it cannot be the return type of a script. That's why we perform
+    // the assertions in this script.
     assert(ExampleNFT.CollectionStoragePath == collectionData.storagePath)
     assert(ExampleNFT.CollectionPublicPath == collectionData.publicPath)
     assert(/private/exampleNFTCollection == collectionData.providerPath)

@@ -1,4 +1,4 @@
-import ExampleNFT from "ExampleNFT"
+import "ExampleNFT"
 
 pub fun main(): UInt64 {
     return ExampleNFT.totalSupply

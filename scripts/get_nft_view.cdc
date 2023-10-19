@@ -1,5 +1,5 @@
-import ExampleNFT from "ExampleNFT"
-import MetadataViews from "MetadataViews"
+import "ExampleNFT"
+import "MetadataViews"
 
 pub struct NFTView {
     pub let id: UInt64
