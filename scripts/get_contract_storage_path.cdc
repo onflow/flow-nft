@@ -1,5 +1,5 @@
-import MetadataViews from "MetadataViews"
-import ViewResolver from "ViewResolver"
+import "MetadataViews"
+import "ViewResolver"
 
 pub fun main(addr: Address, name: String): StoragePath? {
     let t = Type<MetadataViews.NFTCollectionData>()

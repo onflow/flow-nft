@@ -1,8 +1,8 @@
 /// This script checks all views from MetadataViews for
 /// a given NFT. Used for testing only.
 
-import ExampleNFT from "ExampleNFT"
-import MetadataViews from "MetadataViews"
+import "ExampleNFT"
+import "MetadataViews"
 
 pub struct NFT {
     pub let name: String
@@ -150,19 +150,19 @@ pub fun main(address: Address, id: UInt64): Bool {
     assert("NFT Name" == nftMetadata.name)
     assert("NFT Description" == nftMetadata.description)
     assert("NFT Thumbnail" == nftMetadata.thumbnail)
-    assert(Address(0x01cf0e2f2f715450) == nftMetadata.owner)
-    assert("A.01cf0e2f2f715450.ExampleNFT.NFT" == nftMetadata.type)
+    assert(Address(0x0000000000000007) == nftMetadata.owner)
+    assert("A.0000000000000007.ExampleNFT.NFT" == nftMetadata.type)
     assert("Creator Royalty" == nftMetadata.royalties[0].description)
-    assert(Address(0x01cf0e2f2f715450) == nftMetadata.royalties[0].receiver.address)
+    assert(Address(0x0000000000000007) == nftMetadata.royalties[0].receiver.address)
     assert(0.05 == nftMetadata.royalties[0].cut)
     assert("https://example-nft.onflow.org/0" == nftMetadata.externalURL)
     assert((0 as UInt64) == nftMetadata.serialNumber)
     assert(/public/exampleNFTCollection == nftMetadata.collectionPublicPath)
     assert(/storage/exampleNFTCollection == nftMetadata.collectionStoragePath)
     assert(/private/exampleNFTCollection == nftMetadata.collectionProviderPath)
-    assert("&A.01cf0e2f2f715450.ExampleNFT.Collection{A.01cf0e2f2f715450.ExampleNFT.ExampleNFTCollectionPublic}" == nftMetadata.collectionPublic)
-    assert("&A.01cf0e2f2f715450.ExampleNFT.Collection{A.01cf0e2f2f715450.ExampleNFT.ExampleNFTCollectionPublic,A.f8d6e0586b0a20c7.NonFungibleToken.CollectionPublic,A.f8d6e0586b0a20c7.NonFungibleToken.Receiver,A.f8d6e0586b0a20c7.MetadataViews.ResolverCollection}" == nftMetadata.collectionPublicLinkedType)
-    assert("&A.01cf0e2f2f715450.ExampleNFT.Collection{A.01cf0e2f2f715450.ExampleNFT.ExampleNFTCollectionPublic,A.f8d6e0586b0a20c7.NonFungibleToken.CollectionPublic,A.f8d6e0586b0a20c7.NonFungibleToken.Provider,A.f8d6e0586b0a20c7.MetadataViews.ResolverCollection}" == nftMetadata.collectionProviderLinkedType)
+    assert("&A.0000000000000007.ExampleNFT.Collection{A.0000000000000007.ExampleNFT.ExampleNFTCollectionPublic}" == nftMetadata.collectionPublic)
+    assert("&A.0000000000000007.ExampleNFT.Collection{A.0000000000000007.ExampleNFT.ExampleNFTCollectionPublic,A.0000000000000001.NonFungibleToken.CollectionPublic,A.0000000000000001.NonFungibleToken.Receiver,A.0000000000000001.MetadataViews.ResolverCollection}" == nftMetadata.collectionPublicLinkedType)
+    assert("&A.0000000000000007.ExampleNFT.Collection{A.0000000000000007.ExampleNFT.ExampleNFTCollectionPublic,A.0000000000000001.NonFungibleToken.CollectionPublic,A.0000000000000001.NonFungibleToken.Provider,A.0000000000000001.MetadataViews.ResolverCollection}" == nftMetadata.collectionProviderLinkedType)
     assert("The Example Collection" == nftMetadata.collectionName)
     assert("This collection is used as an example to help you develop your next Flow NFT." == nftMetadata.collectionDescription)
     assert("https://example-nft.onflow.org" == nftMetadata.collectionExternalURL)

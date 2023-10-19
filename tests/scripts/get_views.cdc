@@ -1,11 +1,11 @@
 /// This script checks all the supported views from
 /// a given NFT. Used for testing only.
 
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "MetadataViews"
+import "ExampleNFT"
 
-pub fun main(address: Address, id: UInt64): Bool {
+pub fun main(address: Address, id: UInt64): [Type] {
     let account = getAccount(address)
 
     let collectionRef = account
@@ -15,19 +15,5 @@ pub fun main(address: Address, id: UInt64): Bool {
 
     // Borrow a reference to a specific NFT in the collection
     let nft = collectionRef.borrowNFT(id: id)
-    let views = nft.getViews()
-
-    let expected = [
-        Type<MetadataViews.Display>(),
-        Type<MetadataViews.Royalties>(),
-        Type<MetadataViews.Editions>(),
-        Type<MetadataViews.ExternalURL>(),
-        Type<MetadataViews.NFTCollectionData>(),
-        Type<MetadataViews.NFTCollectionDisplay>(),
-        Type<MetadataViews.Serial>(),
-        Type<MetadataViews.Traits>()
-    ]
-    assert(expected == views)
-
-    return true
+    return nft.getViews()
 }

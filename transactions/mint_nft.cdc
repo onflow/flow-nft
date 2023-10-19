@@ -2,10 +2,10 @@
 /// It must be run with the account that has the minter resource
 /// stored in /storage/NFTMinter
 
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
-import MetadataViews from "MetadataViews"
-import FungibleToken from "FungibleToken"
+import "NonFungibleToken"
+import "ExampleNFT"
+import "MetadataViews"
+import "FungibleToken"
 
 transaction(
     recipient: Address,

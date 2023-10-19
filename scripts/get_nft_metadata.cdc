@@ -1,8 +1,8 @@
 /// This script gets all the view-based metadata associated with the specified NFT
 /// and returns it as a single struct
 
-import ExampleNFT from "ExampleNFT"
-import MetadataViews from "MetadataViews"
+import "ExampleNFT"
+import "MetadataViews"
 
 pub struct NFT {
     pub let name: String

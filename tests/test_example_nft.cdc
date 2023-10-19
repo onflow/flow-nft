@@ -1,86 +1,70 @@
 import Test
+import BlockchainHelpers
+import "ExampleNFT"
+import "MetadataViews"
 
-pub let blockchain = Test.newEmulatorBlockchain()
-pub let admin = blockchain.createAccount()
-pub let recipient = blockchain.createAccount()
+access(all) let admin = Test.getAccount(0x0000000000000007)
+access(all) let recipient = Test.createAccount()
 
-pub fun setup() {
-    blockchain.useConfiguration(Test.Configuration({
-        "ExampleNFT": admin.address
-    }))
-
-    let code = Test.readFile("../contracts/ExampleNFT.cdc")
-    let err = blockchain.deployContract(
+access(all)
+fun setup() {
+    let err = Test.deployContract(
         name: "ExampleNFT",
-        code: code,
-        account: admin,
+        path: "../contracts/ExampleNFT.cdc",
         arguments: []
     )
-
     Test.expect(err, Test.beNil())
 }
 
-pub fun testContractInitializedEventEmitted() {
-    let typ = CompositeType("A.01cf0e2f2f715450.ExampleNFT.ContractInitialized")!
-
-    Test.assertEqual(1, blockchain.eventsOfType(typ).length)
+access(all)
+fun testContractInitializedEventEmitted() {
+    let typ = Type<ExampleNFT.ContractInitialized>()
+    Test.assertEqual(1, Test.eventsOfType(typ).length)
 }
 
-pub fun testGetTotalSupply() {
-    let code = Test.readFile("../scripts/get_total_supply.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetTotalSupply() {
+    let scriptResult = executeScript(
+        "../scripts/get_total_supply.cdc",
         []
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let totalSupply = (scriptResult.returnValue as! UInt64?)!
+    let totalSupply = scriptResult.returnValue! as! UInt64
     Test.assertEqual(0 as UInt64, totalSupply)
 }
 
-pub fun testSetupAccount() {
-    var code = Test.readFile("../transactions/setup_account.cdc")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [recipient.address],
-        signers: [recipient],
-        arguments: []
+access(all)
+fun testSetupAccount() {
+    let txResult = executeTransaction(
+        "../transactions/setup_account.cdc",
+        [],
+        recipient
     )
-    let txResult = blockchain.executeTransaction(tx)
-
     Test.expect(txResult, Test.beSucceeded())
 
-    code = Test.readFile("../scripts/get_collection_length.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+    let scriptResult = executeScript(
+        "../scripts/get_collection_length.cdc",
         [admin.address]
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let collectionLength = (scriptResult.returnValue as! Int?)!
+    let collectionLength = scriptResult.returnValue! as! Int
     Test.assertEqual(0, collectionLength)
 }
 
-pub fun testMintNFT() {
-    var code = Test.readFile("../transactions/setup_account_to_receive_royalty.cdc")
-    var tx = Test.Transaction(
-        code: code,
-        authorizers: [admin.address],
-        signers: [admin],
-        arguments: [/storage/flowTokenVault]
+access(all)
+fun testMintNFT() {
+    var txResult = executeTransaction(
+        "../transactions/setup_account_to_receive_royalty.cdc",
+        [/storage/flowTokenVault],
+        admin
     )
-    var txResult = blockchain.executeTransaction(tx)
-
     Test.expect(txResult, Test.beSucceeded())
 
-    code = Test.readFile("../transactions/mint_nft.cdc")
-    tx = Test.Transaction(
-        code: code,
-        authorizers: [admin.address],
-        signers: [admin],
-        arguments: [
+    txResult = executeTransaction(
+        "../transactions/mint_nft.cdc",
+        [
             recipient.address,
             "NFT Name",
             "NFT Description",
@@ -88,174 +72,181 @@ pub fun testMintNFT() {
             [0.05],
             ["Creator Royalty"],
             [admin.address]
-        ]
+        ],
+        admin
     )
-    txResult = blockchain.executeTransaction(tx)
-
     Test.expect(txResult, Test.beSucceeded())
 
-    let typ = CompositeType("A.01cf0e2f2f715450.ExampleNFT.Deposit")!
-    Test.assertEqual(1, blockchain.eventsOfType(typ).length)
+    let typ = Type<ExampleNFT.Deposit>()
+    let events = Test.eventsOfType(typ)
+    Test.assertEqual(1, events.length)
 
-    code = Test.readFile("../scripts/get_collection_ids.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+    let depositEvent = events[0] as! ExampleNFT.Deposit
+    Test.assertEqual(0 as UInt64, depositEvent.id)
+    Test.assertEqual(recipient.address, depositEvent.to!)
+
+    let scriptResult = executeScript(
+        "../scripts/get_collection_ids.cdc",
         [
             recipient.address,
             /public/exampleNFTCollection
         ]
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let collectionIDs = (scriptResult.returnValue as! [UInt64]?)!
+    let collectionIDs = scriptResult.returnValue! as! [UInt64]
     Test.assertEqual([0] as [UInt64], collectionIDs)
 }
 
-pub fun testTransferNFT() {
-    var code = Test.readFile("../transactions/transfer_nft.cdc")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [recipient.address],
-        signers: [recipient],
-        arguments: [
+access(all)
+fun testTransferNFT() {
+    let nftID: UInt64 = 0
+    let txResult = executeTransaction(
+        "../transactions/transfer_nft.cdc",
+        [
             admin.address,
-            0 as UInt64
-        ]
+            nftID
+        ],
+        recipient
     )
-    let txResult = blockchain.executeTransaction(tx)
-
     Test.expect(txResult, Test.beSucceeded())
 
-    var typ = CompositeType("A.01cf0e2f2f715450.ExampleNFT.Withdraw")!
-    Test.assertEqual(1, blockchain.eventsOfType(typ).length)
+    var typ = Type<ExampleNFT.Withdraw>()
+    var events = Test.eventsOfType(typ)
+    Test.assertEqual(1, events.length)
 
-    typ = CompositeType("A.01cf0e2f2f715450.ExampleNFT.Deposit")!
-    Test.assertEqual(2, blockchain.eventsOfType(typ).length)
+    let withdrawEvent = events[0] as! ExampleNFT.Withdraw
+    Test.assertEqual(nftID, withdrawEvent.id)
+    Test.assertEqual(recipient.address, withdrawEvent.from!)
 
-    code = Test.readFile("../scripts/get_collection_ids.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+    typ = Type<ExampleNFT.Deposit>()
+    events = Test.eventsOfType(typ)
+    Test.assertEqual(2, events.length)
+
+    let depositEvent = events[1] as! ExampleNFT.Deposit
+    Test.assertEqual(nftID, depositEvent.id)
+    Test.assertEqual(admin.address, depositEvent.to!)
+
+    let scriptResult = executeScript(
+        "../scripts/get_collection_ids.cdc",
         [
             admin.address,
             /public/exampleNFTCollection
         ]
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let collectionIDs = (scriptResult.returnValue as! [UInt64]?)!
+    let collectionIDs = scriptResult.returnValue! as! [UInt64]
     Test.assertEqual([0] as [UInt64], collectionIDs)
 }
 
-pub fun testTransferMissingNFT() {
-    var code = Test.readFile("../transactions/transfer_nft.cdc")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [recipient.address],
-        signers: [recipient],
-        arguments: [
+access(all)
+fun testTransferMissingNFT() {
+    let txResult = executeTransaction(
+        "../transactions/transfer_nft.cdc",
+        [
             admin.address,
             10 as UInt64
-        ]
+        ],
+        recipient
     )
-    let txResult = blockchain.executeTransaction(tx)
-
     Test.expect(txResult, Test.beFailed())
-    Test.assertEqual(
-        "missing NFT",
-        txResult.error!.message.slice(from: 390, upTo: 401)
+    Test.assertError(
+        txResult,
+        errorMessage: "missing NFT",
     )
 }
 
-pub fun testBorrowNFT() {
-    let code = Test.readFile("../scripts/borrow_nft.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testBorrowNFT() {
+    let scriptResult = executeScript(
+        "../scripts/borrow_nft.cdc",
         [
             admin.address,
             0 as UInt64
         ]
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 }
 
-pub fun testBorrowMissingNFT() {
-    let code = Test.readFile("../scripts/borrow_nft.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testBorrowMissingNFT() {
+    let scriptResult = executeScript(
+        "../scripts/borrow_nft.cdc",
         [
             admin.address,
             10 as UInt64
         ]
     )
-
     Test.expect(scriptResult, Test.beFailed())
+    Test.assertError(
+        scriptResult,
+        errorMessage: "NFT does not exist in the collection!"
+    )
 }
 
-pub fun testGetCollectionIDs() {
-    let code = Test.readFile("../scripts/get_collection_ids.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetCollectionIDs() {
+    let scriptResult = executeScript(
+        "../scripts/get_collection_ids.cdc",
         [
             admin.address,
             /public/exampleNFTCollection
         ]
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let collectionIDs = (scriptResult.returnValue as! [UInt64]?)!
+    let collectionIDs = scriptResult.returnValue! as! [UInt64]
     Test.assertEqual([0] as [UInt64], collectionIDs)
 }
 
-pub fun testGetCollectionLength() {
-    let code = Test.readFile("../scripts/get_collection_length.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetCollectionLength() {
+    let scriptResult = executeScript(
+        "../scripts/get_collection_length.cdc",
         [admin.address]
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let collectionLength = (scriptResult.returnValue as! Int?)!
+    let collectionLength = scriptResult.returnValue! as! Int
     Test.assertEqual(1, collectionLength)
 }
 
-pub fun testGetContractStoragePath() {
-    let code = Test.readFile("../scripts/get_contract_storage_path.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetContractStoragePath() {
+    let scriptResult = executeScript(
+        "../scripts/get_contract_storage_path.cdc",
         [
             admin.address,
             "ExampleNFT"
         ]
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let storagePath = (scriptResult.returnValue as! StoragePath?)!
+    let storagePath = scriptResult.returnValue! as! StoragePath
     Test.assertEqual(/storage/exampleNFTCollection, storagePath)
 }
 
-pub fun testGetMissingContractStoragePath() {
-    let code = Test.readFile("../scripts/get_contract_storage_path.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetMissingContractStoragePath() {
+    let scriptResult = executeScript(
+        "../scripts/get_contract_storage_path.cdc",
         [
             admin.address,
             "ContractOne"
         ]
     )
-
     Test.expect(scriptResult, Test.beFailed())
+    Test.assertError(
+        scriptResult,
+        errorMessage: "contract could not be borrowed"
+    )
 }
 
-pub fun testGetNFTMetadata() {
-    let code = Test.readFile("scripts/get_nft_metadata.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetNFTMetadata() {
+    let scriptResult = executeScript(
+        "scripts/get_nft_metadata.cdc",
         [
             admin.address,
             0 as UInt64
@@ -265,10 +256,38 @@ pub fun testGetNFTMetadata() {
     Test.expect(scriptResult, Test.beSucceeded())
 }
 
-pub fun testGetMissingNFTMetadata() {
-    let code = Test.readFile("scripts/get_nft_metadata.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetMissingNFTMetadata() {
+    let scriptResult = executeScript(
+        "scripts/get_nft_metadata.cdc",
+        [
+            admin.address,
+            10 as UInt64
+        ]
+    )
+    Test.expect(scriptResult, Test.beFailed())
+    Test.assertError(
+        scriptResult,
+        errorMessage: "unexpectedly found nil while forcing an Optional value"
+    )
+}
+
+access(all)
+fun testGetNFTView() {
+    let scriptResult = executeScript(
+        "scripts/get_nft_view.cdc",
+        [
+            admin.address,
+            0 as UInt64
+        ]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
+}
+
+access(all)
+fun testGetMissingNFTView() {
+    let scriptResult = executeScript(
+        "scripts/get_nft_view.cdc",
         [
             admin.address,
             10 as UInt64
@@ -276,63 +295,58 @@ pub fun testGetMissingNFTMetadata() {
     )
 
     Test.expect(scriptResult, Test.beFailed())
+    Test.assertError(
+        scriptResult,
+        errorMessage: "unexpectedly found nil while forcing an Optional value"
+    )
 }
 
-pub fun testGetNFTView() {
-    let code = Test.readFile("scripts/get_nft_view.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetViews() {
+    let scriptResult = executeScript(
+        "scripts/get_views.cdc",
         [
             admin.address,
             0 as UInt64
         ]
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
+
+    let supportedViews = scriptResult.returnValue! as! [Type]
+    let expectedViews = [
+        Type<MetadataViews.Display>(),
+        Type<MetadataViews.Royalties>(),
+        Type<MetadataViews.Editions>(),
+        Type<MetadataViews.ExternalURL>(),
+        Type<MetadataViews.NFTCollectionData>(),
+        Type<MetadataViews.NFTCollectionDisplay>(),
+        Type<MetadataViews.Serial>(),
+        Type<MetadataViews.Traits>()
+    ]
+    Test.assertEqual(expectedViews, supportedViews)
 }
 
-pub fun testGetMissingNFTView() {
-    let code = Test.readFile("scripts/get_nft_view.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
-        [
-            admin.address,
-            10 as UInt64
-        ]
-    )
-
-    Test.expect(scriptResult, Test.beFailed())
-}
-
-pub fun testGetViews() {
-    let code = Test.readFile("scripts/get_views.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
-        [
-            admin.address,
-            0 as UInt64
-        ]
-    )
-
-    Test.expect(scriptResult, Test.beSucceeded())
-}
-
-pub fun testGetExampleNFTViews() {
-    let code = Test.readFile("scripts/get_example_nft_views.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testGetExampleNFTViews() {
+    let scriptResult = executeScript(
+        "scripts/get_example_nft_views.cdc",
         []
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
+
+    let supportedViews = scriptResult.returnValue! as! [Type]
+    let expectedViews = [
+        Type<MetadataViews.NFTCollectionData>(),
+        Type<MetadataViews.NFTCollectionDisplay>()
+    ]
+    Test.assertEqual(expectedViews, supportedViews)
 }
 
-pub fun testResolveExampleNFTViews() {
-    let code = Test.readFile("scripts/resolve_nft_views.cdc")
-    let scriptResult = blockchain.executeScript(
-        code,
+access(all)
+fun testResolveExampleNFTViews() {
+    let scriptResult = executeScript(
+        "scripts/resolve_nft_views.cdc",
         []
     )
-
     Test.expect(scriptResult, Test.beSucceeded())
 }
