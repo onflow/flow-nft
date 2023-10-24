@@ -61,9 +61,8 @@ access(all) fun testMintNFT() {
         nil
     )
 
-    // TODO: Update once events can be emitted from interfaces in post-conditions
-    // let typ = CompositeType(buildTypeIdentifier(admin, "NonFungibleToken", "Deposit"))!
-    // Test.assertEqual(1, blockchain.eventsOfType(typ).length)
+    let typ = CompositeType(buildTypeIdentifier(admin, "NonFungibleToken", "Deposit"))!
+    Test.assertEqual(1, blockchain.eventsOfType(typ).length)
 
     let actualCollectionIDs = scriptExecutor("get_collection_ids.cdc", [
             recipient.address,
@@ -83,9 +82,8 @@ access(all) fun testTransferNFT() {
 
     txExecutor("transfer_nft.cdc", [recipient], [admin.address, "ExampleNFT", admin.address, expectedTransferID], nil, nil)
 
-    // TODO: Update once events can be emitted from interfaces in post-conditions
-    // var typ = CompositeType(buildTypeIdentifier(admin, "NonFungibleToken", "Transfer"))!
-    // Test.assertEqual(1, blockchain.eventsOfType(typ).length)
+    var typ = CompositeType(buildTypeIdentifier(admin, "NonFungibleToken", "Transfer"))!
+    Test.assertEqual(1, blockchain.eventsOfType(typ).length)
 
     let adminIDs = scriptExecutor("get_collection_ids.cdc", [
             admin.address,
@@ -97,8 +95,8 @@ access(all) fun testTransferNFT() {
 }
 
 access(all) fun testTransferMissingNFT() {
-    let expectedErrorMessage = "Could not withdraw an NFT with the provided ID from the collection"
-    let expectedErrorType = ErrorType.TX_PANIC
+    let expectedErrorMessage = "The collection does not contain the specified ID"
+    let expectedErrorType = ErrorType.TX_PRE
 
     txExecutor(
         "transfer_nft.cdc",
