@@ -22,19 +22,22 @@ func TestExampleNFTContract(t *testing.T) {
 	addressA := addresses.New()
 	addressB := addresses.New()
 	addressC := addresses.New()
+	addressD := addresses.New()
 
-	contract := contracts.ExampleNFT(addressA, addressB, addressC)
+	contract := contracts.ExampleNFT(addressA, addressB, addressC, addressD)
 	assert.NotNil(t, contract)
 
 	assert.Contains(t, string(contract), addressA.String())
 	assert.Contains(t, string(contract), addressB.String())
 	assert.Contains(t, string(contract), addressC.String())
+	assert.Contains(t, string(contract), addressD.String())
 }
 
 func TestMetadataViewsContract(t *testing.T) {
 	addresses := test.AddressGenerator()
 	addressA := addresses.New()
 	addressB := addresses.New()
-	contract := contracts.MetadataViews(addressA, addressB)
+	addressC := addresses.New()
+	contract := contracts.MetadataViews(addressA, addressB, addressC)
 	assert.NotNil(t, contract)
 }

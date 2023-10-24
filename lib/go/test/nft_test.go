@@ -146,8 +146,8 @@ func TestTransferNFT(t *testing.T) {
 
 		// Specify ExampleNFT contract address & name
 		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.NewString("ExampleNFT"))
-		
+		tx.AddArgument(cadence.String("ExampleNFT"))
+
 		// Transfer it to joshAddress
 		tx.AddArgument(cadence.NewAddress(joshAddress))
 
@@ -189,7 +189,7 @@ func TestTransferNFT(t *testing.T) {
 
 		// Specify ExampleNFT contract address & name
 		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.NewString("ExampleNFT"))
+		tx.AddArgument(cadence.String("ExampleNFT"))
 
 		// Add the recipient's address
 		tx.AddArgument(cadence.NewAddress(joshAddress))
