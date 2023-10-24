@@ -28,7 +28,7 @@ access(all) fun main(): Bool {
 
     assert(/storage/cadenceExampleNFTCollection == collectionData.storagePath)
     assert(/public/cadenceExampleNFTCollection == collectionData.publicPath)
-    assert(/private/exampleNFTCollection == collectionData.providerPath)
+    assert(/private/cadenceExampleNFTCollection == collectionData.providerPath)
     assert(Type<&ExampleNFT.Collection>() == collectionData.publicCollection)
     assert(Type<&ExampleNFT.Collection>() == collectionData.publicLinkedType)
     assert(Type<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>() == collectionData.providerLinkedType)

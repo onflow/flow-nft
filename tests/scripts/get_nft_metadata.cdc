@@ -161,7 +161,7 @@ access(all) fun main(address: Address, id: UInt64): Bool {
     assert(nft.getID() == nftMetadata.serialNumber)
     assert(/public/cadenceExampleNFTCollection == nftMetadata.collectionPublicPath)
     assert(/storage/cadenceExampleNFTCollection == nftMetadata.collectionStoragePath)
-    assert(/private/exampleNFTCollection == nftMetadata.collectionProviderPath)
+    assert(/private/cadenceExampleNFTCollection == nftMetadata.collectionProviderPath)
     // assert("&A.01cf0e2f2f715450.ExampleNFT.Collection" == nftMetadata.collectionPublic)
     // assert("&A.01cf0e2f2f715450.ExampleNFT.Collection" == nftMetadata.collectionPublicLinkedType)
     // assert("&A.01cf0e2f2f715450.ExampleNFT.Collection" == nftMetadata.collectionProviderLinkedType)

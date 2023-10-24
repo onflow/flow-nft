@@ -357,14 +357,27 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 		exampleNFTSigner)
 
 	t.Run("Should be able to setup an account using the NFTCollectionData metadata view of a referenced NFT", func(t *testing.T) {
-		// Ideally, the exampleNFTAddress would not be needed in order to perform the full setup, but it is required
-		// until the following issue is supported in cadence: https://github.com/onflow/cadence/issues/1617
-		script := templates.GenerateSetupAccountFromNftReferenceScript(nftAddress, exampleNFTAddress, metadataAddress)
+		const (
+			pathName = "cadenceExampleNFTCollection"
+		)
+
+		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)
+		idsResult := executeScriptAndCheck(
+			t, b,
+			idsScript,
+			[][]byte{
+				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
+				jsoncdc.MustEncode(cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}),
+			},
+		)
+		mintedID := idsResult.(cadence.Array).Values[0].(cadence.UInt64)
+
+		script := templates.GenerateSetupAccountFromNftReferenceScript(nftAddress, metadataAddress)
 		tx := createTxWithTemplateAndAuthorizer(b, script, aAddress)
 
 		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.Path{Domain: common.PathDomainPublic, Identifier: "exampleNFTCollection"})
-		tx.AddArgument(cadence.NewUInt64(0))
+		tx.AddArgument(cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName})
+		tx.AddArgument(mintedID)
 
 		serviceSigner, _ := b.ServiceKey().Signer()
 

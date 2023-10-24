@@ -40,16 +40,16 @@ func GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadataViewsAddress, 
 
 // GenerateTransferNFTScript returns a script that withdraws an NFT token
 // from a collection and deposits it into another collection.
-func GenerateTransferNFTScript(nftAddress, exampleNFTAddress flow.Address) []byte {
+func GenerateTransferNFTScript(nftAddress, exampleNFTAddress, metadataAddress, viewResolverAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameTransferNFT)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress, flow.EmptyAddress, flow.EmptyAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataAddress, flow.EmptyAddress, viewResolverAddress)
 }
 
 // GenerateDestroyNFTScript creates a script that withdraws an NFT token
 // from a collection and destroys it.
-func GenerateDestroyNFTScript(nftAddress, exampleNFTAddress flow.Address) []byte {
+func GenerateDestroyNFTScript(nftAddress, exampleNFTAddress, metadataAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameDestroyNFT)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, flow.EmptyAddress, flow.EmptyAddress, flow.EmptyAddress)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataAddress, flow.EmptyAddress, flow.EmptyAddress)
 }
 
 // GenerateSetupAccountToReceiveRoyaltyScript returns a script that
@@ -62,7 +62,7 @@ func GenerateSetupAccountToReceiveRoyaltyScript(metadataViewsAddress, ftAddress 
 // GenerateSetupAccountFromNftReferenceScript returns a script that instantiates a new
 // NFT collection instance, saves the collection in storage, then stores a
 // reference to the collection.
-func GenerateSetupAccountFromNftReferenceScript(nftAddress flow.Address, exampleNFTAddress flow.Address, metadataViewsAddress flow.Address) []byte {
+func GenerateSetupAccountFromNftReferenceScript(nftAddress, metadataViewsAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameSetupAccountFromNftReference)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataViewsAddress, flow.EmptyAddress, flow.EmptyAddress)
+	return replaceAddresses(code, nftAddress, flow.EmptyAddress, metadataViewsAddress, flow.EmptyAddress, flow.EmptyAddress)
 }

@@ -9,7 +9,7 @@ import MetadataViews from "MetadataViews"
 transaction(address: Address, publicPath: PublicPath, id: UInt64) {
 
     prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
-        let collection = getAccount(address).capabilties.borrow<&{NonFungibleToken.Collection}>(publicPath)
+        let collection = getAccount(address).capabilities.borrow<&{NonFungibleToken.Collection}>(publicPath)
             ?? panic("Could not borrow a reference to the collection")
 
         let resolver = collection.borrowViewResolver(id: id)!

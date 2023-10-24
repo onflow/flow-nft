@@ -109,7 +109,7 @@ func TestTransferNFT(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, viewResolverAddress := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
 
 	// Create a new account to test transfers
 	joshAddress, _, joshSigner := newAccountWithAddress(b, accountKeys)
@@ -157,7 +157,7 @@ func TestTransferNFT(t *testing.T) {
 
 		// This transaction tries to withdraw an NFT from a collection
 		// and deposit it to another collection
-		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress)
+		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress, metadataAddress, viewResolverAddress)
 		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
 		// Specify ExampleNFT contract address & name
@@ -199,9 +199,12 @@ func TestTransferNFT(t *testing.T) {
 	// Transfer an NFT correctly
 	t.Run("Should be able to withdraw an NFT and deposit to another accounts collection", func(t *testing.T) {
 
-		// Same transaction as before
-		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress)
-		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
+		// // Mint a single NFT with standard royalty cuts and metadata
+		// mintExampleNFT(t, b,
+		// 	accountKeys,
+		// 	nftAddress, metadataAddress, exampleNFTAddress,
+		// 	exampleNFTAccountKey,
+		// 	exampleNFTSigner)
 
 		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)
 		idsResult := executeScriptAndCheck(
@@ -214,12 +217,9 @@ func TestTransferNFT(t *testing.T) {
 		)
 		mintedID := idsResult.(cadence.Array).Values[0].(cadence.UInt64)
 
-		// Mint a single NFT with standard royalty cuts and metadata
-		mintExampleNFT(t, b,
-			accountKeys,
-			nftAddress, metadataAddress, exampleNFTAddress,
-			exampleNFTAccountKey,
-			exampleNFTSigner)
+		// Same transaction as before
+		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress, metadataAddress, viewResolverAddress)
+		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
 		// Specify ExampleNFT contract address & name
 		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
@@ -270,12 +270,6 @@ func TestTransferNFT(t *testing.T) {
 
 	t.Run("Should be able to withdraw an NFT and destroy it, not reducing the supply", func(t *testing.T) {
 
-		// This transaction withdraws the specifed NFT from the authorizers account
-		// and calls `destroy NFT`
-		script := templates.GenerateDestroyNFTScript(nftAddress, exampleNFTAddress)
-
-		tx := createTxWithTemplateAndAuthorizer(b, script, joshAddress)
-
 		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)
 		idsResult := executeScriptAndCheck(
 			t, b,
@@ -286,6 +280,12 @@ func TestTransferNFT(t *testing.T) {
 			},
 		)
 		mintedID := idsResult.(cadence.Array).Values[0].(cadence.UInt64)
+
+		// This transaction withdraws the specifed NFT from the authorizers account
+		// and calls `destroy NFT`
+		script := templates.GenerateDestroyNFTScript(nftAddress, exampleNFTAddress, metadataAddress)
+
+		tx := createTxWithTemplateAndAuthorizer(b, script, joshAddress)
 
 		// Destroy the only NFT in the collection
 		tx.AddArgument(mintedID)

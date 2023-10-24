@@ -126,7 +126,7 @@ access(all) fun main(address: Address, id: UInt64): Bool {
     assert("https://example-nft.onflow.org/".concat(id.toString()) == nftViewResult.externalURL)
     assert(/public/cadenceExampleNFTCollection == nftViewResult.collectionPublicPath)
     assert(/storage/cadenceExampleNFTCollection == nftViewResult.collectionStoragePath)
-    assert(/private/exampleNFTCollection == nftViewResult.collectionProviderPath)
+    assert(/private/cadenceExampleNFTCollection == nftViewResult.collectionProviderPath)
     // assert("&A.01cf0e2f2f715450.ExampleNFT.Collection{A.01cf0e2f2f715450.ExampleNFT.ExampleNFTCollectionPublic}" == nftViewResult.collectionPublic)
     // assert("&A.01cf0e2f2f715450.ExampleNFT.Collection{A.01cf0e2f2f715450.ExampleNFT.ExampleNFTCollectionPublic,A.f8d6e0586b0a20c7.NonFungibleToken.CollectionPublic,A.f8d6e0586b0a20c7.NonFungibleToken.Receiver,A.f8d6e0586b0a20c7.MetadataViews.ResolverCollection}" == nftViewResult.collectionPublicLinkedType)
     // assert("auth(A.f8d6e0586b0a20c7.NonFungibleToken.Withdrawable)&A.01cf0e2f2f715450.ExampleNFT.Collection" == nftViewResult.collectionProviderLinkedType)
