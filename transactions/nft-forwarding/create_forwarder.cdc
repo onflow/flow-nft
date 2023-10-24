@@ -7,7 +7,7 @@ import NFTForwarding from "NFTForwarding"
 ///
 transaction(recipientAddress: Address, collectionPublicPath: PublicPath) {
 
-    prepare(signer: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
+    prepare(signer: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
         
         // get Collection Capability from the recipientAddress account
         let recipientCollectionCap = getAccount(recipientAddress).capabilities.get<&{NonFungibleToken.Collection}>(

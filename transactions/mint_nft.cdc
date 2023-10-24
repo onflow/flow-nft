@@ -21,7 +21,7 @@ transaction(
     let minter: &ExampleNFT.NFTMinter
 
     /// Reference to the receiver's collection
-    let recipientCollectionRef: &{NonFungibleToken.Collection}
+    let recipientCollectionRef: &{NonFungibleToken.Receiver}
 
     prepare(signer: auth(BorrowValue) &Account) {
 
@@ -33,7 +33,7 @@ transaction(
             ?? panic("Account does not store an object at the specified path")
 
         // Borrow the recipient's public NFT collection reference
-        self.recipientCollectionRef = getAccount(recipient).capabilities.borrow<&{NonFungibleToken.Collection}>(
+        self.recipientCollectionRef = getAccount(recipient).capabilities.borrow<&{NonFungibleToken.Receiver}>(
                 collectionData.publicPath
             ) ?? panic("Could not get receiver reference to the NFT Collection")
     }
