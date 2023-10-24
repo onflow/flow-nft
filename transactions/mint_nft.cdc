@@ -21,23 +21,21 @@ transaction(
     let minter: &ExampleNFT.NFTMinter
 
     /// Reference to the receiver's collection
-    let recipientCollectionRef: &{NonFungibleToken.CollectionPublic}
+    let recipientCollectionRef: &{NonFungibleToken.Collection}
 
-    /// Previous NFT ID before the transaction executes
-    let mintingIDBefore: UInt64
+    prepare(signer: auth(BorrowValue) &Account) {
 
-    prepare(signer: AuthAccount) {
-        self.mintingIDBefore = ExampleNFT.totalSupply
-
+        let collectionData = ExampleNFT.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+            ?? panic("ViewResolver does not resolve NFTCollectionData view")
+        
         // borrow a reference to the NFTMinter resource in storage
-        self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
+        self.minter = signer.storage.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
             ?? panic("Account does not store an object at the specified path")
 
         // Borrow the recipient's public NFT collection reference
-        self.recipientCollectionRef = getAccount(recipient)
-            .getCapability(ExampleNFT.CollectionPublicPath)
-            .borrow<&{NonFungibleToken.CollectionPublic}>()
-            ?? panic("Could not get receiver reference to the NFT Collection")
+        self.recipientCollectionRef = getAccount(recipient).capabilities.borrow<&{NonFungibleToken.Collection}>(
+                collectionData.publicPath
+            ) ?? panic("Could not get receiver reference to the NFT Collection")
     }
 
     pre {
@@ -51,11 +49,9 @@ transaction(
         var royalties: [MetadataViews.Royalty] = []
         while royaltyBeneficiaries.length > count {
             let beneficiary = royaltyBeneficiaries[count]
-            let beneficiaryCapability = getAccount(beneficiary)
-            .getCapability<&{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath())
-
-            // Make sure the royalty capability is valid before minting the NFT
-            if !beneficiaryCapability.check() { panic("Beneficiary capability is not valid!") }
+            let beneficiaryCapability = getAccount(beneficiary).capabilities.get<&{FungibleToken.Receiver}>(
+                    MetadataViews.getRoyaltyReceiverPublicPath()
+                ) ?? panic("Beneficiary does not have Receiver configured at RoyaltyReceiverPublicPath")
 
             royalties.append(
                 MetadataViews.Royalty(
@@ -68,19 +64,14 @@ transaction(
         }
 
 
-
         // Mint the NFT and deposit it to the recipient's collection
-        self.minter.mintNFT(
-            recipient: self.recipientCollectionRef,
+        let mintedNFT <- self.minter.mintNFT(
             name: name,
             description: description,
             thumbnail: thumbnail,
             royalties: royalties
         )
+        self.recipientCollectionRef.deposit(token: <-mintedNFT)
     }
 
-    post {
-        self.recipientCollectionRef.getIDs().contains(self.mintingIDBefore): "The next NFT ID should have been minted and delivered"
-        ExampleNFT.totalSupply == self.mintingIDBefore + 1: "The total supply should have been increased by 1"
-    }
 }

@@ -144,6 +144,10 @@ func TestTransferNFT(t *testing.T) {
 		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress)
 		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
+		// Specify ExampleNFT contract address & name
+		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
+		tx.AddArgument(cadence.NewString("ExampleNFT"))
+		
 		// Transfer it to joshAddress
 		tx.AddArgument(cadence.NewAddress(joshAddress))
 
@@ -183,6 +187,11 @@ func TestTransferNFT(t *testing.T) {
 		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress)
 		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
+		// Specify ExampleNFT contract address & name
+		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
+		tx.AddArgument(cadence.NewString("ExampleNFT"))
+
+		// Add the recipient's address
 		tx.AddArgument(cadence.NewAddress(joshAddress))
 		// The ID does exist in the authorizer's transaction, so the transfer will succeed
 		tx.AddArgument(cadence.NewUInt64(0))
