@@ -180,26 +180,21 @@ func TestGetNFTMetadata(t *testing.T) {
 		assert.Equal(t, cadence.NewOptional(mintedTimeDisplayType), mintTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
 
-		mintedTimeTrait := traits.Values[2].(cadence.Struct)
-		assert.Equal(t, cadence.NewOptional(nil), mintedTimeTrait.Fields[2])
-
-		// TODO
-		// fooName, _ := cadence.NewString("foo")
-		// fooValue, _ := cadence.NewString("bar")
-		// fooTrait := traits.Values[3].(cadence.Struct)
-		// fooRarityOptional := fooTrait.Fields[3].(cadence.Optional)
-		// fooRarity := fooRarityOptional.Value.(cadence.Struct)
-		// rarityDescription, _ := cadence.NewString("Common")
-		// assert.Equal(t, fooName, mintedTimeTrait.Fields[0])
-		// assert.Equal(t, fooName, fooTrait.Fields[0])
-		// assert.Equal(t, cadence.NewOptional(fooValue), fooTrait.Fields[1])
-		// fooRarityScore := fooRarity.Fields[0].(cadence.Optional).Value
-		// score, _ := cadence.NewUFix64("10.0")
-		// assert.Equal(t, fooRarityScore, score)
-		// fooRarityMax := fooRarity.Fields[1].(cadence.Optional).Value
-		// max, _ := cadence.NewUFix64("100.0")
-		// assert.Equal(t, max, fooRarityMax)
-		// assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
+		fooTrait := traits.Values[2].(cadence.Struct)
+		fooName, _ := cadence.NewString("foo")
+		fooValue, _ := cadence.NewString("bar")
+		fooRarityOptional := fooTrait.Fields[3].(cadence.Optional)
+		fooRarity := fooRarityOptional.Value.(cadence.Struct)
+		rarityDescription, _ := cadence.NewString("Common")
+		assert.Equal(t, fooName, fooTrait.Fields[0])
+		assert.Equal(t, cadence.NewOptional(fooValue), fooTrait.Fields[1])
+		fooRarityScore := fooRarity.Fields[0].(cadence.Optional).Value
+		score, _ := cadence.NewUFix64("10.0")
+		assert.Equal(t, fooRarityScore, score)
+		fooRarityMax := fooRarity.Fields[1].(cadence.Optional).Value
+		max, _ := cadence.NewUFix64("100.0")
+		assert.Equal(t, max, fooRarityMax)
+		assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
 	})
 }
 
@@ -314,27 +309,21 @@ func TestGetNFTView(t *testing.T) {
 		assert.Equal(t, cadence.NewOptional(mintedTimeDisplayType), mintTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
 
-		mintedTimeTrait := traits.Values[2].(cadence.Struct)
-		assert.Equal(t, cadence.NewOptional(nil), mintedTimeTrait.Fields[2])
-
-		// TODO
-		// fooName, _ := cadence.NewString("foo")
-		// fooValue, _ := cadence.NewString("bar")
-		// fooTrait := traits.Values[3].(cadence.Struct)
-		// fooRarityOptional := fooTrait.Fields[3].(cadence.Optional)
-		// fooRarity := fooRarityOptional.Value.(cadence.Struct)
-		// rarityDescription, _ := cadence.NewString("Common")
-		// assert.Equal(t, fooName, mintedTimeTrait.Fields[0])
-		// assert.Equal(t, fooName, fooTrait.Fields[0])
-		// assert.Equal(t, cadence.NewOptional(fooValue), fooTrait.Fields[1])
-		// fooRarityScore := fooRarity.Fields[0].(cadence.Optional).Value
-		// score, _ := cadence.NewUFix64("10.0")
-		// assert.Equal(t, fooRarityScore, score)
-		// fooRarityMax := fooRarity.Fields[1].(cadence.Optional).Value
-		// max, _ := cadence.NewUFix64("100.0")
-		// assert.Equal(t, max, fooRarityMax)
-		// assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
-
+		fooTrait := traits.Values[2].(cadence.Struct)
+		fooName, _ := cadence.NewString("foo")
+		fooValue, _ := cadence.NewString("bar")
+		fooRarityOptional := fooTrait.Fields[3].(cadence.Optional)
+		fooRarity := fooRarityOptional.Value.(cadence.Struct)
+		rarityDescription, _ := cadence.NewString("Common")
+		assert.Equal(t, fooName, fooTrait.Fields[0])
+		assert.Equal(t, cadence.NewOptional(fooValue), fooTrait.Fields[1])
+		fooRarityScore := fooRarity.Fields[0].(cadence.Optional).Value
+		score, _ := cadence.NewUFix64("10.0")
+		assert.Equal(t, fooRarityScore, score)
+		fooRarityMax := fooRarity.Fields[1].(cadence.Optional).Value
+		max, _ := cadence.NewUFix64("100.0")
+		assert.Equal(t, max, fooRarityMax)
+		assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
 	})
 }
 
