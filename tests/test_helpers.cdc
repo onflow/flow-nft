@@ -42,9 +42,7 @@ access(all) fun scriptExecutor(_ scriptName: String, _ arguments: [AnyStruct]): 
     let scriptResult = blockchain.executeScript(scriptCode, arguments)
 
     if let failureError = scriptResult.error {
-        panic(
-            "Failed to execute the script because -:  ".concat(failureError.message)
-        )
+        panic("Failed to execute the script because -:  ".concat(failureError.message))
     }
 
     return scriptResult.returnValue

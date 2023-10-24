@@ -8,7 +8,7 @@ import NFTForwarding from "NFTForwarding"
 ///
 transaction(collectionStoragePath: StoragePath, receiverPublicPath: PublicPath) {
 
-    prepare(signer: auth(IssueStorageCapabilityController, PublishCapabilty. UnpublishCapabilty) &Account) {
+    prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, UnpublishCapability) &Account) {
         
         // a collection is already published, do nothing - remember .NFTForwarder only conforms to NFT.Receiver
         if signer.capabilities.get<&{NonFungibleToken.Collection}>(receiverPublicPath) != nil {
@@ -24,4 +24,3 @@ transaction(collectionStoragePath: StoragePath, receiverPublicPath: PublicPath) 
 
     }
 }
-=
