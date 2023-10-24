@@ -131,11 +131,11 @@ func deployNFTContracts(
 func assertCollectionLength(
 	t *testing.T,
 	b emulator.Emulator,
-	nftAddress flow.Address, exampleNFTAddress flow.Address,
+	nftAddress flow.Address, exampleNFTAddress flow.Address, metadataAddress flow.Address,
 	collectionAddress flow.Address,
 	expectedLength int,
 ) {
-	script := templates.GenerateGetCollectionLengthScript(nftAddress, exampleNFTAddress)
+	script := templates.GenerateGetCollectionLengthScript(nftAddress, exampleNFTAddress, metadataAddress)
 	actualLength := executeScriptAndCheck(t, b, script, [][]byte{jsoncdc.MustEncode(cadence.NewAddress(collectionAddress))})
 	assert.Equal(t, cadence.NewInt(expectedLength), actualLength)
 }
