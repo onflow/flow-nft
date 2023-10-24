@@ -1,47 +1,63 @@
 {
-  "emulators": {
-    "default": {
-      "port": 3569,
-      "serviceAccount": "emulator-account"
-    }
-  },
-  "contracts": {
-    "NonFungibleToken": {
-      "source": "./contracts/NonFungibleToken-v2.cdc",
-      "aliases": {
-        "emulator": "0xf8d6e0586b0a20c7",
-        "testnet": "0x631e88ae7f1d7c20",
-        "mainnet": "0x1d7e57aa55817448"
-      }
-    },
-    "MetadataViews": "./contracts/MetadataViews.cdc",
-    "ViewResolver": "./contracts/ViewResolver.cdc",
-    "ExampleNFT": "./contracts/ExampleNFT-v2.cdc",
-    "MultipleNFT": "./contracts/MultipleNFT.cdc",
-    "FungibleToken": "./contracts/utility/FungibleToken.cdc",
-    "NFTForwarding": "./contracts/utility/NFTForwarding.cdc"
-  },
-  "networks": {
-    "emulator": "127.0.0.1:3569",
-    "mainnet": "access.mainnet.nodes.onflow.org:9000",
-    "testnet": "access.devnet.nodes.onflow.org:9000"
-  },
-  "accounts": {
-    "emulator-account": {
-      "address": "0xf8d6e0586b0a20c7",
-      "key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
-    }
-  },
-  "deployments": {
-    "emulator": {
-      "emulator-account": [
-        "ViewResolver",
-        "NonFungibleToken",
-        "FungibleToken",
-        "MetadataViews",
-        "MultipleNFT",
-        "ExampleNFT"
-      ]
-    }
-  }
+	"contracts": {
+		"ExampleNFT": {
+			"source": "./contracts/ExampleNFT-v2.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"FungibleToken": {
+			"source": "./contracts/utility/FungibleToken.cdc",
+			"aliases": {
+				"emulator": "ee82856bf20e2aa6"
+			}
+		},
+		"MetadataViews": {
+			"source": "./contracts/MetadataViews.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"MultipleNFT": {
+			"source": "./contracts/MultipleNFT.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"NFTForwarding": "./contracts/utility/NFTForwarding.cdc",
+		"NonFungibleToken": {
+			"source": "./contracts/NonFungibleToken-v2.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"ViewResolver": {
+			"source": "./contracts/ViewResolver.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		}
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-account": [
+				"ViewResolver",
+				"NonFungibleToken",
+				"MetadataViews",
+				"MultipleNFT",
+				"ExampleNFT"
+			]
+		}
+	}
 }
