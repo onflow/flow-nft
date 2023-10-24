@@ -348,7 +348,7 @@ access(all) contract ExampleNFT: MultipleNFT, ViewResolver {
                 let collectionData = MetadataViews.NFTCollectionData(
                     storagePath: collectionRef.getDefaultStoragePath()!,
                     publicPath: collectionRef.getDefaultPublicPath()!,
-                    providerPath: /private/exampleNFTCollection,
+                    providerPath: /private/cadenceExampleNFTCollection,
                     publicCollection: Type<&ExampleNFT.Collection>(),
                     publicLinkedType: Type<&ExampleNFT.Collection>(),
                     providerLinkedType: Type<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>(),
