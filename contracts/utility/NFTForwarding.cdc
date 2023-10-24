@@ -26,7 +26,7 @@ access(all) contract NFTForwarding {
 
     /// Resource that forwards deposited NFTs to a designated recipient's Collection
     ///
-    access(all) resource NFTForwarder : NonFungibleToken.Collection {
+    access(all) resource NFTForwarder : NonFungibleToken.Receiver {
 
         /// Recipient to which NFTs will be forwarded
         ///
@@ -71,7 +71,7 @@ access(all) contract NFTForwarding {
             }
 
             self.recipient = newRecipient
-            emit NFTForwarderRecipientChanged(forwarder: self.owner?.address)
+            emit UpdatedNFTForwarderRecipient(forwarder: self.owner?.address)
         }
 
         init(_ recipient: Capability<&{NonFungibleToken.Collection}>) {
@@ -79,7 +79,7 @@ access(all) contract NFTForwarding {
                 recipient.check(): "Could not borrow Collection reference from the given Capability"
             }
             self.recipient = recipient
-            emit NFTForwarderRecipientChanged(forwarder: self.owner?.address)
+            emit UpdatedNFTForwarderRecipient(forwarder: self.owner?.address)
         }
     }
 
