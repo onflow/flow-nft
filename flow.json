@@ -7,7 +7,7 @@
   },
   "contracts": {
     "NonFungibleToken": {
-      "source": "./contracts/NonFungibleToken.cdc",
+      "source": "./contracts/NonFungibleToken-v2.cdc",
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0x631e88ae7f1d7c20",
@@ -16,7 +16,8 @@
     },
     "MetadataViews": "./contracts/MetadataViews.cdc",
     "ViewResolver": "./contracts/ViewResolver.cdc",
-    "ExampleNFT": "./contracts/ExampleNFT.cdc",
+    "ExampleNFT": "./contracts/ExampleNFT-v2.cdc",
+    "MultipleNFT": "./contracts/MultipleNFT.cdc",
     "FungibleToken": "./contracts/utility/FungibleToken.cdc",
     "NFTForwarding": "./contracts/utility/NFTForwarding.cdc"
   },
@@ -34,12 +35,12 @@
   "deployments": {
     "emulator": {
       "emulator-account": [
-        "NonFungibleToken",
         "ViewResolver",
-        "ExampleNFT",
-        "MetadataViews",
+        "NonFungibleToken",
         "FungibleToken",
-        "NFTForwarding"
+        "MetadataViews",
+        "MultipleNFT",
+        "ExampleNFT"
       ]
     }
   }
