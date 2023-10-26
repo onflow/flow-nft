@@ -13,13 +13,13 @@ import (
 )
 
 var (
-	placeholderNonFungibleToken   = regexp.MustCompile(`"NonFungibleToken"`)
-	placeholderNonFungibleTokenV2 = regexp.MustCompile(`"NonFungibleToken-v2"`)
-	placeholderMetadataViews      = regexp.MustCompile(`"MetadataViews"`)
-	placeholderFungibleToken      = regexp.MustCompile(`"FungibleToken"`)
-	placeholderResolverToken      = regexp.MustCompile(`"ViewResolver"`)
-	placeholderNFTMetadataViews   = regexp.MustCompile(`"NFTMetadataViews"`)
-	placeholderMultipleNFT        = regexp.MustCompile(`"MultipleNFT"`)
+	placeholderNonFungibleToken   	= regexp.MustCompile(`"NonFungibleToken"`)
+	placeholderNonFungibleTokenV2 	= regexp.MustCompile(`"NonFungibleToken-v2"`)
+	placeholderMetadataViews      	= regexp.MustCompile(`"MetadataViews"`)
+	placeholderFungibleToken      	= regexp.MustCompile(`"FungibleToken"`)
+	placeholderResolver				= regexp.MustCompile(`"ViewResolver"`)
+	placeholderNFTMetadataViews   	= regexp.MustCompile(`"NFTMetadataViews"`)
+	placeholderMultipleNFT        	= regexp.MustCompile(`"MultipleNFT"`)
 )
 
 const (
@@ -43,7 +43,7 @@ func NonFungibleToken() []byte {
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleTokenV2(resolverAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameNonFungibleTokenV2)
-	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
+	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
 	return []byte(code)
 }
 
@@ -61,7 +61,7 @@ func ExampleNFT(nftAddress, metadataAddress, resolverAddress, multipleNFTAddress
 
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
-	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
+	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
 	code = placeholderMultipleNFT.ReplaceAllString(code, "0x"+multipleNFTAddress.String())
 
 	return []byte(code)
@@ -72,7 +72,7 @@ func MetadataViews(ftAddress, nftAddress, resolverAddress flow.Address) []byte {
 
 	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress.String())
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
+	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
 
 	return []byte(code)
 }
