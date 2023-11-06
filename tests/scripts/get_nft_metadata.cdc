@@ -181,7 +181,7 @@ access(all) fun main(address: Address, id: UInt64): Bool {
     assert(nil == nftMetadata.license)
 
     let coll <- nftCollectionView.createEmptyCollection()
-    assert(0 == coll.getIDs().length)
+    assert(0 == coll.getLength())
     destroy <- coll
 
     return true

@@ -247,7 +247,7 @@ access(all) contract NonFungibleToken {
         /// and returns it to the caller so that they can own NFTs
         access(all) fun createEmptyCollection(): @{Collection} {
             post {
-                result.getIDs().length == 0: "The created collection must be empty!"
+                result.getLength() == 0: "The created collection must be empty!"
             }
         }
 

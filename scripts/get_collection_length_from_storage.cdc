@@ -12,5 +12,5 @@ access(all) fun main(address: Address): Int {
             from: collectionData.storagePath
         ) ?? panic("Could not borrow reference to collection from storage")
 
-    return collectionRef.getIDs().length
+    return collectionRef.getLength()
 }

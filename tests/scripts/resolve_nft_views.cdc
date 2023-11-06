@@ -34,7 +34,7 @@ access(all) fun main(): Bool {
     assert(Type<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>() == collectionData.providerLinkedType)
 
     let coll <- collectionData.createEmptyCollection()
-    assert(0 == coll.getIDs().length)
+    assert(0 == coll.getLength())
 
     destroy <- coll
 
