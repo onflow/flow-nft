@@ -275,8 +275,6 @@ access(all) contract NonFungibleToken {
         ///
         access(Withdrawable) fun transfer(id: UInt64, receiver: Capability<&{NonFungibleToken.Receiver}>): Bool {
             pre {
-                receiver.check(): "Could not borrow a reference to the NFT receiver"
-                self.getIDs().contains(id): "The collection does not contain the specified ID"
                 NonFungibleToken.emitNFTTransfer(id: id, uuid: self.borrowNFTSafe(id: id)?.uuid, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.borrowNFT(id).getType().identifier)
             }
         }
