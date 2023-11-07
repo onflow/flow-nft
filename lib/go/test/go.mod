@@ -3,10 +3,10 @@ module github.com/onflow/flow-nft/lib/go/test
 go 1.18
 
 require (
-	github.com/onflow/cadence v0.39.13-stable-cadence.0.20230815215130-fc15617946a1
-	github.com/onflow/flow-emulator v0.54.1-0.20230815221351-758e3a5bb92a
-	github.com/onflow/flow-go-sdk v0.41.10-0.20230815215544-c3e9ce914aee
-	github.com/onflow/flow-nft/lib/go/contracts v1.1.1-0.20230726191152-4293bb676808
+	github.com/onflow/cadence v1.0.0-preview.1
+	github.com/onflow/flow-emulator v0.54.1-0.20230919150501-db4da71c768b
+	github.com/onflow/flow-go-sdk v0.44.0-stable-cadence.2
+	github.com/onflow/flow-nft/lib/go/contracts v1.1.1-0.20230915224343-ca2663ed82cf
 	github.com/onflow/flow-nft/lib/go/templates v0.0.0-00010101000000-000000000000
 	github.com/rs/zerolog v1.29.0
 	github.com/stretchr/testify v1.8.4
@@ -15,7 +15,7 @@ require (
 require (
 	github.com/SaveTheRbtz/mph v0.1.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bits-and-blooms/bitset v1.5.0 // indirect
+	github.com/bits-and-blooms/bitset v1.7.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
@@ -29,7 +29,7 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/ef-ds/deque v1.0.4 // indirect
-	github.com/ethereum/go-ethereum v1.9.13 // indirect
+	github.com/ethereum/go-ethereum v1.12.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.4.1-0.20230228173756-c0c9f774e40c // indirect
 	github.com/fxamacker/circlehash v0.3.0 // indirect
@@ -41,13 +41,14 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/golang/snappy v0.0.4 // indirect
+	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/holiman/uint256 v1.2.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/ipfs/bbloom v0.0.4 // indirect
 	github.com/ipfs/go-block-format v0.1.2 // indirect
@@ -84,15 +85,14 @@ require (
 	github.com/multiformats/go-multihash v0.2.3 // indirect
 	github.com/multiformats/go-multistream v0.4.1 // indirect
 	github.com/multiformats/go-varint v0.0.7 // indirect
-	github.com/onflow/atree v0.6.0 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/contracts v1.2.4-0.20230808220007-f00e74ca675b // indirect
-	github.com/onflow/flow-core-contracts/lib/go/templates v1.2.4-0.20230808220007-f00e74ca675b // indirect
-	github.com/onflow/flow-ft/lib/go/contracts v0.7.1-0.20230726183918-f90805445bfa // indirect
-	github.com/onflow/flow-go v0.31.1-0.20230815221159-accf10b9fbaa // indirect
+	github.com/onflow/atree v0.6.1-0.20230711151834-86040b30171f // indirect
+	github.com/onflow/flow-core-contracts/lib/go/contracts v1.2.4-0.20230915224512-fa9343b5af21 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/templates v1.2.4-0.20230915224512-fa9343b5af21 // indirect
+	github.com/onflow/flow-ft/lib/go/contracts v0.7.1-0.20230913160646-09adc7d3b513 // indirect
+	github.com/onflow/flow-go v0.31.1-0.20230915232445-43aebfd0ae6a // indirect
 	github.com/onflow/flow-go/crypto v0.24.9 // indirect
 	github.com/onflow/flow/protobuf/go/flow v0.3.2-0.20230628215638-83439d22e0ce // indirect
-	github.com/onflow/nft-storefront/lib/go/contracts v0.0.0-20221222181731-14b90207cead // indirect
-	github.com/onflow/sdks v0.5.0 // indirect
+	github.com/onflow/sdks v0.5.1-0.20230912225508-b35402f12bba // indirect
 	github.com/onsi/gomega v1.27.7 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
@@ -137,12 +137,12 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/crypto v0.10.0 // indirect
-	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
-	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/sync v0.2.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/text v0.10.0 // indirect
+	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sync v0.3.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	gonum.org/v1/gonum v0.13.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect

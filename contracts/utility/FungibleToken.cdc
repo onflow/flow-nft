@@ -102,12 +102,12 @@ access(all) contract FungibleToken {
         /// capability that allows all users to access the provider
         /// resource through a reference.
         ///
-        access(Withdrawable) fun withdraw(amount: UFix64): @AnyResource{Vault} {
+        access(Withdrawable) fun withdraw(amount: UFix64): @{Vault} {
             post {
                 // `result` refers to the return value
                 result.getBalance() == amount:
                     "Withdrawal amount must be the same as the balance of the withdrawn Vault"
-                FungibleToken.emitWithdrawEvent(amount: amount, from: self.owner?.address, type: self.getType().identifier)
+                //FungibleToken.emitWithdrawEvent(amount: amount, from: self.owner?.address, type: self.getType().identifier)
             }
         }
     }
@@ -126,13 +126,45 @@ access(all) contract FungibleToken {
 
         /// deposit takes a Vault and deposits it into the implementing resource type
         ///
-        access(all) fun deposit(from: @AnyResource{Vault})
+        access(all) fun deposit(from: @{Vault})
+
+        /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
+        access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
+            pre { true: "dummy" }
+        }
+
+        /// Returns whether or not the given type is accepted by the Receiver
+        /// A vault that can accept any type should just return true by default
+        access(all) view fun isSupportedVaultType(type: Type): Bool {
+            pre { true: "dummy" }
+        }
+    }
+
+    access(all) resource interface Transferor {
+        /// Function for a direct transfer instead of having to do a deposit and withdrawal
+        ///
+        access(Withdrawable) fun transfer(amount: UFix64, receiver: Capability<&{FungibleToken.Receiver}>) {
+            pre {
+                receiver.check(): "Could not borrow a reference to the NFT receiver"
+            }
+        }
+    }
+
+    /// Vault
+    ///
+    /// Ideally, this interface would also conform to Receiver, Balance, Transferor, Provider, and Resolver
+    /// but that is not supported yet
+    ///
+    access(all) resource interface Vault: Receiver, Transferor, Provider, ViewResolver.Resolver { //,Balance {
+
+        /// Get the balance of the vault
+        access(all) view fun getBalance(): UFix64
 
         /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
         access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
             // Below check is implemented to make sure that run-time type would
             // only get returned when the parent resource conforms with `FungibleToken.Vault`. 
-            if self.getType().isSubtype(of: Type<@AnyResource{FungibleToken.Vault}>()) {
+            if self.getType().isSubtype(of: Type<@{FungibleToken.Vault}>()) {
                 return {self.getType(): true}
             } else {
                 // Return an empty dictionary as the default value for resource who don't
@@ -141,58 +173,9 @@ access(all) contract FungibleToken {
             }
         }
 
-        /// Returns whether or not the given type is accepted by the Receiver
-        /// A vault that can accept any type should just return true by default
         access(all) view fun isSupportedVaultType(type: Type): Bool {
-            return false
+            return self.getSupportedVaultTypes()[type] ?? false
         }
-    }
-
-    access(all) resource interface Transferor {
-        /// Function for a direct transfer instead of having to do a deposit and withdrawal
-        ///
-        access(all) fun transfer(amount: UFix64, receiver: Capability<&{FungibleToken.Receiver}>) {
-            pre {
-                receiver.check(): "Could not borrow a reference to the NFT receiver"
-            }
-        }
-    }
-
-    /// Balance
-    ///
-    /// This interface is now a general purpose metadata interface because
-    /// a public interface is needed to get metadata, but adding a whole new interface
-    /// for every account to upgrade to is probably too much of a breaking change
-    access(all) resource interface Balance { //: ViewResolver.Resolver {
-
-        /// Method to get the balance
-        /// The balance could be a derived field,
-        /// so there is no need to require an explicit field
-        access(all) view fun getBalance(): UFix64
-
-        access(all) view fun getSupportedVaultTypes(): {Type: Bool}
-        access(all) view fun isSupportedVaultType(type: Type): Bool
-
-        /// ViewResolver Methods
-        ///
-        access(all) view fun getViews(): [Type]
-        access(all) view fun resolveView(_ view: Type): AnyStruct?
-    }
-
-    /// Vault
-    ///
-    /// Ideally, this interface would also conform to Receiver, Balance, Transferor, Provider, and Resolver
-    /// but that is not supported yet
-    ///
-    access(all) resource interface Vault { //: Receiver, Balance, Transferor, Provider, ViewResolver.Resolver {
-
-        /// Get the balance of the vault
-        access(all) view fun getBalance(): UFix64
-
-        /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
-        access(all) view fun getSupportedVaultTypes(): {Type: Bool}
-
-        access(all) view fun isSupportedVaultType(type: Type): Bool
 
         /// Returns the storage path where the vault should typically be stored
         access(all) view fun getDefaultStoragePath(): StoragePath? {
@@ -204,13 +187,24 @@ access(all) contract FungibleToken {
             return nil
         }
 
-        access(all) view fun getViews(): [Type]
-        access(all) view fun resolveView(_ view: Type): AnyStruct?
+        /// Returns the public path where this vault's Receiver should have a public capability
+        /// Publishing a Receiver Capability at a different path enables alternate Receiver implementations to be used
+        /// in the same canonical namespace as the underlying Vault.
+        access(all) view fun getDefaultReceiverPath(): PublicPath? {
+            return nil
+        }
+
+        // access(all) view fun getViews(): [Type] {
+        //     pre { true: "dummy" }
+        // }
+        // access(all) fun resolveView(_ view: Type): AnyStruct? {
+        //     pre { true: "dummy" }
+        // }
 
         /// withdraw subtracts `amount` from the Vault's balance
         /// and returns a new Vault with the subtracted balance
         ///
-        access(Withdrawable) fun withdraw(amount: UFix64): @AnyResource{Vault} {
+        access(Withdrawable) fun withdraw(amount: UFix64): @{Vault} {
             pre {
                 self.getBalance() >= amount:
                     "Amount withdrawn must be less than or equal than the balance of the Vault"
@@ -226,13 +220,13 @@ access(all) contract FungibleToken {
 
         /// deposit takes a Vault and adds its balance to the balance of this Vault
         ///
-        access(all) fun deposit(from: @AnyResource{FungibleToken.Vault}) {
+        access(all) fun deposit(from: @{FungibleToken.Vault}) {
             // Assert that the concrete type of the deposited vault is the same
             // as the vault that is accepting the deposit
             pre {
                 from.isInstance(self.getType()): 
                     "Cannot deposit an incompatible token type"
-                FungibleToken.emitDepositEvent(amount: from.getBalance(), to: self.owner?.address, type: from.getType().identifier)
+                //FungibleToken.emitDepositEvent(amount: from.getBalance(), to: self.owner?.address, type: from.getType().identifier)
             }
             post {
                 self.getBalance() == before(self.getBalance()) + before(from.getBalance()):
@@ -242,17 +236,17 @@ access(all) contract FungibleToken {
 
         /// Function for a direct transfer instead of having to do a deposit and withdrawal
         ///
-        access(all) fun transfer(amount: UFix64, receiver: Capability<&{FungibleToken.Receiver}>) {
+        access(Withdrawable) fun transfer(amount: UFix64, receiver: Capability<&{FungibleToken.Receiver}>) {
             post {
                 self.getBalance() == before(self.getBalance()) - amount:
                     "New Vault balance from the sender must be the difference of the previous balance and the withdrawn Vault balance"
-                FungibleToken.emitTransferEvent(amount: amount, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.getType().identifier)
+                //FungibleToken.emitTransferEvent(amount: amount, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.getType().identifier)
             }
         }
 
         /// createEmptyVault allows any user to create a new Vault that has a zero balance
         ///
-        access(all) fun createEmptyVault(): @AnyResource{Vault} {
+        access(all) fun createEmptyVault(): @{Vault} {
             post {
                 result.getBalance() == 0.0: "The newly created Vault must have zero balance"
             }
@@ -260,7 +254,7 @@ access(all) contract FungibleToken {
 
         destroy() {
             pre {
-                FungibleToken.emitBurnEvent(amount: self.getBalance(), type: self.getType().identifier)
+                //FungibleToken.emitBurnEvent(amount: self.getBalance(), type: self.getType().identifier)
             }
         }
     }

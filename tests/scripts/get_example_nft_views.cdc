@@ -4,7 +4,7 @@
 import ExampleNFT from "ExampleNFT"
 import MetadataViews from "MetadataViews"
 
-pub fun main(): Bool {
+access(all) fun main(): Bool {
     let views = ExampleNFT.getViews()
 
     let expected = [

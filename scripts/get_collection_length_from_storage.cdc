@@ -3,14 +3,14 @@ import MetadataViews from "MetadataViews"
 import ExampleNFT from "ExampleNFT"
 
 access(all) fun main(address: Address): Int {
-    let account = getAccount(address)
+    let account = getAuthAccount<auth(BorrowValue) &Account>(address)
 
     let collectionData = ExampleNFT.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
         ?? panic("ViewResolver does not resolve NFTCollectionData view")
 
-    let collectionRef = account.capabilities.borrow<&{NonFungibleToken.Collection}>(
-            collectionData.publicPath
-        ) ?? panic("Could not borrow capability from public collection")
+    let collectionRef = account.storage.borrow<&{NonFungibleToken.Collection}>(
+            from: collectionData.storagePath
+        ) ?? panic("Could not borrow reference to collection from storage")
 
     return collectionRef.getLength()
 }

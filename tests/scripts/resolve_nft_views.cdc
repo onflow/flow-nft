@@ -5,14 +5,15 @@ import ExampleNFT from "ExampleNFT"
 import NonFungibleToken from "NonFungibleToken"
 import MetadataViews from "MetadataViews"
 
-pub fun main(): Bool {
+access(all) fun main(): Bool {
     // Call `resolveView` with invalid Type
     let view = ExampleNFT.resolveView(Type<String>())
     assert(nil == view)
 
-    let collectionDisplay = (ExampleNFT.resolveView(
-        Type<MetadataViews.NFTCollectionDisplay>()
-    )as! MetadataViews.NFTCollectionDisplay?)!
+    let collectionDisplay = ExampleNFT.resolveView(
+            Type<MetadataViews.NFTCollectionDisplay>()
+        ) as! MetadataViews.NFTCollectionDisplay?
+        ?? panic("ExampleNFT Collection did not resolve NFTCollectionDisplay view!")
 
     assert("The Example Collection" == collectionDisplay.name)
     assert("This collection is used as an example to help you develop your next Flow NFT." == collectionDisplay.description)
@@ -25,15 +26,15 @@ pub fun main(): Bool {
         Type<MetadataViews.NFTCollectionData>()
     ) as! MetadataViews.NFTCollectionData?)!
 
-    assert(ExampleNFT.CollectionStoragePath == collectionData.storagePath)
-    assert(ExampleNFT.CollectionPublicPath == collectionData.publicPath)
-    assert(/private/exampleNFTCollection == collectionData.providerPath)
-    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>() == collectionData.publicCollection)
-    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>() == collectionData.publicLinkedType)
-    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>() == collectionData.providerLinkedType)
+    assert(/storage/cadenceExampleNFTCollection == collectionData.storagePath)
+    assert(/public/cadenceExampleNFTCollection == collectionData.publicPath)
+    assert(/private/cadenceExampleNFTCollection == collectionData.providerPath)
+    assert(Type<&ExampleNFT.Collection>() == collectionData.publicCollection)
+    assert(Type<&ExampleNFT.Collection>() == collectionData.publicLinkedType)
+    assert(Type<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>() == collectionData.providerLinkedType)
 
     let coll <- collectionData.createEmptyCollection()
-    assert(0 == coll.getIDs().length)
+    assert(0 == coll.getLength())
 
     destroy <- coll
 

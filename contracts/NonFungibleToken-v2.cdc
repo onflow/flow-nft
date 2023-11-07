@@ -58,7 +58,7 @@ access(all) contract NonFungibleToken {
     ///
     access(all) event Withdraw(id: UInt64, uuid: UInt64, from: Address?, type: String)
 
-    access(self) fun emitNFTWithdraw(id: UInt64, uuid: UInt64, from: Address?, type: String): Bool
+    access(self) view fun emitNFTWithdraw(id: UInt64, uuid: UInt64, from: Address?, type: String): Bool
     {
         emit Withdraw(id: id, uuid: uuid, from: from, type: type)
         return true
@@ -70,7 +70,7 @@ access(all) contract NonFungibleToken {
     ///
     access(all) event Deposit(id: UInt64, uuid: UInt64, to: Address?, type: String)
 
-    access(self) fun emitNFTDeposit(id: UInt64, uuid: UInt64, to: Address?, type: String): Bool
+    access(self) view fun emitNFTDeposit(id: UInt64, uuid: UInt64, to: Address?, type: String): Bool
     {
         emit Deposit(id: id, uuid: uuid, to: to, type: type)
         return true
@@ -82,7 +82,7 @@ access(all) contract NonFungibleToken {
     ///
     access(all) event Transfer(id: UInt64, uuid: UInt64, from: Address?, to: Address?, type: String)
 
-    access(self) fun emitNFTTransfer(id: UInt64, uuid: UInt64?, from: Address?, to: Address?, type: String?): Bool
+    access(self) view fun emitNFTTransfer(id: UInt64, uuid: UInt64?, from: Address?, to: Address?, type: String?): Bool
     {
         // The transfer method can return false even if it didn't do a transfer
         // in which case we don't want the event to be emitted
@@ -99,7 +99,7 @@ access(all) contract NonFungibleToken {
     /// The event that should be emitted when an NFT is destroyed
     access(all) event Destroy(id: UInt64, uuid: UInt64, type: String)
 
-    access(self) fun emitNFTDestroy(id: UInt64, uuid: UInt64, type: String): Bool
+    access(self) view fun emitNFTDestroy(id: UInt64, uuid: UInt64, type: String): Bool
     {
         emit Destroy(id: id, uuid: uuid, type: type)
         return true
@@ -122,7 +122,7 @@ access(all) contract NonFungibleToken {
 
         destroy() {
             pre {
-                //NonFungibleToken.emitNFTDestroy(id: self.getID(), uuid: self.uuid, type: self.getType().identifier)
+                NonFungibleToken.emitNFTDestroy(id: self.getID(), uuid: self.uuid, type: self.getType().identifier)
             }
         }
     }
@@ -143,7 +143,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdraw(withdrawID: UInt64): @{NFT} {
             post {
                 result.getID() == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
-                //NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
 
@@ -161,7 +161,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdrawWithUUID(_ uuid: UInt64): @{NFT} {
             post {
                 result == nil || result!.uuid == uuid: "The ID of the withdrawn token must be the same as the requested ID"
-                //NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
 
@@ -170,7 +170,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdrawWithType(type: Type, withdrawID: UInt64): @{NFT} {
             post {
                 result == nil || result.getID() == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
-                //NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
 
@@ -179,7 +179,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdrawWithTypeAndUUID(type: Type, uuid: UInt64): @{NFT} {
             post {
                 result == nil || result!.uuid == uuid: "The ID of the withdrawn token must be the same as the requested ID"
-                //NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
     }
@@ -247,7 +247,7 @@ access(all) contract NonFungibleToken {
         /// and returns it to the caller so that they can own NFTs
         access(all) fun createEmptyCollection(): @{Collection} {
             post {
-                result.getIDs().length == 0: "The created collection must be empty!"
+                result.getLength() == 0: "The created collection must be empty!"
             }
         }
 
@@ -260,24 +260,23 @@ access(all) contract NonFungibleToken {
 
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
-        access(all) fun deposit(token: @{NonFungibleToken.NFT}) 
-        // {
-        //     pre {
-        //         // We emit the deposit event in the `Collection` interface
-        //         // because the `Collection` interface is almost always the final destination
-        //         // of tokens and deposit emissions from custom receivers could be confusing
-        //         // and hard to reconcile to event listeners
-        //         //NonFungibleToken.emitNFTDeposit(id: token.getID(), uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier)
-        //     }
-        // }
+        access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
+            pre {
+                // We emit the deposit event in the `Collection` interface
+                // because the `Collection` interface is almost always the final destination
+                // of tokens and deposit emissions from custom receivers could be confusing
+                // and hard to reconcile to event listeners
+                NonFungibleToken.emitNFTDeposit(id: token.getID(), uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier)
+            }
+        }
 
         /// Function for a direct transfer instead of having to do a deposit and withdrawal
         /// This can and should return false if the transfer doesn't succeed and true if it does succeed
         ///
         access(Withdrawable) fun transfer(id: UInt64, receiver: Capability<&{NonFungibleToken.Receiver}>): Bool {
             pre {
-                receiver.check(): "Could not borrow a reference to the NFT receiver"
-                //NonFungibleToken.emitNFTTransfer(id: id, uuid: self.borrowNFTSafe(id: id)?.uuid, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.borrowNFT(id).getType().identifier)
+                self.getIDs().contains(id): "The collection does not contain the specified ID"
+                NonFungibleToken.emitNFTTransfer(id: id, uuid: self.borrowNFTSafe(id: id)?.uuid, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.borrowNFT(id).getType().identifier)
             }
         }
 

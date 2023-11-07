@@ -68,6 +68,24 @@ func TestGetNFTMetadata(t *testing.T) {
 
 	t.Run("Should be able to verify the metadata of the minted NFT", func(t *testing.T) {
 
+		// Set expected NFTCollectionData values
+		const (
+			pathName            = "cadenceExampleNFTCollection"
+			collectionType      = "A.045a1763c93006ca.ExampleNFT.Collection"
+			providerEntitlement = "auth(A.179b6b1cb6755e31.NonFungibleToken.Withdrawable)"
+		)
+
+		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)
+		idsResult := executeScriptAndCheck(
+			t, b,
+			idsScript,
+			[][]byte{
+				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
+				jsoncdc.MustEncode(cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}),
+			},
+		)
+		mintedID := idsResult.(cadence.Array).Values[0].(cadence.UInt64)
+
 		// Run a script to get the Display view for the specified NFT ID
 		script := templates.GenerateGetNFTMetadataScript(nftAddress, exampleNFTAddress, metadataAddress)
 		result := executeScriptAndCheck(
@@ -75,7 +93,7 @@ func TestGetNFTMetadata(t *testing.T) {
 			script,
 			[][]byte{
 				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
-				jsoncdc.MustEncode(cadence.NewUInt64(0)),
+				jsoncdc.MustEncode(mintedID),
 			},
 		)
 
@@ -84,8 +102,8 @@ func TestGetNFTMetadata(t *testing.T) {
 			name        = "Example NFT 0"
 			description = "This is an example NFT"
 			thumbnail   = "example.jpeg"
-			externalURL = "https://example-nft.onflow.org/0"
 		)
+		externalURL := "https://example-nft.onflow.org/" + mintedID.String()
 
 		nftResult := result.(cadence.Struct)
 
@@ -109,24 +127,14 @@ func TestGetNFTMetadata(t *testing.T) {
 		assert.Equal(t, cadence.String(externalURL), nftResult.Fields[6])
 
 		// Assert that the serial number is correct
-		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[7])
+		assert.Equal(t, mintedID, nftResult.Fields[7])
 
-		// Verify NFTCollectionData results are as expected
-		const (
-			pathName                = "exampleNFTCollection"
-			collectionType          = "A.e03daebed8ca0615.ExampleNFT.Collection"
-			collectionPublicType    = "A.e03daebed8ca0615.ExampleNFT.ExampleNFTCollectionPublic"
-			nftCollectionPublicType = "A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic"
-			nftReceiverType         = "A.01cf0e2f2f715450.NonFungibleToken.Receiver"
-			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
-			providerType            = "A.01cf0e2f2f715450.NonFungibleToken.Provider"
-		)
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}, nftResult.Fields[8])
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainStorage, Identifier: pathName}, nftResult.Fields[9])
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainPrivate, Identifier: pathName}, nftResult.Fields[10])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[11])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[12])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[13])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[11])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[12])
+		assert.Equal(t, cadence.String(fmt.Sprintf("%s&%s", providerEntitlement, collectionType)), nftResult.Fields[13])
 
 		// Verify NFTCollectionDisplay results are as expected
 		const (
@@ -151,10 +159,10 @@ func TestGetNFTMetadata(t *testing.T) {
 		)
 		expectedName, _ := cadence.NewString(editionName)
 		assert.Equal(t, cadence.NewOptional(expectedName), nftResult.Fields[20].(cadence.Struct).Fields[0])
-		assert.Equal(t, cadence.NewUInt64(editionNum), nftResult.Fields[20].(cadence.Struct).Fields[1])
+		assert.Equal(t, mintedID, nftResult.Fields[20].(cadence.Struct).Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), nftResult.Fields[20].(cadence.Struct).Fields[2])
 
-		minterName, _ := cadence.NewString("minter")
+		mintedTimeName, _ := cadence.NewString("mintedTime")
 
 		traitsView := nftResult.Fields[21].(cadence.Struct)
 		traits := traitsView.Fields[0].(cadence.Array)
@@ -162,25 +170,19 @@ func TestGetNFTMetadata(t *testing.T) {
 		blockNumberName, _ := cadence.NewString("mintedBlock")
 		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
-		assert.Equal(t, cadence.NewUInt64(15), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewUInt64(18), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 
 		mintTrait := traits.Values[1].(cadence.Struct)
-		assert.Equal(t, minterName, mintTrait.Fields[0])
-		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		mintedTimeDisplayType, _ := cadence.NewString("Date")
+		assert.Equal(t, mintedTimeName, mintTrait.Fields[0])
+		assert.Equal(t, cadence.NewOptional(mintedTimeDisplayType), mintTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
 
-		mintedTimeName, _ := cadence.NewString("mintedTime")
-		mintedTimeDisplayType, _ := cadence.NewString("Date")
-		mintedTimeTrait := traits.Values[2].(cadence.Struct)
-		assert.Equal(t, mintedTimeName, mintedTimeTrait.Fields[0])
-		assert.Equal(t, cadence.NewOptional(mintedTimeDisplayType), mintedTimeTrait.Fields[2])
-
+		fooTrait := traits.Values[2].(cadence.Struct)
 		fooName, _ := cadence.NewString("foo")
 		fooValue, _ := cadence.NewString("bar")
-		fooTrait := traits.Values[3].(cadence.Struct)
 		fooRarityOptional := fooTrait.Fields[3].(cadence.Optional)
 		fooRarity := fooRarityOptional.Value.(cadence.Struct)
 		rarityDescription, _ := cadence.NewString("Common")
@@ -202,7 +204,7 @@ func TestGetNFTView(t *testing.T) {
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
+	nftAddress, metadataAddress, exampleNFTAddress, viewResolverAddress := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
 
 	// Mint a single NFT with standard royalty cuts and metadata
 	mintExampleNFT(t, b,
@@ -213,14 +215,33 @@ func TestGetNFTView(t *testing.T) {
 
 	t.Run("Should be able to verify the nft metadata view of the minted NFT", func(t *testing.T) {
 
+		// Set expected NFTCollectionData values
+		// Set expected NFTCollectionData values
+		const (
+			pathName            = "cadenceExampleNFTCollection"
+			collectionType      = "A.045a1763c93006ca.ExampleNFT.Collection"
+			providerEntitlement = "auth(A.179b6b1cb6755e31.NonFungibleToken.Withdrawable)"
+		)
+
+		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)
+		idsResult := executeScriptAndCheck(
+			t, b,
+			idsScript,
+			[][]byte{
+				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
+				jsoncdc.MustEncode(cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}),
+			},
+		)
+		mintedID := idsResult.(cadence.Array).Values[0].(cadence.UInt64)
+
 		// Run a script to get the Display view for the specified NFT ID
-		script := templates.GenerateGetNFTViewScript(nftAddress, exampleNFTAddress, metadataAddress)
+		script := templates.GenerateGetNFTViewScript(nftAddress, exampleNFTAddress, metadataAddress, viewResolverAddress)
 		result := executeScriptAndCheck(
 			t, b,
 			script,
 			[][]byte{
 				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
-				jsoncdc.MustEncode(cadence.NewUInt64(0)),
+				jsoncdc.MustEncode(mintedID),
 			},
 		)
 
@@ -229,12 +250,12 @@ func TestGetNFTView(t *testing.T) {
 			name        = "Example NFT 0"
 			description = "This is an example NFT"
 			thumbnail   = "example.jpeg"
-			externalURL = "https://example-nft.onflow.org/0"
 		)
+		externalURL := "https://example-nft.onflow.org/" + mintedID.String()
 
 		nftResult := result.(cadence.Struct)
 
-		assert.Equal(t, cadence.NewUInt64(0), nftResult.Fields[0])
+		assert.Equal(t, mintedID, nftResult.Fields[0])
 		assert.Equal(t, cadence.String(name), nftResult.Fields[2])
 		assert.Equal(t, cadence.String(name), nftResult.Fields[2])
 		assert.Equal(t, cadence.String(description), nftResult.Fields[3])
@@ -250,22 +271,12 @@ func TestGetNFTView(t *testing.T) {
 		// Verify external URL view result is as expected
 		assert.Equal(t, cadence.String(externalURL), nftResult.Fields[6])
 
-		// Verify NFTCollectionData results are as expected
-		const (
-			pathName                = "exampleNFTCollection"
-			collectionType          = "A.e03daebed8ca0615.ExampleNFT.Collection"
-			collectionPublicType    = "A.e03daebed8ca0615.ExampleNFT.ExampleNFTCollectionPublic"
-			nftCollectionPublicType = "A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic"
-			nftReceiverType         = "A.01cf0e2f2f715450.NonFungibleToken.Receiver"
-			resolverCollectionType  = "A.179b6b1cb6755e31.MetadataViews.ResolverCollection"
-			providerType            = "A.01cf0e2f2f715450.NonFungibleToken.Provider"
-		)
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}, nftResult.Fields[7])
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainStorage, Identifier: pathName}, nftResult.Fields[8])
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainPrivate, Identifier: pathName}, nftResult.Fields[9])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s}", collectionType, collectionPublicType)), nftResult.Fields[10])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, nftReceiverType, resolverCollectionType)), nftResult.Fields[11])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s{%s,%s,%s,%s}", collectionType, collectionPublicType, nftCollectionPublicType, providerType, resolverCollectionType)), nftResult.Fields[12])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[10])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[11])
+		assert.Equal(t, cadence.String(fmt.Sprintf("%s&%s", providerEntitlement, collectionType)), nftResult.Fields[12])
 
 		// Verify NFTCollectionDisplay results are as expected
 		const (
@@ -280,7 +291,7 @@ func TestGetNFTView(t *testing.T) {
 		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[16])
 		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[17])
 
-		minterName, _ := cadence.NewString("minter")
+		mintedTimeName, _ := cadence.NewString("mintedTime")
 
 		traitsView := nftResult.Fields[19].(cadence.Struct)
 		traits := traitsView.Fields[0].(cadence.Array)
@@ -288,25 +299,19 @@ func TestGetNFTView(t *testing.T) {
 		blockNumberName, _ := cadence.NewString("mintedBlock")
 		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
-		assert.Equal(t, cadence.NewUInt64(15), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewUInt64(18), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 
 		mintTrait := traits.Values[1].(cadence.Struct)
-		assert.Equal(t, minterName, mintTrait.Fields[0])
-		assert.Equal(t, fmt.Sprintf("0x%s", exampleNFTAddress.String()), mintTrait.Fields[1].String())
-		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[2])
+		mintedTimeDisplayType, _ := cadence.NewString("Date")
+		assert.Equal(t, mintedTimeName, mintTrait.Fields[0])
+		assert.Equal(t, cadence.NewOptional(mintedTimeDisplayType), mintTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), mintTrait.Fields[3])
 
-		mintedTimeName, _ := cadence.NewString("mintedTime")
-		mintedTimeDisplayType, _ := cadence.NewString("Date")
-		mintedTimeTrait := traits.Values[2].(cadence.Struct)
-		assert.Equal(t, mintedTimeName, mintedTimeTrait.Fields[0])
-		assert.Equal(t, cadence.NewOptional(mintedTimeDisplayType), mintedTimeTrait.Fields[2])
-
+		fooTrait := traits.Values[2].(cadence.Struct)
 		fooName, _ := cadence.NewString("foo")
 		fooValue, _ := cadence.NewString("bar")
-		fooTrait := traits.Values[3].(cadence.Struct)
 		fooRarityOptional := fooTrait.Fields[3].(cadence.Optional)
 		fooRarity := fooRarityOptional.Value.(cadence.Struct)
 		rarityDescription, _ := cadence.NewString("Common")
@@ -319,7 +324,6 @@ func TestGetNFTView(t *testing.T) {
 		max, _ := cadence.NewUFix64("100.0")
 		assert.Equal(t, max, fooRarityMax)
 		assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
-
 	})
 }
 
@@ -342,14 +346,27 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 		exampleNFTSigner)
 
 	t.Run("Should be able to setup an account using the NFTCollectionData metadata view of a referenced NFT", func(t *testing.T) {
-		// Ideally, the exampleNFTAddress would not be needed in order to perform the full setup, but it is required
-		// until the following issue is supported in cadence: https://github.com/onflow/cadence/issues/1617
-		script := templates.GenerateSetupAccountFromNftReferenceScript(nftAddress, exampleNFTAddress, metadataAddress)
+		const (
+			pathName = "cadenceExampleNFTCollection"
+		)
+
+		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)
+		idsResult := executeScriptAndCheck(
+			t, b,
+			idsScript,
+			[][]byte{
+				jsoncdc.MustEncode(cadence.NewAddress(exampleNFTAddress)),
+				jsoncdc.MustEncode(cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}),
+			},
+		)
+		mintedID := idsResult.(cadence.Array).Values[0].(cadence.UInt64)
+
+		script := templates.GenerateSetupAccountFromNftReferenceScript(nftAddress, metadataAddress)
 		tx := createTxWithTemplateAndAuthorizer(b, script, aAddress)
 
 		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.Path{Domain: common.PathDomainPublic, Identifier: "exampleNFTCollection"})
-		tx.AddArgument(cadence.NewUInt64(0))
+		tx.AddArgument(cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName})
+		tx.AddArgument(mintedID)
 
 		serviceSigner, _ := b.ServiceKey().Signer()
 
@@ -366,7 +383,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 			false,
 		)
 
-		assertCollectionLength(t, b, nftAddress, exampleNFTAddress,
+		assertCollectionLength(t, b, nftAddress, exampleNFTAddress, metadataAddress,
 			aAddress,
 			0,
 		)
