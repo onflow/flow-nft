@@ -9,6 +9,7 @@ import Test
 
 access(all) let blockchain = Test.newEmulatorBlockchain()
 
+/// Deploys a contract to the given account, sourcing the contract code from the specified path
 access(all) fun deploy(_ contractName: String, _ account: Test.TestAccount, _ path: String) {
     let err = blockchain.deployContract(
         name: contractName,
@@ -23,6 +24,8 @@ access(all) fun deploy(_ contractName: String, _ account: Test.TestAccount, _ pa
     }
 }
 
+/// Deploys a contract to the given account, sourcing the contract code from the specified path, passing the given
+/// arguments to the contract's initializer
 access(all) fun deployWithArgs(_ contractName: String, _ account: Test.TestAccount, _ path: String, args: [AnyStruct]) {
     let err = blockchain.deployContract(
         name: contractName,
@@ -37,6 +40,8 @@ access(all) fun deployWithArgs(_ contractName: String, _ account: Test.TestAccou
     }
 }
 
+/// Executes a script with the given arguments, sourcing the script code from the root/scripts directory.
+/// Assumes no error on execution
 access(all) fun scriptExecutor(_ scriptName: String, _ arguments: [AnyStruct]): AnyStruct? {
     let scriptCode = loadCode(scriptName, "scripts")
     let scriptResult = blockchain.executeScript(scriptCode, arguments)
@@ -48,6 +53,8 @@ access(all) fun scriptExecutor(_ scriptName: String, _ arguments: [AnyStruct]): 
     return scriptResult.returnValue
 }
 
+/// Executes a script with the given arguments, sourcing the script code from the root/test/scripts directory.
+/// Assumes no error on execution
 access(all) fun executeTestScript(_ scriptName: String, _ arguments: [AnyStruct]): AnyStruct? {
     let scriptCode = Test.readFile("./scripts/".concat(scriptName))
     let scriptResult = blockchain.executeScript(scriptCode, arguments)
@@ -61,6 +68,8 @@ access(all) fun executeTestScript(_ scriptName: String, _ arguments: [AnyStruct]
     return scriptResult.returnValue
 }
 
+/// Executes a script with the given arguments, sourcing the script code from the root/scripts directory.
+/// Assumes failed execution
 access(all) fun expectScriptFailure(_ scriptName: String, _ arguments: [AnyStruct]): String {
     let scriptCode = loadCode(scriptName, "scripts")
     let scriptResult = blockchain.executeScript(scriptCode, arguments)
@@ -69,6 +78,8 @@ access(all) fun expectScriptFailure(_ scriptName: String, _ arguments: [AnyStruc
     return scriptResult.error!.message
 }
 
+/// Executes a transaction with the given arguments, sourcing the transaction code from the root/transactions directory
+/// Expected errors should be passed as a string while error type defined as enums in this file
 access(all) fun txExecutor(_ txName: String, _ signers: [Test.TestAccount], _ arguments: [AnyStruct], _ expectedError: String?, _ expectedErrorType: ErrorType?): Bool {
     let txCode = loadCode(txName, "transactions")
 
@@ -108,16 +119,22 @@ access(all) fun txExecutor(_ txName: String, _ signers: [Test.TestAccount], _ ar
     return txResult.status == Test.ResultStatus.succeeded
 }
 
+/// Loads code from the given path
 access(all) fun loadCode(_ fileName: String, _ baseDirectory: String): String {
     return Test.readFile("../".concat(baseDirectory).concat("/").concat(fileName))
 }
 
+/// Defines three different error types
 access(all) enum ErrorType: UInt8 {
+    /// Panic within transaction
     access(all) case TX_PANIC
+    /// Failed assertion
     access(all) case TX_ASSERT
+    /// Failed pre-condition
     access(all) case TX_PRE
 }
 
+/// Returns the error message pointer for the given error type
 access(all) fun getErrorMessagePointer(errorType: ErrorType): Int {
     switch errorType {
         case ErrorType.TX_PANIC: return 159
@@ -127,6 +144,7 @@ access(all) fun getErrorMessagePointer(errorType: ErrorType): Int {
     }
 }
 
+/// Builds a type identifier for the given account and contract name and type suffix
 access(all) fun buildTypeIdentifier(_ acct: Test.TestAccount, _ contractName: String, _ suffix: String): String {
     let addrString = acct.address.toString()
     return "A.".concat(addrString.slice(from: 2, upTo: addrString.length)).concat(".").concat(contractName).concat(".").concat(suffix)
