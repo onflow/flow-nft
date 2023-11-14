@@ -61,13 +61,6 @@ access(all) contract BasicNFT {
         }
     }
 
-    /// Return the NFT types that the contract defines
-    access(all) view fun getNFTTypes(): [Type] {
-        return [
-            Type<@BasicNFT.NFT>()
-        ]
-    }
-
     access(all) resource NFTMinter {
         access(all) fun mintNFT(metadata: {String: AnyStruct}): @BasicNFT.NFT {
            return <- create NFT(metadata: metadata)
