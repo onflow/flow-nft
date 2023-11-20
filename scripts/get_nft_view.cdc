@@ -1,6 +1,6 @@
-import ViewResolver from "ViewResolver"
-import MetadataViews from "MetadataViews"
-import ExampleNFT from "ExampleNFT"
+import "ExampleNFT"
+import "MetadataViews"
+import "ViewResolver"
 
 access(all) struct NFTView {
     access(all) let id: UInt64

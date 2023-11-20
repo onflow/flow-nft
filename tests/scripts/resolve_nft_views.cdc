@@ -1,9 +1,9 @@
 /// This script resolves all the supported views from
 /// the ExampleNFT contract. Used for testing only.
 
-import ExampleNFT from "ExampleNFT"
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
+import "ExampleNFT"
+import "NonFungibleToken"
+import "MetadataViews"
 
 access(all) fun main(): Bool {
     // Call `resolveView` with invalid Type
@@ -26,12 +26,15 @@ access(all) fun main(): Bool {
         Type<MetadataViews.NFTCollectionData>()
     ) as! MetadataViews.NFTCollectionData?)!
 
-    assert(/storage/cadenceExampleNFTCollection == collectionData.storagePath)
-    assert(/public/cadenceExampleNFTCollection == collectionData.publicPath)
-    assert(/private/cadenceExampleNFTCollection == collectionData.providerPath)
-    assert(Type<&ExampleNFT.Collection>() == collectionData.publicCollection)
-    assert(Type<&ExampleNFT.Collection>() == collectionData.publicLinkedType)
-    assert(Type<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>() == collectionData.providerLinkedType)
+    // The MetadataViews.NFTCollectionData returns a function (createEmptyCollection),
+    // so it cannot be the return type of a script. That's why we perform
+    // the assertions in this script.
+    assert(ExampleNFT.CollectionStoragePath == collectionData.storagePath)
+    assert(ExampleNFT.CollectionPublicPath == collectionData.publicPath)
+    assert(/private/exampleNFTCollection == collectionData.providerPath)
+    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>() == collectionData.publicCollection)
+    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>() == collectionData.publicLinkedType)
+    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>() == collectionData.providerLinkedType)
 
     let coll <- collectionData.createEmptyCollection()
     assert(0 == coll.getLength())

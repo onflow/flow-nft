@@ -1,8 +1,9 @@
 /// This transaction is for transferring an ExampleNFT from one account to another
 
-import ViewResolver from "ViewResolver"
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
+import "ViewResolver"
+import "MetadataViews"
+import "NonFungibleToken"
+import "ExampleNFT"
 
 transaction(contractAddress: Address, contractName: String, recipient: Address, withdrawID: UInt64) {
 

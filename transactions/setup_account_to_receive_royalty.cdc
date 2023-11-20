@@ -8,8 +8,8 @@
 /// The path used for the public link is a new path that in the future, is expected to receive
 /// and generic token, which could be forwarded to the appropriate vault
 
-import FungibleToken from "FungibleToken"
-import MetadataViews from "MetadataViews"
+import "FungibleToken"
+import "MetadataViews"
 
 transaction(vaultPath: StoragePath) {
 

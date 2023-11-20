@@ -1,8 +1,8 @@
 // This script borrows an NFT from a collection
 
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "ExampleNFT"
+import "MetadataViews"
 
 access(all) fun main(address: Address, id: UInt64) {
     let account = getAccount(address)
