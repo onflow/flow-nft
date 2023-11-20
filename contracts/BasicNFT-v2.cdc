@@ -14,6 +14,7 @@
 import NonFungibleToken from "NonFungibleToken"
 import MetadataViews from "MetadataViews"
 import ViewResolver from "ViewResolver"
+import UniversalCollection from "UniversalCollection"
 
 access(all) contract BasicNFT {
 
@@ -65,6 +66,10 @@ access(all) contract BasicNFT {
         access(all) fun mintNFT(metadata: {String: AnyStruct}): @BasicNFT.NFT {
            return <- create NFT(metadata: metadata)
         }
+    }
+
+    access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
+        return <- UniversalCollection.createEmptyCollection(identifier: "flowBasicNFTCollection", type: Type<@BasicNFT.NFT>())
     }
 
     init() {

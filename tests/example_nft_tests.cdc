@@ -21,6 +21,7 @@ access(all) fun setup() {
     deploy("NonFungibleToken", admin, "../contracts/NonFungibleToken-v2.cdc")
     deploy("MetadataViews", admin, "../contracts/MetadataViews.cdc")
     deploy("MultipleNFT", admin, "../contracts/MultipleNFT.cdc")
+    deploy("UniversalCollection", admin, "../contracts/UniversalCollection.cdc")
     deploy("ExampleNFT", admin, "../contracts/ExampleNFT-v2.cdc")
 }
 

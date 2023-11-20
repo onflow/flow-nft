@@ -10,7 +10,7 @@ transaction(contractAddress: Address, contractName: String, recipient: Address, 
     let withdrawRef: auth(NonFungibleToken.Withdrawable) &{NonFungibleToken.Collection}
 
     /// Reference of the collection to deposit the NFT to
-    let receiverCap: Capability<&{NonFungibleToken.Receiver}>
+    let receiverRef: &{NonFungibleToken.Receiver}
 
     prepare(signer: auth(BorrowValue) &Account) {
 
@@ -31,16 +31,18 @@ transaction(contractAddress: Address, contractName: String, recipient: Address, 
         let recipient = getAccount(recipient)
 
         // borrow a public reference to the receivers collection
-        self.receiverCap = recipient.capabilities.get<&{NonFungibleToken.Receiver}>(collectionData.publicPath)
-            ?? panic("Could not get the recipient's the Receiver Capability")
+        let receiverCap = recipient.capabilities.get<&{NonFungibleToken.Receiver}>(collectionData.publicPath)
+            ?? panic("Could not get the recipient's Receiver Capability")
+
+        self.receiverRef = receiverCap.borrow()
+            ?? panic("Could not borrow reference to the recipient's receiver")
 
     }
 
     execute {
 
-        // Transfer the NFT between the accounts - returns true if error, false if successful
-        let error = self.withdrawRef.transfer(id: withdrawID, receiver: self.receiverCap)
-        assert(error == false, message: "Problem executing transfer")
+        let nft <- self.withdrawRef.withdraw(withdrawID: withdrawID)
+        self.receiverRef.deposit(token: <-nft)
 
     }
 

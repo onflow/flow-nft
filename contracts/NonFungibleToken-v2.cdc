@@ -174,9 +174,6 @@ access(all) contract NonFungibleToken {
             }
         }
 
-        /// withdraw removes an NFT from the collection and moves it to the caller
-        access(Withdrawable) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT}
-
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
         access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
