@@ -206,7 +206,7 @@ access(all) contract NonFungibleToken {
         access(all) view fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
             post {
                 (result == nil) || (result?.getID() == id): 
-                "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
+                    "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
             }
             return nil
         }
