@@ -51,6 +51,17 @@ access(all) contract NonFungibleToken {
     // An entitlement for allowing the withdrawal of tokens from a Vault
     access(all) entitlement Withdrawable
 
+    /// Event that is emitted when a token is updated,
+    ///
+    access(all) event Updated(id: UInt64, uuid: UInt64, owner: Address, type:String)
+
+    access(self) view fun emitNFTUpdated(id: UInt64, uuid: UInt64, owner: Address, type: String): Bool
+    {
+        emit Updated(id: id, uuid: uuid, owner: owner, type: type)
+        return true
+    }
+
+
     /// Event that is emitted when a token is withdrawn,
     /// indicating the owner of the collection that it was withdrawn from.
     ///
@@ -195,7 +206,7 @@ access(all) contract NonFungibleToken {
         access(all) view fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
             post {
                 (result == nil) || (result?.getID() == id): 
-                    "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
+                "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
             }
             return nil
         }
