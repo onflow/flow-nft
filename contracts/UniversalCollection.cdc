@@ -97,7 +97,7 @@ access(all) contract UniversalCollection {
 
         /// Borrows a reference to an NFT in the collection if it is there
         /// otherwise, returns `nil`
-        access(all) view fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
+        access(all) view fun borrowNFT(id: UInt64): &{NonFungibleToken.NFT}? {
             return (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)
         }
 

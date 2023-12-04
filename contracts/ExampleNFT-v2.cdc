@@ -191,16 +191,7 @@ access(all) contract ExampleNFT: ViewResolver {
             return self.ownedNFTs.keys.length
         }
 
-        /// borrowNFT gets a reference to an NFT in the collection
-        /// so that the caller can read its metadata and call its methods
-        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT} {
-            let nftRef = (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)
-                ?? panic("Could not borrow a reference to an NFT with the specified ID")
-
-            return nftRef
-        }
-
-        access(all) view fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
+        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
             return (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)
         }
 

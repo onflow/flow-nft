@@ -58,41 +58,11 @@ access(all) contract NonFungibleToken {
     ///
     access(all) event Withdraw(id: UInt64, uuid: UInt64, from: Address?, type: String)
 
-    access(self) view fun emitNFTWithdraw(id: UInt64, uuid: UInt64, from: Address?, type: String): Bool
-    {
-        emit Withdraw(id: id, uuid: uuid, from: from, type: type)
-        return true
-    }
-
     /// Event that emitted when a token is deposited to a collection.
     ///
     /// It indicates the owner of the collection that it was deposited to.
     ///
     access(all) event Deposit(id: UInt64, uuid: UInt64, to: Address?, type: String)
-
-    access(self) view fun emitNFTDeposit(id: UInt64, uuid: UInt64, to: Address?, type: String): Bool
-    {
-        emit Deposit(id: id, uuid: uuid, to: to, type: type)
-        return true
-    }
-
-    /// Transfer
-    ///
-    /// The event that should be emitted when tokens are transferred from one account to another
-    ///
-    access(all) event Transfer(id: UInt64, uuid: UInt64, from: Address?, to: Address?, type: String)
-
-    access(self) view fun emitNFTTransfer(id: UInt64, uuid: UInt64?, from: Address?, to: Address?, type: String?): Bool
-    {
-        // The transfer method can return false even if it didn't do a transfer
-        // in which case we don't want the event to be emitted
-        if uuid != nil && type != nil {
-            emit Transfer(id: id, uuid: uuid!, from: from, to: to, type: type!)
-            return true
-        } else {
-            return true
-        }
-    }
 
     /// Destroy
     ///
@@ -116,6 +86,22 @@ access(all) contract NonFungibleToken {
                 NonFungibleToken.emitNFTDestroy(id: self.getID(), uuid: self.uuid, type: self.getType().identifier)
             }
         }
+
+        /// Get a reference to an NFT that this NFT owns
+        /// Both arguments are optional to allow the NFT to choose
+        /// how it returns sub NFTs depending on what arguments are provided
+        /// For example, if `type` has a value, but `id` doesn't, the NFT 
+        /// can choose which NFT of that type to return if there is a "default"
+        /// If both are `nil`, then NFTs that only store a single NFT can just return
+        /// that. This helps callers who aren't sure what they are looking for 
+        ///
+        /// @param type: The Type of the desired NFT
+        /// @param id: The id of the NFT to borrow
+        ///
+        /// @return A structure representing the requested view.
+        access(all) fun getSubNFT(type: Type, id: UInt64) : &{NonFungibleToken.NFT}? {
+            return nil
+        }
     }
 
     /// Interface to mediate withdraws from the Collection
@@ -130,7 +116,7 @@ access(all) contract NonFungibleToken {
         access(Withdrawable) fun withdraw(withdrawID: UInt64): @{NFT} {
             post {
                 result.getID() == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
-                NonFungibleToken.emitNFTWithdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
+                emit Withdraw(id: result.getID(), uuid: result.uuid, from: self.owner?.address, type: result.getType().identifier)
             }
         }
     }
@@ -182,17 +168,14 @@ access(all) contract NonFungibleToken {
                 // because the `Collection` interface is almost always the final destination
                 // of tokens and deposit emissions from custom receivers could be confusing
                 // and hard to reconcile to event listeners
-                NonFungibleToken.emitNFTDeposit(id: token.getID(), uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier)
+                emit Deposit(id: token.getID(), uuid: token.uuid, to: self.owner?.address, type: token.getType().identifier)
             }
         }
-
-        /// getIDs returns an array of the IDs that are in the collection
-        access(all) view fun getIDs(): [UInt64]
 
         /// Gets the amount of NFTs stored in the collection
         access(all) view fun getLength(): Int
 
-        access(all) view fun borrowNFTSafe(id: UInt64): &{NonFungibleToken.NFT}? {
+        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
             post {
                 (result == nil) || (result?.getID() == id): 
                     "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"

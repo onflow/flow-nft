@@ -94,6 +94,7 @@ access(all) fun main(address: Address, id: UInt64): NFT {
         ) ?? panic("Could not borrow a reference to the collection")
 
     let nft = collection.borrowNFT(id)
+        ?? panic("Could not borrow a reference to an NFT with the given ID")
 
     // Get the basic display information for this NFT
     let display = MetadataViews.getDisplay(nft)!

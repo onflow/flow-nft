@@ -93,7 +93,8 @@ access(all) fun main(address: Address, id: UInt64): Bool {
             collectionData.publicPath
         ) ?? panic("Could not borrow a reference to the collection")
 
-    let nft = collection.borrowNFT(id)
+    let nft = collection.borrowViewResolver(id)
+        ?? panic("Could not borrow a reference to the given NFT")
 
     // Get the basic display information for this NFT
     let display = MetadataViews.getDisplay(nft)!

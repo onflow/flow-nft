@@ -15,5 +15,5 @@ access(all) fun main(address: Address, id: UInt64) {
         ) ?? panic("Could not borrow capability from public collection")
 
     // Borrow a reference to a specific NFT in the collection
-    let _ = collectionRef.borrowNFTSafe(id: id)!
+    let _ = collectionRef.borrowNFT(id)!
 }
