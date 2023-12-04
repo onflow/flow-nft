@@ -48,17 +48,26 @@ import ViewResolver from "ViewResolver"
 ///
 access(all) contract NonFungibleToken {
 
-    // An entitlement for allowing the withdrawal of tokens from a Vault
+    /// An entitlement for allowing the withdrawal of tokens from a Vault
     access(all) entitlement Withdrawable
 
-    /// Event that is emitted when a token is updated,
-    ///
-    access(all) event Updated(id: UInt64, uuid: UInt64, owner: Address, type:String)
+    /// An entitlement for allowing updates and update events for an NFT
+    access(all) entitlement Updatable
 
-    access(self) view fun emitNFTUpdated(id: UInt64, uuid: UInt64, owner: Address, type: String): Bool
+    /// Event that contracts should emit when the metadata of an NFT is updated
+    /// It can only be emitted by calling the `emitNFTUpdated` function
+    /// with an `Updatable` entitled reference to the NFT that was updated
+    /// The entitlement prevents spammers from calling this from other users' collections
+    /// because only code within a collection or that has special entitled access
+    /// to the collections methods will be able to get the entitled reference
+    /// 
+    /// The event makes it so that third-party indexers can monitor the events
+    /// and query the updated metadata from the owners' collections.
+    ///
+    access(all) event Updated(id: UInt64, uuid: UInt64, owner: Address?, type: String)
+    access(all) view fun emitNFTUpdated(_ nftRef: auth(Updatable) &{NonFungibleToken.NFT})
     {
-        emit Updated(id: id, uuid: uuid, owner: owner, type: type)
-        return true
+        emit Updated(id: nftRef.getID(), uuid: nftRef.uuid, owner: nftRef.owner?.address, type: nftRef.getType().identifier)
     }
 
 
