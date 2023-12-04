@@ -51,6 +51,17 @@ access(all) contract NonFungibleToken {
     // An entitlement for allowing the withdrawal of tokens from a Vault
     access(all) entitlement Withdrawable
 
+    /// Event that is emitted when a token is updated,
+    ///
+    access(all) event Updated(id: UInt64, uuid: UInt64, owner: Address, type:String)
+
+    access(self) view fun emitNFTUpdated(id: UInt64, uuid: UInt64, owner: Address, type: String): Bool
+    {
+        emit Updated(id: id, uuid: uuid, owner: owner, type: type)
+        return true
+    }
+
+
     /// Event that is emitted when a token is withdrawn,
     /// indicating the owner of the collection that it was withdrawn from.
     ///
