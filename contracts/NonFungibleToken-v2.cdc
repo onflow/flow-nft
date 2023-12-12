@@ -84,28 +84,13 @@ access(all) contract NonFungibleToken {
     ///
     access(all) event Deposit(id: UInt64, uuid: UInt64, to: Address?, type: String)
 
-    /// Destroy
-    ///
-    /// The event that should be emitted when an NFT is destroyed
-    access(all) event Destroy(id: UInt64, uuid: UInt64, type: String)
-
-    access(self) view fun emitNFTDestroy(id: UInt64, uuid: UInt64, type: String): Bool
-    {
-        emit Destroy(id: id, uuid: uuid, type: type)
-        return true
-    }
-
     /// Interface that the NFTs must conform to
     ///
     access(all) resource interface NFT: ViewResolver.Resolver {
         /// The unique ID that each NFT has
         access(all) view fun getID(): UInt64
 
-        destroy() {
-            pre {
-                NonFungibleToken.emitNFTDestroy(id: self.getID(), uuid: self.uuid, type: self.getType().identifier)
-            }
-        }
+        // access(all) event ResourceDestroyed(uuid: UInt64 = self.uuid, type: self.getType().identifier)
 
         /// Get a reference to an NFT that this NFT owns
         /// Both arguments are optional to allow the NFT to choose
