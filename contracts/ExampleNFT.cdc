@@ -266,10 +266,6 @@ access(all) contract ExampleNFT: NonFungibleToken, ViewResolver {
             let exampleNFT = nft as! &ExampleNFT.NFT
             return exampleNFT as &{MetadataViews.Resolver}
         }
-
-        destroy() {
-            destroy self.ownedNFTs
-        }
     }
 
     /// Allows anyone to create a new empty collection
