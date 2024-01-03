@@ -332,7 +332,7 @@ fungible token switchboard instead.
 
 ## Contract metadata
 
-Now that contract borrowing is released, you can also implement the [Resolver](./contracts/Resolver.cdc) interface on your contract
+Now that contract borrowing is released, you can also implement the [ViewResolver](./contracts/ViewResolver.cdc) interface on your contract
 and resolve views from there. As an example, you might want to allow your contract to resolve NFTCollectionData and NFTCollectionDisplay
 so that platforms do not need to find an NFT that belongs to your contract to get information about how to set up or show your collection.
 
