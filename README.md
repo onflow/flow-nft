@@ -2,15 +2,15 @@
 
 This standard defines the minimum functionality required to
 implement a safe, secure, and easy-to-use non-fungible token
-contract on the [Flow blockchain](https://www.onflow.org/).
+contract on the [Flow blockchain](https://flow.com/
 
 ## What is Cadence?
 
-[Cadence is the resource-oriented programming language](https://docs.onflow.org/cadence)
+[Cadence is the resource-oriented programming language](https://cadence-lang.org/)
 for developing smart contracts on Flow.
 
 Before reading this standard,
-we recommend completing the [Cadence tutorials](https://docs.onflow.org/cadence/tutorial/01-first-steps/)
+we recommend completing the [Cadence tutorials](https://cadence-lang.org/docs/tutorial/first-steps)
 to build a basic understanding of the programming language.
 
 Resource-oriented programming, and by extension Cadence,
@@ -20,7 +20,7 @@ peer-to-peer. Learn more in this [blog post about resources](https://medium.com/
 
 ## Import Addresses
 
-The `NonFungibleToken` and `MetadataViews` contracts are already deployed
+The `NonFungibleToken`, `ViewResolver`, and `MetadataViews` contracts are already deployed
 on various networks. You can import them in your contracts from these addresses.
 There is no need to deploy them yourself.
 
@@ -32,48 +32,51 @@ Note: With the emulator, you must use the -contracts flag to deploy these contra
 | Testnet         | `0x631e88ae7f1d7c20` |
 | Mainnet         | `0x1d7e57aa55817448` |
 
-## Core features
-
-The `NonFungibleToken` contract defines the following set of functionality
-that must be included in each implementation.
+## Core Types
 
 Contracts that implement the `NonFungibleToken` interface are required to implement two resource interfaces:
 
 - `NFT` - A resource that describes the structure of a single NFT.
-- `Collection` - A resource that can hold multiple NFTs of the same type.
+- `Collection` - A resource that can hold multiple NFTs of the same type and defines ways
+  to deposit, withdraw, and query information about the stored NFTs.
 
   Users typically store one collection per NFT type, saved at a well-known location in their account storage.
 
   For example, all NBA Top Shot Moments owned by a single user are held in a [`TopShot.Collection`](https://github.com/dapperlabs/nba-smart-contracts/blob/master/contracts/TopShot.cdc#L605) stored in their account at the path `/storage/MomentCollection`.
 
+## Core Features
+
+The `NonFungibleToken` contract defines the following set of functionality
+that must be included in each implementation:
+
 ### Create a new NFT collection
 
-Create a new collection using the `createEmptyCollection` function.
+Create a new collection using the `Token.createEmptyCollection()` function.
 
 This function MUST return an empty collection that contains no NFTs.
 
-Users typically save new collections to a well-known location in their account
+Users typically save new collections to a contract-defined location in their account
 and link the `NonFungibleToken.CollectionPublic` interface as a public capability.
 
-```swift
+```cadence
 let collection <- ExampleNFT.createEmptyCollection()
 
-account.save(<-collection, to: /storage/ExampleNFTCollection)
+account.save(<-collection, to: ExampleNFT.CollectionStoragePath)
 
 // create a public capability for the collection
 account.link<&{NonFungibleToken.CollectionPublic}>(
-    /public/ExampleNFTCollection,
-    target: /storage/ExampleNFTCollection
+    ExampleNFT.CollectionPublicPath,
+    target: ExampleNFT.CollectionStoragePath
 )
 ```
 
 ### Withdraw an NFT
 
-Withdraw an `NFT` from a `Collection` using the [`withdraw`](contracts/ExampleNFT.cdc#L36-L42) function.
+Withdraw an `NFT` from a `Collection` using the [`withdraw()`](contracts/ExampleNFT.cdc#L36-L42) function.
 This function emits the [`Withdraw`](contracts/ExampleNFT.cdc#L12) event.
 
-```swift
-let collectionRef = account.borrow<&ExampleNFT.Collection>(from: /storage/ExampleNFTCollection)
+```cadence
+let collectionRef = account.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
     ?? panic("Could not borrow a reference to the owner's collection")
 
 // withdraw the NFT from the owner's collection
@@ -82,7 +85,7 @@ let nft <- collectionRef.withdraw(withdrawID: 42)
 
 ### Deposit an NFT
 
-Deposit an `NFT` into a `Collection` using the [`deposit`](contracts/ExampleNFT.cdc#L46-L57) function.
+Deposit an `NFT` into a `Collection` using the [`deposit()`](contracts/ExampleNFT.cdc#L46-L57) function.
 This function emits the [`Deposit`](contracts/ExampleNFT.cdc#L13) event.
 
 This function is available on the `NonFungibleToken.CollectionPublic` interface,
@@ -90,12 +93,12 @@ which accounts publish as public capability.
 This capability allows anybody to deposit an NFT into a collection
 without accessing the entire collection.
 
-```swift
+```cadence
 let nft: ExampleNFT.NFT
 
 // ...
 
-let collection = account.getCapability(/public/ExampleNFTCollection)
+let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
     .borrow<&{NonFungibleToken.CollectionPublic}>()
     ?? panic("Could not borrow a reference to the receiver's collection")
 
@@ -110,7 +113,8 @@ This means that anyone can send a resource object that conforms to `@NonFungible
 In an implementation, you MUST cast the `token` as your specific token type before depositing it or you will
 deposit another token type into your collection. For example:
 
-```swift
+```cadence
+/// `ExampleNFT` much be changed to the name of your contract
 let token <- token as! @ExampleNFT.NFT
 ```
 
@@ -121,8 +125,8 @@ Return a list of NFTs in a `Collection` using the [`getIDs`](contracts/ExampleNF
 This function is available on the `NonFungibleToken.CollectionPublic` interface,
 which accounts publish as public capability.
 
-```swift
-let collection = account.getCapability(/public/ExampleNFTCollection)
+```cadence
+let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
     .borrow<&{NonFungibleToken.CollectionPublic}>()
     ?? panic("Could not borrow a reference to the receiver's collection")
 
@@ -131,12 +135,15 @@ let ids = collection.getIDs()
 
 ## NFT Metadata
 
+The primary documentation for metadata views is on [the Flow developer portal](https://developers.flow.com/build/advanced-concepts/metadata-views).
+Please refer to that for the most thorough exploration of the views with examples.
+
 NFT metadata is represented in a flexible and modular way using
 the [standard proposed in FLIP-0636](https://github.com/onflow/flips/blob/main/application/20210916-nft-metadata.md).
 
 When writing an NFT contract,
 you should implement the [`MetadataViews.Resolver`](contracts/MetadataViews.cdc#L3-L6) interface,
-which allows your NFT to implement one or more metadata types called views.
+which allows your NFT to utilize one or more metadata types called views.
 
 Each view represents a different type of metadata,
 such as an on-chain creator biography or an off-chain video clip.
@@ -150,12 +157,7 @@ including the name, description, image and owner.
 
 **Source: [get_nft_metadata.cdc](scripts/get_nft_metadata.cdc)**
 
-```swift
-import ExampleNFT from "..."
-import MetadataViews from "..."
-
-// ...
-
+```cadence
 // Get the regular public capability
 let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
     .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
@@ -176,21 +178,16 @@ if let view = nft.resolveView(Type<MetadataViews.Display>()) {
     log(display.description)
     log(display.thumbnail)
 }
-
-// The owner is stored directly on the NFT object
-let owner: Address = nft.owner!.address!
-
-// Inspect the type of this NFT to verify its origin
-let nftType = nft.getType()
-
-// `nftType.identifier` is `A.e03daebed8ca0615.ExampleNFT.NFT`
 ```
 
 ### How to implement metadata
 
-The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement metadata views.
+The [example NFT contract](contracts/ExampleNFT.cdc) shows a basic example
+for how to implement metadata views.
 
 ### List of views
+
+The views marked as `Core views` are considered the minimum required views to provide a full picture of any NFT. If you want your NFT to be able to be easily accessed and understood by third-party apps such as the [Flow NFT Catalog](https://nft-catalog.vercel.app/) it should implement all of them as a pre-requisite.
 
 | Name        | Purpose                                    | Status      | Source                                              | Core view
 | ----------- | ------------------------------------------ | ----------- | --------------------------------------------------- | --------------------------------------------------- |
@@ -200,7 +197,7 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 | `IPFSFile`  | A file stored in IPFS.                     | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L157-L195) |
 | `Edition`   | Return information about one or more editions for an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L197-L229) |
 | `Editions`  | Wrapper for multiple edition views.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L176-L187)|
-| `Serial`    | Serial number for an NFT.                  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L258-L270)|
+| `Serial`    | Serial number for an NFT.                  | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L258-L270)| :white_check_mark: |
 | `Royalty`   | A Royalty Cut for a given NFT.             | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L286-L323) |
 | `Royalties` | Wrapper for multiple Royalty views.        | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L325-L352) | :white_check_mark: |
 | `Media`     | Represents a file with a corresponding mediaType | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L378-L395)|
@@ -213,161 +210,12 @@ The [example NFT contract](contracts/ExampleNFT.cdc) shows how to implement meta
 | `Trait`    | Represents a single field of metadata on an NFT. | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L644-L671)|
 | `Traits`   | Wrapper for multiple Trait views            | Implemented | [MetadataViews.cdc](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L673-L690)| :white_check_mark: |
 
-## Core views
-
-The views marked as `Core views` are considered the minimum required views to provide a full picture of any NFT. If you want your NFT to be featured on the [Flow NFT Catalog](https://nft-catalog.vercel.app/) it should implement all of them as a pre-requisite.
-
-## Always prefer wrappers over single views
-
-When exposing a view that could have multiple occurrences on a single NFT, such as `Edition`, `Royalty`, `Media` or `Trait` the wrapper view should always be used, even if there is only a single occurrence. The wrapper view is always the plural version of the single view name and can be found below the main view definition in the `MetadataViews` contract.
-
-When resolving the view, the wrapper view should be the returned value, instead of returning the single view or just an array of several occurrences of the view.
-
-### Example
-
-#### Preferred
-
-```cadence
-pub fun resolveView(_ view: Type): AnyStruct? {
-    switch view {
-        case Type<MetadataViews.Editions>():
-            let editionInfo = MetadataViews.Edition(name: "Example NFT Edition", number: self.id, max: nil)
-            let editionList: [MetadataViews.Edition] = [editionInfo]
-            return MetadataViews.Editions(
-                editionList
-            )
-    }
-}
-```
-
-#### To be avoided
-
-```cadence
-// `resolveView` should always return the same type that was passed to it as an argument, so this is improper usage because it returns `Edition` instead of `Editions`.
-pub fun resolveView(_ view: Type): AnyStruct? {
-    switch view {
-        case Type<MetadataViews.Editions>():
-            let editionInfo = MetadataViews.Edition(name: "Example NFT Edition", number: self.id, max: nil)
-            return editionInfo
-    }
-}
-```
-```cadence
-// This is also improper usage because it returns `[Edition]` instead of `Editions`
-pub fun resolveView(_ view: Type): AnyStruct? {
-    switch view {
-        case Type<MetadataViews.Editions>():
-            let editionInfo = MetadataViews.Edition(name: "Example NFT Edition", number: self.id, max: nil)
-            let editionList: [MetadataViews.Edition] = [editionInfo]
-            return editionList
-    }
-}
-```
-
-## Royalty View
-
-The `MetadataViews` contract also includes [a standard view for Royalties](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L136-L208).
-
-This view is meant to be used by 3rd party marketplaces to take a cut of the proceeds of an NFT sale
-and send it to the author of a certain NFT. Each NFT can have its own royalty view:
-
-```cadence
-pub struct Royalties {
-
-    /// Array that tracks the individual royalties
-    access(self) let cutInfos: [Royalty]
-}
-```
-
-and the royalty can indicate whatever fungible token it wants to accept via the type of the generic `{FungibleToken.Receiver}` capability that it specifies:
-
-```cadence
-pub struct Royalty {
-    /// Generic FungibleToken Receiver for the beneficiary of the royalty
-    /// Can get the concrete type of the receiver with receiver.getType()
-    /// Recommendation - Users should create a new link for a FlowToken receiver for this using `getRoyaltyReceiverPublicPath()`,
-    /// and not use the default FlowToken receiver.
-    /// This will allow users to update the capability in the future to use a more generic capability
-    pub let receiver: Capability<&AnyResource{FungibleToken.Receiver}>
-
-    /// Multiplier used to calculate the amount of sale value transferred to royalty receiver.
-    /// Note - It should be between 0.0 and 1.0
-    /// Ex - If the sale value is x and multiplier is 0.56 then the royalty value would be 0.56 * x.
-    ///
-    /// Generally percentage get represented in terms of basis points
-    /// in solidity based smart contracts while cadence offers `UFix64` that already supports
-    /// the basis points use case because its operations
-    /// are entirely deterministic integer operations and support up to 8 points of precision.
-    pub let cut: UFix64
-}
-```
-
-If someone wants to make a listing for their NFT on a marketplace,
-the marketplace can check to see if the royalty receiver accepts the seller's desired fungible token
-by checking the concrete type of the reference.
-If the concrete type is not the same as the type of token the seller wants to accept,
-the marketplace has a few options.
-They could either get the address of the receiver by using the
-`receiver.owner.address` field and check to see if the account has a receiver for the desired token,
-they could perform the sale without a royalty cut, or they could abort the sale
-since the token type isn't accepted by the royalty beneficiary.
-
-You can see example implementations of royalties in the `ExampleNFT` contract
-and the associated transactions and scripts.
-
-#### Important instructions for royalty receivers
-
-If you plan to set your account as a receiver of royalties, you'll likely want to be able to accept
-as many token types as possible. This won't be immediately possible at first, but eventually,
-we will also design a contract that can act as a sort of switchboard for fungible tokens.
-It will accept any generic fungible token and route it to the correct vault in your account. 
-This hasn't been built yet, but you can still set up your account to be ready for it in the future.
-Therefore, if you want to receive royalties, you should set up your account with the
-[`setup_account_to_receive_royalty.cdc` transaction](https://github.com/onflow/flow-nft/blob/master/transactions/setup_account_to_receive_royalty.cdc).
-
-This will link generic public path from `MetadataViews.getRoyaltyReceiverPublicPath()`
-to your chosen fungible token for now. Then, use that public path for your royalty receiver
-and in the future, you will be able to easily update the link at that path to use the
-fungible token switchboard instead.
-
-## Contract metadata
-
-Now that contract borrowing is released, you can also implement the [ViewResolver](./contracts/ViewResolver.cdc) interface on your contract
-and resolve views from there. As an example, you might want to allow your contract to resolve NFTCollectionData and NFTCollectionDisplay
-so that platforms do not need to find an NFT that belongs to your contract to get information about how to set up or show your collection.
-
-```cadence
-import ViewResolver from 0xf8d6e0586b0a20c7
-import MetadataViews from 0xf8d6e0586b0a20c7
-
-pub fun main(addr: Address, name: String): StoragePath? {
-  let t = Type<MetadataViews.NFTCollectionData>()
-  let borrowedContract = getAccount(addr).contracts.borrow<&ViewResolver>(name: name) ?? panic("contract could not be borrowed")
-
-  let view = borrowedContract.resolveView(t)
-  if view == nil {
-    return nil
-  }
-
-  let cd = view! as! MetadataViews.NFTCollectionData
-  return cd.storagePath
-}
-```
-
-Will Return
-```cadence
-{"domain":"storage","identifier":"exampleNFTCollection"}
-```
-
 ## How to propose a new view
 
-Please open a pull request to propose a new metadata view or changes to an existing view.
+Please open a issue or a pull request to propose a new metadata view
+or changes to an existing view.
 
 ## Feedback
-
-As Flow and Cadence are still new,
-we expect this standard to evolve based on feedback
-from both developers and users.
 
 We'd love to hear from anyone who has feedback. For example:
 
@@ -377,7 +225,6 @@ We'd love to hear from anyone who has feedback. For example:
 - Are the pre and post conditions defined well enough? Error messages?
 - Are there any other actions that need an event defined for them?
 - Are the current event definitions clear enough and do they provide enough information?
-- Are the variable, function, and parameter names descriptive enough?
 - Are there any openings for bugs or vulnerabilities that we are not noticing?
 
 Please create an issue in this repository if there is a feature that
@@ -411,38 +258,18 @@ or even write your own. You'll need to replace some of the import address placeh
 
 ## Running automated tests
 
-You can find automated tests in the `lib/go/test/nft_test.go` file. It uses the transaction templates that are contained in the `lib/go/templates/templates.go` file. Currently, these rely on a dependency from a private dapper labs repository to run, so external users will not be able to run them. We are working on making all of this public so anyone can run tests, but haven't completed this work yet.
+You can find automated tests written in the
+[Cadence testing framework](https://developers.flow.com/build/smart-contracts/testing)
+in the `tests/` directory.
+Use `flow test tests/test_example_nft.cdc` to run these tests.
 
-## Bonus features
-
-**(These could each be defined as a separate interface and standard and are probably not part of the main standard) They are not implemented in this repository yet**
-
-10- Withdrawing tokens from someone else's Collection by using their `Provider` reference.
-
-- approved withdraw event
-- Providing a resource that only approves an account to withdraw a specific amount per transaction or per day/month/etc.
-- Returning the list of tokens that an account can withdraw for another account.
-- Reading the balance of the account that you have permission to send tokens for
-- Owner is able to increase and decrease the approval at will, or revoke it completely
-  - This is much harder than anticipated
-
-11 - Standard for Composability/Extensibility
-
-12 - Minting a specific amount of tokens using a specific minter resource that an owner can control
-
-- tokens minted event
-- Setting a cap on the total number of tokens that can be minted at a time or overall
-- Setting a time frame where this is allowed
-
-13 - Burning a specific amount of tokens using a specific burner resource that an owner controls
-
-- tokens burnt event
-- Setting a cap on the number of tokens that can be burned at a time or overall
-- Setting a time frame where this is allowed
-
-14 - Pausing Token transfers (maybe a way to prevent the contract from being imported? probably not a good idea)
-
-15 - Cloning the token to create a new token with the same distribution
+More tests, written in Go, are in the `lib/go/test/` directory.
+They use the transaction templates package that is contained in the `lib/go/templates/` directory.
+To run the Go tests, you can run `make test` from the repository root.
+Contract and transaction assets must be generated before individual tests can be run,
+so if you are wanting to run the tests individually via `go test`,
+you must run `make generate` from within the `lib/go/` directory
+after every revision you make to the contract or transaction files.
 
 ## License
 
@@ -450,13 +277,7 @@ The works in these files:
 
 - [ExampleNFT.cdc](contracts/ExampleNFT.cdc)
 - [NonFungibleToken.cdc](contracts/NonFungibleToken.cdc)
+- [MetadataViews.cdc](contracts/MetadataViews.cdc)
+- [ViewResolver.cdc](contracts/ViewResolver.cdc)
 
 are under the [Unlicense](LICENSE).
-
-## Deploying updates
-
-### Testnet
-
-```sh
-TESTNET_PRIVATE_KEY=xxxx flow project deploy --update --network testnet
-```
