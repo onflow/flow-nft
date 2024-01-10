@@ -44,7 +44,7 @@ access(all) contract NFTForwarding {
 
             let recipientRef = self.borrowRecipientCollection()
                 ?? panic("Could not borrow reference to recipient's Collection!")
-            let id = token.getID()
+            let id = token.id
 
             recipientRef.deposit(token: <-token)
 

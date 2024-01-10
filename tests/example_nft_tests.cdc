@@ -1,5 +1,8 @@
 import Test
+import BlockchainHelpers
 import "test_helpers.cdc"
+import "ViewResolver"
+import "NonFungibleToken"
 
 access(all) let admin = blockchain.createAccount()
 access(all) let recipient = blockchain.createAccount()

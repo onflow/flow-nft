@@ -13,7 +13,9 @@ import (
 const addrA = "0x0A"
 
 func TestNonFungibleTokenContract(t *testing.T) {
-	contract := contracts.NonFungibleToken()
+	addresses := test.AddressGenerator()
+	addressA := addresses.New()
+	contract := contracts.NonFungibleToken(addressA)
 	assert.NotNil(t, contract)
 }
 

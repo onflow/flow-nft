@@ -66,7 +66,7 @@ access(all) contract UniversalCollection {
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
-        access(NonFungibleToken.Withdrawable) fun withdraw(_ withdrawID: UInt64): @{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdrawable) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
             ?? panic("Could not withdraw an NFT with the ID: ".concat(withdrawID.toString()).concat(" from the collection"))
 
@@ -75,13 +75,13 @@ access(all) contract UniversalCollection {
 
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
-        access(all) fun deposit(_ token: @{NonFungibleToken.NFT}) {
+        access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
             if self.supportedType != token.getType() {
                 panic("Cannot deposit an NFT of the given type")
             }
 
             // add the new token to the dictionary which removes the old one
-            let oldToken <- self.ownedNFTs[token.getID()] <- token
+            let oldToken <- self.ownedNFTs[token.id] <- token
             destroy oldToken
         }
 
@@ -97,23 +97,13 @@ access(all) contract UniversalCollection {
 
         /// Borrows a reference to an NFT in the collection if it is there
         /// otherwise, returns `nil`
-        access(all) view fun borrowNFT(id: UInt64): &{NonFungibleToken.NFT}? {
+        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
             return (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)
         }
 
         /// Borrow the view resolver for the specified NFT ID
         access(all) view fun borrowViewResolver(id: UInt64): &{ViewResolver.Resolver}? {
             return (&self.ownedNFTs[id] as &{ViewResolver.Resolver}?)!
-        }
-
-        /// public function that anyone can call to create a new empty collection
-        /// of the same type as the called collection
-        access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
-            UniversalCollection.createEmptyCollection(identifier: self.identifier, type: self.supportedType)
-        }
-
-        destroy() {
-            destroy self.ownedNFTs
         }
     }
 

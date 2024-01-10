@@ -1,5 +1,8 @@
 import Test
 import BlockchainHelpers
+import "test_helpers.cdc"
+import "ViewResolver"
+import "NonFungibleToken"
 import "ExampleNFT"
 import "MetadataViews"
 
@@ -8,18 +11,11 @@ access(all) let recipient = Test.createAccount()
 
 access(all)
 fun setup() {
-    let err = Test.deployContract(
-        name: "ExampleNFT",
-        path: "../contracts/ExampleNFT.cdc",
-        arguments: []
-    )
-    Test.expect(err, Test.beNil())
-}
-
-access(all)
-fun testContractInitializedEventEmitted() {
-    let typ = Type<ExampleNFT.ContractInitialized>()
-    Test.assertEqual(1, Test.eventsOfType(typ).length)
+    deploy("ViewResolver", "../contracts/ViewResolver.cdc")
+    deploy("FungibleToken", "../contracts/utility/FungibleToken.cdc")
+    deploy("NonFungibleToken", "../contracts/NonFungibleToken.cdc")
+    deploy("MetadataViews", "../contracts/MetadataViews.cdc")
+    deploy("ExampleToken", "../contracts/ExampleToken.cdc")
 }
 
 access(all)

@@ -46,10 +46,23 @@ access(all) contract FungibleToken {
     access(all) entitlement Withdrawable
 
     /// The event that is emitted when tokens are withdrawn from a Vault
-    access(all) event Withdraw(amount: UFix64, from: Address?, type: String)
+    access(all) event Withdraw(amount: UFix64, type: String, from: Address?, fromUUID: UInt64, withdrawnUUID: UInt64)
 
     /// The event that is emitted when tokens are deposited to a Vault
-    access(all) event Deposit(amount: UFix64, to: Address?, type: String)
+    access(all) event Deposit(amount: UFix64, type: String, to: Address?, toUUID: UInt64, depositedUUID: UInt64)
+
+    /// Event that is emitted when the global burn method is called with a non-zero balance
+    access(all) event Burn(amount: UFix64, type: String, fromUUID: UInt64)
+
+    /// Balance
+    ///
+    /// The interface that provides standard functions\
+    /// for getting balance information
+    ///
+    access(all) resource interface Balance {
+        /// Get the balance of the vault
+        access(all) view fun getBalance(): UFix64
+    }
 
     /// Provider
     ///
@@ -62,27 +75,19 @@ access(all) contract FungibleToken {
     ///
     access(all) resource interface Provider {
 
-        /// withdraw subtracts tokens from the owner's Vault
+        /// withdraw subtracts tokens from the implementing resource
         /// and returns a Vault with the removed tokens.
         ///
-        /// The function's access level is public, but this is not a problem
-        /// because only the owner storing the resource in their account
-        /// can initially call this function.
-        ///
-        /// The owner may grant other accounts access by creating a private
-        /// capability that allows specific other users to access
-        /// the provider resource through a reference.
-        ///
-        /// The owner may also grant all accounts access by creating a public
-        /// capability that allows all users to access the provider
-        /// resource through a reference.
+        /// The function's access level is `access(Withdrawable)`
+        /// So in order to access it, one would either need the object itself
+        /// or an entitled reference with `Withdrawable`.
         ///
         access(Withdrawable) fun withdraw(amount: UFix64): @{Vault} {
             post {
                 // `result` refers to the return value
                 result.getBalance() == amount:
                     "Withdrawal amount must be the same as the balance of the withdrawn Vault"
-                emit Withdraw(amount: amount, from: self.owner?.address, type: self.getType().identifier)
+                emit Withdraw(amount: amount, type: self.getType().identifier, from: self.owner?.address, fromUUID: self.uuid, withdrawnUUID: result.uuid)
             }
         }
     }
@@ -104,15 +109,11 @@ access(all) contract FungibleToken {
         access(all) fun deposit(from: @{Vault})
 
         /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
-        access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
-            pre { true: "dummy" }
-        }
+        access(all) view fun getSupportedVaultTypes(): {Type: Bool}
 
         /// Returns whether or not the given type is accepted by the Receiver
         /// A vault that can accept any type should just return true by default
-        access(all) view fun isSupportedVaultType(type: Type): Bool {
-            pre { true: "dummy" }
-        }
+        access(all) view fun isSupportedVaultType(type: Type): Bool
     }
 
     /// Vault
@@ -120,9 +121,10 @@ access(all) contract FungibleToken {
     /// Ideally, this interface would also conform to Receiver, Balance, Transferor, Provider, and Resolver
     /// but that is not supported yet
     ///
-    access(all) resource interface Vault: Receiver, Provider, ViewResolver.Resolver {
+    access(all) resource interface Vault: Receiver, Provider, Balance, ViewResolver.Resolver {
 
-        //access(all) event ResourceDestroyed(balance: UFix64 = self.getBalance(), type: Type = self.getType().identifier)
+        /// Field that tracks the balance of a vault
+        access(all) var balance: UFix64
 
         /// Get the balance of the vault
         access(all) view fun getBalance(): UFix64
@@ -140,6 +142,7 @@ access(all) contract FungibleToken {
             }
         }
 
+        /// Checks if the given type is supported by this Vault
         access(all) view fun isSupportedVaultType(type: Type): Bool {
             return self.getSupportedVaultTypes()[type] ?? false
         }
@@ -182,7 +185,7 @@ access(all) contract FungibleToken {
             pre {
                 from.isInstance(self.getType()): 
                     "Cannot deposit an incompatible token type"
-                emit Deposit(amount: from.getBalance(), to: self.owner?.address, type: from.getType().identifier)
+                emit Deposit(amount: from.getBalance(), type: from.getType().identifier, to: self.owner?.address, toUUID: self.uuid, depositedUUID: from.uuid)
             }
             post {
                 self.getBalance() == before(self.getBalance()) + before(from.getBalance()):
@@ -197,5 +200,13 @@ access(all) contract FungibleToken {
                 result.getBalance() == 0.0: "The newly created Vault must have zero balance"
             }
         }
+    }
+
+    /// Global method to burn any FungibleToken Vault
+    access(all) fun burn(_ vault: @{FungibleToken.Vault}) {
+        if vault.balance > 0.0 {
+            emit Burn(amount: vault.balance, type: vault.getType().identifier, fromUUID: vault.uuid)
+        }
+        destroy vault
     }
 }

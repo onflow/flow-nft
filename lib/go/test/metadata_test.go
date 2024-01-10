@@ -170,7 +170,7 @@ func TestGetNFTMetadata(t *testing.T) {
 		blockNumberName, _ := cadence.NewString("mintedBlock")
 		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
-		assert.Equal(t, cadence.NewUInt64(18), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewUInt64(22), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 
@@ -299,7 +299,7 @@ func TestGetNFTView(t *testing.T) {
 		blockNumberName, _ := cadence.NewString("mintedBlock")
 		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
-		assert.Equal(t, cadence.NewUInt64(18), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewUInt64(22), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 

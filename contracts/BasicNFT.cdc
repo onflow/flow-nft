@@ -22,15 +22,19 @@ access(all) contract BasicNFT {
     access(all) resource NFT: NonFungibleToken.NFT, ViewResolver.Resolver {
         /// Arbitrary trait mapping metadata
         access(self) let metadata: {String: AnyStruct}
+
+        access(all) let id: UInt64
     
         init(
             metadata: {String: AnyStruct},
         ) {
+            self.id = self.uuid
             self.metadata = metadata
         }
 
-        /// Gets the ID of the NFT, which here is the UUID
-        access(all) view fun getID(): UInt64 { return self.uuid }
+        access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
+            return <- BasicNFT.createEmptyCollection()
+        }
     
         /// Uses the basic NFT views
         access(all) view fun getViews(): [Type] {
@@ -53,7 +57,7 @@ access(all) contract BasicNFT {
                     )
                 case Type<MetadataViews.Serial>():
                     return MetadataViews.Serial(
-                        self.getID()
+                        self.id
                     )
                 case Type<MetadataViews.Traits>():
                     return MetadataViews.dictToTraits(dict: self.metadata, excludedNames: nil)
@@ -74,7 +78,7 @@ access(all) contract BasicNFT {
 
     init() {
         let minter <- create NFTMinter()
-        self.account.save(<-minter, to: /storage/flowBasicNFTMinterPath)
+        self.account.storage.save(<-minter, to: /storage/flowBasicNFTMinterPath)
     }
 }
  

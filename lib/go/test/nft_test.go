@@ -12,7 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	//"github.com/onflow/flow-nft/lib/go/contracts"
 	"github.com/onflow/flow-nft/lib/go/templates"
 )
 
@@ -23,18 +22,6 @@ func TestNFTDeployment(t *testing.T) {
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, _ := accountKeys.NewWithSigner()
 	_, _, _, _ = deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
-
-	// t.Run("Should have properly initialized fields after deployment", func(t *testing.T) {
-
-	// 	script := templates.GenerateGetTotalSupplyScript(nftAddress, exampleNFTAddress)
-	// 	supply := executeScriptAndCheck(t, b, script, nil)
-	// 	assert.Equal(t, cadence.NewUInt64(0), supply)
-
-	// 	assertCollectionLength(t, b, nftAddress, exampleNFTAddress, metadataAddress,
-	// 		exampleNFTAddress,
-	// 		0,
-	// 	)
-	// })
 }
 
 func TestCreateNFT(t *testing.T) {
@@ -317,111 +304,3 @@ func TestTransferNFT(t *testing.T) {
 
 	})
 }
-
-// Placeholder test to be used when testing upgrades to the NFT standard
-//
-// func TestUpgradeNFT(t *testing.T) {
-// 	b, adapter, accountKeys := newTestSetup(t)
-
-// 	serviceSigner, _ := b.ServiceKey().Signer()
-
-// 	// Create new keys for the NFT contract accounts
-// 	// and deploy all the NFT contracts
-// 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
-// 	NFTAccountKey, NFTSigner := accountKeys.NewWithSigner()
-
-// 	nftAddress := deploy(t, b,
-// 		"NonFungibleToken",
-// 		contracts.OldNonFungibleToken(),
-// 		NFTAccountKey,
-// 	)
-
-// 	metadataAddress := deploy(t, b, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress))
-
-// 	exampleNFTAddress := deploy(
-// 		t, b,
-// 		"ExampleNFT",
-// 		contracts.ExampleNFT(nftAddress, metadataAddress),
-// 		exampleNFTAccountKey,
-// 	)
-
-// 	// Create a new account to test transfers
-// 	joshAddress, _, joshSigner := newAccountWithAddress(b, accountKeys)
-
-// 	// Mint a single NFT with standard royalty cuts and metadata
-// 	mintExampleNFT(t, b,
-// 		accountKeys,
-// 		nftAddress, metadataAddress, exampleNFTAddress,
-// 		exampleNFTAccountKey,
-// 		exampleNFTSigner)
-
-// 	// create a new Collection
-// 	script := templates.GenerateSetupAccountScript(nftAddress, exampleNFTAddress, metadataAddress)
-// 	tx := createTxWithTemplateAndAuthorizer(b, script, joshAddress)
-
-// 	signAndSubmit(
-// 		t, b, tx,
-// 		[]flow.Address{
-// 			b.ServiceKey().Address,
-// 			joshAddress,
-// 		},
-// 		[]crypto.Signer{
-// 			serviceSigner,
-// 			joshSigner,
-// 		},
-// 		false,
-// 	)
-
-// 	t.Run("Should be able to upgrade the NFT contract with default implementations and not break", func(t *testing.T) {
-
-// 		// Upgrade the contract
-// 		template := `
-// 		transaction(code: [UInt8]) {
-// 			prepare(acct: AuthAccount) {
-// 				acct.contracts.update__experimental(name: "NonFungibleToken", code: code)
-// 			}
-// 		}
-// 		`
-// 		transaction := []byte(fmt.Sprintf(template))
-
-// 		newNFTCode := contracts.OldNonFungibleToken()
-// 		cadenceCode := bytesToCadenceArray(newNFTCode)
-
-// 		tx := createTxWithTemplateAndAuthorizer(b, transaction, nftAddress)
-// 		tx.AddRawArgument(jsoncdc.MustEncode(cadenceCode))
-
-// 		signAndSubmit(
-// 			t, b, tx,
-// 			[]flow.Address{
-// 				b.ServiceKey().Address,
-// 				nftAddress,
-// 			},
-// 			[]crypto.Signer{
-// 				serviceSigner,
-// 				NFTSigner,
-// 			},
-// 			false,
-// 		)
-
-// 		// Transfer an NFT correctly
-// 		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress)
-// 		tx = createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
-
-// 		tx.AddArgument(cadence.NewAddress(joshAddress))
-// 		tx.AddArgument(cadence.NewUInt64(0))
-
-// 		signAndSubmit(
-// 			t, b, tx,
-// 			[]flow.Address{
-// 				b.ServiceKey().Address,
-// 				exampleNFTAddress,
-// 			},
-// 			[]crypto.Signer{
-// 				serviceSigner,
-// 				exampleNFTSigner,
-// 			},
-// 			false,
-// 		)
-// 	})
-
-// }

@@ -19,6 +19,61 @@ import (
 	"github.com/onflow/flow-nft/lib/go/templates"
 )
 
+// Deploys the NonFungibleToken, MetadataViews, and ExampleNFT contracts to new accounts
+// and returns their addresses
+func deployNFTContracts(
+	t *testing.T,
+	b emulator.Emulator,
+	adapter *adapters.SDKAdapter,
+	accountKeys *test.AccountKeys,
+	exampleNFTAccountKey *flow.AccountKey,
+) (flow.Address, flow.Address, flow.Address, flow.Address) {
+
+	nftAccountKey, _ := accountKeys.NewWithSigner()
+
+	resolverAddress := deploy(t, b, adapter, "ViewResolver", contracts.Resolver(), nftAccountKey)
+
+	// Deploy the NonFungibleToken contract interface
+	nftAddress, err := adapter.CreateAccount(context.Background(), []*flow.AccountKey{nftAccountKey}, []sdktemplates.Contract{
+		{
+			Name:   "NonFungibleToken",
+			Source: string(contracts.NonFungibleToken(resolverAddress)),
+		},
+	})
+	if !assert.NoError(t, err) {
+		t.Log(err.Error())
+	}
+	_, err = b.CommitBlock()
+	assert.NoError(t, err)
+
+	multipleNFTAddress := deploy(t, b, adapter, "MultipleNFT", contracts.MultipleNFT(nftAddress), nftAccountKey)
+
+	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress, resolverAddress), nftAccountKey)
+
+	exampleNFTAddress := deploy(
+		t, b, adapter,
+		"ExampleNFT",
+		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress, multipleNFTAddress),
+		exampleNFTAccountKey,
+	)
+
+	universalCollectionAddress := deploy(
+		t, b, adapter,
+		"UniversalCollection",
+		contracts.UniversalCollection(nftAddress, resolverAddress, metadataAddress),
+		nftAccountKey,
+	)
+
+	deploy(
+		t, b, adapter,
+		"BasicNFT",
+		contracts.BasicNFT(nftAddress, resolverAddress, metadataAddress, universalCollectionAddress),
+		exampleNFTAccountKey,
+	)
+
+	return nftAddress, metadataAddress, exampleNFTAddress, resolverAddress
+}
+
 // Mints a single NFT from the ExampleNFT contract
 // with standard metadata fields and royalty cuts
 func mintExampleNFT(
@@ -83,47 +138,6 @@ func mintExampleNFT(
 		},
 		false,
 	)
-}
-
-// Deploys the NonFungibleToken, MetadataViews, and ExampleNFT contracts to new accounts
-// and returns their addresses
-func deployNFTContracts(
-	t *testing.T,
-	b emulator.Emulator,
-	adapter *adapters.SDKAdapter,
-	accountKeys *test.AccountKeys,
-	exampleNFTAccountKey *flow.AccountKey,
-) (flow.Address, flow.Address, flow.Address, flow.Address) {
-
-	nftAccountKey, _ := accountKeys.NewWithSigner()
-
-	resolverAddress := deploy(t, b, adapter, "ViewResolver", contracts.Resolver(), nftAccountKey)
-
-	// Deploy the NonFungibleToken contract interface
-	nftAddress, err := adapter.CreateAccount(context.Background(), []*flow.AccountKey{nftAccountKey}, []sdktemplates.Contract{
-		{
-			Name:   "NonFungibleToken",
-			Source: string(contracts.NonFungibleTokenV2(resolverAddress)),
-		},
-	})
-	if !assert.NoError(t, err) {
-		t.Log(err.Error())
-	}
-	_, err = b.CommitBlock()
-	assert.NoError(t, err)
-
-	multipleNFTAddress := deploy(t, b, adapter, "MultipleNFT", contracts.MultipleNFT(nftAddress))
-
-	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress, resolverAddress))
-
-	exampleNFTAddress := deploy(
-		t, b, adapter,
-		"ExampleNFT",
-		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress, multipleNFTAddress),
-		exampleNFTAccountKey,
-	)
-
-	return nftAddress, metadataAddress, exampleNFTAddress, resolverAddress
 }
 
 // Assers that the ExampleNFT collection in the specified user's account

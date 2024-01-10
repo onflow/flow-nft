@@ -173,7 +173,7 @@ access(all) fun main(address: Address, id: UInt64): Bool {
     assert("https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg" == nftMetadata.collectionBannerImage)
     assert({"twitter": "https://twitter.com/flow_blockchain"} == nftMetadata.collectionSocials)
     assert("Example NFT Edition" == nftMetadata.edition.name)
-    assert(nft.getID() == nftMetadata.edition.number)
+    assert(nft.id == nftMetadata.edition.number)
     assert(nil == nftMetadata.edition.max)
     assert("Common" == nftMetadata.traits.traits[2]!.rarity!.description)
     assert(10.0 == nftMetadata.traits.traits[2]!.rarity!.score)
