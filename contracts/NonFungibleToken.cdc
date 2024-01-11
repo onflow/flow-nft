@@ -178,6 +178,9 @@ access(all) contract NonFungibleToken {
         /// Gets the amount of NFTs stored in the collection
         access(all) view fun getLength(): Int
 
+        /// Gets a list of all the IDs in the collection
+        access(all) view fun getIDs(): [UInt64] 
+
         /// Borrows a reference to an NFT stored in the collection
         /// If the NFT with the specified ID is not in the collection,
         /// the function should return `nil` and not panic
