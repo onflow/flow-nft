@@ -605,10 +605,6 @@ access(all) contract MetadataViews {
         /// including standard NFT interfaces and metadataviews interfaces
         access(all) let publicPath: PublicPath
 
-        /// Private path which should be linked to expose the provider
-        /// capability to withdraw NFTs from the collection holding NFTs
-        access(all) let providerPath: PrivatePath
-
         /// Public collection type that is expected to provide sufficient read-only access to standard
         /// functions (deposit + getIDs + borrowNFT). For new
         /// collections, this may be set to be equal to the type specified in `publicLinkedType`.
@@ -619,10 +615,6 @@ access(all) contract MetadataViews {
         /// `NFT.Receiver`, and `ViewResolver.ResolverCollection` interfaces are required.
         access(all) let publicLinkedType: Type
 
-        /// Type that should be linked at the aforementioned private path. This is normally
-        /// a restricted type with at a minimum the `NFT.Provider` interface
-        access(all) let providerLinkedType: Type
-
         /// Function that allows creation of an empty NFT collection that is intended to store
         /// this NFT.
         access(all) let createEmptyCollection: fun(): @{NonFungibleToken.Collection}
@@ -630,22 +622,17 @@ access(all) contract MetadataViews {
         view init(
             storagePath: StoragePath,
             publicPath: PublicPath,
-            providerPath: PrivatePath,
             publicCollection: Type,
             publicLinkedType: Type,
-            providerLinkedType: Type,
             createEmptyCollectionFunction: fun(): @{NonFungibleToken.Collection}
         ) {
             pre {
                 publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.Receiver, ViewResolver.ResolverCollection}>()): "Public type must include NonFungibleToken.Receiver and ViewResolver.ResolverCollection interfaces."
-                providerLinkedType.isSubtype(of: Type<&{NonFungibleToken.Provider, ViewResolver.ResolverCollection}>()): "Provider type must include NonFungibleToken.Provider and ViewResolver.ResolverCollection interface."
             }
             self.storagePath=storagePath
             self.publicPath=publicPath
-            self.providerPath = providerPath
             self.publicCollection=publicCollection
             self.publicLinkedType=publicLinkedType
-            self.providerLinkedType = providerLinkedType
             self.createEmptyCollection=createEmptyCollectionFunction
         }
     }

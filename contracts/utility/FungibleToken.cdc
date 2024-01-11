@@ -147,18 +147,9 @@ access(all) contract FungibleToken {
             return self.getSupportedVaultTypes()[type] ?? false
         }
 
-        /// Returns the storage path where the vault should typically be stored
-        access(all) view fun getDefaultStoragePath(): StoragePath?
-
-        /// Returns the public path where this vault should have a public capability
-        access(all) view fun getDefaultPublicPath(): PublicPath?
-
-        /// Returns the public path where this vault's Receiver should have a public capability
-        /// Publishing a Receiver Capability at a different path enables alternate Receiver implementations to be used
-        /// in the same canonical namespace as the underlying Vault.
-        access(all) view fun getDefaultReceiverPath(): PublicPath? {
-            return nil
-        }
+        /// Returns the FTVaultData view for this Vault, which contains
+        /// all relevant paths, types, and create vault function
+        access(all) view fun getFTVaultDataView(): AnyStruct
 
         /// withdraw subtracts `amount` from the Vault's balance
         /// and returns a new Vault with the subtracted balance

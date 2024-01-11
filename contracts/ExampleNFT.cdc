@@ -134,21 +134,15 @@ access(all) contract ExampleNFT: ViewResolver {
         access(self) var storagePath: StoragePath
         access(self) var publicPath: PublicPath
 
-        /// Return the default storage path for the collection
-        access(all) view fun getDefaultStoragePath(): StoragePath? {
-            return self.storagePath
-        }
-
-        /// Return the default public path for the collection
-        access(all) view fun getDefaultPublicPath(): PublicPath? {
-            return self.publicPath
-        }
-
         init () {
             self.ownedNFTs <- {}
             let identifier = "cadenceExampleNFTCollection"
             self.storagePath = StoragePath(identifier: identifier)!
             self.publicPath = PublicPath(identifier: identifier)!
+        }
+
+        access(all) view fun getNFTCollectionDataView(): AnyStruct {
+            return ExampleNFT.resolveContractView(Type<MetadataViews.NFTCollectionData>())
         }
 
         /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
@@ -222,7 +216,7 @@ access(all) contract ExampleNFT: ViewResolver {
     /// @return An array of Types defining the implemented views. This value will be used by
     ///         developers to know which parameter to pass to the resolveView() method.
     ///
-    access(all) view fun getViews(): [Type] {
+    access(all) view fun getContractViews(): [Type] {
         return [
             Type<MetadataViews.NFTCollectionData>(),
             Type<MetadataViews.NFTCollectionDisplay>()
@@ -234,45 +228,23 @@ access(all) contract ExampleNFT: ViewResolver {
     /// @param view: The Type of the desired view.
     /// @return A structure representing the requested view.
     ///
-    access(all) fun resolveView(_ view: Type): AnyStruct? {
+    access(all) fun resolveContractView(_ view: Type): AnyStruct? {
         switch view {
             case Type<MetadataViews.NFTCollectionData>():
-                return ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
-            case Type<MetadataViews.NFTCollectionDisplay>():
-                return ExampleNFT.getCollectionDisplay(nftType: Type<@ExampleNFT.NFT>())
-        }
-        return nil
-    }
-
-    /// resolve a type to its CollectionData so you know where to store it
-    /// Returns `nil` if no collection type exists for the specified NFT type
-    access(all) view fun getCollectionData(nftType: Type): MetadataViews.NFTCollectionData? {
-        switch nftType {
-            case Type<@ExampleNFT.NFT>():
                 let collectionRef = self.account.storage.borrow<&ExampleNFT.Collection>(
                         from: /storage/cadenceExampleNFTCollection
                     ) ?? panic("Could not borrow a reference to the stored collection")
                 let collectionData = MetadataViews.NFTCollectionData(
                     storagePath: collectionRef.getDefaultStoragePath()!,
                     publicPath: collectionRef.getDefaultPublicPath()!,
-                    providerPath: /private/cadenceExampleNFTCollection,
                     publicCollection: Type<&ExampleNFT.Collection>(),
                     publicLinkedType: Type<&ExampleNFT.Collection>(),
-                    providerLinkedType: Type<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>(),
                     createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
                         return <-ExampleNFT.createEmptyCollection()
                     })
                 )
                 return collectionData
-            default:
-                return nil
-        }
-    }
-
-    /// Returns the CollectionDisplay view for the NFT type that is specified 
-    access(all) view fun getCollectionDisplay(nftType: Type): MetadataViews.NFTCollectionDisplay? {
-        switch nftType {
-            case Type<@ExampleNFT.NFT>():
+            case Type<MetadataViews.NFTCollectionDisplay>():
                 let media = MetadataViews.Media(
                     file: MetadataViews.HTTPFile(
                         url: "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
@@ -289,9 +261,8 @@ access(all) contract ExampleNFT: ViewResolver {
                         "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
                     }
                 )
-            default:
-                return nil
         }
+        return nil
     }
 
     /// Resource that an admin or something similar would own to be

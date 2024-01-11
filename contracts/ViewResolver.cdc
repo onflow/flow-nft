@@ -10,7 +10,7 @@ access(all) contract interface ViewResolver {
     /// @return An array of Types defining the implemented views. This value will be used by
     ///         developers to know which parameter to pass to the resolveView() method.
     ///
-    access(all) view fun getViews(): [Type] {
+    access(all) view fun getContractViews(): [Type] {
         return []
     }
 
@@ -19,7 +19,7 @@ access(all) contract interface ViewResolver {
     /// @param view: The Type of the desired view.
     /// @return A structure representing the requested view.
     ///
-    access(all) fun resolveView(_ view: Type): AnyStruct? {
+    access(all) fun resolveContractView(_ view: Type): AnyStruct? {
         return nil
     }
 

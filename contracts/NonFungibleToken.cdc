@@ -154,13 +154,11 @@ access(all) contract NonFungibleToken {
     /// Requirement for the concrete resource type
     /// to be declared in the implementing contract
     ///
-    access(all) resource interface Collection: Provider, Receiver, ViewResolver.ResolverCollection {
+    access(all) resource interface Collection: Provider, Receiver {
 
-        /// Return the default storage path for the collection
-        access(all) view fun getDefaultStoragePath(): StoragePath?
-
-        /// Return the default public path for the collection
-        access(all) view fun getDefaultPublicPath(): PublicPath?
+        /// Return the NFT CollectionData View
+        /// has to be AnyStruct and cast to the view later to avoid circular dependency issues
+        access(all) view fun getNFTCollectionDataView(): AnyStruct
 
         /// Normally we would require that the collection specify
         /// a specific dictionary to store the NFTs, but this isn't necessary any more

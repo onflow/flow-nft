@@ -31,14 +31,20 @@ access(all) contract UniversalCollection {
         access(self) var storagePath: StoragePath
         access(self) var publicPath: PublicPath
 
-        /// Return the default storage path for the collection
-        access(all) view fun getDefaultStoragePath(): StoragePath? {
-            return self.storagePath
+        access(all) view fun getNFTCollectionDataView(): AnyStruct {
+            return MetadataViews.NFTCollectionData(
+                storagePath: StoragePath(identifier: self.identifier)!,
+                publicPath: PublicPath(identifier: self.identifier)!,
+                publicCollection: Type<&UniversalCollection.Collection>(),
+                publicLinkedType: Type<&UniversalCollection.Collection>(),
+                createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
+                    return <-self.createEmptyCollection()
+                })
+            )
         }
 
-        /// Return the default public path for the collection
-        access(all) view fun getDefaultPublicPath(): PublicPath? {
-            return self.publicPath
+        access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
+            return <- create Collection(identifier: self.identifier, type: self.supportedType)
         }
 
         init (identifier: String, type:Type) {
