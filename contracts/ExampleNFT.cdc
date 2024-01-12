@@ -141,7 +141,7 @@ access(all) contract ExampleNFT: ViewResolver {
             self.publicPath = PublicPath(identifier: identifier)!
         }
 
-        access(all) view fun getNFTCollectionDataView(): AnyStruct {
+        access(all) fun getNFTCollectionDataView(): AnyStruct {
             return ExampleNFT.resolveContractView(Type<MetadataViews.NFTCollectionData>())
         }
 

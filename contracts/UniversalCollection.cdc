@@ -31,7 +31,7 @@ access(all) contract UniversalCollection {
         access(self) var storagePath: StoragePath
         access(self) var publicPath: PublicPath
 
-        access(all) view fun getNFTCollectionDataView(): AnyStruct {
+        access(all) fun getNFTCollectionDataView(): AnyStruct {
             return MetadataViews.NFTCollectionData(
                 storagePath: StoragePath(identifier: self.identifier)!,
                 publicPath: PublicPath(identifier: self.identifier)!,

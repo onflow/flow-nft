@@ -149,7 +149,7 @@ access(all) contract FungibleToken {
 
         /// Returns the FTVaultData view for this Vault, which contains
         /// all relevant paths, types, and create vault function
-        access(all) view fun getFTVaultDataView(): AnyStruct
+        access(all) fun getFTVaultDataView(): AnyStruct
 
         /// withdraw subtracts `amount` from the Vault's balance
         /// and returns a new Vault with the subtracted balance
