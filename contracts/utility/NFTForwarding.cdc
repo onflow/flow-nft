@@ -17,8 +17,8 @@ access(all) contract NFTForwarding {
 
     access(all) entitlement Mutable
 
-    access(all) event ForwardedNFTDeposit(id: UInt64, from: Address?)
-    access(all) event UpdatedNFTForwarderRecipient(forwarder: Address?)
+    access(all) event ForwardedNFTDeposit(id: UInt64, uuid: UInt64, from: Address?, fromUUID: UInt64, to: Address, toUUID: UInt64)
+    access(all) event UpdatedNFTForwarderRecipient(forwarderAddress: Address?, forwarderUUID: UInt64, newRecipientAddress: Address, newRecipientUUID: UInt64)
 
     /// Canonical Storage and Public paths
     ///
@@ -45,11 +45,11 @@ access(all) contract NFTForwarding {
             let recipientRef = self.borrowRecipientCollection()
                 ?? panic("Could not borrow reference to recipient's Collection!")
             let id = token.id
+            let uuid = token.uuid
 
             recipientRef.deposit(token: <-token)
 
-            emit ForwardedNFTDeposit(id: id, from: self.owner?.address)
-
+            emit ForwardedNFTDeposit(id: id, uuid: uuid, from: self.owner?.address, fromUUID: self.uuid, to: recipientRef.owner?.address, toUUID: recipientRef.uuid)
         }
 
         /// Enables reference retrieval of the recipient's Collection or nil
@@ -71,7 +71,8 @@ access(all) contract NFTForwarding {
             }
 
             self.recipient = newRecipient
-            emit UpdatedNFTForwarderRecipient(forwarder: self.owner?.address)
+            let recipientRef = self.recipientRef.borrow()!
+            emit UpdatedNFTForwarderRecipient(forwarderAddress: self.owner?.address, forwardarUUID: self.uuid, newRecipientAddress: recipientRef.owner?.address, newRecipientUUID: recipientRef.uuid)
         }
 
         init(_ recipient: Capability<&{NonFungibleToken.Collection}>) {
@@ -79,7 +80,8 @@ access(all) contract NFTForwarding {
                 recipient.check(): "Could not borrow Collection reference from the given Capability"
             }
             self.recipient = recipient
-            emit UpdatedNFTForwarderRecipient(forwarder: self.owner?.address)
+            let recipientRef = self.recipientRef.borrow()!
+            emit UpdatedNFTForwarderRecipient(forwarderAddress: self.owner?.address, forwardarUUID: self.uuid, newRecipientAddress: recipientRef.owner?.address, newRecipientUUID: recipientRef.uuid)
         }
     }
 

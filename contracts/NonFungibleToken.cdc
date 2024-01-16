@@ -101,6 +101,11 @@ access(all) contract NonFungibleToken {
             }
         }
 
+        /// Return a dictionary of all subNFTS if any
+        access(all) view fun getAvailableSubNFTS(): {Type: UInt64} {
+            return {}
+        }
+
         /// Get a reference to an NFT that this NFT owns
         /// Both arguments are optional to allow the NFT to choose
         /// how it returns sub NFTs depending on what arguments are provided
@@ -157,7 +162,14 @@ access(all) contract NonFungibleToken {
     access(all) resource interface Collection: Provider, Receiver {
 
         /// Return the NFT CollectionData View
-        /// has to be AnyStruct and cast to the view later to avoid circular dependency issues
+        /// has to be AnyStruct to avoid circular dependency issues
+        /// the return value should be cast to MetadataViews.NFTCollectionData after it is returned
+        ///
+        /// Metadata Views are a critical piece that NFT projects need to implement
+        /// in order to function properly in the flow ecosystem
+        /// 
+        /// Check out https://developers.flow.com/build/advanced-concepts/metadata-views
+        /// for a detailed guide on how to implement metadata views properly
         access(all) fun getNFTCollectionDataView(): AnyStruct
 
         /// Normally we would require that the collection specify
