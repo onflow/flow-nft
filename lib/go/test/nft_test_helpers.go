@@ -46,14 +46,12 @@ func deployNFTContracts(
 	_, err = b.CommitBlock()
 	assert.NoError(t, err)
 
-	multipleNFTAddress := deploy(t, b, adapter, "MultipleNFT", contracts.MultipleNFT(nftAddress), nftAccountKey)
-
 	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress, resolverAddress), nftAccountKey)
 
 	exampleNFTAddress := deploy(
 		t, b, adapter,
 		"ExampleNFT",
-		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress, multipleNFTAddress),
+		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress, metadataAddress),
 		exampleNFTAccountKey,
 	)
 

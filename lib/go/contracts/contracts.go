@@ -18,21 +18,26 @@ var (
 	placeholderFungibleToken       = regexp.MustCompile(`"FungibleToken"`)
 	placeholderResolver            = regexp.MustCompile(`"ViewResolver"`)
 	placeholderNFTMetadataViews    = regexp.MustCompile(`"NFTMetadataViews"`)
-	placeholderMultipleNFT         = regexp.MustCompile(`"MultipleNFT"`)
 	placeholderUniversalCollection = regexp.MustCompile(`"UniversalCollection"`)
 )
 
 const (
+	filenameMultipleNFT         = "MultipleNFT.cdc"
 	filenameNonFungibleToken    = "NonFungibleToken.cdc"
 	filenameExampleNFT          = "ExampleNFT.cdc"
 	filenameMetadataViews       = "MetadataViews.cdc"
 	filenameNFTMetadataViews    = "NFTMetadataViews.cdc"
 	filenameResolver            = "ViewResolver.cdc"
-	filenameMultipleNFT         = "MultipleNFT.cdc"
 	filenameUniversalCollection = "UniversalCollection.cdc"
 	filenameBasicNFT            = "BasicNFT.cdc"
 	filenameFungibleToken       = "utility/FungibleToken.cdc"
 )
+
+func MultipleNFT(nftAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameMultipleNFT)
+	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
+	return []byte(code)
+}
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleToken(resolverAddress flow.Address) []byte {
@@ -57,7 +62,6 @@ func ExampleNFT(nftAddress, metadataAddress, resolverAddress, multipleNFTAddress
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
 	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
-	code = placeholderMultipleNFT.ReplaceAllString(code, "0x"+multipleNFTAddress.String())
 
 	return []byte(code)
 }
@@ -74,12 +78,6 @@ func MetadataViews(ftAddress, nftAddress, resolverAddress flow.Address) []byte {
 
 func Resolver() []byte {
 	code := assets.MustAssetString(filenameResolver)
-	return []byte(code)
-}
-
-func MultipleNFT(nftAddress flow.Address) []byte {
-	code := assets.MustAssetString(filenameMultipleNFT)
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
 	return []byte(code)
 }
 

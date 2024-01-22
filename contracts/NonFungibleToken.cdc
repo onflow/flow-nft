@@ -41,13 +41,16 @@ import ViewResolver from "ViewResolver"
 /// The main NFT contract. Other NFT contracts will
 /// import and implement the interfaces defined in this contract
 ///
-access(all) contract NonFungibleToken {
+access(all) contract interface NonFungibleToken: ViewResolver {
 
     /// An entitlement for allowing the withdrawal of tokens from a Vault
-    access(all) entitlement Withdrawable
+    access(all) entitlement Withdraw
 
     /// An entitlement for allowing updates and update events for an NFT
-    access(all) entitlement Updatable
+    access(all) entitlement Update
+
+    /// entitlement for owner that grants Withdraw and Update
+    access(all) entitlement Owner
 
     /// Event that contracts should emit when the metadata of an NFT is updated
     /// It can only be emitted by calling the `emitNFTUpdated` function
@@ -60,7 +63,7 @@ access(all) contract NonFungibleToken {
     /// and query the updated metadata from the owners' collections.
     ///
     access(all) event Updated(id: UInt64, uuid: UInt64, owner: Address?, type: String)
-    access(all) view fun emitNFTUpdated(_ nftRef: auth(Updatable) &{NonFungibleToken.NFT})
+    access(all) view fun emitNFTUpdated(_ nftRef: auth(Update | Owner) &{NonFungibleToken.NFT})
     {
         emit Updated(id: nftRef.id, uuid: nftRef.uuid, owner: nftRef.owner?.address, type: nftRef.getType().identifier)
     }
@@ -72,7 +75,7 @@ access(all) contract NonFungibleToken {
     ///
     /// If the collection is not in an account's storage, `from` will be `nil`.
     ///
-    access(all) event Withdraw(type: String, id: UInt64, uuid: UInt64, from: Address?, providerUUID: UInt64)
+    access(all) event Withdrawn(type: String, id: UInt64, uuid: UInt64, from: Address?, providerUUID: UInt64)
 
     /// Event that emitted when a token is deposited to a collection.
     /// Indicates the type, id, uuid, the owner of the collection that it was deposited to,
@@ -80,7 +83,10 @@ access(all) contract NonFungibleToken {
     ///
     /// If the collection is not in an account's storage, `from`, will be `nil`.
     ///
-    access(all) event Deposit(type: String, id: UInt64, uuid: UInt64, to: Address?, collectionUUID: UInt64)
+    access(all) event Deposited(type: String, id: UInt64, uuid: UInt64, to: Address?, collectionUUID: UInt64)
+
+    /// Included for backwards-compatibility
+    access(all) resource interface INFT: NFT {}
 
     /// Interface that the NFTs must conform to
     ///
@@ -95,13 +101,15 @@ access(all) contract NonFungibleToken {
 
         /// createEmptyCollection creates an empty Collection that is able to store the NFT
         /// and returns it to the caller so that they can own NFTs
+        /// @return A an empty collection that can store this NFT
         access(all) fun createEmptyCollection(): @{Collection} {
             post {
                 result.getLength() == 0: "The created collection must be empty!"
             }
         }
 
-        /// Return a dictionary of all subNFTS if any
+        /// Gets all the NFTs that this NFT directly owns
+        /// @return A dictionary of all subNFTS keyed by type
         access(all) view fun getAvailableSubNFTS(): {Type: UInt64} {
             return {}
         }
@@ -132,10 +140,11 @@ access(all) contract NonFungibleToken {
 
         /// withdraw removes an NFT from the collection and moves it to the caller
         /// It does not specify whether the ID is UUID or not
-        access(Withdrawable) fun withdraw(withdrawID: UInt64): @{NFT} {
+        /// @param withdrawID: The id of the NFT to withdraw from the collection
+        access(Withdraw | Owner) fun withdraw(withdrawID: UInt64): @{NFT} {
             post {
                 result.id == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
-                emit Withdraw(type: result.getType().identifier, id: result.id, uuid: result.uuid, from: self.owner?.address, providerUUID: self.uuid)
+                emit Withdrawn(type: result.getType().identifier, id: result.id, uuid: result.uuid, from: self.owner?.address, providerUUID: self.uuid)
             }
         }
     }
@@ -145,14 +154,18 @@ access(all) contract NonFungibleToken {
     access(all) resource interface Receiver {
 
         /// deposit takes an NFT as an argument and adds it to the Collection
-        ///
+        /// @param token: The NFT to deposit
         access(all) fun deposit(token: @{NFT})
 
         /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
+        /// @return A dictionary of types mapped to booleans indicating if this
+        ///         reciever supports it
         access(all) view fun getSupportedNFTTypes(): {Type: Bool}
 
         /// Returns whether or not the given type is accepted by the collection
         /// A collection that can accept any type should just return true by default
+        /// @param type: An NFT type
+        /// @return A boolean indicating if this receiver can recieve the desired NFT type
         access(all) view fun isSupportedNFTType(type: Type): Bool
     }
 
@@ -161,47 +174,65 @@ access(all) contract NonFungibleToken {
     ///
     access(all) resource interface Collection: Provider, Receiver {
 
-        /// Return the NFT CollectionData View
-        /// has to be AnyStruct to avoid circular dependency issues
-        /// the return value should be cast to MetadataViews.NFTCollectionData after it is returned
-        ///
-        /// Metadata Views are a critical piece that NFT projects need to implement
-        /// in order to function properly in the flow ecosystem
-        /// 
-        /// Check out https://developers.flow.com/build/advanced-concepts/metadata-views
-        /// for a detailed guide on how to implement metadata views properly
-        access(all) fun getNFTCollectionDataView(): AnyStruct
-
-        /// Normally we would require that the collection specify
-        /// a specific dictionary to store the NFTs, but this isn't necessary any more
-        /// as long as all the other functions are there
-
         /// deposit takes a NFT as an argument and stores it in the collection
+        /// @param token: The NFT to deposit into the collection
         access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
             pre {
                 // We emit the deposit event in the `Collection` interface
                 // because the `Collection` interface is almost always the final destination
                 // of tokens and deposit emissions from custom receivers could be confusing
                 // and hard to reconcile to event listeners
-                emit Deposit(type: token.getType().identifier, id: token.id, uuid: token.uuid, to: self.owner?.address, collectionUUID: self.uuid)
+                emit Deposited(type: token.getType().identifier, id: token.id, uuid: token.uuid, to: self.owner?.address, collectionUUID: self.uuid)
             }
         }
 
         /// Gets the amount of NFTs stored in the collection
+        /// @return An integer indicating the size of the collection
         access(all) view fun getLength(): Int
 
         /// Gets a list of all the IDs in the collection
+        /// @return An array of NFT IDs in the collection
         access(all) view fun getIDs(): [UInt64] 
 
         /// Borrows a reference to an NFT stored in the collection
         /// If the NFT with the specified ID is not in the collection,
-        /// the function should return `nil` and not panic
+        /// the function should return `nil` and not panic.
+        ///
+        /// @param id: The desired nft id in the collection to return a referece for.
+        /// @return An optional reference to the NFT
         access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
             post {
                 (result == nil) || (result?.id == id): 
                     "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
             }
-            return nil
+        }
+
+        /// createEmptyCollection creates an empty Collection of the same type
+        /// and returns it to the caller
+        /// @return A an empty collection of the same type
+        access(all) fun createEmptyCollection(): @{Collection} {
+            post {
+                result.getType() == self.getType(): "The created collection does not have the same type as this collection"
+                result.getLength() == 0: "The created collection must be empty!"
+            }
+        }
+    }
+
+    /// Function to return the types that the contract implements
+    /// @return An array of NFT Types that the implementing contract defines.
+    access(all) view fun getVaultTypes(): [Type] {
+        post {
+            result.length > 0: "Must indicate what non-fungible token types this contract defines"
+        }
+    }
+
+    /// createEmptyCollection creates an empty Collection for the specified NFT type
+    /// and returns it to the caller so that they can own NFTs
+    /// @param nftType: The desired nft type to return a collection for.
+    /// @return An array of NFT Types that the implementing contract defines.
+    access(all) fun createEmptyCollection(nftType: Type): @{NonFungibleToken.Collection} {
+        post {
+            result.getIDs().length == 0: "The created collection must be empty!"
         }
     }
 }

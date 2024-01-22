@@ -40,19 +40,19 @@ import ViewResolver from "ViewResolver"
 /// utility methods that many projects will still want to have on their contracts,
 /// but they are by no means required. all that is required is that the token
 /// implements the `Vault` interface
-access(all) contract FungibleToken {
+access(all) contract interface FungibleToken: ViewResolver {
 
     // An entitlement for allowing the withdrawal of tokens from a Vault
-    access(all) entitlement Withdrawable
+    access(all) entitlement Withdraw
 
     /// The event that is emitted when tokens are withdrawn from a Vault
-    access(all) event Withdraw(amount: UFix64, type: String, from: Address?, fromUUID: UInt64, withdrawnUUID: UInt64)
+    access(all) event Withdrawn(amount: UFix64, type: String, from: Address?, fromUUID: UInt64, withdrawnUUID: UInt64)
 
     /// The event that is emitted when tokens are deposited to a Vault
-    access(all) event Deposit(amount: UFix64, type: String, to: Address?, toUUID: UInt64, depositedUUID: UInt64)
+    access(all) event Deposited(amount: UFix64, type: String, to: Address?, toUUID: UInt64, depositedUUID: UInt64)
 
     /// Event that is emitted when the global burn method is called with a non-zero balance
-    access(all) event Burn(amount: UFix64, type: String, fromUUID: UInt64)
+    access(all) event Burned(amount: UFix64, type: String, fromUUID: UInt64)
 
     /// Balance
     ///
@@ -78,16 +78,16 @@ access(all) contract FungibleToken {
         /// withdraw subtracts tokens from the implementing resource
         /// and returns a Vault with the removed tokens.
         ///
-        /// The function's access level is `access(Withdrawable)`
+        /// The function's access level is `access(Withdraw)`
         /// So in order to access it, one would either need the object itself
-        /// or an entitled reference with `Withdrawable`.
+        /// or an entitled reference with `Withdraw`.
         ///
-        access(Withdrawable) fun withdraw(amount: UFix64): @{Vault} {
+        access(Withdraw) fun withdraw(amount: UFix64): @{Vault} {
             post {
                 // `result` refers to the return value
                 result.getBalance() == amount:
                     "Withdrawal amount must be the same as the balance of the withdrawn Vault"
-                emit Withdraw(amount: amount, type: self.getType().identifier, from: self.owner?.address, fromUUID: self.uuid, withdrawnUUID: result.uuid)
+                emit Withdrawn(amount: amount, type: self.getType().identifier, from: self.owner?.address, fromUUID: self.uuid, withdrawnUUID: result.uuid)
             }
         }
     }
@@ -130,6 +130,9 @@ access(all) contract FungibleToken {
         access(all) view fun getBalance(): UFix64
 
         /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
+        /// The default implementation is included here because vaults are expected
+        /// to only accepted their own type, so they have no need to provide an implementation
+        /// for this function
         access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
             // Below check is implemented to make sure that run-time type would
             // only get returned when the parent resource conforms with `FungibleToken.Vault`. 
@@ -147,14 +150,10 @@ access(all) contract FungibleToken {
             return self.getSupportedVaultTypes()[type] ?? false
         }
 
-        /// Returns the FTVaultData view for this Vault, which contains
-        /// all relevant paths, types, and create vault function
-        access(all) fun getFTVaultDataView(): AnyStruct
-
         /// withdraw subtracts `amount` from the Vault's balance
         /// and returns a new Vault with the subtracted balance
         ///
-        access(Withdrawable) fun withdraw(amount: UFix64): @{Vault} {
+        access(Withdraw) fun withdraw(amount: UFix64): @{Vault} {
             pre {
                 self.getBalance() >= amount:
                     "Amount withdrawn must be less than or equal than the balance of the Vault"
@@ -176,7 +175,7 @@ access(all) contract FungibleToken {
             pre {
                 from.isInstance(self.getType()): 
                     "Cannot deposit an incompatible token type"
-                emit Deposit(amount: from.getBalance(), type: from.getType().identifier, to: self.owner?.address, toUUID: self.uuid, depositedUUID: from.uuid)
+                emit Deposited(amount: from.getBalance(), type: from.getType().identifier, to: self.owner?.address, toUUID: self.uuid, depositedUUID: from.uuid)
             }
             post {
                 self.getBalance() == before(self.getBalance()) + before(from.getBalance()):
@@ -193,11 +192,30 @@ access(all) contract FungibleToken {
         }
     }
 
-    /// Global method to burn any FungibleToken Vault
-    access(all) fun burn(_ vault: @{FungibleToken.Vault}) {
-        if vault.balance > 0.0 {
-            emit Burn(amount: vault.balance, type: vault.getType().identifier, fromUUID: vault.uuid)
+    /// Function to return the types that the contract implements
+    access(all) view fun getVaultTypes(): [Type] {
+        post {
+            result.length > 0: "Must indicate what fungible token types this contract defines"
         }
-        destroy vault
+    }
+
+    /// createEmptyVault allows any user to create a new Vault that has a zero balance
+    ///
+    access(all) fun createEmptyVault(vaultType: Type): @{FungibleToken.Vault} {
+        post {
+            result.getType() == vaultType: "The returned vault does not match the desired type"
+            result.getBalance() == 0.0: "The newly created Vault must have zero balance"
+        }
+    }
+
+    /// Method to burn a FungibleToken Vault
+    /// contract implementations should provide an implementation for this function
+    /// that subtracts the vault balance from the token's total supply
+    access(all) fun burn(_ vault: @{FungibleToken.Vault}) {
+        pre {
+            self.getVaultTypes().contains(vault.getType())
+            vault.balance > 0.0: "Do not use the burn method unless the vault balance is greater than zero!"
+            emit Burned(amount: vault.balance, type: vault.getType().identifier, fromUUID: vault.uuid)
+        }
     }
 }

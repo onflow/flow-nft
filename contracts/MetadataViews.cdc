@@ -605,14 +605,11 @@ access(all) contract MetadataViews {
         /// including standard NFT interfaces and metadataviews interfaces
         access(all) let publicPath: PublicPath
 
-        /// Public collection type that is expected to provide sufficient read-only access to standard
-        /// functions (deposit + getIDs + borrowNFT). For new
-        /// collections, this may be set to be equal to the type specified in `publicLinkedType`.
+        /// The concrete type of the collection that is exposed to the public
+        /// now that entitlements exist, it no longer needs to be restricted to a specific interface
         access(all) let publicCollection: Type
 
-        /// Type that should be linked at the aforementioned public path. This is normally a
-        /// restricted type with many interfaces. Notably the
-        /// `NFT.Receiver`, and `ViewResolver.ResolverCollection` interfaces are required.
+        /// Type that should be linked at the aforementioned public path
         access(all) let publicLinkedType: Type
 
         /// Function that allows creation of an empty NFT collection that is intended to store
