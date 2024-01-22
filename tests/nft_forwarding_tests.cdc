@@ -27,10 +27,9 @@ access(all) fun setup() {
     )
 
     deploy("ViewResolver", admin, "../contracts/ViewResolver.cdc")
-    deploy("NonFungibleToken", admin, "../contracts/NonFungibleToken-v2.cdc")
+    deploy("NonFungibleToken", admin, "../contracts/NonFungibleToken.cdc")
     deploy("MetadataViews", admin, "../contracts/MetadataViews.cdc")
-    deploy("MultipleNFT", admin, "../contracts/MultipleNFT.cdc")
-    deploy("ExampleNFT", admin, "../contracts/ExampleNFT-v2.cdc")
+    deploy("ExampleNFT", admin, "../contracts/ExampleNFT.cdc")
     deploy("NFTForwarding", admin, "../contracts/utility/NFTForwarding.cdc")
 }
 

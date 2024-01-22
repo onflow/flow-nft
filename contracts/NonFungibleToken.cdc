@@ -218,14 +218,6 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         }
     }
 
-    /// Function to return the types that the contract implements
-    /// @return An array of NFT Types that the implementing contract defines.
-    access(all) view fun getVaultTypes(): [Type] {
-        post {
-            result.length > 0: "Must indicate what non-fungible token types this contract defines"
-        }
-    }
-
     /// createEmptyCollection creates an empty Collection for the specified NFT type
     /// and returns it to the caller so that they can own NFTs
     /// @param nftType: The desired nft type to return a collection for.

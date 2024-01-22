@@ -14,7 +14,7 @@ import NonFungibleToken from "NonFungibleToken"
 import ViewResolver from "ViewResolver"
 import MetadataViews from "MetadataViews"
 
-access(all) contract ExampleNFT: ViewResolver {
+access(all) contract ExampleNFT: NonFungibleToken {
 
     /// Path where the minter should be stored
     /// The standard paths for the collection are stored in the collection resource type
@@ -229,7 +229,7 @@ access(all) contract ExampleNFT: ViewResolver {
     /// @return A structure representing the requested view.
     ///
     access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
-        switch view {
+        switch viewType {
             case Type<MetadataViews.NFTCollectionData>():
                 let collectionRef = self.account.storage.borrow<&ExampleNFT.Collection>(
                         from: /storage/cadenceExampleNFTCollection

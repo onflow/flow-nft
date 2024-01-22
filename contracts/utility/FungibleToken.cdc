@@ -192,13 +192,6 @@ access(all) contract interface FungibleToken: ViewResolver {
         }
     }
 
-    /// Function to return the types that the contract implements
-    access(all) view fun getVaultTypes(): [Type] {
-        post {
-            result.length > 0: "Must indicate what fungible token types this contract defines"
-        }
-    }
-
     /// createEmptyVault allows any user to create a new Vault that has a zero balance
     ///
     access(all) fun createEmptyVault(vaultType: Type): @{FungibleToken.Vault} {

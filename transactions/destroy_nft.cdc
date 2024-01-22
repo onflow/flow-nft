@@ -7,13 +7,13 @@ import ExampleNFT from "ExampleNFT"
 transaction(id: UInt64) {
 
     /// Reference that will be used for the owner's collection
-    let collectionRef: auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection
+    let collectionRef: auth(NonFungibleToken.Withdraw) &ExampleNFT.Collection
 
     prepare(signer: auth(BorrowValue) &Account) {
         let collectionData: MetadataViews.NFTCollectionData = ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
             ?? panic("ExampleNFT did not resolve NFTCollectionData view")
         // borrow a reference to the owner's collection
-        self.collectionRef = signer.storage.borrow<auth(NonFungibleToken.Withdrawable) &ExampleNFT.Collection>(
+        self.collectionRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &ExampleNFT.Collection>(
                 from: collectionData.storagePath
             ) ?? panic("Account does not store an object at the specified path")
 

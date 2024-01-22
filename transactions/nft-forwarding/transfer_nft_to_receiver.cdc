@@ -12,7 +12,7 @@ transaction(
 ) {
 
     // reference to the withdrawer's collection
-    let withdrawRef: auth(Withdrawable) &{NonFungibleToken.Collection}
+    let withdrawRef: auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}
     // reference of the Receiver to deposit the NFT to
     let depositRef: &{NonFungibleToken.Receiver}
 
@@ -25,7 +25,7 @@ transaction(
             ?? panic("Could not resolve NFTCollectionData view")
 
         // borrow a reference to the signer's NFT collection
-        self.withdrawRef = signer.storage.borrow<auth(Withdrawable) &{NonFungibleToken.Collection}>(
+        self.withdrawRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>(
                 from: collectionData.storagePath
             ) ?? panic("Account does not store an object at the specified path")
 

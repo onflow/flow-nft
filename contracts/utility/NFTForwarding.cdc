@@ -26,7 +26,7 @@ access(all) contract NFTForwarding {
 
     /// Resource that forwards deposited NFTs to a designated recipient's Collection
     ///
-    access(all) resource NFTForwarder : NonFungibleToken.Receiver {
+    access(all) resource NFTForwarder: NonFungibleToken.Receiver {
 
         /// Recipient to which NFTs will be forwarded
         ///

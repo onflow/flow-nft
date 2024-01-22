@@ -16,7 +16,7 @@ transaction {
         }
 
         // Create a new empty collection
-        let collection <- ExampleNFT.createEmptyCollection()
+        let collection <- ExampleNFT.createEmptyCollection(nftType: Type<@ExampleNFT.NFT>())
 
         // save it to the account
         signer.storage.save(<-collection, to: collectionData.storagePath)

@@ -22,22 +22,15 @@ var (
 )
 
 const (
-	filenameMultipleNFT         = "MultipleNFT.cdc"
 	filenameNonFungibleToken    = "NonFungibleToken.cdc"
 	filenameExampleNFT          = "ExampleNFT.cdc"
 	filenameMetadataViews       = "MetadataViews.cdc"
 	filenameNFTMetadataViews    = "NFTMetadataViews.cdc"
-	filenameResolver            = "ViewResolver.cdc"
+	filenameViewResolver        = "ViewResolver.cdc"
 	filenameUniversalCollection = "UniversalCollection.cdc"
 	filenameBasicNFT            = "BasicNFT.cdc"
 	filenameFungibleToken       = "utility/FungibleToken.cdc"
 )
-
-func MultipleNFT(nftAddress flow.Address) []byte {
-	code := assets.MustAssetString(filenameMultipleNFT)
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	return []byte(code)
-}
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleToken(resolverAddress flow.Address) []byte {
@@ -46,17 +39,10 @@ func NonFungibleToken(resolverAddress flow.Address) []byte {
 	return []byte(code)
 }
 
-// NonFungibleToken returns the NonFungibleToken contract interface.
-func NonFungibleTokenV2(resolverAddress flow.Address) []byte {
-	code := assets.MustAssetString(filenameNonFungibleToken)
-	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
-	return []byte(code)
-}
-
 // ExampleNFT returns the ExampleNFT contract.
 //
 // The returned contract will import the NonFungibleToken contract from the specified address.
-func ExampleNFT(nftAddress, metadataAddress, resolverAddress, multipleNFTAddress flow.Address) []byte {
+func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
 	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
@@ -76,8 +62,8 @@ func MetadataViews(ftAddress, nftAddress, resolverAddress flow.Address) []byte {
 	return []byte(code)
 }
 
-func Resolver() []byte {
-	code := assets.MustAssetString(filenameResolver)
+func ViewResolver() []byte {
+	code := assets.MustAssetString(filenameViewResolver)
 	return []byte(code)
 }
 

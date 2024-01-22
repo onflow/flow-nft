@@ -5,5 +5,5 @@ import "ExampleNFT"
 import "MetadataViews"
 
 pub fun main(): [Type] {
-    return ExampleNFT.getViews()
+    return ExampleNFT.getContractViews(resourceType: nil)
 }

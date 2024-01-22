@@ -72,7 +72,7 @@ access(all) contract UniversalCollection {
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
-        access(NonFungibleToken.Withdrawable) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdraw | NonFungibleToken.Owner) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
             ?? panic("Could not withdraw an NFT with the ID: ".concat(withdrawID.toString()).concat(" from the collection"))
 
@@ -120,5 +120,4 @@ access(all) contract UniversalCollection {
     access(all) fun createEmptyCollection(identifier: String, type: Type): @{NonFungibleToken.Collection} {
         return <- create Collection(identifier: identifier, type:type)
     }
-
 }
