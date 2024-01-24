@@ -62,10 +62,10 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     /// The event makes it so that third-party indexers can monitor the events
     /// and query the updated metadata from the owners' collections.
     ///
-    access(all) event Updated(id: UInt64, uuid: UInt64, owner: Address?, type: String)
+    access(all) event Updated(type: String, id: UInt64, uuid: UInt64, owner: Address?)
     access(all) view fun emitNFTUpdated(_ nftRef: auth(Update | Owner) &{NonFungibleToken.NFT})
     {
-        emit Updated(id: nftRef.id, uuid: nftRef.uuid, owner: nftRef.owner?.address, type: nftRef.getType().identifier)
+        emit Updated(type: nftRef.getType().identifier, id: nftRef.id, uuid: nftRef.uuid, owner: nftRef.owner?.address)
     }
 
 
@@ -76,6 +76,12 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     /// If the collection is not in an account's storage, `from` will be `nil`.
     ///
     access(all) event Withdrawn(type: String, id: UInt64, uuid: UInt64, from: Address?, providerUUID: UInt64)
+    access(self) view fun emitWithdrawnEvent(type: String, id: UInt64, uuid: UInt64, from: Address?, providerUUID: UInt64): Bool {
+        if from != nil {
+            emit Withdrawn(type: type, id: id, uuid: uuid, from: from, providerUUID: providerUUID)
+        }
+        return true
+    }
 
     /// Event that emitted when a token is deposited to a collection.
     /// Indicates the type, id, uuid, the owner of the collection that it was deposited to,
@@ -84,6 +90,12 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     /// If the collection is not in an account's storage, `from`, will be `nil`.
     ///
     access(all) event Deposited(type: String, id: UInt64, uuid: UInt64, to: Address?, collectionUUID: UInt64)
+    access(self) view fun emitDepositedEvent(type: String, id: UInt64, uuid: UInt64, to: Address?, collectionUUID: UInt64): Bool {
+        if to != nil {
+            emit Deposited(type: type, id: id, uuid: uuid, to: to, collectionUUID: collectionUUID)
+        }
+        return true
+    }
 
     /// Included for backwards-compatibility
     access(all) resource interface INFT: NFT {}
@@ -144,7 +156,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         access(Withdraw | Owner) fun withdraw(withdrawID: UInt64): @{NFT} {
             post {
                 result.id == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
-                emit Withdrawn(type: result.getType().identifier, id: result.id, uuid: result.uuid, from: self.owner?.address, providerUUID: self.uuid)
+                emitWithdrawnEvent(type: result.getType().identifier, id: result.id, uuid: result.uuid, from: self.owner?.address, providerUUID: self.uuid)
             }
         }
     }
@@ -182,7 +194,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
                 // because the `Collection` interface is almost always the final destination
                 // of tokens and deposit emissions from custom receivers could be confusing
                 // and hard to reconcile to event listeners
-                emit Deposited(type: token.getType().identifier, id: token.id, uuid: token.uuid, to: self.owner?.address, collectionUUID: self.uuid)
+                emitDepositedEvent(type: token.getType().identifier, id: token.id, uuid: token.uuid, to: self.owner?.address, collectionUUID: self.uuid)
             }
         }
 
