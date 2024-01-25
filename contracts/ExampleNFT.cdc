@@ -55,8 +55,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// createEmptyCollection creates an empty Collection
         /// and returns it to the caller so that they can own NFTs
         /// @{NonFungibleToken.Collection}
-        access(all) fun createEmptyCollection(): @ExampleNFT.Collection {
-            return <-ExampleNFT.createEmptyCollection()
+        access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
+            return <-ExampleNFT.createEmptyCollection(nftType: Type<@ExampleNFT.NFT>())
         }
     
         access(all) view fun getViews(): [Type] {
@@ -129,8 +129,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// NFT is a resource type with an `UInt64` ID field
         access(contract) var ownedNFTs: @{UInt64: ExampleNFT.NFT}
 
-        access(self) var storagePath: StoragePath
-        access(self) var publicPath: PublicPath
+        access(all) var storagePath: StoragePath
+        access(all) var publicPath: PublicPath
 
         init () {
             self.ownedNFTs <- {}
@@ -200,8 +200,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// createEmptyCollection creates an empty Collection of the same type
         /// and returns it to the caller
         /// @return A an empty collection of the same type
-        access(all) fun createEmptyCollection(): @{Collection} {
-            return <-ExampleNFT.createEmptyCollection(nftType: )
+        access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
+            return <-ExampleNFT.createEmptyCollection(nftType: Type<@ExampleNFT.NFT>())
         }
     }
 
@@ -235,8 +235,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
                         from: /storage/cadenceExampleNFTCollection
                     ) ?? panic("Could not borrow a reference to the stored collection")
                 let collectionData = MetadataViews.NFTCollectionData(
-                    storagePath: collectionRef.getDefaultStoragePath()!,
-                    publicPath: collectionRef.getDefaultPublicPath()!,
+                    storagePath: collectionRef.storagePath,
+                    publicPath: collectionRef.publicPath,
                     publicCollection: Type<&ExampleNFT.Collection>(),
                     publicLinkedType: Type<&ExampleNFT.Collection>(),
                     createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
@@ -307,8 +307,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
-        let defaultStoragePath = collection.getDefaultStoragePath()!
-        let defaultPublicPath = collection.getDefaultPublicPath()!
+        let defaultStoragePath = collection.storagePath
+        let defaultPublicPath = collection.publicPath
         self.account.storage.save(<-collection, to: defaultStoragePath)
 
         // create a public capability for the collection

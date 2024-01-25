@@ -15,7 +15,7 @@ fun setup() {
     deploy("FungibleToken", "../contracts/utility/FungibleToken.cdc")
     deploy("NonFungibleToken", "../contracts/NonFungibleToken.cdc")
     deploy("MetadataViews", "../contracts/MetadataViews.cdc")
-    deploy("ExampleToken", "../contracts/ExampleToken.cdc")
+    deploy("ExampleNFT", "../contracts/ExampleToken.cdc")
 }
 
 access(all)

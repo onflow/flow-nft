@@ -195,6 +195,6 @@ require (
 	rsc.io/tmplfunc v0.0.3 // indirect
 )
 
-replace github.com/onflow/flow-nft/lib/go/contracts => ../contracts
+// replace github.com/onflow/flow-nft/lib/go/contracts => ../contracts
 
-replace github.com/onflow/flow-nft/lib/go/templates => ../templates
+// replace github.com/onflow/flow-nft/lib/go/templates => ../templates
