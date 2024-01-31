@@ -82,11 +82,19 @@ access(all) contract BasicNFT: NonFungibleToken {
     access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
         switch viewType {
             case Type<MetadataViews.NFTCollectionData>():
-                let collectionRef = self.account.storage.borrow<&ExampleNFT.Collection>(
-                        from: /storage/cadenceExampleNFTCollection
+                let collectionRef = self.account.storage.borrow<&UniversalCollection.Collection>(
+                        from: /storage/flowBasicNFTCollection
                     ) ?? panic("Could not borrow a reference to the stored collection")
-                
-                return collectionRef.getNFTCollectionDataView()
+                let collectionData = MetadataViews.NFTCollectionData(
+                    storagePath: collectionRef.storagePath,
+                    publicPath: collectionRef.publicPath,
+                    publicCollection: Type<&UniversalCollection.Collection>(),
+                    publicLinkedType: Type<&UniversalCollection.Collection>(),
+                    createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
+                        return <-BasicNFT.createEmptyCollection(nftType: Type<@BasicNFT.NFT>())
+                    })
+                )
+                return collectionData
             case Type<MetadataViews.NFTCollectionDisplay>():
                 let media = MetadataViews.Media(
                     file: MetadataViews.HTTPFile(
@@ -122,9 +130,8 @@ access(all) contract BasicNFT: NonFungibleToken {
         let minter <- create NFTMinter()
         self.account.storage.save(<-minter, to: /storage/flowBasicNFTMinterPath)
 
-        let collection <- self.createEmptyCollection(nftType: Type<@BasicNFT.NFT>()>)
-        let dataView = collection.getNFTCollectionDataView()
-        self.account.storage.save(collection, to: dataView.storagePath)
+        let collection <- self.createEmptyCollection(nftType: Type<@BasicNFT.NFT>())
+        self.account.storage.save(<-collection, to: /storage/flowBasicNFTCollection)
     }
 }
  

@@ -20,7 +20,7 @@ transaction(contractAddress: Address, contractName: String, recipient: Address, 
             ?? panic("Could not borrow ViewResolver of given name from address")
 
         // resolve the NFT collection data from the NFT contract
-        let collectionData = viewResolver.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+        let collectionData = viewResolver.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
             ?? panic("ViewResolver does not resolve NFTCollectionData view")
 
         // borrow a reference to the signer's NFT collection

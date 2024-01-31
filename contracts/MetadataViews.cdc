@@ -623,9 +623,6 @@ access(all) contract MetadataViews {
             publicLinkedType: Type,
             createEmptyCollectionFunction: fun(): @{NonFungibleToken.Collection}
         ) {
-            pre {
-                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.Receiver, ViewResolver.ResolverCollection}>()): "Public type must include NonFungibleToken.Receiver and ViewResolver.ResolverCollection interfaces."
-            }
             self.storagePath=storagePath
             self.publicPath=publicPath
             self.publicCollection=publicCollection

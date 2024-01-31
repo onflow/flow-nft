@@ -10,8 +10,9 @@ transaction(id: UInt64) {
     let collectionRef: auth(NonFungibleToken.Withdraw) &ExampleNFT.Collection
 
     prepare(signer: auth(BorrowValue) &Account) {
-        let collectionData: MetadataViews.NFTCollectionData = ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
-            ?? panic("ExampleNFT did not resolve NFTCollectionData view")
+        let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+            ?? panic("ViewResolver does not resolve NFTCollectionData view")
+            
         // borrow a reference to the owner's collection
         self.collectionRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &ExampleNFT.Collection>(
                 from: collectionData.storagePath

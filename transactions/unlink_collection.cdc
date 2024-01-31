@@ -5,7 +5,7 @@ import ExampleNFT from "ExampleNFT"
 
 transaction {
     prepare(signer: auth(UnpublishCapabilty) &Account) {
-        let collectionData = ExampleNFT.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+        let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
             ?? panic("ViewResolver does not resolve NFTCollectionData view")
         signer.capabilities.unpublish(ExampleNFT.CollectionPublicPath)
     }

@@ -25,7 +25,7 @@ transaction(
 
     prepare(signer: auth(BorrowValue) &Account) {
 
-        let collectionData = ExampleNFT.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+        let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
             ?? panic("ViewResolver does not resolve NFTCollectionData view")
         
         // borrow a reference to the NFTMinter resource in storage

@@ -34,16 +34,12 @@ func TestSetupRoyaltyReceiver(t *testing.T) {
 		vaultPath := cadence.Path{Domain: common.PathDomainStorage, Identifier: "missingVault"}
 		tx.AddArgument(vaultPath)
 
-		serviceSigner, _ := b.ServiceKey().Signer()
-
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
-				b.ServiceKey().Address,
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				serviceSigner,
 				exampleNFTSigner,
 			},
 			true,
@@ -71,8 +67,8 @@ func TestGetNFTMetadata(t *testing.T) {
 		// Set expected NFTCollectionData values
 		const (
 			pathName            = "cadenceExampleNFTCollection"
-			collectionType      = "A.045a1763c93006ca.ExampleNFT.Collection"
-			providerEntitlement = "auth(A.179b6b1cb6755e31.NonFungibleToken.Withdrawable)"
+			collectionType      = "A.e03daebed8ca0615.ExampleNFT.Collection"
+			providerEntitlement = "auth(A.179b6b1cb6755e31.NonFungibleToken.Withdraw)"
 		)
 
 		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)
@@ -131,10 +127,7 @@ func TestGetNFTMetadata(t *testing.T) {
 
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}, nftResult.Fields[8])
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainStorage, Identifier: pathName}, nftResult.Fields[9])
-		assert.Equal(t, cadence.Path{Domain: common.PathDomainPrivate, Identifier: pathName}, nftResult.Fields[10])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[11])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[12])
-		assert.Equal(t, cadence.String(fmt.Sprintf("%s&%s", providerEntitlement, collectionType)), nftResult.Fields[13])
 
 		// Verify NFTCollectionDisplay results are as expected
 		const (
@@ -143,11 +136,11 @@ func TestGetNFTMetadata(t *testing.T) {
 			collectionImage       = "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
 			collectionExternalURL = "https://example-nft.onflow.org"
 		)
-		assert.Equal(t, cadence.String(collectionName), nftResult.Fields[14])
-		assert.Equal(t, cadence.String(collectionDescription), nftResult.Fields[15])
-		assert.Equal(t, cadence.String(collectionExternalURL), nftResult.Fields[16])
-		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[17])
-		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[18])
+		assert.Equal(t, cadence.String(collectionName), nftResult.Fields[12])
+		assert.Equal(t, cadence.String(collectionDescription), nftResult.Fields[13])
+		assert.Equal(t, cadence.String(collectionExternalURL), nftResult.Fields[14])
+		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[15])
+		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[16])
 
 		// TODO: Verify `nftResult.Fields[19]` is equal to a {String: String} dictionary
 		// with key `twitter` and value `https://twitter.com/flow_blockchain`
@@ -158,19 +151,19 @@ func TestGetNFTMetadata(t *testing.T) {
 			editionNum  = 0
 		)
 		expectedName, _ := cadence.NewString(editionName)
-		assert.Equal(t, cadence.NewOptional(expectedName), nftResult.Fields[20].(cadence.Struct).Fields[0])
-		assert.Equal(t, mintedID, nftResult.Fields[20].(cadence.Struct).Fields[1])
-		assert.Equal(t, cadence.NewOptional(nil), nftResult.Fields[20].(cadence.Struct).Fields[2])
+		assert.Equal(t, cadence.NewOptional(expectedName), nftResult.Fields[18].(cadence.Struct).Fields[0])
+		assert.Equal(t, mintedID, nftResult.Fields[18].(cadence.Struct).Fields[1])
+		assert.Equal(t, cadence.NewOptional(nil), nftResult.Fields[18].(cadence.Struct).Fields[2])
 
 		mintedTimeName, _ := cadence.NewString("mintedTime")
 
-		traitsView := nftResult.Fields[21].(cadence.Struct)
+		traitsView := nftResult.Fields[19].(cadence.Struct)
 		traits := traitsView.Fields[0].(cadence.Array)
 
 		blockNumberName, _ := cadence.NewString("mintedBlock")
 		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
-		assert.Equal(t, cadence.NewUInt64(22), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewUInt64(16), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 
@@ -219,7 +212,7 @@ func TestGetNFTView(t *testing.T) {
 		// Set expected NFTCollectionData values
 		const (
 			pathName            = "cadenceExampleNFTCollection"
-			collectionType      = "A.045a1763c93006ca.ExampleNFT.Collection"
+			collectionType      = "A.e03daebed8ca0615.ExampleNFT.Collection"
 			providerEntitlement = "auth(A.179b6b1cb6755e31.NonFungibleToken.Withdrawable)"
 		)
 
@@ -273,10 +266,8 @@ func TestGetNFTView(t *testing.T) {
 
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName}, nftResult.Fields[7])
 		assert.Equal(t, cadence.Path{Domain: common.PathDomainStorage, Identifier: pathName}, nftResult.Fields[8])
-		assert.Equal(t, cadence.Path{Domain: common.PathDomainPrivate, Identifier: pathName}, nftResult.Fields[9])
+		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[9])
 		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[10])
-		assert.Equal(t, cadence.String(fmt.Sprintf("&%s", collectionType)), nftResult.Fields[11])
-		assert.Equal(t, cadence.String(fmt.Sprintf("%s&%s", providerEntitlement, collectionType)), nftResult.Fields[12])
 
 		// Verify NFTCollectionDisplay results are as expected
 		const (
@@ -285,21 +276,21 @@ func TestGetNFTView(t *testing.T) {
 			collectionImage       = "https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg"
 			collectionExternalURL = "https://example-nft.onflow.org"
 		)
-		assert.Equal(t, cadence.String(collectionName), nftResult.Fields[13])
-		assert.Equal(t, cadence.String(collectionDescription), nftResult.Fields[14])
-		assert.Equal(t, cadence.String(collectionExternalURL), nftResult.Fields[15])
-		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[16])
-		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[17])
+		assert.Equal(t, cadence.String(collectionName), nftResult.Fields[11])
+		assert.Equal(t, cadence.String(collectionDescription), nftResult.Fields[12])
+		assert.Equal(t, cadence.String(collectionExternalURL), nftResult.Fields[13])
+		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[14])
+		assert.Equal(t, cadence.String(collectionImage), nftResult.Fields[15])
 
 		mintedTimeName, _ := cadence.NewString("mintedTime")
 
-		traitsView := nftResult.Fields[19].(cadence.Struct)
+		traitsView := nftResult.Fields[17].(cadence.Struct)
 		traits := traitsView.Fields[0].(cadence.Array)
 
 		blockNumberName, _ := cadence.NewString("mintedBlock")
 		blockNumberTrait := traits.Values[0].(cadence.Struct)
 		assert.Equal(t, blockNumberName, blockNumberTrait.Fields[0])
-		assert.Equal(t, cadence.NewUInt64(22), blockNumberTrait.Fields[1])
+		assert.Equal(t, cadence.NewUInt64(16), blockNumberTrait.Fields[1])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[2])
 		assert.Equal(t, cadence.NewOptional(nil), blockNumberTrait.Fields[3])
 
@@ -368,16 +359,12 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 		tx.AddArgument(cadence.Path{Domain: common.PathDomainPublic, Identifier: pathName})
 		tx.AddArgument(mintedID)
 
-		serviceSigner, _ := b.ServiceKey().Signer()
-
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
-				b.ServiceKey().Address,
 				aAddress,
 			},
 			[]crypto.Signer{
-				serviceSigner,
 				aSigner,
 			},
 			false,

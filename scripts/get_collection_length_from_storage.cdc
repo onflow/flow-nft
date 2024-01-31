@@ -5,7 +5,7 @@ import ExampleNFT from "ExampleNFT"
 access(all) fun main(address: Address): Int {
     let account = getAuthAccount<auth(BorrowValue) &Account>(address)
 
-    let collectionData = ExampleNFT.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+    let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
         ?? panic("ViewResolver does not resolve NFTCollectionData view")
 
     let collectionRef = account.storage.borrow<&{NonFungibleToken.Collection}>(

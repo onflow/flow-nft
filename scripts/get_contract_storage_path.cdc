@@ -6,7 +6,7 @@ access(all) fun main(addr: Address, name: String): StoragePath? {
     let borrowedContract = getAccount(addr).contracts.borrow<&ViewResolver>(name: name)
         ?? panic("contract could not be borrowed")
 
-    let view = borrowedContract.resolveView(t)
+    let view = borrowedContract.resolveContractView(resourceType: nil, viewType: t)
     if view == nil {
         return nil
     }

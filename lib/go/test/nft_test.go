@@ -91,8 +91,6 @@ func TestCreateNFT(t *testing.T) {
 func TestTransferNFT(t *testing.T) {
 	b, adapter, accountKeys := newTestSetup(t)
 
-	serviceSigner, _ := b.ServiceKey().Signer()
-
 	// Create new keys for the NFT contract account
 	// and deploy all the NFT contracts
 	exampleNFTAccountKey, exampleNFTSigner := accountKeys.NewWithSigner()
@@ -123,11 +121,9 @@ func TestTransferNFT(t *testing.T) {
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
-				b.ServiceKey().Address,
 				joshAddress,
 			},
 			[]crypto.Signer{
-				serviceSigner,
 				joshSigner,
 			},
 			false,
@@ -160,11 +156,9 @@ func TestTransferNFT(t *testing.T) {
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
-				b.ServiceKey().Address,
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				serviceSigner,
 				exampleNFTSigner,
 			},
 			true,
@@ -185,13 +179,6 @@ func TestTransferNFT(t *testing.T) {
 
 	// Transfer an NFT correctly
 	t.Run("Should be able to withdraw an NFT and deposit to another accounts collection", func(t *testing.T) {
-
-		// // Mint a single NFT with standard royalty cuts and metadata
-		// mintExampleNFT(t, b,
-		// 	accountKeys,
-		// 	nftAddress, metadataAddress, exampleNFTAddress,
-		// 	exampleNFTAccountKey,
-		// 	exampleNFTSigner)
 
 		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)
 		idsResult := executeScriptAndCheck(
@@ -220,15 +207,23 @@ func TestTransferNFT(t *testing.T) {
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
-				b.ServiceKey().Address,
 				exampleNFTAddress,
 			},
 			[]crypto.Signer{
-				serviceSigner,
 				exampleNFTSigner,
 			},
 			false,
 		)
+
+		verifyWithdrawn(t, b, adapter, nftAddress,
+			Withdrawn{
+				nftType: "A.e03daebed8ca0615.ExampleNFT.NFT",
+				// the rest of the values are not important
+				id:           1,
+				uuid:         1,
+				from:         "",
+				providerUuid: 1,
+			})
 
 		// Try to borrow a reference to the transferred NFT from josh's account
 		// Should succeed
@@ -280,11 +275,9 @@ func TestTransferNFT(t *testing.T) {
 		signAndSubmit(
 			t, b, tx,
 			[]flow.Address{
-				b.ServiceKey().Address,
 				joshAddress,
 			},
 			[]crypto.Signer{
-				serviceSigner,
 				joshSigner,
 			},
 			false,

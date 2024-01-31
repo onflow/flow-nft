@@ -10,13 +10,14 @@
 
 import "FungibleToken"
 import "MetadataViews"
+import "FlowToken"
 
 transaction(vaultPath: StoragePath) {
 
     prepare(signer: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, UnpublishCapability) &Account) {
 
         // Return early if the account doesn't have a FungibleToken Vault
-        if signer.storage.borrow<&{FungibleToken.Vault}>(from: vaultPath) == nil {
+        if signer.storage.borrow<&FlowToken.Vault>(from: vaultPath) == nil {
             panic("A vault for the specified fungible token path does not exist")
         }
 

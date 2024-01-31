@@ -240,7 +240,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
                     publicCollection: Type<&ExampleNFT.Collection>(),
                     publicLinkedType: Type<&ExampleNFT.Collection>(),
                     createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
-                        return <-collectionRef.createEmptyCollection()
+                        return <-ExampleNFT.createEmptyCollection(nftType: Type<@ExampleNFT.NFT>())
                     })
                 )
                 return collectionData

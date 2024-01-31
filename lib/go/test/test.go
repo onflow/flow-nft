@@ -12,6 +12,7 @@ import (
 	"github.com/onflow/flow-emulator/adapters"
 	"github.com/onflow/flow-emulator/convert"
 	"github.com/onflow/flow-emulator/emulator"
+	"github.com/onflow/flow-emulator/types"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
 	sdktemplates "github.com/onflow/flow-go-sdk/templates"
@@ -130,39 +131,41 @@ func signAndSubmit(
 	signerAddresses []flow.Address,
 	signers []crypto.Signer,
 	shouldRevert bool,
-) {
+) *types.TransactionResult {
 	// sign transaction with each signer
 	for i := len(signerAddresses) - 1; i >= 0; i-- {
 		signerAddress := signerAddresses[i]
 		signer := signers[i]
 
-		if i == 0 {
-			err := tx.SignEnvelope(signerAddress, 0, signer)
-			assert.NoError(t, err)
-		} else {
-			err := tx.SignPayload(signerAddress, 0, signer)
-			assert.NoError(t, err)
-		}
+		err := tx.SignPayload(signerAddress, 0, signer)
+		assert.NoError(t, err)
 	}
 
-	Submit(t, b, tx, shouldRevert)
+	serviceSigner, _ := b.ServiceKey().Signer()
+
+	err := tx.SignEnvelope(b.ServiceKey().Address, 0, serviceSigner)
+	assert.NoError(t, err)
+
+	return Submit(t, b, tx, shouldRevert)
 }
 
-// Submit submits a transaction and checks if it fails or not.
+// Submit submits a transaction and checks if it fails or not, based on shouldRevert specification
 func Submit(
 	t *testing.T,
 	b emulator.Emulator,
 	tx *flow.Transaction,
 	shouldRevert bool,
-) {
+) *types.TransactionResult {
 	// submit the signed transaction
 	flowTx := convert.SDKTransactionToFlow(*tx)
 	err := b.AddTransaction(*flowTx)
 	require.NoError(t, err)
 
+	// use the emulator to execute it
 	result, err := b.ExecuteNextTransaction()
 	require.NoError(t, err)
 
+	// Check the status
 	if shouldRevert {
 		assert.True(t, result.Reverted())
 	} else {
@@ -173,6 +176,8 @@ func Submit(
 
 	_, err = b.CommitBlock()
 	assert.NoError(t, err)
+
+	return result
 }
 
 // executeScriptAndCheck executes a script and checks to make sure that it succeeded.

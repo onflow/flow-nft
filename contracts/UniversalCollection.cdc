@@ -28,20 +28,8 @@ access(all) contract UniversalCollection {
         /// Dictionary mapping NFT IDs to the stored NFTs
         access(contract) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
 
-        access(self) var storagePath: StoragePath
-        access(self) var publicPath: PublicPath
-
-        access(all) fun getNFTCollectionDataView(): AnyStruct {
-            return MetadataViews.NFTCollectionData(
-                storagePath: StoragePath(identifier: self.identifier)!,
-                publicPath: PublicPath(identifier: self.identifier)!,
-                publicCollection: Type<&UniversalCollection.Collection>(),
-                publicLinkedType: Type<&UniversalCollection.Collection>(),
-                createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
-                    return <-self.createEmptyCollection()
-                })
-            )
-        }
+        access(all) var storagePath: StoragePath
+        access(all) var publicPath: PublicPath
 
         access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
             return <- create Collection(identifier: self.identifier, type: self.supportedType)

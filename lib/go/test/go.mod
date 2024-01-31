@@ -4,11 +4,11 @@ go 1.18
 
 require (
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.1.0
-	github.com/onflow/cadence v1.0.0-preview.2.0.20240120000236-f3397a0efdad
-	github.com/onflow/flow-emulator v0.59.1-0.20240122200325-58ef35ed4aed
-	github.com/onflow/flow-go-sdk v0.44.1-0.20240124213231-78d9f08eeae1
-	github.com/onflow/flow-nft/lib/go/contracts v1.1.1-0.20240120002146-9f1763b66d80
-	github.com/onflow/flow-nft/lib/go/templates v0.0.0-00010101000000-000000000000
+	github.com/onflow/cadence v1.0.0-M4
+	github.com/onflow/flow-emulator v1.0.0-M1
+	github.com/onflow/flow-go-sdk v1.0.0-M1
+	github.com/onflow/flow-nft/lib/go/contracts v1.1.1-0.20240125205553-d2b571fb3fad
+	github.com/onflow/flow-nft/lib/go/templates v0.0.0-20240125205553-d2b571fb3fad
 	github.com/rs/zerolog v1.29.0
 	github.com/stretchr/testify v1.8.4
 )
@@ -113,11 +113,10 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/onflow/atree v0.6.1-0.20230711151834-86040b30171f // indirect
 	github.com/onflow/crypto v0.25.0 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/contracts v0.15.1-0.20240120002724-ff3d1a4bab55 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/templates v0.15.1-0.20240120002724-ff3d1a4bab55 // indirect
-	github.com/onflow/flow-ft/lib/go/contracts v0.7.1-0.20240109231227-22564b43846d // indirect
-	github.com/onflow/flow-go v0.33.2-0.20240122190738-254af677b873 // indirect
-	github.com/onflow/flow-go/crypto v0.25.0 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/contracts v0.15.1-0.20240125214229-b7a95136dd0d // indirect
+	github.com/onflow/flow-core-contracts/lib/go/templates v0.15.1-0.20240125214229-b7a95136dd0d // indirect
+	github.com/onflow/flow-ft/lib/go/contracts v0.7.1-0.20240125205519-2e80d9b4bd01 // indirect
+	github.com/onflow/flow-go v0.33.2-0.20240126002816-f0770a716d61 // indirect
 	github.com/onflow/flow/protobuf/go/flow v0.3.2-0.20231213135419-ae911cc351a2 // indirect
 	github.com/onflow/sdks v0.5.1-0.20230912225508-b35402f12bba // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
@@ -139,7 +138,7 @@ require (
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/slok/go-http-metrics v0.10.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
-	github.com/spf13/afero v1.9.3 // indirect
+	github.com/spf13/afero v1.10.0 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/cobra v1.8.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -195,6 +194,6 @@ require (
 	rsc.io/tmplfunc v0.0.3 // indirect
 )
 
-// replace github.com/onflow/flow-nft/lib/go/contracts => ../contracts
+replace github.com/onflow/flow-nft/lib/go/contracts => ../contracts
 
-// replace github.com/onflow/flow-nft/lib/go/templates => ../templates
+replace github.com/onflow/flow-nft/lib/go/templates => ../templates

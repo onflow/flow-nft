@@ -12,8 +12,10 @@ transaction(address: Address, publicPath: PublicPath, id: UInt64) {
         let collection = getAccount(address).capabilities.borrow<&{NonFungibleToken.Collection}>(publicPath)
             ?? panic("Could not borrow a reference to the collection")
 
-        let resolver = collection.borrowViewResolver(id: id)!
-        let collectionData = resolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
+        let nftRef = collection.borrowNFT(id)
+            ?? panic("Could not borrow a reference to the desired NFT")
+        
+        let collectionData = nftRef.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
 
         // Create a new empty collections
         let emptyCollection <- collectionData.createEmptyCollection()
