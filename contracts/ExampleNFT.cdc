@@ -312,7 +312,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
         self.account.storage.save(<-collection, to: defaultStoragePath)
 
         // create a public capability for the collection
-        let collectionCap = self.account.capabilities.storage.issue<&ExampleNFT.Collection>(defaultStoragePath)
+        let collectionCap = self.account.capabilities.storage.issue<&{NonFungibleToken.Receiver, NonFungibleToken.Collection}>(defaultStoragePath)
         self.account.capabilities.publish(collectionCap, at: defaultPublicPath)
 
         // Create a Minter resource and save it to storage
