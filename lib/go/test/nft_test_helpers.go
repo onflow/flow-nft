@@ -168,7 +168,7 @@ func mintExampleNFT(
 	)
 }
 
-// Assers that the ExampleNFT collection in the specified user's account
+// Asserts that the ExampleNFT collection in the specified user's account
 // is the expected length
 func assertCollectionLength(
 	t *testing.T,

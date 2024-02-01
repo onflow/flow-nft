@@ -169,10 +169,18 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         access(all) view fun isSupportedNFTType(type: Type): Bool
     }
 
+    /// Kept for backwards-compatibility reasons
+    access(all) resource interface CollectionPublic {
+        access(all) fun deposit(token: @{NFT})
+        access(all) view fun getLength(): Int
+        access(all) view fun getIDs(): [UInt64]
+        access(all) view fun borrowNFT(_ id: UInt64): &{NFT}?
+    }
+
     /// Requirement for the concrete resource type
     /// to be declared in the implementing contract
     ///
-    access(all) resource interface Collection: Provider, Receiver {
+    access(all) resource interface Collection: Provider, Receiver, CollectionPublic {
 
         /// deposit takes a NFT as an argument and stores it in the collection
         /// @param token: The NFT to deposit into the collection

@@ -14,6 +14,7 @@ var (
 	placeholderMetadataViews    = regexp.MustCompile(`"MetadataViews"`)
 	placeholderFungibleToken    = regexp.MustCompile(`"FungibleToken"`)
 	placeholderViewResolver     = regexp.MustCompile(`"ViewResolver"`)
+	placeholderFlowToken        = regexp.MustCompile(`"FlowToken"`)
 )
 
 func replaceAddresses(code string, nftAddress, exampleNFTAddress, metadataAddress, ftAddress, viewResolverAddress flow.Address) []byte {
