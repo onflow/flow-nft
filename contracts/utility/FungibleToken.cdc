@@ -32,7 +32,7 @@ to the Provider interface.
 */
 
 import ViewResolver from "ViewResolver"
-import Burner from "Burner"
+//import Burner from "Burner"
 
 /// FungibleToken
 ///
@@ -131,7 +131,7 @@ access(all) contract interface FungibleToken: ViewResolver {
     /// Ideally, this interface would also conform to Receiver, Balance, Transferor, Provider, and Resolver
     /// but that is not supported yet
     ///
-    access(all) resource interface Vault: Receiver, Provider, Balance, ViewResolver.Resolver, Burner.Burnable {
+    access(all) resource interface Vault: Receiver, Provider, Balance, ViewResolver.Resolver { //, Burner.Burnable {
 
         /// Field that tracks the balance of a vault
         access(all) var balance: UFix64
