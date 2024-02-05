@@ -180,7 +180,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     /// Requirement for the concrete resource type
     /// to be declared in the implementing contract
     ///
-    access(all) resource interface Collection: Provider, Receiver, CollectionPublic {
+    access(all) resource interface Collection: Provider, Receiver, CollectionPublic, ViewResolver.ResolverCollection {
 
         /// deposit takes a NFT as an argument and stores it in the collection
         /// @param token: The NFT to deposit into the collection
@@ -197,10 +197,6 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         /// Gets the amount of NFTs stored in the collection
         /// @return An integer indicating the size of the collection
         access(all) view fun getLength(): Int
-
-        /// Gets a list of all the IDs in the collection
-        /// @return An array of NFT IDs in the collection
-        access(all) view fun getIDs(): [UInt64] 
 
         /// Borrows a reference to an NFT stored in the collection
         /// If the NFT with the specified ID is not in the collection,

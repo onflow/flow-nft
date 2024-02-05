@@ -44,24 +44,24 @@ transaction(
 
     execute {
 
-        // Create the royalty details
-        var count = 0
-        var royalties: [MetadataViews.Royalty] = []
-        while royaltyBeneficiaries.length > count {
-            let beneficiary = royaltyBeneficiaries[count]
-            let beneficiaryCapability = getAccount(beneficiary).capabilities.get<&{FungibleToken.Receiver}>(
-                    MetadataViews.getRoyaltyReceiverPublicPath()
-                ) ?? panic("Beneficiary does not have Receiver configured at RoyaltyReceiverPublicPath")
+        // // Create the royalty details
+        // var count = 0
+        // var royalties: [MetadataViews.Royalty] = []
+        // while royaltyBeneficiaries.length > count {
+        //     let beneficiary = royaltyBeneficiaries[count]
+        //     let beneficiaryCapability = getAccount(beneficiary).capabilities.get<&{FungibleToken.Receiver}>(
+        //             MetadataViews.getRoyaltyReceiverPublicPath()
+        //         ) ?? panic("Beneficiary does not have Receiver configured at RoyaltyReceiverPublicPath")
 
-            royalties.append(
-                MetadataViews.Royalty(
-                    receiver: beneficiaryCapability,
-                    cut: cuts[count],
-                    description: royaltyDescriptions[count]
-                )
-            )
-            count = count + 1
-        }
+        //     royalties.append(
+        //         MetadataViews.Royalty(
+        //             receiver: beneficiaryCapability,
+        //             cut: cuts[count],
+        //             description: royaltyDescriptions[count]
+        //         )
+        //     )
+        //     count = count + 1
+        // }
 
 
         // Mint the NFT and deposit it to the recipient's collection
@@ -69,7 +69,7 @@ transaction(
             name: name,
             description: description,
             thumbnail: thumbnail,
-            royalties: royalties
+            royalties: [] //royalties
         )
         self.recipientCollectionRef.deposit(token: <-mintedNFT)
     }

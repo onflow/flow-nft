@@ -24,7 +24,7 @@ transaction(address: Address, publicPath: PublicPath, id: UInt64) {
         signer.storage.save(<-emptyCollection, to: collectionData.storagePath)
 
         // create a public capability for the collection
-        let collectionCap = signer.capabilities.storage.issue<&{NonFungibleToken.Receiver, NonFungibleToken.Collection}>(
+        let collectionCap = signer.capabilities.storage.issue<&{NonFungibleToken.Collection}>(
                 collectionData.storagePath
             )
         signer.capabilities.publish(collectionCap, at: publicPath)

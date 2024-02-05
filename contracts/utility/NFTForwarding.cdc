@@ -17,8 +17,8 @@ access(all) contract NFTForwarding {
 
     access(all) entitlement Mutable
 
-    access(all) event ForwardedNFTDeposit(id: UInt64, uuid: UInt64, from: Address?, fromUUID: UInt64, to: Address, toUUID: UInt64)
-    access(all) event UpdatedNFTForwarderRecipient(forwarderAddress: Address?, forwarderUUID: UInt64, newRecipientAddress: Address, newRecipientUUID: UInt64)
+    access(all) event ForwardedNFTDeposit(id: UInt64, uuid: UInt64, from: Address?, fromUUID: UInt64, to: Address?, toUUID: UInt64)
+    access(all) event UpdatedNFTForwarderRecipient(forwarderAddress: Address?, forwarderUUID: UInt64, newRecipientAddress: Address?, newRecipientUUID: UInt64)
 
     /// Canonical Storage and Public paths
     ///
@@ -31,6 +31,23 @@ access(all) contract NFTForwarding {
         /// Recipient to which NFTs will be forwarded
         ///
         access(self) var recipient: Capability<&{NonFungibleToken.Collection}>
+
+        /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
+        access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
+            let recipientRef = self.borrowRecipientCollection()
+                ?? panic("Could not borrow reference to recipient's Collection!")
+            return recipientRef.getSupportedNFTTypes()
+        }
+
+        /// Returns whether or not the given type is accepted by the collection
+        /// A collection that can accept any type should just return true by default
+        access(all) view fun isSupportedNFTType(type: Type): Bool {
+           let types = self.getSupportedNFTTypes()
+           if let supported = types[type] {
+                return supported
+           }
+           return false
+        }
 
         /// Allows for deposits of NFT resources, forwarding
         /// passed deposits to the designated recipient
@@ -56,7 +73,7 @@ access(all) contract NFTForwarding {
         ///
         /// @return a reference to the recipient's Collection or nil if the Capability is no longer valid
         ///
-        access(all) fun borrowRecipientCollection(): &{NonFungibleToken.Collection}? {
+        access(all) view fun borrowRecipientCollection(): &{NonFungibleToken.Collection}? {
             return self.recipient.borrow() ?? nil
         }
 
@@ -71,8 +88,8 @@ access(all) contract NFTForwarding {
             }
 
             self.recipient = newRecipient
-            let recipientRef = self.recipientRef.borrow()!
-            emit UpdatedNFTForwarderRecipient(forwarderAddress: self.owner?.address, forwardarUUID: self.uuid, newRecipientAddress: recipientRef.owner?.address, newRecipientUUID: recipientRef.uuid)
+            let recipientRef = self.recipient.borrow()!
+            emit UpdatedNFTForwarderRecipient(forwarderAddress: self.owner?.address, forwarderUUID: self.uuid, newRecipientAddress: recipientRef.owner?.address, newRecipientUUID: recipientRef.uuid)
         }
 
         init(_ recipient: Capability<&{NonFungibleToken.Collection}>) {
@@ -80,8 +97,8 @@ access(all) contract NFTForwarding {
                 recipient.check(): "Could not borrow Collection reference from the given Capability"
             }
             self.recipient = recipient
-            let recipientRef = self.recipientRef.borrow()!
-            emit UpdatedNFTForwarderRecipient(forwarderAddress: self.owner?.address, forwardarUUID: self.uuid, newRecipientAddress: recipientRef.owner?.address, newRecipientUUID: recipientRef.uuid)
+            let recipientRef = self.recipient.borrow()!
+            emit UpdatedNFTForwarderRecipient(forwarderAddress: self.owner?.address, forwarderUUID: self.uuid, newRecipientAddress: recipientRef.owner?.address, newRecipientUUID: recipientRef.uuid)
         }
     }
 

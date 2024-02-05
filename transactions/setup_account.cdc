@@ -25,7 +25,7 @@ transaction {
 
         // create a public capability for the collection
         signer.capabilities.unpublish(collectionData.publicPath)
-        let collectionCap = signer.capabilities.storage.issue<&{NonFungibleToken.Receiver, NonFungibleToken.Collection}>(collectionData.storagePath)
+        let collectionCap = signer.capabilities.storage.issue<&ExampleNFT.Collection>(collectionData.storagePath)
         signer.capabilities.publish(collectionCap, at: collectionData.publicPath)
     }
 }

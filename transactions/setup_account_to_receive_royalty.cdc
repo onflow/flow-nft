@@ -23,7 +23,7 @@ transaction(vaultPath: StoragePath) {
         // Create a public capability to the Vault that only exposes
         // the deposit function through the Receiver interface
         signer.capabilities.unpublish(MetadataViews.getRoyaltyReceiverPublicPath())
-        let vaultCap = signer.capabilities.storage.issue<&{FungibleToken.Vault}>(vaultPath)
+        let vaultCap = signer.capabilities.storage.issue<&{FungibleToken.Receiver}>(vaultPath)
         signer.capabilities.publish(vaultCap, at: MetadataViews.getRoyaltyReceiverPublicPath())
 
     }

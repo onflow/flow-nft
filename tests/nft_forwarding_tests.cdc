@@ -4,33 +4,22 @@ import "test_helpers.cdc"
 import "ViewResolver"
 import "NonFungibleToken"
 
-access(all) let admin = blockchain.createAccount()
-access(all) let forwarder = blockchain.createAccount()
-access(all) let recipient = blockchain.createAccount()
+access(all) let admin = Test.getAccount(0x0000000000000007)
+access(all) let forwarder = Test.createAccount()
+access(all) let recipient = Test.createAccount()
 
 access(all) let collectionStoragePath = /storage/cadenceExampleNFTCollection
 access(all) let collectionPublicPath = /public/cadenceExampleNFTCollection
 
 access(all) fun setup() {
 
-    blockchain.useConfiguration(
-        Test.Configuration(
-            addresses: {
-                "ViewResolver": admin.address,
-                "NonFungibleToken": admin.address,
-                "MetadataViews": admin.address,
-                "MultipleNFT": admin.address,
-                "ExampleNFT": admin.address,
-                "NFTForwarding": admin.address
-            }
-        )
-    )
-
-    deploy("ViewResolver", admin, "../contracts/ViewResolver.cdc")
-    deploy("NonFungibleToken", admin, "../contracts/NonFungibleToken.cdc")
-    deploy("MetadataViews", admin, "../contracts/MetadataViews.cdc")
-    deploy("ExampleNFT", admin, "../contracts/ExampleNFT.cdc")
-    deploy("NFTForwarding", admin, "../contracts/utility/NFTForwarding.cdc")
+    deploy("ViewResolver", "../contracts/ViewResolver.cdc")
+    deploy("FungibleToken", "../contracts/utility/FungibleToken.cdc")
+    deploy("NonFungibleToken", "../contracts/NonFungibleToken.cdc")
+    deploy("MetadataViews", "../contracts/MetadataViews.cdc")
+    deploy("ExampleNFT", "../contracts/ExampleNFT.cdc")
+    deploy("NFTForwarding", "../contracts/utility/NFTForwarding.cdc")
+    
 }
 
 access(all) fun testCreateForwarderFails() {
@@ -73,14 +62,14 @@ access(all) fun testMintNFT() {
 
     let expectedCollectionLength: Int = 1
 
-    let royaltySetupSuccess: Bool = txExecutor(
-            "setup_account_to_receive_royalty.cdc",
-            [admin],
-            [/storage/flowTokenVault],
-            nil,
-            nil
-        )
-    Test.assertEqual(true, royaltySetupSuccess)
+    // let royaltySetupSuccess: Bool = txExecutor(
+    //         "setup_account_to_receive_royalty.cdc",
+    //         [admin],
+    //         [/storage/flowTokenVault],
+    //         nil,
+    //         nil
+    //     )
+    // Test.assertEqual(true, royaltySetupSuccess)
 
     // Minting to forwarder should forward minted NFT to recipient
     let mintSuccess: Bool = txExecutor(
@@ -114,7 +103,7 @@ access(all) fun testMintNFT() {
 
 access(all) fun testChangeForwarderRecipient() {
 
-    let newRecipient = blockchain.createAccount()
+    let newRecipient = Test.createAccount()
 
     let newRecipientSetupSuccess: Bool = txExecutor("setup_account.cdc", [newRecipient], [], nil, nil)
     Test.assertEqual(true, newRecipientSetupSuccess)

@@ -231,12 +231,9 @@ access(all) contract ExampleNFT: NonFungibleToken {
     access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
         switch viewType {
             case Type<MetadataViews.NFTCollectionData>():
-                let collectionRef = self.account.storage.borrow<&ExampleNFT.Collection>(
-                        from: /storage/cadenceExampleNFTCollection
-                    ) ?? panic("Could not borrow a reference to the stored collection")
                 let collectionData = MetadataViews.NFTCollectionData(
-                    storagePath: collectionRef.storagePath,
-                    publicPath: collectionRef.publicPath,
+                    storagePath: /storage/cadenceExampleNFTCollection,
+                    publicPath: /public/cadenceExampleNFTCollection,
                     publicCollection: Type<&ExampleNFT.Collection>(),
                     publicLinkedType: Type<&ExampleNFT.Collection>(),
                     createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
@@ -312,7 +309,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
         self.account.storage.save(<-collection, to: defaultStoragePath)
 
         // create a public capability for the collection
-        let collectionCap = self.account.capabilities.storage.issue<&{NonFungibleToken.Receiver, NonFungibleToken.Collection}>(defaultStoragePath)
+        let collectionCap = self.account.capabilities.storage.issue<&ExampleNFT.Collection>(defaultStoragePath)
         self.account.capabilities.publish(collectionCap, at: defaultPublicPath)
 
         // Create a Minter resource and save it to storage
