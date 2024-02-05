@@ -32,7 +32,7 @@ to the Provider interface.
 */
 
 import ViewResolver from "ViewResolver"
-// import Burner from "Burner"
+import Burner from "Burner"
 
 /// FungibleToken
 ///
@@ -131,7 +131,7 @@ access(all) contract interface FungibleToken: ViewResolver {
     /// Ideally, this interface would also conform to Receiver, Balance, Transferor, Provider, and Resolver
     /// but that is not supported yet
     ///
-    access(all) resource interface Vault: Receiver, Provider, Balance, ViewResolver.Resolver { //, Burner.Burnable {
+    access(all) resource interface Vault: Receiver, Provider, Balance, ViewResolver.Resolver, Burner.Burnable {
 
         /// Field that tracks the balance of a vault
         access(all) var balance: UFix64
@@ -182,6 +182,7 @@ access(all) contract interface FungibleToken: ViewResolver {
                     "Amount withdrawn must be less than or equal than the balance of the Vault"
             }
             post {
+                result.getType() == self.getType(): "Must return the same vault type as self"
                 // use the special function `before` to get the value of the `balance` field
                 // at the beginning of the function execution
                 //
