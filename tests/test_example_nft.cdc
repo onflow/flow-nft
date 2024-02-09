@@ -20,20 +20,37 @@ fun setup() {
 
 access(all)
 fun testSetupAccount() {
-    let txResult = executeTransaction(
+    var txResult = executeTransaction(
         "../transactions/setup_account.cdc",
         [],
         recipient
     )
     Test.expect(txResult, Test.beSucceeded())
 
-    let scriptResult = executeScript(
+    var scriptResult = executeScript(
         "../scripts/get_collection_length.cdc",
         [admin.address]
     )
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let collectionLength = scriptResult.returnValue! as! Int
+    var collectionLength = scriptResult.returnValue! as! Int
+    Test.assertEqual(0, collectionLength)
+
+    let newAccount = Test.createAccount()
+    txResult = executeTransaction(
+        "../transactions/setup_account_from_address.cdc",
+        [admin.address, "ExampleNFT"],
+        newAccount
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    scriptResult = executeScript(
+        "../scripts/get_collection_length.cdc",
+        [newAccount.address]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
+
+    collectionLength = scriptResult.returnValue! as! Int
     Test.assertEqual(0, collectionLength)
 }
 
@@ -96,7 +113,7 @@ fun testTransferNFT() {
     Test.assertEqual(1, collectionIDs.length)
 
     let nftID: UInt64 = collectionIDs[0]
-    let txResult = executeTransaction(
+    var txResult = executeTransaction(
         "../transactions/transfer_nft.cdc",
         [
             admin.address,
@@ -135,6 +152,30 @@ fun testTransferNFT() {
 
     collectionIDs = scriptResult.returnValue! as! [UInt64]
     Test.assertEqual([nftID] as [UInt64], collectionIDs)
+
+    txResult = executeTransaction(
+        "../transactions/generic_transfer.cdc",
+        [
+            nftID,
+            recipient.address,
+            /storage/cadenceExampleNFTCollection,
+            /public/cadenceExampleNFTCollection
+        ],
+        admin
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    txResult = executeTransaction(
+        "../transactions/transfer_nft.cdc",
+        [
+            admin.address,
+            "ExampleNFT",
+            admin.address,
+            nftID
+        ],
+        recipient
+    )
+    Test.expect(txResult, Test.beSucceeded())
 }
 
 access(all)

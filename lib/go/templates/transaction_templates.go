@@ -1,6 +1,8 @@
 package templates
 
 import (
+	"strings"
+
 	"github.com/onflow/flow-go-sdk"
 
 	_ "github.com/kevinburke/go-bindata"
@@ -11,8 +13,10 @@ import (
 const (
 	filenameUpgradeNFT                   = "transactions/test/upgrade_nft_contract.cdc"
 	filenameSetupAccount                 = "transactions/setup_account.cdc"
+	filenameSetupFromAddress             = "transactions/setup_account_from_address.cdc"
 	filenameMintNFT                      = "transactions/mint_nft.cdc"
 	filenameTransferNFT                  = "transactions/transfer_nft.cdc"
+	filenameTransferGenericNFT           = "transactions/transfer_nft.cdc"
 	filenameDestroyNFT                   = "transactions/destroy_nft.cdc"
 	filenameSetupRoyalty                 = "transactions/setup_account_to_receive_royalty.cdc"
 	filenameSetupAccountFromNftReference = "transactions/setup_account_from_nft_reference.cdc"
@@ -31,6 +35,27 @@ func GenerateSetupAccountScript(nftAddress, exampleNFTAddress, metadataViewsAddr
 	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataViewsAddress, flow.EmptyAddress, flow.EmptyAddress)
 }
 
+// GenerateSetupAccountFromAddressScript returns a script that instantiates a new
+// NFT collection instance for any NFT type, assuming that the sender knows the address
+// and name of the NFT contract
+func GenerateSetupAccountFromAddressScript(nftAddress, metadataViewsAddress string) []byte {
+	code := assets.MustAssetString(filenameSetupFromAddress)
+
+	code = strings.ReplaceAll(
+		code,
+		placeholderNonFungibleTokenString,
+		withHexPrefix(nftAddress),
+	)
+
+	code = strings.ReplaceAll(
+		code,
+		placeholderMetadataViewsString,
+		withHexPrefix(metadataViewsAddress),
+	)
+
+	return []byte(code)
+}
+
 // GenerateMintNFTScript returns script that uses the admin resource
 // to mint a new NFT and deposit it into a user's collection.
 func GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadataViewsAddress, ftAddress flow.Address) []byte {
@@ -40,9 +65,24 @@ func GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadataViewsAddress, 
 
 // GenerateTransferNFTScript returns a script that withdraws an NFT token
 // from a collection and deposits it into another collection.
-func GenerateTransferNFTScript(nftAddress, exampleNFTAddress, metadataAddress, viewResolverAddress flow.Address) []byte {
+func GenerateTransferNFTScript(nftAddress, exampleNFTAddress, metadataViewsAddress, viewResolverAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameTransferGenericNFT)
+	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataViewsAddress, flow.EmptyAddress, viewResolverAddress)
+}
+
+// GenerateTransferGenericNFTScript returns a script that withdraws a generic NFT token
+// from a collection and deposits it into another collection.
+// The sender needs to send the paths to use to withdraw from and deposit to
+func GenerateTransferGenericNFTScript(nftAddress string) []byte {
 	code := assets.MustAssetString(filenameTransferNFT)
-	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataAddress, flow.EmptyAddress, viewResolverAddress)
+
+	code = strings.ReplaceAll(
+		code,
+		placeholderNonFungibleTokenString,
+		withHexPrefix(nftAddress),
+	)
+
+	return []byte(code)
 }
 
 // GenerateDestroyNFTScript creates a script that withdraws an NFT token
