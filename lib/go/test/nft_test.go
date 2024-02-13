@@ -115,8 +115,12 @@ func TestTransferNFT(t *testing.T) {
 
 		// Setup Account creates an empty NFT collection, stores it in the authorizers account,
 		// and creates a public link
-		script := templates.GenerateSetupAccountScript(nftAddress, exampleNFTAddress, metadataAddress)
+		script := templates.GenerateSetupAccountFromAddressScript(nftAddress.String(), metadataAddress.String())
 		tx := createTxWithTemplateAndAuthorizer(b, script, joshAddress)
+
+		// Specify ExampleNFT contract address & name
+		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
+		tx.AddArgument(cadence.String("ExampleNFT"))
 
 		signAndSubmit(
 			t, b, tx,
@@ -248,6 +252,56 @@ func TestTransferNFT(t *testing.T) {
 			exampleNFTAddress,
 			0,
 		)
+
+		// Use the generic transfer transaction with contract address and name
+		script = templates.GenerateTransferGenericNFTWithAddressScript(nftAddress.String(), metadataAddress.String())
+		tx = createTxWithTemplateAndAuthorizer(b, script, joshAddress)
+
+		// Add the recipient's address
+		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
+		// The ID does exist in the authorizer's transaction, so the transfer will succeed
+		tx.AddArgument(mintedID)
+
+		// Specify ExampleNFT contract address & name
+		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
+		tx.AddArgument(cadence.String("ExampleNFT"))
+
+		signAndSubmit(
+			t, b, tx,
+			[]flow.Address{
+				joshAddress,
+			},
+			[]crypto.Signer{
+				joshSigner,
+			},
+			false,
+		)
+
+		// Use the generic transfer transaction with paths and name
+		// Same transaction as before
+		script = templates.GenerateTransferGenericNFTWithPathsScript(nftAddress.String())
+		tx = createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
+
+		// Add the recipient's address
+		tx.AddArgument(cadence.NewAddress(joshAddress))
+		// The ID does exist in the authorizer's transaction, so the transfer will succeed
+		tx.AddArgument(mintedID)
+
+		// add path identifier arguments
+		tx.AddArgument(cadence.String("cadenceExampleNFTCollection"))
+		tx.AddArgument(cadence.String("cadenceExampleNFTCollection"))
+
+		signAndSubmit(
+			t, b, tx,
+			[]flow.Address{
+				exampleNFTAddress,
+			},
+			[]crypto.Signer{
+				exampleNFTSigner,
+			},
+			false,
+		)
+
 	})
 
 	t.Run("Should be able to withdraw an NFT and destroy it, not reducing the supply", func(t *testing.T) {

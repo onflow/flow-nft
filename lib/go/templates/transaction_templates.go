@@ -16,7 +16,8 @@ const (
 	filenameSetupFromAddress             = "transactions/setup_account_from_address.cdc"
 	filenameMintNFT                      = "transactions/mint_nft.cdc"
 	filenameTransferNFT                  = "transactions/transfer_nft.cdc"
-	filenameTransferGenericNFT           = "transactions/transfer_nft.cdc"
+	filenameTransferNFTWithPaths         = "transactions/generic_transfer_with_paths.cdc"
+	filenameTransferNFTWithAddress       = "transactions/generic_transfer_with_address.cdc"
 	filenameDestroyNFT                   = "transactions/destroy_nft.cdc"
 	filenameSetupRoyalty                 = "transactions/setup_account_to_receive_royalty.cdc"
 	filenameSetupAccountFromNftReference = "transactions/setup_account_from_nft_reference.cdc"
@@ -66,20 +67,41 @@ func GenerateMintNFTScript(nftAddress, exampleNFTAddress, metadataViewsAddress, 
 // GenerateTransferNFTScript returns a script that withdraws an NFT token
 // from a collection and deposits it into another collection.
 func GenerateTransferNFTScript(nftAddress, exampleNFTAddress, metadataViewsAddress, viewResolverAddress flow.Address) []byte {
-	code := assets.MustAssetString(filenameTransferGenericNFT)
+	code := assets.MustAssetString(filenameTransferNFT)
 	return replaceAddresses(code, nftAddress, exampleNFTAddress, metadataViewsAddress, flow.EmptyAddress, viewResolverAddress)
 }
 
-// GenerateTransferGenericNFTScript returns a script that withdraws a generic NFT token
+// GenerateTransferGenericNFTWithPathsScript returns a script that withdraws a generic NFT token
 // from a collection and deposits it into another collection.
 // The sender needs to send the paths to use to withdraw from and deposit to
-func GenerateTransferGenericNFTScript(nftAddress string) []byte {
-	code := assets.MustAssetString(filenameTransferNFT)
+func GenerateTransferGenericNFTWithPathsScript(nftAddress string) []byte {
+	code := assets.MustAssetString(filenameTransferNFTWithPaths)
 
 	code = strings.ReplaceAll(
 		code,
 		placeholderNonFungibleTokenString,
 		withHexPrefix(nftAddress),
+	)
+
+	return []byte(code)
+}
+
+// GenerateTransferGenericNFTWithAddressScript returns a script that withdraws a generic NFT token
+// from a collection and deposits it into another collection.
+// The sender needs to send the contract address and name of the token being transferred
+func GenerateTransferGenericNFTWithAddressScript(nftAddress, metadataViewsAddress string) []byte {
+	code := assets.MustAssetString(filenameTransferNFTWithAddress)
+
+	code = strings.ReplaceAll(
+		code,
+		placeholderNonFungibleTokenString,
+		withHexPrefix(nftAddress),
+	)
+
+	code = strings.ReplaceAll(
+		code,
+		placeholderMetadataViewsString,
+		withHexPrefix(metadataViewsAddress),
 	)
 
 	return []byte(code)

@@ -3,7 +3,6 @@
 import "ViewResolver"
 import "MetadataViews"
 import "NonFungibleToken"
-import "ExampleNFT"
 
 transaction(contractAddress: Address, contractName: String, recipient: Address, withdrawID: UInt64) {
 

@@ -154,12 +154,12 @@ fun testTransferNFT() {
     Test.assertEqual([nftID] as [UInt64], collectionIDs)
 
     txResult = executeTransaction(
-        "../transactions/generic_transfer.cdc",
+        "../transactions/generic_transfer_with_paths.cdc",
         [
-            nftID,
             recipient.address,
-            /storage/cadenceExampleNFTCollection,
-            /public/cadenceExampleNFTCollection
+            nftID,
+            "cadenceExampleNFTCollection",
+            "cadenceExampleNFTCollection"
         ],
         admin
     )
