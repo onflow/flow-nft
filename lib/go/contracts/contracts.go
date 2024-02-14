@@ -3,6 +3,7 @@ package contracts
 //go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../contracts -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../contracts
 
 import (
+	"fmt"
 	"regexp"
 
 	_ "github.com/kevinburke/go-bindata"
@@ -32,10 +33,22 @@ const (
 	filenameFungibleToken       = "utility/FungibleToken.cdc"
 )
 
+func withHexPrefix(address string) string {
+	if address == "" {
+		return ""
+	}
+
+	if address[0:2] == "0x" {
+		return address
+	}
+
+	return fmt.Sprintf("0x%s", address)
+}
+
 // NonFungibleToken returns the NonFungibleToken contract interface.
 func NonFungibleToken(resolverAddress string) []byte {
 	code := assets.MustAssetString(filenameNonFungibleToken)
-	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress)
+	code = placeholderResolver.ReplaceAllString(code, withHexPrefix(resolverAddress))
 	return []byte(code)
 }
 
@@ -45,9 +58,9 @@ func NonFungibleToken(resolverAddress string) []byte {
 func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
-	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
+	code = placeholderNonFungibleToken.ReplaceAllString(code, withHexPrefix(nftAddress.String()))
+	code = placeholderMetadataViews.ReplaceAllString(code, withHexPrefix(metadataAddress.String()))
+	code = placeholderResolver.ReplaceAllString(code, withHexPrefix(resolverAddress.String()))
 
 	return []byte(code)
 }
@@ -55,9 +68,9 @@ func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byt
 func MetadataViews(ftAddress, nftAddress, resolverAddress string) []byte {
 	code := assets.MustAssetString(filenameMetadataViews)
 
-	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress)
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress)
-	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress)
+	code = placeholderFungibleToken.ReplaceAllString(code, withHexPrefix(ftAddress))
+	code = placeholderNonFungibleToken.ReplaceAllString(code, withHexPrefix(nftAddress))
+	code = placeholderResolver.ReplaceAllString(code, withHexPrefix(resolverAddress))
 
 	return []byte(code)
 }
@@ -69,18 +82,18 @@ func ViewResolver() []byte {
 
 func UniversalCollection(nftAddress, resolverAddress, metadataAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameUniversalCollection)
-	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
+	code = placeholderMetadataViews.ReplaceAllString(code, withHexPrefix(metadataAddress.String()))
+	code = placeholderNonFungibleToken.ReplaceAllString(code, withHexPrefix(nftAddress.String()))
+	code = placeholderResolver.ReplaceAllString(code, withHexPrefix(resolverAddress.String()))
 	return []byte(code)
 }
 
 func BasicNFT(nftAddress, resolverAddress, metadataAddress, universalCollectionAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameBasicNFT)
-	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
-	code = placeholderUniversalCollection.ReplaceAllString(code, "0x"+universalCollectionAddress.String())
+	code = placeholderMetadataViews.ReplaceAllString(code, withHexPrefix(metadataAddress.String()))
+	code = placeholderNonFungibleToken.ReplaceAllString(code, withHexPrefix(nftAddress.String()))
+	code = placeholderResolver.ReplaceAllString(code, withHexPrefix(resolverAddress.String()))
+	code = placeholderUniversalCollection.ReplaceAllString(code, withHexPrefix(universalCollectionAddress.String()))
 	return []byte(code)
 }
 
