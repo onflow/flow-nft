@@ -33,9 +33,9 @@ const (
 )
 
 // NonFungibleToken returns the NonFungibleToken contract interface.
-func NonFungibleToken(resolverAddress flow.Address) []byte {
+func NonFungibleToken(resolverAddress string) []byte {
 	code := assets.MustAssetString(filenameNonFungibleToken)
-	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
+	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress)
 	return []byte(code)
 }
 
@@ -52,12 +52,12 @@ func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byt
 	return []byte(code)
 }
 
-func MetadataViews(ftAddress, nftAddress, resolverAddress flow.Address) []byte {
+func MetadataViews(ftAddress, nftAddress, resolverAddress string) []byte {
 	code := assets.MustAssetString(filenameMetadataViews)
 
-	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress.String())
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress.String())
+	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress)
+	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress)
+	code = placeholderResolver.ReplaceAllString(code, "0x"+resolverAddress)
 
 	return []byte(code)
 }

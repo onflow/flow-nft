@@ -10,12 +10,10 @@ import (
 	"github.com/onflow/flow-nft/lib/go/contracts"
 )
 
-const addrA = "0x0A"
+const addrA = "0A"
 
 func TestNonFungibleTokenContract(t *testing.T) {
-	addresses := test.AddressGenerator()
-	addressA := addresses.New()
-	contract := contracts.NonFungibleToken(addressA)
+	contract := contracts.NonFungibleToken(addrA)
 	assert.NotNil(t, contract)
 }
 
@@ -34,10 +32,6 @@ func TestExampleNFTContract(t *testing.T) {
 }
 
 func TestMetadataViewsContract(t *testing.T) {
-	addresses := test.AddressGenerator()
-	addressA := addresses.New()
-	addressB := addresses.New()
-	addressC := addresses.New()
-	contract := contracts.MetadataViews(addressA, addressB, addressC)
+	contract := contracts.MetadataViews(addrA, addrA, addrA)
 	assert.NotNil(t, contract)
 }

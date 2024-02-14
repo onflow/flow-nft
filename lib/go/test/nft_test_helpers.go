@@ -71,7 +71,7 @@ func deployNFTContracts(
 	nftAddress, err := adapter.CreateAccount(context.Background(), []*flow.AccountKey{nftAccountKey}, []sdktemplates.Contract{
 		{
 			Name:   "NonFungibleToken",
-			Source: string(contracts.NonFungibleToken(resolverAddress)),
+			Source: string(contracts.NonFungibleToken(resolverAddress.String())),
 		},
 	})
 	if !assert.NoError(t, err) {
@@ -80,7 +80,7 @@ func deployNFTContracts(
 	_, err = b.CommitBlock()
 	assert.NoError(t, err)
 
-	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress, resolverAddress), nftAccountKey)
+	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(emulatorFTAddress, nftAddress.String(), resolverAddress.String()), nftAccountKey)
 
 	exampleNFTAddress := deploy(
 		t, b, adapter,
