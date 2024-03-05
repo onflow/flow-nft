@@ -21,7 +21,7 @@ jobs:
       - name: Install Flow CLI
         run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/feature/stable-cadence/install.sh)"
       - name: Flow CLI Version
-        run: flow version
+        run: flow-c1 version
       - name: Update PATH
         run: echo "/root/.local/bin" >> $GITHUB_PATH
       - name: Run tests
