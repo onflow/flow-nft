@@ -3,8 +3,8 @@
 /// uses views to know where to set up the collection
 /// in storage and to create the empty collection.
 
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
+import "NonFungibleToken"
+import "MetadataViews"
 
 transaction(address: Address, publicPath: PublicPath, id: UInt64) {
 

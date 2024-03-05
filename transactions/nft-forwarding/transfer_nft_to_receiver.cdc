@@ -1,6 +1,6 @@
-import NonFungibleToken from "NonFungibleToken"
-import ViewResolver from "ViewResolver"
-import MetadataViews from "MetadataViews"
+import "NonFungibleToken"
+import "ViewResolver"
+import "MetadataViews"
 
 /// This transaction is for transferring an NFT from one account to the recipient's Receiver
 ///
@@ -19,7 +19,7 @@ transaction(
     prepare(signer: auth(BorrowValue) &Account) {
 
         // get the collection data from the NFT contract
-        let nftContract = getAccount(contractAddress).contracts.borrow<&ViewResolver>(name: contractName)
+        let nftContract = getAccount(contractAddress).contracts.borrow<&{ViewResolver}>(name: contractName)
             ?? panic("Could not borrow ViewResolver reference to the contract")
             
         let collectionData = nftContract.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as MetadataViews.NFTCollectionData?

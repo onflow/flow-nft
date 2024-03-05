@@ -1,8 +1,8 @@
 /// This transaction withdraws an NFT from the signers collection and destroys it
 
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "MetadataViews"
+import "ExampleNFT"
 
 transaction(id: UInt64) {
 

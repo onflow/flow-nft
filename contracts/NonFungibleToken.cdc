@@ -36,7 +36,7 @@ Collection to complete the transfer.
 
 */
 
-import ViewResolver from "ViewResolver"
+import "ViewResolver"
 
 /// The main NFT contract. Other NFT contracts will
 /// import and implement the interfaces defined in this contract

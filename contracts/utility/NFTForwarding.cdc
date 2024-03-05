@@ -11,7 +11,7 @@
 /// To create an NFTForwarder resource, an account calls the createNewNFTForwarder()
 /// function, passing the Collection Capability to which NFTs will be forwarded.
 ///
-import NonFungibleToken from "NonFungibleToken"
+import "NonFungibleToken"
 
 access(all) contract NFTForwarding {
 

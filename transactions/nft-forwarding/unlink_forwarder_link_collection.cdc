@@ -1,7 +1,7 @@
 
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
-import NFTForwarding from "NFTForwarding"
+import "NonFungibleToken"
+import "MetadataViews"
+import "NFTForwarding"
 
 // This transaction replaces NFTForwarder Receiver Capabilities with a collection to its public storage after having configured
 // its NFTForwarder

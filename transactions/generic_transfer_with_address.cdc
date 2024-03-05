@@ -1,5 +1,5 @@
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
+import "NonFungibleToken"
+import "MetadataViews"
 
 /// Can pass in any contract address and name
 /// This lets you choose the token you want to send because
@@ -17,7 +17,7 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
 
         // Borrow a reference to the nft contract deployed to the passed account
         let resolverRef = getAccount(contractAddress)
-            .contracts.borrow<&NonFungibleToken>(name: contractName)
+            .contracts.borrow<&{NonFungibleToken}>(name: contractName)
             ?? panic("Could not borrow a reference to the non-fungible token contract")
 
         // Use that reference to retrieve the NFTCollectionData view 

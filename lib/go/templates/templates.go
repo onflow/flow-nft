@@ -18,14 +18,19 @@ var (
 	placeholderFungibleToken          = regexp.MustCompile(`"FungibleToken"`)
 	placeholderViewResolver           = regexp.MustCompile(`"ViewResolver"`)
 	placeholderFlowToken              = regexp.MustCompile(`"FlowToken"`)
+	nonFungibleTokenImport            = "NonFungibleToken from "
+	exampleNFTImport                  = "ExampleNFT from "
+	metadataViewsImport               = "MetadataViews from "
+	fungibleTokenImport               = "FungibleToken from "
+	viewResolverImport                = "ViewResolver from "
 )
 
 func replaceAddresses(code string, nftAddress, exampleNFTAddress, metadataAddress, ftAddress, viewResolverAddress flow.Address) []byte {
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	code = placeholderExampleNFT.ReplaceAllString(code, "0x"+exampleNFTAddress.String())
-	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
-	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress.String())
-	code = placeholderViewResolver.ReplaceAllString(code, "0x"+viewResolverAddress.String())
+	code = placeholderNonFungibleToken.ReplaceAllString(code, nonFungibleTokenImport+withHexPrefix(nftAddress.String()))
+	code = placeholderExampleNFT.ReplaceAllString(code, exampleNFTImport+withHexPrefix(exampleNFTAddress.String()))
+	code = placeholderMetadataViews.ReplaceAllString(code, metadataViewsImport+withHexPrefix(metadataAddress.String()))
+	code = placeholderFungibleToken.ReplaceAllString(code, fungibleTokenImport+withHexPrefix(ftAddress.String()))
+	code = placeholderViewResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(viewResolverAddress.String()))
 	return []byte(code)
 }
 

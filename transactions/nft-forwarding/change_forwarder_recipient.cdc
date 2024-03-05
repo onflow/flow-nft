@@ -1,5 +1,5 @@
-import NonFungibleToken from "NonFungibleToken"
-import NFTForwarding from "NFTForwarding"
+import "NonFungibleToken"
+import "NFTForwarding"
 
 /// This transaction updates the NFTForwarder recipient to the one given at the specified PublicPath
 ///

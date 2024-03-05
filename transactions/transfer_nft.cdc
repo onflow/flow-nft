@@ -15,7 +15,7 @@ transaction(contractAddress: Address, contractName: String, recipient: Address, 
     prepare(signer: auth(BorrowValue) &Account) {
 
         // borrow the NFT contract as ViewResolver reference
-        let viewResolver = getAccount(contractAddress).contracts.borrow<&ViewResolver>(name: contractName)
+        let viewResolver = getAccount(contractAddress).contracts.borrow<&{ViewResolver}>(name: contractName)
             ?? panic("Could not borrow ViewResolver of given name from address")
 
         // resolve the NFT collection data from the NFT contract

@@ -1,6 +1,6 @@
-import FungibleToken from "FungibleToken"
-import NonFungibleToken from "NonFungibleToken"
-import ViewResolver from "ViewResolver"
+import "FungibleToken"
+import "NonFungibleToken"
+import "ViewResolver"
 
 /// This contract implements the metadata standard proposed
 /// in FLIP-0636.
@@ -665,7 +665,7 @@ access(all) contract MetadataViews {
         // Square-sized image to represent this collection.
         access(all) let squareImage: MetadataViews.Media
 
-        // Banner-sized image for this collection, recommended to have a size near 1200x630.
+        // Banner-sized image for this collection, recommended to have a size near 1400x350.
         access(all) let bannerImage: MetadataViews.Media
 
         // Social links to reach this collection's social homepages.

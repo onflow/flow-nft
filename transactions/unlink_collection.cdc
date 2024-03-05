@@ -1,7 +1,7 @@
 /// This transaction unlinks signer's public Capability at canonical public path
 
-import MetadataViews from "MetadataViews"
-import ExampleNFT from "ExampleNFT"
+import "MetadataViews"
+import "ExampleNFT"
 
 transaction {
     prepare(signer: auth(UnpublishCapabilty) &Account) {

@@ -3,15 +3,15 @@
 /// uses views to know where to set up the collection
 /// in storage and to create the empty collection.
 
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
+import "NonFungibleToken"
+import "MetadataViews"
 
 transaction(contractAddress: Address, contractName: String) {
 
     prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
         // Borrow a reference to the nft contract deployed to the passed account
         let resolverRef = getAccount(contractAddress)
-            .contracts.borrow<&NonFungibleToken>(name: contractName)
+            .contracts.borrow<&{NonFungibleToken}>(name: contractName)
             ?? panic("Could not borrow a reference to the non-fungible token contract")
 
         // Use that reference to retrieve the NFTCollectionData view 

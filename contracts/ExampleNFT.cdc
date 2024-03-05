@@ -10,9 +10,9 @@
 *   
 */
 
-import NonFungibleToken from "NonFungibleToken"
-import ViewResolver from "ViewResolver"
-import MetadataViews from "MetadataViews"
+import "NonFungibleToken"
+import "ViewResolver"
+import "MetadataViews"
 
 access(all) contract ExampleNFT: NonFungibleToken {
 

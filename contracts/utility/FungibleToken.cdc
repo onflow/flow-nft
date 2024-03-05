@@ -31,8 +31,8 @@ to the Provider interface.
 
 */
 
-import ViewResolver from "ViewResolver"
-//import Burner from "Burner"
+import "ViewResolver"
+//import "Burner"
 
 /// FungibleToken
 ///
@@ -150,6 +150,7 @@ access(all) contract interface FungibleToken: ViewResolver {
             post {
                 self.balance == 0.0: "The balance must be set to zero during the burnCallback method so that it cannot be spammed"
             }
+            self.balance = 0.0
         }
 
         /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts

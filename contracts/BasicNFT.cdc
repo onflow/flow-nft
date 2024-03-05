@@ -11,10 +11,10 @@
 *   
 */
 
-import NonFungibleToken from "NonFungibleToken"
-import MetadataViews from "MetadataViews"
-import ViewResolver from "ViewResolver"
-import UniversalCollection from "UniversalCollection"
+import "NonFungibleToken"
+import "MetadataViews"
+import "ViewResolver"
+import "UniversalCollection"
 
 access(all) contract BasicNFT: NonFungibleToken {
 
