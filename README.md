@@ -2,7 +2,12 @@
 
 This standard defines the minimum functionality required to
 implement a safe, secure, and easy-to-use non-fungible token
-contract on the [Flow blockchain](https://flow.com/
+contract on the [Flow blockchain](https://flow.com/)
+
+The version of the contracts in the `master` branch is the
+Cadence 1.0 version of the contracts and is not the same
+as the ones that are currently deployed to testnet and mainnet.
+See the `cadence-0.42` branch for the currently deployed versions.
 
 ## What is Cadence?
 
@@ -26,18 +31,20 @@ There is no need to deploy them yourself.
 
 Note: With the emulator, you must use the -contracts flag to deploy these contracts.
 
-| Network         | Contract Address     |
-| --------------- | -------------------- |
-| Emulator/Canary | `0xf8d6e0586b0a20c7` |
-| Testnet         | `0x631e88ae7f1d7c20` |
-| Mainnet         | `0x1d7e57aa55817448` |
+| Network                      | Contract Address     |
+| ---------------------------- | -------------------- |
+| Emulator/Canary              | `0xf8d6e0586b0a20c7` |
+| Testnet/Previewnet/Crescendo | `0x631e88ae7f1d7c20` |
+| Mainnet                      | `0x1d7e57aa55817448` |
 
 ## Core Types
 
-Contracts that implement the `NonFungibleToken` interface are required to implement two resource interfaces:
+Contracts that implement the `NonFungibleToken` interface are expected
+to utilize two resource interfaces:
 
-- `NFT` - A resource that describes the structure of a single NFT.
-- `Collection` - A resource that can hold multiple NFTs of the same type and defines ways
+- `NFT` - A resource interface that describes the structure of a single NFT.
+- `Collection` - A resource interface that describes an object
+  that can hold multiple NFTs of the same type and defines ways
   to deposit, withdraw, and query information about the stored NFTs.
 
   Users typically store one collection per NFT type, saved at a well-known location in their account storage.
@@ -47,11 +54,11 @@ Contracts that implement the `NonFungibleToken` interface are required to implem
 ## Core Features
 
 The `NonFungibleToken` contract defines the following set of functionality
-that must be included in each implementation:
+that should be included in each implementation:
 
 ### Create a new NFT collection
 
-Create a new collection using the `Token.createEmptyCollection()` function.
+Create a new collection using the `Token.createEmptyCollection(nftType: Type)` function.
 
 This function MUST return an empty collection that contains no NFTs.
 
@@ -60,7 +67,7 @@ and public a capability to their collection.
 
 ### Withdraw an NFT
 
-Withdraw an `NFT` from a `Collection` using the [`withdraw()`](contracts/ExampleNFT.cdc#L160-L165) function.
+Withdraw an `NFT` from a `Collection` using the [`withdraw()`](contracts/ExampleNFT.cdc#L160) function.
 This function emits the [`NonFungibleToken.Withdrawn`](contracts/NonFungibleToken.cdc#L78) event automatically.
 
 ### Deposit an NFT
