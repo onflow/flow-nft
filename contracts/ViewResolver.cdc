@@ -7,8 +7,8 @@ access(all) contract interface ViewResolver {
 
     /// Function that returns all the Metadata Views implemented by the resolving contract.
     /// Some contracts may have multiple resource types that support metadata views
-    /// so there there is an optional parameter for specify which resource type the caller
-    /// is looking for views for.
+    /// so there is an optional parameter to specify which resource type the caller
+    /// is requesting views for.
     /// Some contract-level views may be type-agnostic. In that case, the contract
     /// should return the same views regardless of what type is passed in.
     ///
