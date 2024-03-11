@@ -89,19 +89,21 @@ func deployNFTContracts(
 		exampleNFTAccountKey,
 	)
 
-	universalCollectionAddress := deploy(
-		t, b, adapter,
-		"UniversalCollection",
-		contracts.UniversalCollection(nftAddress, resolverAddress, metadataAddress),
-		nftAccountKey,
-	)
+	// Saving the UniversalCollection and Basic NFT for a different PR
 
-	deploy(
-		t, b, adapter,
-		"BasicNFT",
-		contracts.BasicNFT(nftAddress, resolverAddress, metadataAddress, universalCollectionAddress),
-		exampleNFTAccountKey,
-	)
+	// universalCollectionAddress := deploy(
+	// 	t, b, adapter,
+	// 	"UniversalCollection",
+	// 	contracts.UniversalCollection(nftAddress, resolverAddress, metadataAddress),
+	// 	nftAccountKey,
+	// )
+
+	// deploy(
+	// 	t, b, adapter,
+	// 	"BasicNFT",
+	// 	contracts.BasicNFT(nftAddress, resolverAddress, metadataAddress, universalCollectionAddress),
+	// 	exampleNFTAccountKey,
+	// )
 
 	return nftAddress, metadataAddress, exampleNFTAddress, resolverAddress
 }
