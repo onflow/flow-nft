@@ -200,6 +200,23 @@ pub contract MetadataViews {
         }
     }
 
+    /// A struct to represent a generic URI. May be used to represent the URI of
+    /// the NFT where the type of URI is not able to be determined (i.e. HTTP,
+    /// IPFS, etc.)
+    ///
+    pub struct URI : MetadataViews.File {
+
+        pub let value: String
+
+        init(_ value: String) {
+            self.value = value
+        }
+
+        pub fun uri(): String {
+            return self.value
+        }
+    }
+
     /// Optional view for collections that issue multiple objects
     /// with the same or similar metadata, for example an X of 100 set. This
     /// information is useful for wallets and marketplaces.
@@ -735,6 +752,45 @@ pub contract MetadataViews {
         }
 
         return Traits(traits)
+    }
+
+    /// This view may be used by Cadence-native projects to define their
+    /// contract- and token-level metadata according to EVM-compatible formats.
+    /// Several ERC standards (e.g. ERC20, ERC721, etc.) expose name and symbol
+    /// values to define assets as well as contract- & token-level metadata view
+    /// `tokenURI(uint256)` and `contractURI()` methods. This view would enable
+    /// Cadence projects to define in their own contracts how they would like
+    /// their metadata to be defined when bridged to EVM.
+    ///
+    pub struct EVMBridgedMetadata {
+
+        /// The name of the NFT
+        ///
+        pub let name: String
+
+        /// The symbol of the NFT
+        ///
+        pub let symbol: String
+
+        /// The URI of the NFT - this can either be contract-level or 
+        /// token-level URI depending on where the metadata is resolved. It
+        /// is recommended to reference EVM metadata standards for how to best
+        /// prepare your view's formatted value.
+        /// For example, while you may choose to take advantage of onchain
+        /// metadata in Cadence, you may also choose to represent your asset's
+        /// metadata in IPFS and assign this value as an IPFSFile struct
+        /// pointing to that IPFS file. Alternatively, you may build out a 
+        /// struct that serializes your NFT's metadata and assign it to this 
+        /// value which would return a URL-encoded representation of your NFT's
+        /// onchain metadata at the time this view is resolved.
+        //
+        pub let uri: {MetadataViews.File}
+
+        init(name: String, symbol: String, uri: {MetadataViews.File}) {
+            self.name = name
+            self.symbol = symbol
+            self.uri = uri
+        }
     }
 
 }
