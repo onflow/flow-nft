@@ -164,6 +164,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// deposit takes a NFT and adds it to the collections dictionary
         /// and adds the ID to the id array
         access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
+            let token <- token as! @ExampleNFT.NFT
+
             // add the new token to the dictionary which removes the old one
             let oldToken <- self.ownedNFTs[token.id] <- token
 
