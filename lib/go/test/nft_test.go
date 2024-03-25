@@ -33,7 +33,7 @@ func TestCreateNFT(t *testing.T) {
 	nftAddress, metadataAddress, exampleNFTAddress, _ := deployNFTContracts(t, b, adapter, accountKeys, exampleNFTAccountKey)
 
 	const (
-		pathName = "cadenceExampleNFTCollection"
+		pathName = "exampleNFTCollection"
 	)
 
 	t.Run("Should be able to mint a token", func(t *testing.T) {
