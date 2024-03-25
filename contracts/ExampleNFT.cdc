@@ -302,7 +302,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
 
-        let identifier = "cadenceExampleNFTCollection"
+        let identifier = "exampleNFTCollection"
         let defaultStoragePath = StoragePath(identifier: identifier)!
         let defaultPublicPath = PublicPath(identifier: identifier)!
 
