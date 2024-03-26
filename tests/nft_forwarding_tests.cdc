@@ -8,8 +8,8 @@ access(all) let admin = Test.getAccount(0x0000000000000007)
 access(all) let forwarder = Test.createAccount()
 access(all) let recipient = Test.createAccount()
 
-access(all) let collectionStoragePath = /storage/cadenceExampleNFTCollection
-access(all) let collectionPublicPath = /public/cadenceExampleNFTCollection
+access(all) let collectionStoragePath = /storage/exampleNFTCollection
+access(all) let collectionPublicPath = /public/exampleNFTCollection
 
 access(all) fun setup() {
 

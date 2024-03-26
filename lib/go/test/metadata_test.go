@@ -64,7 +64,7 @@ func TestSetupCollectionFromNFTReference(t *testing.T) {
 
 	t.Run("Should be able to setup an account using the NFTCollectionData metadata view of a referenced NFT", func(t *testing.T) {
 		const (
-			pathName = "cadenceExampleNFTCollection"
+			pathName = "exampleNFTCollection"
 		)
 
 		idsScript := templates.GenerateGetCollectionIDsScript(nftAddress, exampleNFTAddress)

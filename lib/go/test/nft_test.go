@@ -100,7 +100,7 @@ func TestTransferNFT(t *testing.T) {
 	joshAddress, _, joshSigner := newAccountWithAddress(b, accountKeys)
 
 	const (
-		pathName = "cadenceExampleNFTCollection"
+		pathName = "exampleNFTCollection"
 	)
 
 	// Mint a single NFT with standard royalty cuts and metadata
@@ -288,8 +288,8 @@ func TestTransferNFT(t *testing.T) {
 		tx.AddArgument(mintedID)
 
 		// add path identifier arguments
-		tx.AddArgument(cadence.String("cadenceExampleNFTCollection"))
-		tx.AddArgument(cadence.String("cadenceExampleNFTCollection"))
+		tx.AddArgument(cadence.String("exampleNFTCollection"))
+		tx.AddArgument(cadence.String("exampleNFTCollection"))
 
 		signAndSubmit(
 			t, b, tx,
