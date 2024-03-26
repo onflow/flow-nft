@@ -5,14 +5,15 @@ import "ExampleNFT"
 import "NonFungibleToken"
 import "MetadataViews"
 
-pub fun main(): Bool {
+access(all) fun main(): Bool {
     // Call `resolveView` with invalid Type
     let view = ExampleNFT.resolveView(Type<String>())
     assert(nil == view)
 
-    let collectionDisplay = (ExampleNFT.resolveView(
-        Type<MetadataViews.NFTCollectionDisplay>()
-    )as! MetadataViews.NFTCollectionDisplay?)!
+    let collectionDisplay = ExampleNFT.resolveView(
+            Type<MetadataViews.NFTCollectionDisplay>()
+        ) as! MetadataViews.NFTCollectionDisplay?
+        ?? panic("ExampleNFT Collection did not resolve NFTCollectionDisplay view!")
 
     assert("The Example Collection" == collectionDisplay.name)
     assert("This collection is used as an example to help you develop your next Flow NFT." == collectionDisplay.description)
@@ -36,7 +37,7 @@ pub fun main(): Bool {
     assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>() == collectionData.providerLinkedType)
 
     let coll <- collectionData.createEmptyCollection()
-    assert(0 == coll.getIDs().length)
+    assert(0 == coll.getLength())
 
     destroy <- coll
 

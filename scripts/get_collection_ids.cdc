@@ -3,13 +3,12 @@
 import "NonFungibleToken"
 import "ExampleNFT"
 
-pub fun main(address: Address, collectionPublicPath: PublicPath): [UInt64] {
+access(all) fun main(address: Address, collectionPublicPath: PublicPath): [UInt64] {
     let account = getAccount(address)
 
-    let collectionRef = account
-        .getCapability(collectionPublicPath)
-        .borrow<&{NonFungibleToken.CollectionPublic}>()
-        ?? panic("Could not borrow capability from public collection at specified path")
+    let collectionRef = account.capabilities.borrow<&{NonFungibleToken.Collection}>(
+            collectionPublicPath
+        ) ?? panic("Could not borrow capability from collection at specified path")
 
     return collectionRef.getIDs()
 }

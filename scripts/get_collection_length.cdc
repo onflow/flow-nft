@@ -1,13 +1,16 @@
 import "NonFungibleToken"
 import "ExampleNFT"
+import "MetadataViews"
 
-pub fun main(address: Address): Int {
+access(all) fun main(address: Address): Int {
     let account = getAccount(address)
 
-    let collectionRef = account
-        .getCapability(ExampleNFT.CollectionPublicPath)
-        .borrow<&{NonFungibleToken.CollectionPublic}>()
-        ?? panic("Could not borrow capability from public collection")
+    let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+        ?? panic("ViewResolver does not resolve NFTCollectionData view")
 
-    return collectionRef.getIDs().length
+    let collectionRef = account.capabilities.borrow<&{NonFungibleToken.Collection}>(
+            collectionData.publicPath
+        ) ?? panic("Could not borrow capability from public collection")
+
+    return collectionRef.getLength()
 }

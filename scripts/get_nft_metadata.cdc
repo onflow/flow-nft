@@ -4,31 +4,29 @@
 import "ExampleNFT"
 import "MetadataViews"
 
-pub struct NFT {
-    pub let name: String
-    pub let description: String
-    pub let thumbnail: String
-    pub let owner: Address
-    pub let type: String
-    pub let royalties: [MetadataViews.Royalty]
-    pub let externalURL: String
-    pub let serialNumber: UInt64
-    pub let collectionPublicPath: PublicPath
-    pub let collectionStoragePath: StoragePath
-    pub let collectionProviderPath: PrivatePath
-    pub let collectionPublic: String
-    pub let collectionPublicLinkedType: String
-    pub let collectionProviderLinkedType: String
-    pub let collectionName: String
-    pub let collectionDescription: String
-    pub let collectionExternalURL: String
-    pub let collectionSquareImage: String
-    pub let collectionBannerImage: String
-    pub let collectionSocials: {String: String}
-    pub let edition: MetadataViews.Edition
-    pub let traits: MetadataViews.Traits
-    pub let medias: MetadataViews.Medias?
-    pub let license: MetadataViews.License?
+access(all) struct NFT {
+    access(all) let name: String
+    access(all) let description: String
+    access(all) let thumbnail: String
+    access(all) let owner: Address
+    access(all) let type: String
+    access(all) let royalties: [MetadataViews.Royalty]
+    access(all) let externalURL: String
+    access(all) let serialNumber: UInt64
+    access(all) let collectionPublicPath: PublicPath
+    access(all) let collectionStoragePath: StoragePath
+    access(all) let collectionPublic: String
+    access(all) let collectionPublicLinkedType: String
+    access(all) let collectionName: String
+    access(all) let collectionDescription: String
+    access(all) let collectionExternalURL: String
+    access(all) let collectionSquareImage: String
+    access(all) let collectionBannerImage: String
+    access(all) let collectionSocials: {String: String}
+    access(all) let edition: MetadataViews.Edition
+    access(all) let traits: MetadataViews.Traits
+    access(all) let medias: MetadataViews.Medias?
+    access(all) let license: MetadataViews.License?
 
     init(
         name: String,
@@ -41,10 +39,8 @@ pub struct NFT {
         serialNumber: UInt64,
         collectionPublicPath: PublicPath,
         collectionStoragePath: StoragePath,
-        collectionProviderPath: PrivatePath,
         collectionPublic: String,
         collectionPublicLinkedType: String,
-        collectionProviderLinkedType: String,
         collectionName: String,
         collectionDescription: String,
         collectionExternalURL: String,
@@ -66,10 +62,8 @@ pub struct NFT {
         self.serialNumber = serialNumber
         self.collectionPublicPath = collectionPublicPath
         self.collectionStoragePath = collectionStoragePath
-        self.collectionProviderPath = collectionProviderPath
         self.collectionPublic = collectionPublic
         self.collectionPublicLinkedType = collectionPublicLinkedType
-        self.collectionProviderLinkedType = collectionProviderLinkedType
         self.collectionName = collectionName
         self.collectionDescription = collectionDescription
         self.collectionExternalURL = collectionExternalURL
@@ -83,15 +77,18 @@ pub struct NFT {
     }
 }
 
-pub fun main(address: Address, id: UInt64): NFT {
+access(all) fun main(address: Address, id: UInt64): NFT {
     let account = getAccount(address)
 
-    let collection = account
-        .getCapability(ExampleNFT.CollectionPublicPath)
-        .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
-        ?? panic("Could not borrow a reference to the collection")
+    let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+        ?? panic("ViewResolver does not resolve NFTCollectionData view")
+    
+    let collection = account.capabilities.borrow<&ExampleNFT.Collection>(
+            collectionData.publicPath
+        ) ?? panic("Could not borrow a reference to the collection")
 
-    let nft = collection.borrowExampleNFT(id: id)!
+    let nft = collection.borrowNFT(id)
+        ?? panic("Could not borrow a reference to an NFT with the given ID")
 
     // Get the basic display information for this NFT
     let display = MetadataViews.getDisplay(nft)!
@@ -131,10 +128,8 @@ pub fun main(address: Address, id: UInt64): NFT {
         serialNumber: serialNumberView.number,
         collectionPublicPath: nftCollectionView.publicPath,
         collectionStoragePath: nftCollectionView.storagePath,
-        collectionProviderPath: nftCollectionView.providerPath,
         collectionPublic: nftCollectionView.publicCollection.identifier,
         collectionPublicLinkedType: nftCollectionView.publicLinkedType.identifier,
-        collectionProviderLinkedType: nftCollectionView.providerLinkedType.identifier,
         collectionName: collectionDisplay.name,
         collectionDescription: collectionDisplay.description,
         collectionExternalURL: collectionDisplay.externalURL.url,

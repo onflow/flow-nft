@@ -6,16 +6,17 @@
 import "NonFungibleToken"
 import "MetadataViews"
 
-transaction(address: Address, publicPath: PublicPath, id: UInt64) {
+transaction(contractAddress: Address, contractName: String) {
 
     prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
-        let collection = getAccount(address).capabilities.borrow<&{NonFungibleToken.Collection}>(publicPath)
-            ?? panic("Could not borrow a reference to the collection")
+        // Borrow a reference to the nft contract deployed to the passed account
+        let resolverRef = getAccount(contractAddress)
+            .contracts.borrow<&{NonFungibleToken}>(name: contractName)
+            ?? panic("Could not borrow a reference to the non-fungible token contract")
 
-        let nftRef = collection.borrowNFT(id)
-            ?? panic("Could not borrow a reference to the desired NFT")
-        
-        let collectionData = nftRef.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
+        // Use that reference to retrieve the NFTCollectionData view 
+        let collectionData = resolverRef.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+            ?? panic("Could not resolve the NFTCollectionData view for the given non-fungible token contract")
 
         // Create a new empty collections
         let emptyCollection <- collectionData.createEmptyCollection()
@@ -27,6 +28,6 @@ transaction(address: Address, publicPath: PublicPath, id: UInt64) {
         let collectionCap = signer.capabilities.storage.issue<&{NonFungibleToken.Collection}>(
                 collectionData.storagePath
             )
-        signer.capabilities.publish(collectionCap, at: publicPath)
+        signer.capabilities.publish(collectionCap, at: collectionData.publicPath)
     }
 }
