@@ -16,13 +16,17 @@ import "MetadataViews"
 
 access(all) contract ExampleNFT: NonFungibleToken {
 
+    /// Standard Paths
+    access(all) let CollectionStoragePath: StoragePath
+    access(all) let CollectionPublicPath: PublicPath
+
     /// Path where the minter should be stored
     /// The standard paths for the collection are stored in the collection resource type
     access(all) let MinterStoragePath: StoragePath
 
     /// We choose the name NFT here, but this type can have any name now
     /// because the interface does not require it to have a specific name any more
-    access(all) resource NFT: NonFungibleToken.NFT, ViewResolver.Resolver {
+    access(all) resource NFT: NonFungibleToken.NFT {
 
         access(all) let id: UInt64
 
@@ -124,7 +128,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
         }
     }
 
-    // Deprecatred: Only here for backward compatibility.
+    // Deprecated: Only here for backward compatibility.
     access(all) resource interface ExampleNFTCollectionPublic {}
 
     access(all) resource Collection: NonFungibleToken.Collection, ExampleNFTCollectionPublic {
@@ -229,8 +233,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
         switch viewType {
             case Type<MetadataViews.NFTCollectionData>():
                 let collectionData = MetadataViews.NFTCollectionData(
-                    storagePath: /storage/cadenceExampleNFTCollection,
-                    publicPath: /public/cadenceExampleNFTCollection,
+                    storagePath: self.CollectionStoragePath,
+                    publicPath: self.CollectionPublicPath,
                     publicCollection: Type<&ExampleNFT.Collection>(),
                     publicLinkedType: Type<&ExampleNFT.Collection>(),
                     createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
@@ -297,7 +301,9 @@ access(all) contract ExampleNFT: NonFungibleToken {
     init() {
 
         // Set the named paths
-        self.MinterStoragePath = /storage/cadenceExampleNFTMinter
+        self.CollectionStoragePath = /storage/exampleNFTCollection
+        self.CollectionPublicPath = /public/exampleNFTCollection
+        self.MinterStoragePath = /storage/exampleNFTMinter
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()

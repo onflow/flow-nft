@@ -85,9 +85,6 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     ///
     access(all) event Deposited(type: String, id: UInt64, uuid: UInt64, to: Address?, collectionUUID: UInt64)
 
-    /// Included for backwards-compatibility
-    access(all) resource interface INFT: NFT {}
-
     /// Interface that the NFTs must conform to
     ///
     access(all) resource interface NFT: ViewResolver.Resolver {

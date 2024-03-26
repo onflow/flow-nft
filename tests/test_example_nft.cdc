@@ -89,7 +89,7 @@ fun testMintNFT() {
         "../scripts/get_collection_ids.cdc",
         [
             recipient.address,
-            /public/cadenceExampleNFTCollection
+            /public/exampleNFTCollection
         ]
     )
     Test.expect(scriptResult, Test.beSucceeded())
@@ -104,7 +104,7 @@ fun testTransferNFT() {
         "../scripts/get_collection_ids.cdc",
         [
             recipient.address,
-            /public/cadenceExampleNFTCollection
+            /public/exampleNFTCollection
         ]
     )
     Test.expect(scriptResult, Test.beSucceeded())
@@ -145,7 +145,7 @@ fun testTransferNFT() {
         "../scripts/get_collection_ids.cdc",
         [
             admin.address,
-            /public/cadenceExampleNFTCollection
+            /public/exampleNFTCollection
         ]
     )
     Test.expect(scriptResult, Test.beSucceeded())
@@ -158,8 +158,8 @@ fun testTransferNFT() {
         [
             recipient.address,
             nftID,
-            "cadenceExampleNFTCollection",
-            "cadenceExampleNFTCollection"
+            "exampleNFTCollection",
+            "exampleNFTCollection"
         ],
         admin
     )
@@ -203,7 +203,7 @@ fun testBorrowNFT() {
         "../scripts/get_collection_ids.cdc",
         [
             admin.address,
-            /public/cadenceExampleNFTCollection
+            /public/exampleNFTCollection
         ]
     )
     Test.expect(scriptResult, Test.beSucceeded())
@@ -260,7 +260,7 @@ fun testGetContractStoragePath() {
     Test.expect(scriptResult, Test.beSucceeded())
 
     let storagePath = scriptResult.returnValue! as! StoragePath
-    Test.assertEqual(/storage/cadenceExampleNFTCollection, storagePath)
+    Test.assertEqual(/storage/exampleNFTCollection, storagePath)
 }
 
 access(all)
@@ -285,7 +285,7 @@ fun testGetNFTMetadata() {
         "../scripts/get_collection_ids.cdc",
         [
             admin.address,
-            /public/cadenceExampleNFTCollection
+            /public/exampleNFTCollection
         ]
     )
     Test.expect(scriptResult, Test.beSucceeded())
