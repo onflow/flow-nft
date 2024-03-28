@@ -307,16 +307,11 @@ access(all) contract ExampleNFT: NonFungibleToken {
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
-
-        let identifier = "exampleNFTCollection"
-        let defaultStoragePath = StoragePath(identifier: identifier)!
-        let defaultPublicPath = PublicPath(identifier: identifier)!
-
-        self.account.storage.save(<-collection, to: defaultStoragePath)
+        self.account.storage.save(<-collection, to: self.CollectionStoragePath)
 
         // create a public capability for the collection
-        let collectionCap = self.account.capabilities.storage.issue<&ExampleNFT.Collection>(defaultStoragePath)
-        self.account.capabilities.publish(collectionCap, at: defaultPublicPath)
+        let collectionCap = self.account.capabilities.storage.issue<&ExampleNFT.Collection>(self.CollectionStoragePath)
+        self.account.capabilities.publish(collectionCap, at: self.CollectionPublicPath)
 
         // Create a Minter resource and save it to storage
         let minter <- create NFTMinter()
