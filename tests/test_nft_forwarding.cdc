@@ -62,14 +62,14 @@ access(all) fun testMintNFT() {
 
     let expectedCollectionLength: Int = 1
 
-    // let royaltySetupSuccess: Bool = txExecutor(
-    //         "setup_account_to_receive_royalty.cdc",
-    //         [admin],
-    //         [/storage/flowTokenVault],
-    //         nil,
-    //         nil
-    //     )
-    // Test.assertEqual(true, royaltySetupSuccess)
+    let royaltySetupSuccess: Bool = txExecutor(
+            "setup_account_to_receive_royalty.cdc",
+            [admin],
+            [/storage/flowTokenVault],
+            nil,
+            nil
+        )
+    Test.assertEqual(true, royaltySetupSuccess)
 
     // Minting to forwarder should forward minted NFT to recipient
     let mintSuccess: Bool = txExecutor(

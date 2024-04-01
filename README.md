@@ -195,15 +195,15 @@ If you want to test out these contracts, we recommend either testing them
 with the [Flow Playground](https://play.flow.com)
 or with the [Visual Studio Code Extension](https://github.com/onflow/flow/blob/master/docs/vscode-extension.md#cadence-visual-studio-code-extension).
 
-The steps to follow are:
+If you are not making/testing any modifications to the standard contracts,
+they are already deployed to the addresses listed above and you can just import
+from those directly instead of deploying them yourself.
+
+If you want to test changes to the standards, the steps to follow are:
 
 1. Deploy `ViewResolver.cdc`
 2. Deploy `NonFungibleToken.cdc`, importing `ViewResolver`.
 3. Deploy `ExampleNFT.cdc`, importing `NonFungibleToken`.
-
-If you are not making any modifications to the standard contracts,
-they are already deployed to the addresses listed above and you can just import
-from those directly instead of deploying them yourself.
 
 Then you can experiment with some of the other transactions and scripts in `transactions/`
 or even write your own. You'll need to replace some of the import address placeholders with addresses that you deploy to, as well as some of the transaction arguments.

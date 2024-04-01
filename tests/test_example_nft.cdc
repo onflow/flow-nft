@@ -56,14 +56,14 @@ fun testSetupAccount() {
 
 access(all)
 fun testMintNFT() {
-    // var txResult = executeTransaction(
-    //     "../transactions/setup_account_to_receive_royalty.cdc",
-    //     [/storage/flowTokenVault],
-    //     admin
-    // )
-    // Test.expect(txResult, Test.beSucceeded())
-
     var txResult = executeTransaction(
+        "../transactions/setup_account_to_receive_royalty.cdc",
+        [/storage/flowTokenVault],
+        admin
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    txResult = executeTransaction(
         "../transactions/mint_nft.cdc",
         [
             recipient.address,

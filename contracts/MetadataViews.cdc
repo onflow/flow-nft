@@ -185,7 +185,7 @@ access(all) contract MetadataViews {
     /// Helper to get License in a typesafe way
     ///
     /// @param viewResolver: A reference to the resolver resource
-    /// @return A optional License struct
+    /// @return An optional License struct
     ///
     access(all) fun getLicense(_ viewResolver: &{ViewResolver.Resolver}) : License? {
         if let view = viewResolver.resolveView(Type<License>()) {
@@ -212,7 +212,7 @@ access(all) contract MetadataViews {
     /// Helper to get ExternalURL in a typesafe way
     ///
     /// @param viewResolver: A reference to the resolver resource
-    /// @return A optional ExternalURL struct
+    /// @return An optional ExternalURL struct
     ///
     access(all) fun getExternalURL(_ viewResolver: &{ViewResolver.Resolver}) : ExternalURL? {
         if let view = viewResolver.resolveView(Type<ExternalURL>()) {
