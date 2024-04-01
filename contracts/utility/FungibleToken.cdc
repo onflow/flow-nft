@@ -32,7 +32,7 @@ to the Provider interface.
 */
 
 import "ViewResolver"
-//import "Burner"
+import "Burner"
 
 /// FungibleToken
 ///
@@ -118,7 +118,8 @@ access(all) contract interface FungibleToken: ViewResolver {
         ///
         access(all) fun deposit(from: @{Vault})
 
-        /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
+        /// getSupportedVaultTypes returns a dictionary of Vault types
+        /// and whether the type is currently supported by this Receiver
         access(all) view fun getSupportedVaultTypes(): {Type: Bool}
 
         /// Returns whether or not the given type is accepted by the Receiver
@@ -131,7 +132,7 @@ access(all) contract interface FungibleToken: ViewResolver {
     /// Ideally, this interface would also conform to Receiver, Balance, Transferor, Provider, and Resolver
     /// but that is not supported yet
     ///
-    access(all) resource interface Vault: Receiver, Provider, Balance, ViewResolver.Resolver { //, Burner.Burnable {
+    access(all) resource interface Vault: Receiver, Provider, Balance, ViewResolver.Resolver, Burner.Burnable {
 
         /// Field that tracks the balance of a vault
         access(all) var balance: UFix64
@@ -153,7 +154,7 @@ access(all) contract interface FungibleToken: ViewResolver {
             self.balance = 0.0
         }
 
-        /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
+        /// getSupportedVaultTypes returns a dictionary of vault types and whether this receiver accepts the indexed type
         /// The default implementation is included here because vaults are expected
         /// to only accepted their own type, so they have no need to provide an implementation
         /// for this function

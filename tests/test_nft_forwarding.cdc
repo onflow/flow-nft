@@ -14,7 +14,6 @@ access(all) let collectionPublicPath = /public/exampleNFTCollection
 access(all) fun setup() {
 
     deploy("ViewResolver", "../contracts/ViewResolver.cdc")
-    deploy("FungibleToken", "../contracts/utility/FungibleToken.cdc")
     deploy("NonFungibleToken", "../contracts/NonFungibleToken.cdc")
     deploy("MetadataViews", "../contracts/MetadataViews.cdc")
     deploy("ExampleNFT", "../contracts/ExampleNFT.cdc")

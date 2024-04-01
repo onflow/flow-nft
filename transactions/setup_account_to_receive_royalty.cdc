@@ -16,9 +16,9 @@ transaction(vaultPath: StoragePath) {
     prepare(signer: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, UnpublishCapability) &Account) {
 
         // Return early if the account doesn't have a FungibleToken Vault
-        // if !signer.storage.check<&{FungibleToken.Vault}>(from: vaultPath) {
-        //     panic("A vault for the specified fungible token path does not exist")
-        // }
+        if signer.storage.borrow<&{FungibleToken.Vault}>(from: vaultPath) == nil {
+            panic("A vault for the specified fungible token path does not exist")
+        }
 
         if signer.storage.type(at: vaultPath) == nil {
             panic("A vault for the specified fungible token path does not exist")
@@ -29,6 +29,5 @@ transaction(vaultPath: StoragePath) {
         signer.capabilities.unpublish(MetadataViews.getRoyaltyReceiverPublicPath())
         let vaultCap = signer.capabilities.storage.issue<&{FungibleToken.Receiver}>(vaultPath)
         signer.capabilities.publish(vaultCap, at: MetadataViews.getRoyaltyReceiverPublicPath())
-
     }
 }
