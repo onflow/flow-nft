@@ -180,9 +180,9 @@ access(all) contract ExampleNFT: NonFungibleToken {
             // Do not add to your contract unless you have a specific
             // reason to want to emit the NFTUpdated event somewhere
             // in your contract
-            // let authTokenRef = (&self.ownedNFTs[id] as auth(NonFungibleToken.Owner) &{NonFungibleToken.NFT}?)!
-            // //authTokenRef.updateTransferDate(date: getCurrentBlock().timestamp)
-            // ExampleNFT.emitNFTUpdated(authTokenRef)
+            let authTokenRef = (&self.ownedNFTs[id] as auth(NonFungibleToken.Owner) &{NonFungibleToken.NFT}?)!
+            //authTokenRef.updateTransferDate(date: getCurrentBlock().timestamp)
+            ExampleNFT.emitNFTUpdated(authTokenRef)
         }
 
         /// getIDs returns an array of the IDs that are in the collection
