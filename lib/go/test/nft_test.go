@@ -221,7 +221,7 @@ func TestTransferNFT(t *testing.T) {
 
 		verifyWithdrawn(t, b, adapter, nftAddress,
 			Withdrawn{
-				nftType: "A.e03daebed8ca0615.ExampleNFT.NFT",
+				nftType: "A.045a1763c93006ca.ExampleNFT.NFT",
 				// the rest of the values are not important
 				id:           1,
 				uuid:         1,

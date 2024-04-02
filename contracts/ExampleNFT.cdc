@@ -169,11 +169,20 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// and adds the ID to the id array
         access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
             let token <- token as! @ExampleNFT.NFT
+            let id = token.id
 
             // add the new token to the dictionary which removes the old one
             let oldToken <- self.ownedNFTs[token.id] <- token
 
             destroy oldToken
+
+            // This code is for testing purposes only
+            // Do not add to your contract unless you have a specific
+            // reason to want to emit the NFTUpdated event somewhere
+            // in your contract
+            // let authTokenRef = (&self.ownedNFTs[id] as auth(NonFungibleToken.Owner) &{NonFungibleToken.NFT}?)!
+            // //authTokenRef.updateTransferDate(date: getCurrentBlock().timestamp)
+            // ExampleNFT.emitNFTUpdated(authTokenRef)
         }
 
         /// getIDs returns an array of the IDs that are in the collection

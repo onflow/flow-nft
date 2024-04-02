@@ -102,6 +102,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         access(all) fun createEmptyCollection(): @{Collection} {
             post {
                 result.getLength() == 0: "The created collection must be empty!"
+                result.isSupportedNFTType(type: self.getType()): "The created collection must support this NFT type"
             }
         }
 
