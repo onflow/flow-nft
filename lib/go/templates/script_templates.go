@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	filenameBorrowNFT           = "scripts/borrow_nft.cdc"
-	filenameGetCollectionLength = "scripts/get_collection_length.cdc"
-	filenameGetCollectionIDs    = "scripts/get_collection_ids.cdc"
-	filenameGetTotalSupply      = "scripts/get_total_supply.cdc"
-	filenameGetNFTMetadata      = "scripts/get_nft_metadata.cdc"
-	filenameGetNFTView          = "scripts/get_nft_view.cdc"
+	filenameBorrowNFT           = "transactions/scripts/borrow_nft.cdc"
+	filenameGetCollectionLength = "transactions/scripts/get_collection_length.cdc"
+	filenameGetCollectionIDs    = "transactions/scripts/get_collection_ids.cdc"
+	filenameGetTotalSupply      = "transactions/scripts/get_total_supply.cdc"
+	filenameGetNFTMetadata      = "transactions/scripts/get_nft_metadata.cdc"
+	filenameGetNFTView          = "transactions/scripts/get_nft_view.cdc"
 )
 
 // GenerateBorrowNFTScript creates a script that retrieves an NFT collection

@@ -22,7 +22,7 @@ access(all) fun deployWithArgs(_ contractName: String, _ path: String, args: [An
 }
 
 access(all) fun scriptExecutor(_ scriptName: String, _ arguments: [AnyStruct]): AnyStruct? {
-    let scriptCode = loadCode(scriptName, "scripts")
+    let scriptCode = loadCode(scriptName, "transactions/scripts")
     let scriptResult = Test.executeScript(scriptCode, arguments)
 
     if let failureError = scriptResult.error {

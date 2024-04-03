@@ -8,7 +8,7 @@ import "ExampleNFT"
 access(all) fun main(address: Address, id: UInt64): [Type] {
     let account = getAccount(address)
 
-    let collectionData = ExampleNFT.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+    let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
         ?? panic("ViewResolver does not resolve NFTCollectionData view")
     
     let collectionRef = account.capabilities.borrow<&{NonFungibleToken.Collection}>(
@@ -16,7 +16,7 @@ access(all) fun main(address: Address, id: UInt64): [Type] {
         ) ?? panic("Could not borrow capability from public collection")
 
     // Borrow a reference to a specific NFT in the collection
-    let nft = collectionRef.borrowNFT(id: id)
+    let nft = collectionRef.borrowNFT(id)
         ?? panic("Could not get a reference to the NFT")
     return nft.getViews()
 }

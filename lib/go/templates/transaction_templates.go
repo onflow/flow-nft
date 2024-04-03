@@ -11,7 +11,6 @@ import (
 )
 
 const (
-	filenameUpgradeNFT                   = "transactions/test/upgrade_nft_contract.cdc"
 	filenameSetupAccount                 = "transactions/setup_account.cdc"
 	filenameSetupFromAddress             = "transactions/setup_account_from_address.cdc"
 	filenameMintNFT                      = "transactions/mint_nft.cdc"
@@ -22,11 +21,6 @@ const (
 	filenameSetupRoyalty                 = "transactions/setup_account_to_receive_royalty.cdc"
 	filenameSetupAccountFromNftReference = "transactions/setup_account_from_nft_reference.cdc"
 )
-
-func GenerateUpgradeNFTContract() []byte {
-	code := assets.MustAssetString(filenameUpgradeNFT)
-	return replaceAddresses(code, flow.EmptyAddress, flow.EmptyAddress, flow.EmptyAddress, flow.EmptyAddress, flow.EmptyAddress)
-}
 
 // GenerateSetupAccountScript returns a script that instantiates a new
 // NFT collection instance, saves the collection in storage, then stores a
