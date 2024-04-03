@@ -4,6 +4,6 @@
 import "ExampleNFT"
 import "MetadataViews"
 
-pub fun main(): [Type] {
+access(all) fun main(): [Type] {
     return ExampleNFT.getContractViews(resourceType: nil)
 }

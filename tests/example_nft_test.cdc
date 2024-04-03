@@ -27,7 +27,7 @@ fun testSetupAccount() {
     Test.expect(txResult, Test.beSucceeded())
 
     var scriptResult = executeScript(
-        "../scripts/get_collection_length.cdc",
+        "../transactions/scripts/get_collection_length.cdc",
         [admin.address]
     )
     Test.expect(scriptResult, Test.beSucceeded())
@@ -44,7 +44,7 @@ fun testSetupAccount() {
     Test.expect(txResult, Test.beSucceeded())
 
     scriptResult = executeScript(
-        "../scripts/get_collection_length.cdc",
+        "../transactions/scripts/get_collection_length.cdc",
         [newAccount.address]
     )
     Test.expect(scriptResult, Test.beSucceeded())
@@ -85,7 +85,7 @@ fun testMintNFT() {
     Test.assertEqual(recipient.address, depositEvent.to!)
 
     let scriptResult = executeScript(
-        "../scripts/get_collection_ids.cdc",
+        "../transactions/scripts/get_collection_ids.cdc",
         [
             recipient.address,
             /public/exampleNFTCollection
@@ -100,7 +100,7 @@ fun testMintNFT() {
 access(all)
 fun testTransferNFT() {
     var scriptResult = executeScript(
-        "../scripts/get_collection_ids.cdc",
+        "../transactions/scripts/get_collection_ids.cdc",
         [
             recipient.address,
             /public/exampleNFTCollection
@@ -141,7 +141,7 @@ fun testTransferNFT() {
     Test.assertEqual(admin.address, depositEvent.to!)
 
     scriptResult = executeScript(
-        "../scripts/get_collection_ids.cdc",
+        "../transactions/scripts/get_collection_ids.cdc",
         [
             admin.address,
             /public/exampleNFTCollection
@@ -199,7 +199,7 @@ fun testTransferMissingNFT() {
 access(all)
 fun testBorrowNFT() {
     var scriptResult = executeScript(
-        "../scripts/get_collection_ids.cdc",
+        "../transactions/scripts/get_collection_ids.cdc",
         [
             admin.address,
             /public/exampleNFTCollection
@@ -210,7 +210,7 @@ fun testBorrowNFT() {
     let collectionIDs = scriptResult.returnValue! as! [UInt64]
 
     scriptResult = executeScript(
-        "../scripts/borrow_nft.cdc",
+        "../transactions/scripts/borrow_nft.cdc",
         [
             admin.address,
             collectionIDs[0]
@@ -222,7 +222,7 @@ fun testBorrowNFT() {
 access(all)
 fun testBorrowMissingNFT() {
     let scriptResult = executeScript(
-        "../scripts/borrow_nft.cdc",
+        "../transactions/scripts/borrow_nft.cdc",
         [
             admin.address,
             10 as UInt64
@@ -238,7 +238,7 @@ fun testBorrowMissingNFT() {
 access(all)
 fun testGetCollectionLength() {
     let scriptResult = executeScript(
-        "../scripts/get_collection_length.cdc",
+        "../transactions/scripts/get_collection_length.cdc",
         [admin.address]
     )
     Test.expect(scriptResult, Test.beSucceeded())
@@ -250,7 +250,7 @@ fun testGetCollectionLength() {
 access(all)
 fun testGetContractStoragePath() {
     let scriptResult = executeScript(
-        "../scripts/get_contract_storage_path.cdc",
+        "../transactions/scripts/get_contract_storage_path.cdc",
         [
             admin.address,
             "ExampleNFT"
@@ -265,7 +265,7 @@ fun testGetContractStoragePath() {
 access(all)
 fun testGetMissingContractStoragePath() {
     let scriptResult = executeScript(
-        "../scripts/get_contract_storage_path.cdc",
+        "../transactions/scripts/get_contract_storage_path.cdc",
         [
             admin.address,
             "ContractOne"
@@ -279,9 +279,9 @@ fun testGetMissingContractStoragePath() {
 }
 
 access(all)
-fun testGetNFTMetadata() {
+fun testGetNFTView() {
     var scriptResult = executeScript(
-        "../scripts/get_collection_ids.cdc",
+        "../transactions/scripts/get_collection_ids.cdc",
         [
             admin.address,
             /public/exampleNFTCollection
@@ -290,108 +290,89 @@ fun testGetNFTMetadata() {
     Test.expect(scriptResult, Test.beSucceeded())
     let collectionIDs = scriptResult.returnValue! as! [UInt64]
 
-    // scriptResult = executeScript(
-    //     "../scripts/get_nft_metadata.cdc",
-    //     [
-    //         admin.address,
-    //         collectionIDs[0]
-    //     ]
-    // )
-
-    // Test.expect(scriptResult, Test.beSucceeded())
+    scriptResult = executeScript(
+        "scripts/get_nft_view.cdc",
+        [
+            admin.address,
+            collectionIDs[0]
+        ]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
 }
 
-// access(all)
-// fun testGetMissingNFTMetadata() {
-//     let scriptResult = executeScript(
-//         "../scripts/get_nft_metadata.cdc",
-//         [
-//             admin.address,
-//             10 as UInt64
-//         ]
-//     )
-//     Test.expect(scriptResult, Test.beFailed())
-//     Test.assertError(
-//         scriptResult,
-//         errorMessage: "unexpectedly found nil while forcing an Optional value"
-//     )
-// }
+access(all)
+fun testGetMissingNFTView() {
+    let scriptResult = executeScript(
+        "scripts/get_nft_view.cdc",
+        [
+            admin.address,
+            10 as UInt64
+        ]
+    )
 
-// access(all)
-// fun testGetNFTView() {
-//     let scriptResult = executeScript(
-//         "scripts/get_nft_view.cdc",
-//         [
-//             admin.address,
-//             collectionIDs[0]
-//         ]
-//     )
-//     Test.expect(scriptResult, Test.beSucceeded())
-// }
+    Test.expect(scriptResult, Test.beFailed())
+    Test.assertError(
+        scriptResult,
+        errorMessage: "unexpectedly found nil while forcing an Optional value"
+    )
+}
 
-// access(all)
-// fun testGetMissingNFTView() {
-//     let scriptResult = executeScript(
-//         "scripts/get_nft_view.cdc",
-//         [
-//             admin.address,
-//             10 as UInt64
-//         ]
-//     )
+access(all)
+fun testGetViews() {
+    var scriptResult = executeScript(
+        "../transactions/scripts/get_collection_ids.cdc",
+        [
+            admin.address,
+            /public/exampleNFTCollection
+        ]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
+    let collectionIDs = scriptResult.returnValue! as! [UInt64]
 
-//     Test.expect(scriptResult, Test.beFailed())
-//     Test.assertError(
-//         scriptResult,
-//         errorMessage: "unexpectedly found nil while forcing an Optional value"
-//     )
-// }
+    scriptResult = executeScript(
+        "../transactions/scripts/get_views.cdc",
+        [
+            admin.address,
+            collectionIDs[0]
+        ]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
 
-// access(all)
-// fun testGetViews() {
-//     let scriptResult = executeScript(
-//         "scripts/get_views.cdc",
-//         [
-//             admin.address,
-//             0 as UInt64
-//         ]
-//     )
-//     Test.expect(scriptResult, Test.beSucceeded())
+    let supportedViews = scriptResult.returnValue! as! [Type]
+    let expectedViews = [
+        Type<MetadataViews.Display>(),
+        Type<MetadataViews.Royalties>(),
+        Type<MetadataViews.Editions>(),
+        Type<MetadataViews.ExternalURL>(),
+        Type<MetadataViews.NFTCollectionData>(),
+        Type<MetadataViews.NFTCollectionDisplay>(),
+        Type<MetadataViews.Serial>(),
+        Type<MetadataViews.Traits>()
+    ]
+    Test.assertEqual(expectedViews, supportedViews)
+}
 
-//     let supportedViews = scriptResult.returnValue! as! [Type]
-//     let expectedViews = [
-//         Type<MetadataViews.Display>(),
-//         Type<MetadataViews.Royalties>(),
-//         Type<MetadataViews.Editions>(),
-//         Type<MetadataViews.ExternalURL>(),
-//         Type<MetadataViews.NFTCollectionData>(),
-//         Type<MetadataViews.NFTCollectionDisplay>(),
-//         Type<MetadataViews.Serial>(),
-//         Type<MetadataViews.Traits>()
-//     ]
-//     Test.assertEqual(expectedViews, supportedViews)
-// }
+access(all)
+fun testGetExampleNFTViews() {
+    let scriptResult = executeScript(
+        "../transactions/scripts/get_contract_views.cdc",
+        []
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
 
-// access(all)
-// fun testGetExampleNFTViews() {
-//     let scriptResult = executeScript(
-//         "scripts/get_example_nft_views.cdc",
-//         []
-//     )
-//     Test.expect(scriptResult, Test.beSucceeded())
+    let supportedViews = scriptResult.returnValue! as! [Type]
+    let expectedViews = [
+        Type<MetadataViews.NFTCollectionData>(),
+        Type<MetadataViews.NFTCollectionDisplay>()
+    ]
+    Test.assertEqual(expectedViews, supportedViews)
+}
 
-//     let supportedViews = scriptResult.returnValue! as! [Type]
-//     let expectedViews = [
-//         Type<MetadataViews.NFTCollectionData>(),
-//         Type<MetadataViews.NFTCollectionDisplay>()
-//     ]
-//     Test.assertEqual(expectedViews, supportedViews)
-// }
-
-// access(all)
-// fun testResolveExampleNFTViews() {
-//     let scriptResult = executeScript(
-//         "scripts/resolve_nft_views.cdc",
-//         []
-//     )
-//     Test.expect(scriptResult, Test.beSucceeded())
-// }
+access(all)
+fun testResolveExampleNFTViews() {
+    let scriptResult = executeScript(
+        "scripts/resolve_nft_views.cdc",
+        []
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
+}

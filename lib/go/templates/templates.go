@@ -7,7 +7,7 @@ import (
 	"github.com/onflow/flow-go-sdk"
 )
 
-//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../ -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../scripts/... ../../../transactions/...
+//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../ -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../transactions/...
 
 var (
 	placeholderNonFungibleTokenString = "\"NonFungibleToken\""

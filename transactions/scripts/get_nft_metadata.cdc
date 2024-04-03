@@ -49,8 +49,8 @@ access(all) struct NFT {
         collectionSocials: {String: String},
         edition: MetadataViews.Edition,
         traits: MetadataViews.Traits,
-        medias:MetadataViews.Medias?,
-        license:MetadataViews.License?
+        medias: MetadataViews.Medias?,
+        license: MetadataViews.License?
     ) {
         self.name = name
         self.description = description
@@ -72,8 +72,8 @@ access(all) struct NFT {
         self.collectionSocials = collectionSocials
         self.edition = edition
         self.traits = traits
-        self.medias=medias
-        self.license=license
+        self.medias = medias
+        self.license = license
     }
 }
 
@@ -114,8 +114,8 @@ access(all) fun main(address: Address, id: UInt64): NFT {
 
     let traits = MetadataViews.getTraits(nft)!
 
-    let medias=MetadataViews.getMedias(nft)
-    let license=MetadataViews.getLicense(nft)
+    let medias = MetadataViews.getMedias(nft)
+    let license = MetadataViews.getLicense(nft)
 
     return NFT(
         name: display.name,
