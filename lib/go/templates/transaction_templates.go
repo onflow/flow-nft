@@ -39,13 +39,13 @@ func GenerateSetupAccountFromAddressScript(nftAddress, metadataViewsAddress stri
 	code = strings.ReplaceAll(
 		code,
 		placeholderNonFungibleTokenString,
-		withHexPrefix(nftAddress),
+		nonFungibleTokenImport+withHexPrefix(nftAddress),
 	)
 
 	code = strings.ReplaceAll(
 		code,
 		placeholderMetadataViewsString,
-		withHexPrefix(metadataViewsAddress),
+		metadataViewsImport+withHexPrefix(metadataViewsAddress),
 	)
 
 	return []byte(code)
@@ -74,7 +74,7 @@ func GenerateTransferGenericNFTWithPathsScript(nftAddress string) []byte {
 	code = strings.ReplaceAll(
 		code,
 		placeholderNonFungibleTokenString,
-		withHexPrefix(nftAddress),
+		nonFungibleTokenImport+withHexPrefix(nftAddress),
 	)
 
 	return []byte(code)
@@ -89,13 +89,13 @@ func GenerateTransferGenericNFTWithAddressScript(nftAddress, metadataViewsAddres
 	code = strings.ReplaceAll(
 		code,
 		placeholderNonFungibleTokenString,
-		withHexPrefix(nftAddress),
+		nonFungibleTokenImport+withHexPrefix(nftAddress),
 	)
 
 	code = strings.ReplaceAll(
 		code,
 		placeholderMetadataViewsString,
-		withHexPrefix(metadataViewsAddress),
+		metadataViewsImport+withHexPrefix(metadataViewsAddress),
 	)
 
 	return []byte(code)
