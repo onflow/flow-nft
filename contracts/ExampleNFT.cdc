@@ -192,7 +192,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
 
         /// Gets the amount of NFTs stored in the collection
         access(all) view fun getLength(): Int {
-            return self.ownedNFTs.keys.length
+            return self.ownedNFTs.length
         }
 
         access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
