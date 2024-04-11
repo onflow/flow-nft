@@ -134,7 +134,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
     access(all) resource Collection: NonFungibleToken.Collection, ExampleNFTCollectionPublic {
         /// dictionary of NFT conforming tokens
         /// NFT is a resource type with an `UInt64` ID field
-        access(contract) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
+        access(all) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
 
         init () {
             self.ownedNFTs <- {}
@@ -150,11 +150,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// Returns whether or not the given type is accepted by the collection
         /// A collection that can accept any type should just return true by default
         access(all) view fun isSupportedNFTType(type: Type): Bool {
-            if type == Type<@ExampleNFT.NFT>() {
-                return true
-            } else {
-                return false
-            }
+            return type == Type<@ExampleNFT.NFT>()
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
