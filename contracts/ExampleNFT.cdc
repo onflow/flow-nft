@@ -150,11 +150,11 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// Returns whether or not the given type is accepted by the collection
         /// A collection that can accept any type should just return true by default
         access(all) view fun isSupportedNFTType(type: Type): Bool {
-           if type == Type<@ExampleNFT.NFT>() {
-            return true
-           } else {
-            return false
-           }
+            if type == Type<@ExampleNFT.NFT>() {
+                return true
+            } else {
+                return false
+            }
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
