@@ -181,6 +181,8 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     ///
     access(all) resource interface Collection: Provider, Receiver, CollectionPublic, ViewResolver.ResolverCollection {
 
+        /// Cadence allows implementing types to specify less restrictive access
+        /// so implementing contracts can have this as `access(all)` with no problem
         access(contract) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
 
         /// deposit takes a NFT as an argument and stores it in the collection
@@ -201,9 +203,9 @@ access(all) contract interface NonFungibleToken: ViewResolver {
             return self.ownedNFTs.length
         }
 
-        /// Returns an iterator that allows callers to iterate
-        /// through the list of owned NFT IDs in a collection
-        /// without having to load the entire list first
+        /// Allows a given function to iterate through the list
+        /// of owned NFT IDs in a collection without first
+        /// having to load the entire list into memory
         access(all) fun forEachID(_ f: fun (UInt64): Bool): Void {
             self.ownedNFTs.forEachKey(f)
         }
