@@ -172,6 +172,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         access(all) fun deposit(token: @{NFT})
         access(all) view fun getLength(): Int
         access(all) view fun getIDs(): [UInt64]
+        access(all) fun forEachID(_ f: fun (UInt64): Bool): Void
         access(all) view fun borrowNFT(_ id: UInt64): &{NFT}?
     }
 
@@ -179,6 +180,8 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     /// to be declared in the implementing contract
     ///
     access(all) resource interface Collection: Provider, Receiver, CollectionPublic, ViewResolver.ResolverCollection {
+
+        access(contract) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
 
         /// deposit takes a NFT as an argument and stores it in the collection
         /// @param token: The NFT to deposit into the collection
@@ -195,6 +198,13 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         /// Gets the amount of NFTs stored in the collection
         /// @return An integer indicating the size of the collection
         access(all) view fun getLength(): Int
+
+        /// Returns an iterator that allows callers to iterate
+        /// through the list of owned NFT IDs in a collection
+        /// without having to load the entire list first
+        access(all) fun forEachID(_ f: fun (UInt64): Bool): Void {
+            self.ownedNFTs.forEachKey(f)
+        }
 
         /// Borrows a reference to an NFT stored in the collection
         /// If the NFT with the specified ID is not in the collection,

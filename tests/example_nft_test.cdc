@@ -248,6 +248,18 @@ fun testGetCollectionLength() {
 }
 
 access(all)
+fun testGetIterator() {
+    let scriptResult = executeScript(
+        "../transactions/scripts/iterate_ids.cdc",
+        [admin.address, 10]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
+
+    let nftRefArray = scriptResult.returnValue! as! [&{NonFungibleToken.NFT}]
+    Test.assertEqual(1, nftRefArray.length)
+}
+
+access(all)
 fun testGetContractStoragePath() {
     let scriptResult = executeScript(
         "../transactions/scripts/get_contract_storage_path.cdc",
