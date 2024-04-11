@@ -197,7 +197,9 @@ access(all) contract interface NonFungibleToken: ViewResolver {
 
         /// Gets the amount of NFTs stored in the collection
         /// @return An integer indicating the size of the collection
-        access(all) view fun getLength(): Int
+        access(all) view fun getLength(): Int {
+            return self.ownedNFTs.length
+        }
 
         /// Returns an iterator that allows callers to iterate
         /// through the list of owned NFT IDs in a collection
