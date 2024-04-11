@@ -255,8 +255,8 @@ fun testGetIterator() {
     )
     Test.expect(scriptResult, Test.beSucceeded())
 
-    let nftRefArray = scriptResult.returnValue! as! [&{NonFungibleToken.NFT}]
-    Test.assertEqual(1, nftRefArray.length)
+    let nftRefArrayLength = scriptResult.returnValue! as! Int
+    Test.assertEqual(1, nftRefArrayLength)
 }
 
 access(all)

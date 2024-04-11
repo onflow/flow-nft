@@ -1,6 +1,6 @@
 import "NonFungibleToken"
 
-access(all) fun main(ownerAddress: Address, limit: Int): [&{NonFungibleToken.NFT}] {
+access(all) fun main(ownerAddress: Address, limit: Int): Int {
 
     let response: [&{NonFungibleToken.NFT}] = []
 
@@ -27,5 +27,5 @@ access(all) fun main(ownerAddress: Address, limit: Int): [&{NonFungibleToken.NFT
         return response.length < limit
     })
 
-    return response
+    return response.length
 }
