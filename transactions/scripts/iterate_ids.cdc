@@ -8,7 +8,7 @@ access(all) fun main(ownerAddress: Address, limit: Int): Int {
 
     account.storage.forEachStored(fun (path: StoragePath, type: Type): Bool {
 
-        if (!type.isSubtype(of: Type<@{NonFungibleToken.Collection}>())) {
+        if !type.isSubtype(of: Type<@{NonFungibleToken.Collection}>()) {
 
             return true
         }
