@@ -32,10 +32,7 @@ transaction(to: Address, id: UInt64, senderPathIdentifier: String, receiverPathI
         let recipient = getAccount(to)
 
         // borrow a public reference to the receivers collection
-        let receiverCap = recipient.capabilities.get<&{NonFungibleToken.Receiver}>(publicPath)
-            ?? panic("Could not get the recipient's Receiver Capability")
-
-        let receiverRef = receiverCap.borrow()
+        let receiverRef = recipient.capabilities.borrow<&{NonFungibleToken.Receiver}>(publicPath)
             ?? panic("Could not borrow reference to the recipient's receiver")
 
         // Deposit the NFT to the receiver
