@@ -181,9 +181,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     ///
     access(all) resource interface Collection: Provider, Receiver, CollectionPublic, ViewResolver.ResolverCollection {
 
-        /// Cadence allows implementing types to specify less restrictive access
-        /// so implementing contracts can have this as `access(all)` with no problem
-        access(contract) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
+        access(all) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
 
         /// deposit takes a NFT as an argument and stores it in the collection
         /// @param token: The NFT to deposit into the collection
