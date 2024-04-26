@@ -204,7 +204,7 @@ pub contract MetadataViews {
     /// the NFT where the type of URI is not able to be determined (i.e. HTTP,
     /// IPFS, etc.)
     ///
-    pub struct URI: MetadataViews.File {
+    pub struct URI: File {
         /// The base URI prefix, if any. Not needed for all URIs, but helpful
         /// for some use cases For example, updating a whole NFT collection's
         /// image host easily
@@ -794,9 +794,9 @@ pub contract MetadataViews {
         /// data URL representating the NFT's onchain metadata at the time this
         /// view is resolved.
         ///
-        pub let uri: {MetadataViews.File}
+        pub let uri: {File}
 
-        init(name: String, symbol: String, uri: {MetadataViews.File}) {
+        init(name: String, symbol: String, uri: {File}) {
             self.name = name
             self.symbol = symbol
             self.uri = uri
