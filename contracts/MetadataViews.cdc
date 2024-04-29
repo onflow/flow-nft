@@ -126,8 +126,32 @@ access(all) contract MetadataViews {
         }
     }
 
-    /// View to represent a file with an correspoiding mediaType.
+    /// A struct to represent a generic URI. May be used to represent the URI of
+    /// the NFT where the type of URI is not able to be determined (i.e. HTTP,
+    /// IPFS, etc.)
     ///
+    access(all) struct URI: File {
+        /// The base URI prefix, if any. Not needed for all URIs, but helpful
+        /// for some use cases For example, updating a whole NFT collection's
+        /// image host easily
+        ///
+        access(all) let baseURI: String?
+        /// The URI string value
+        /// NOTE: this is set on init as a concatenation of the baseURI and the
+        /// value if baseURI != nil
+        ///
+        access(self) let value: String
+
+        access(all) view fun uri(): String {
+            return self.value
+        }
+
+        init(baseURI: String?, value: String) {
+            self.baseURI = baseURI
+            self.value = baseURI != nil ? baseURI!.concat(value) : value
+        }
+    }
+
     access(all) struct Media {
 
         /// File for the media
@@ -703,4 +727,44 @@ access(all) contract MetadataViews {
         }
         return nil
     }
+    /// This view may be used by Cadence-native projects to define their
+    /// contract- and token-level metadata according to EVM-compatible formats.
+    /// Several ERC standards (e.g. ERC20, ERC721, etc.) expose name and symbol
+    /// values to define assets as well as contract- & token-level metadata view
+    /// `tokenURI(uint256)` and `contractURI()` methods. This view enables
+    /// Cadence projects to define in their own contracts how they would like
+    /// their metadata to be defined when bridged to EVM.
+    ///
+    access(all) struct EVMBridgedMetadata {
+
+        /// The name of the asset
+        ///
+        access(all) let name: String
+
+        /// The symbol of the asset
+        ///
+        access(all) let symbol: String
+
+        /// The URI of the asset - this can either be contract-level or
+        /// token-level URI depending on where the metadata is resolved. It
+        /// is recommended to reference EVM metadata standards for how to best
+        /// prepare your view's formatted value.
+        ///
+        /// For example, while you may choose to take advantage of onchain
+        /// metadata, as is the case for most Cadence NFTs, you may also choose
+        /// to represent your asset's metadata in IPFS and assign this value as
+        /// an IPFSFile struct pointing to that IPFS file. Alternatively, you
+        /// may serialize your NFT's metadata and assign it as a JSON string
+        /// data URL representating the NFT's onchain metadata at the time this
+        /// view is resolved.
+        ///
+        access(all) let uri: {File}
+
+        init(name: String, symbol: String, uri: {File}) {
+            self.name = name
+            self.symbol = symbol
+            self.uri = uri
+        }
+    }
+
 }
