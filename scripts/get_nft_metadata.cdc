@@ -29,6 +29,9 @@ pub struct NFT {
     pub let traits: MetadataViews.Traits
     pub let medias: MetadataViews.Medias?
     pub let license: MetadataViews.License?
+    pub let bridgedName: String
+    pub let symbol: String
+    pub let tokenURI: String
 
     init(
         name: String,
@@ -54,7 +57,10 @@ pub struct NFT {
         edition: MetadataViews.Edition,
         traits: MetadataViews.Traits,
         medias:MetadataViews.Medias?,
-        license:MetadataViews.License?
+        license:MetadataViews.License?,
+        bridgedName: String,
+        symbol: String,
+        tokenURI: String
     ) {
         self.name = name
         self.description = description
@@ -78,8 +84,11 @@ pub struct NFT {
         self.collectionSocials = collectionSocials
         self.edition = edition
         self.traits = traits
-        self.medias=medias
-        self.license=license
+        self.medias = medias
+        self.license = license
+        self.bridgedName = bridgedName
+        self.symbol = symbol
+        self.tokenURI = tokenURI
     }
 }
 
@@ -120,6 +129,8 @@ pub fun main(address: Address, id: UInt64): NFT {
     let medias=MetadataViews.getMedias(nft)
     let license=MetadataViews.getLicense(nft)
 
+    let bridgedMetadata = MetadataViews.getEVMBridgedMetadata(nft)!
+
     return NFT(
         name: display.name,
         description: display.description,
@@ -143,7 +154,10 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionSocials: collectionSocials,
         edition: nftEditionView.infoList[0],
         traits: traits,
-        medias:medias,
-        license:license
+        medias: medias,
+        license: license,
+        bridgedName: bridgedMetadata.name,
+        symbol: bridgedMetadata.symbol,
+        tokenURI: bridgedMetadata.uri.uri()
     )
 }
