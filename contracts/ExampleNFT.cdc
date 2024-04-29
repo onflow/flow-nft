@@ -154,7 +154,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
         }
 
         /// withdraw removes an NFT from the collection and moves it to the caller
-        access(NonFungibleToken.Withdraw | NonFungibleToken.Owner) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
+        access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
                 ?? panic("Could not withdraw an NFT with the provided ID from the collection")
 
@@ -176,7 +176,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
             // Do not add to your contract unless you have a specific
             // reason to want to emit the NFTUpdated event somewhere
             // in your contract
-            let authTokenRef = (&self.ownedNFTs[id] as auth(NonFungibleToken.Owner) &{NonFungibleToken.NFT}?)!
+            let authTokenRef = (&self.ownedNFTs[id] as auth(NonFungibleToken.Update) &{NonFungibleToken.NFT}?)!
             //authTokenRef.updateTransferDate(date: getCurrentBlock().timestamp)
             ExampleNFT.emitNFTUpdated(authTokenRef)
         }
