@@ -138,6 +138,24 @@ to find and load the image via an IPFS gateway.
 
 ---
 
+### `URI`
+
+```cadence
+pub struct URI {
+
+    pub let baseURI: String?
+
+    access(self) let value: String
+}
+```
+View to represent a generic URI. May be used to represent the URI of
+the NFT where the type of URI is not able to be determined (i.e. HTTP,
+IPFS, etc.).
+
+[More...](MetadataViews_URI.md)
+
+---
+
 ### `Edition`
 
 ```cadence
@@ -397,6 +415,30 @@ This is used to return traits as individual key/value pairs along with
 some contextualized data about each trait.
 
 [More...](MetadataViews_Traits.md)
+
+---
+
+### `EVMBridgedMetadata`
+
+```cadence
+pub struct EVMBridgedMetadata {
+
+    pub let name: String
+
+    pub let symbol: String
+
+    pub let uri: {File}
+}
+```
+This view may be used by Cadence-native projects to define their
+contract- and token-level metadata according to EVM-compatible
+formats. Several ERC standards (e.g. ERC20, ERC721, etc.) expose name
+and symbol values to define assets as well as contract- & token-level
+metadata view `tokenURI(uint256)` and `contractURI()` methods. This
+view enables Cadence projects to define in their own contracts how
+they would like their metadata to be defined when bridged to EVM.
+
+[More...](MetadataViews_EVMBridgedMetadata.md)
 
 ---
 ## Functions
