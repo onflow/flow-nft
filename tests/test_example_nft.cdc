@@ -8,7 +8,13 @@ access(all) let recipient = Test.createAccount()
 
 access(all)
 fun setup() {
-    let err = Test.deployContract(
+    var err = Test.deployContract(
+        name: "MetadataViews",
+        path: "../contracts/MetadataViews.cdc",
+        arguments: []
+    )
+    Test.expect(err, Test.beNil())
+    err = Test.deployContract(
         name: "ExampleNFT",
         path: "../contracts/ExampleNFT.cdc",
         arguments: []
@@ -321,7 +327,8 @@ fun testGetViews() {
         Type<MetadataViews.NFTCollectionData>(),
         Type<MetadataViews.NFTCollectionDisplay>(),
         Type<MetadataViews.Serial>(),
-        Type<MetadataViews.Traits>()
+        Type<MetadataViews.Traits>(),
+        Type<MetadataViews.EVMBridgedMetadata>()
     ]
     Test.assertEqual(expectedViews, supportedViews)
 }
@@ -337,7 +344,8 @@ fun testGetExampleNFTViews() {
     let supportedViews = scriptResult.returnValue! as! [Type]
     let expectedViews = [
         Type<MetadataViews.NFTCollectionData>(),
-        Type<MetadataViews.NFTCollectionDisplay>()
+        Type<MetadataViews.NFTCollectionDisplay>(),
+        Type<MetadataViews.EVMBridgedMetadata>()
     ]
     Test.assertEqual(expectedViews, supportedViews)
 }
