@@ -177,7 +177,7 @@ pub contract ExampleNFT: NonFungibleToken, ViewResolver {
 
                     return MetadataViews.EVMBridgedMetadata(
                         name: contractLevel.name,
-                        symbol: contractLevel.name,
+                        symbol: contractLevel.symbol,
                         uri: MetadataViews.URI(
                             baseURI: baseURI, // defining baseURI results in a concatenation of baseURI and value
                             value: self.id.toString().concat(".json")
