@@ -359,7 +359,8 @@ fun testGetViews() {
         Type<MetadataViews.NFTCollectionData>(),
         Type<MetadataViews.NFTCollectionDisplay>(),
         Type<MetadataViews.Serial>(),
-        Type<MetadataViews.Traits>()
+        Type<MetadataViews.Traits>(),
+        Type<MetadataViews.EVMBridgedMetadata>()
     ]
     Test.assertEqual(expectedViews, supportedViews)
 }
@@ -375,7 +376,8 @@ fun testGetExampleNFTViews() {
     let supportedViews = scriptResult.returnValue! as! [Type]
     let expectedViews = [
         Type<MetadataViews.NFTCollectionData>(),
-        Type<MetadataViews.NFTCollectionDisplay>()
+        Type<MetadataViews.NFTCollectionDisplay>(),
+        Type<MetadataViews.EVMBridgedMetadata>()
     ]
     Test.assertEqual(expectedViews, supportedViews)
 }
