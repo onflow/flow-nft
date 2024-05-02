@@ -767,4 +767,13 @@ access(all) contract MetadataViews {
         }
     }
 
+    access(all) fun getEVMBridgedMetadata(_ viewResolver: &{ViewResolver.Resolver}) : EVMBridgedMetadata? {
+        if let view = viewResolver.resolveView(Type<EVMBridgedMetadata>()) {
+            if let v = view as? EVMBridgedMetadata {
+                return v
+            }
+        }
+        return nil
+    }
+
 }
