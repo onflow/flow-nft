@@ -803,4 +803,13 @@ pub contract MetadataViews {
         }
     }
 
+    pub fun getEVMBridgedMetadata(_ viewResolver: &{Resolver}) : EVMBridgedMetadata? {
+        if let view = viewResolver.resolveView(Type<EVMBridgedMetadata>()) {
+            if let v = view as? EVMBridgedMetadata {
+                return v
+            }
+        }
+        return nil
+    }
+
 }

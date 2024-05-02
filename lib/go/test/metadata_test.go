@@ -193,6 +193,15 @@ func TestGetNFTMetadata(t *testing.T) {
 		max, _ := cadence.NewUFix64("100.0")
 		assert.Equal(t, max, fooRarityMax)
 		assert.Equal(t, fooRarity.Fields[2], cadence.NewOptional(rarityDescription))
+
+		const (
+			bridgedName = "ExampleNFT"
+			symbol      = "XMPL"
+			tokenURI    = "https://example-nft.onflow.org/token-metadata/0"
+		)
+		assert.Equal(t, cadence.String(bridgedName), nftResult.Fields[24])
+		// assert.Equal(t, cadence.String(symbol), nftResult.Fields[25])
+		// assert.Equal(t, cadence.String(tokenURI), nftResult.Fields[26])
 	})
 }
 

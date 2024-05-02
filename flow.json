@@ -18,7 +18,7 @@
     "MetadataViews": {
       "source": "./contracts/MetadataViews.cdc",
       "aliases": {
-        "testing": "0x0000000000000001"
+        "testing": "0x0000000000000007"
       }
     },
     "ViewResolver": {
