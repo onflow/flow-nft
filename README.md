@@ -1,5 +1,7 @@
 # Flow Non-Fungible Token Standard
 
+This branch contains the pre-Cadence 1.0 versions of the Cadence Fungible Token standard and associated contracts. See the `master` branch for the latest versions.
+
 This standard defines the minimum functionality required to
 implement a safe, secure, and easy-to-use non-fungible token
 contract on the [Flow blockchain](https://flow.com/
