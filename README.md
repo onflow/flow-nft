@@ -2,7 +2,12 @@
 
 This standard defines the minimum functionality required to
 implement a safe, secure, and easy-to-use non-fungible token
-contract on the [Flow blockchain](https://flow.com/
+contract on the [Flow blockchain](https://flow.com/)
+
+The version of the contracts in the `master` branch is the
+Cadence 1.0 version of the contracts and is not the same
+as the ones that are currently deployed to testnet and mainnet.
+See the `cadence-0.42` branch for the currently deployed versions.
 
 ## What is Cadence?
 
@@ -26,18 +31,21 @@ There is no need to deploy them yourself.
 
 Note: With the emulator, you must use the -contracts flag to deploy these contracts.
 
-| Network         | Contract Address     |
-| --------------- | -------------------- |
-| Emulator/Canary | `0xf8d6e0586b0a20c7` |
-| Testnet         | `0x631e88ae7f1d7c20` |
-| Mainnet         | `0x1d7e57aa55817448` |
+| Network           | Contract Address     |
+| ------------------| -------------------- |
+| Emulator/Canary   | `0xf8d6e0586b0a20c7` |
+| PreviewNet        | `0xb6763b4399a888c8` |
+| Testnet/Crescendo | `0x631e88ae7f1d7c20` |
+| Mainnet           | `0x1d7e57aa55817448` |
 
 ## Core Types
 
-Contracts that implement the `NonFungibleToken` interface are required to implement two resource interfaces:
+Contracts that implement the `NonFungibleToken` interface are expected
+to utilize two resource interfaces:
 
-- `NFT` - A resource that describes the structure of a single NFT.
-- `Collection` - A resource that can hold multiple NFTs of the same type and defines ways
+- `NFT` - A resource interface that describes the structure of a single NFT.
+- `Collection` - A resource interface that describes an object
+  that can hold multiple NFTs of the same type and defines ways
   to deposit, withdraw, and query information about the stored NFTs.
 
   Users typically store one collection per NFT type, saved at a well-known location in their account storage.
@@ -47,69 +55,32 @@ Contracts that implement the `NonFungibleToken` interface are required to implem
 ## Core Features
 
 The `NonFungibleToken` contract defines the following set of functionality
-that must be included in each implementation:
+that should be included in each implementation:
 
 ### Create a new NFT collection
 
-Create a new collection using the `Token.createEmptyCollection()` function.
+Create a new collection using the `Token.createEmptyCollection(nftType: Type)` function.
 
 This function MUST return an empty collection that contains no NFTs.
 
 Users typically save new collections to a contract-defined location in their account
-and link the `NonFungibleToken.CollectionPublic` interface as a public capability.
-
-```cadence
-let collection <- ExampleNFT.createEmptyCollection()
-
-account.save(<-collection, to: ExampleNFT.CollectionStoragePath)
-
-// create a public capability for the collection
-account.link<&{NonFungibleToken.CollectionPublic}>(
-    ExampleNFT.CollectionPublicPath,
-    target: ExampleNFT.CollectionStoragePath
-)
-```
+and public a capability to their collection.
 
 ### Withdraw an NFT
 
-Withdraw an `NFT` from a `Collection` using the [`withdraw()`](contracts/ExampleNFT.cdc#L36-L42) function.
-This function emits the [`Withdraw`](contracts/ExampleNFT.cdc#L12) event.
-
-```cadence
-let collectionRef = account.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
-    ?? panic("Could not borrow a reference to the owner's collection")
-
-// withdraw the NFT from the owner's collection
-let nft <- collectionRef.withdraw(withdrawID: 42)
-```
+Withdraw an `NFT` from a `Collection` using the [`withdraw()`](contracts/ExampleNFT.cdc#L160) function.
+This function emits the [`NonFungibleToken.Withdrawn`](contracts/NonFungibleToken.cdc#L78) event automatically.
 
 ### Deposit an NFT
 
-Deposit an `NFT` into a `Collection` using the [`deposit()`](contracts/ExampleNFT.cdc#L46-L57) function.
-This function emits the [`Deposit`](contracts/ExampleNFT.cdc#L13) event.
-
-This function is available on the `NonFungibleToken.CollectionPublic` interface,
-which accounts publish as public capability.
-This capability allows anybody to deposit an NFT into a collection
-without accessing the entire collection.
-
-```cadence
-let nft: ExampleNFT.NFT
-
-// ...
-
-let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
-    .borrow<&{NonFungibleToken.CollectionPublic}>()
-    ?? panic("Could not borrow a reference to the receiver's collection")
-
-collection.deposit(token: <-nft)
-```
+Deposit an `NFT` into a `Collection` using the [`deposit()`](contracts/ExampleNFT.cdc#L169-L176) function.
+This function emits the [`NonFungibleToken.Deposited`](contracts/NonFungibleToken.cdc#L86) event automatically.
 
 #### ⚠️ Important
 
 In order to comply with the deposit function in the interface,
-an implementation MUST take a `@NonFungibleToken.NFT` resource as an argument.
-This means that anyone can send a resource object that conforms to `@NonFungibleToken.NFT` to a deposit function.
+an implementation MUST take a `@{NonFungibleToken.NFT}` resource as an argument.
+This means that anyone can send a resource object that conforms to `{NonFungibleToken.NFT}` to a deposit function.
 In an implementation, you MUST cast the `token` as your specific token type before depositing it or you will
 deposit another token type into your collection. For example:
 
@@ -120,18 +91,17 @@ let token <- token as! @ExampleNFT.NFT
 
 ### List NFTs in an account
 
-Return a list of NFTs in a `Collection` using the [`getIDs`](contracts/ExampleNFT.cdc#L59-L62) function.
+Return a list of NFTs in a `Collection` using the [`getIDs`](contracts/ExampleNFT.cdc#L179) function.
 
-This function is available on the `NonFungibleToken.CollectionPublic` interface,
-which accounts publish as public capability.
+### Return the NFT type that a collection can accept in a deposit
 
-```cadence
-let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
-    .borrow<&{NonFungibleToken.CollectionPublic}>()
-    ?? panic("Could not borrow a reference to the receiver's collection")
+Return types of NFTs that a `Collection` can accept in a deposit
+using the [`getSupportedNFTTypes`](contracts/ExampleNFT.cdc#L143-L157) functions.
 
-let ids = collection.getIDs()
-```
+### Get Available SubNFTs, if any
+
+Some NFTs can own other NFTs, the standard provides a [function](contracts/NonFungibleToken.cdc#L111-L131) that
+projects can optionally implement to return information the owned NFTs.
 
 ## NFT Metadata
 
@@ -156,29 +126,6 @@ This example shows how to read basic information about an NFT
 including the name, description, image and owner.
 
 **Source: [get_nft_metadata.cdc](scripts/get_nft_metadata.cdc)**
-
-```cadence
-// Get the regular public capability
-let collection = account.getCapability(ExampleNFT.CollectionPublicPath)
-    .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
-    ?? panic("Could not borrow a reference to the collection")
-
-// Borrow a reference to the NFT as usual
-let nft = collection.borrowExampleNFT(id: 42)
-    ?? panic("Could not borrow a reference to the NFT")
-
-// Call the resolveView method
-// Provide the type of the view that you want to resolve
-// View types are defined in the MetadataViews contract
-// You can see if an NFT supports a specific view type by using the `getViews()` method
-if let view = nft.resolveView(Type<MetadataViews.Display>()) {
-    let display = view as! MetadataViews.Display
-
-    log(display.name)
-    log(display.description)
-    log(display.thumbnail)
-}
-```
 
 ### How to implement metadata
 
@@ -245,13 +192,18 @@ but without most of the downsides.
 ## How to test the standard
 
 If you want to test out these contracts, we recommend either testing them
-with the [Flow Playground](https://play.onflow.org)
+with the [Flow Playground](https://play.flow.com)
 or with the [Visual Studio Code Extension](https://github.com/onflow/flow/blob/master/docs/vscode-extension.md#cadence-visual-studio-code-extension).
 
-The steps to follow are:
+If you are not making/testing any modifications to the standard contracts,
+they are already deployed to the addresses listed above and you can just import
+from those directly instead of deploying them yourself.
 
-1. Deploy `NonFungibleToken.cdc`
-2. Deploy `ExampleNFT.cdc`, importing `NonFungibleToken` from the address you deployed it to.
+If you want to test changes to the standards, the steps to follow are:
+
+1. Deploy `ViewResolver.cdc`
+2. Deploy `NonFungibleToken.cdc`, importing `ViewResolver`.
+3. Deploy `ExampleNFT.cdc`, importing `NonFungibleToken`.
 
 Then you can experiment with some of the other transactions and scripts in `transactions/`
 or even write your own. You'll need to replace some of the import address placeholders with addresses that you deploy to, as well as some of the transaction arguments.

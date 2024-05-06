@@ -5,14 +5,15 @@ import "ExampleNFT"
 import "NonFungibleToken"
 import "MetadataViews"
 
-pub fun main(): Bool {
+access(all) fun main(): Bool {
     // Call `resolveView` with invalid Type
-    let view = ExampleNFT.resolveView(Type<String>())
+    let view = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<String>())
     assert(nil == view)
 
-    let collectionDisplay = (ExampleNFT.resolveView(
-        Type<MetadataViews.NFTCollectionDisplay>()
-    )as! MetadataViews.NFTCollectionDisplay?)!
+    let collectionDisplay = ExampleNFT.resolveContractView(resourceType: nil, viewType: 
+            Type<MetadataViews.NFTCollectionDisplay>()
+        ) as! MetadataViews.NFTCollectionDisplay?
+        ?? panic("ExampleNFT Collection did not resolve NFTCollectionDisplay view!")
 
     assert("The Example Collection" == collectionDisplay.name)
     assert("This collection is used as an example to help you develop your next Flow NFT." == collectionDisplay.description)
@@ -21,7 +22,7 @@ pub fun main(): Bool {
     assert("https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg" == collectionDisplay.squareImage.file.uri())
     assert("https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg" == collectionDisplay.bannerImage.file.uri())
 
-    let collectionData = (ExampleNFT.resolveView(
+    let collectionData = (ExampleNFT.resolveContractView(resourceType: nil, viewType: 
         Type<MetadataViews.NFTCollectionData>()
     ) as! MetadataViews.NFTCollectionData?)!
 
@@ -30,13 +31,11 @@ pub fun main(): Bool {
     // the assertions in this script.
     assert(ExampleNFT.CollectionStoragePath == collectionData.storagePath)
     assert(ExampleNFT.CollectionPublicPath == collectionData.publicPath)
-    assert(/private/exampleNFTCollection == collectionData.providerPath)
-    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>() == collectionData.publicCollection)
-    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>() == collectionData.publicLinkedType)
-    assert(Type<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>() == collectionData.providerLinkedType)
+    assert(Type<&ExampleNFT.Collection>() == collectionData.publicCollection)
+    assert(Type<&ExampleNFT.Collection>() == collectionData.publicLinkedType)
 
     let coll <- collectionData.createEmptyCollection()
-    assert(0 == coll.getIDs().length)
+    assert(0 == coll.getLength())
 
     destroy <- coll
 

@@ -3,6 +3,7 @@ package contracts
 //go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../contracts -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../contracts
 
 import (
+	"fmt"
 	"regexp"
 
 	_ "github.com/kevinburke/go-bindata"
@@ -13,30 +14,46 @@ import (
 )
 
 var (
-	placeholderNonFungibleToken = regexp.MustCompile(`"NonFungibleToken"`)
-	placeholderMetadataViews    = regexp.MustCompile(`"MetadataViews"`)
-	placeholderFungibleToken    = regexp.MustCompile(`"FungibleToken"`)
-	placeholderResolverToken    = regexp.MustCompile(`"ViewResolver"`)
+	placeholderNonFungibleToken    = regexp.MustCompile(`"NonFungibleToken"`)
+	nonFungibleTokenImport         = "NonFungibleToken from "
+	placeholderMetadataViews       = regexp.MustCompile(`"MetadataViews"`)
+	metadataViewsImport            = "MetadataViews from "
+	placeholderFungibleToken       = regexp.MustCompile(`"FungibleToken"`)
+	fungibleTokenImport            = "FungibleToken from "
+	placeholderResolver            = regexp.MustCompile(`"ViewResolver"`)
+	viewResolverImport             = "ViewResolver from "
+	placeholderUniversalCollection = regexp.MustCompile(`"UniversalCollection"`)
+	universalCollectionImport      = "UniversalCollection from "
 )
 
 const (
 	filenameNonFungibleToken    = "NonFungibleToken.cdc"
-	filenameOldNonFungibleToken = "utility/NonFungibleToken_old.cdc"
 	filenameExampleNFT          = "ExampleNFT.cdc"
 	filenameMetadataViews       = "MetadataViews.cdc"
-	filenameResolver            = "ViewResolver.cdc"
+	filenameNFTMetadataViews    = "NFTMetadataViews.cdc"
+	filenameViewResolver        = "ViewResolver.cdc"
+	filenameUniversalCollection = "UniversalCollection.cdc"
+	filenameBasicNFT            = "BasicNFT.cdc"
 	filenameFungibleToken       = "utility/FungibleToken.cdc"
 )
 
-// NonFungibleToken returns the NonFungibleToken contract interface.
-func NonFungibleToken() []byte {
-	return assets.MustAsset(filenameNonFungibleToken)
+func withHexPrefix(address string) string {
+	if address == "" {
+		return ""
+	}
+
+	if address[0:2] == "0x" {
+		return address
+	}
+
+	return fmt.Sprintf("0x%s", address)
 }
 
-// OldNonFungibleToken returns the old NonFungibleToken contract interface
-// without default implementations
-func OldNonFungibleToken() []byte {
-	return assets.MustAsset(filenameOldNonFungibleToken)
+// NonFungibleToken returns the NonFungibleToken contract interface.
+func NonFungibleToken(resolverAddress string) []byte {
+	code := assets.MustAssetString(filenameNonFungibleToken)
+	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress))
+	return []byte(code)
 }
 
 // ExampleNFT returns the ExampleNFT contract.
@@ -45,24 +62,42 @@ func OldNonFungibleToken() []byte {
 func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
-	code = placeholderMetadataViews.ReplaceAllString(code, "0x"+metadataAddress.String())
-	code = placeholderResolverToken.ReplaceAllString(code, "0x"+resolverAddress.String())
+	code = placeholderNonFungibleToken.ReplaceAllString(code, nonFungibleTokenImport+withHexPrefix(nftAddress.String()))
+	code = placeholderMetadataViews.ReplaceAllString(code, metadataViewsImport+withHexPrefix(metadataAddress.String()))
+	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress.String()))
 
 	return []byte(code)
 }
 
-func MetadataViews(ftAddress flow.Address, nftAddress flow.Address) []byte {
+func MetadataViews(ftAddress, nftAddress, resolverAddress string) []byte {
 	code := assets.MustAssetString(filenameMetadataViews)
 
-	code = placeholderFungibleToken.ReplaceAllString(code, "0x"+ftAddress.String())
-	code = placeholderNonFungibleToken.ReplaceAllString(code, "0x"+nftAddress.String())
+	code = placeholderFungibleToken.ReplaceAllString(code, fungibleTokenImport+withHexPrefix(ftAddress))
+	code = placeholderNonFungibleToken.ReplaceAllString(code, nonFungibleTokenImport+withHexPrefix(nftAddress))
+	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress))
 
 	return []byte(code)
 }
 
-func Resolver() []byte {
-	code := assets.MustAssetString(filenameResolver)
+func ViewResolver() []byte {
+	code := assets.MustAssetString(filenameViewResolver)
+	return []byte(code)
+}
+
+func UniversalCollection(nftAddress, resolverAddress, metadataAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameUniversalCollection)
+	code = placeholderMetadataViews.ReplaceAllString(code, metadataViewsImport+withHexPrefix(metadataAddress.String()))
+	code = placeholderNonFungibleToken.ReplaceAllString(code, nonFungibleTokenImport+withHexPrefix(nftAddress.String()))
+	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress.String()))
+	return []byte(code)
+}
+
+func BasicNFT(nftAddress, resolverAddress, metadataAddress, universalCollectionAddress flow.Address) []byte {
+	code := assets.MustAssetString(filenameBasicNFT)
+	code = placeholderMetadataViews.ReplaceAllString(code, metadataViewsImport+withHexPrefix(metadataAddress.String()))
+	code = placeholderNonFungibleToken.ReplaceAllString(code, nonFungibleTokenImport+withHexPrefix(nftAddress.String()))
+	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress.String()))
+	code = placeholderUniversalCollection.ReplaceAllString(code, universalCollectionImport+withHexPrefix(universalCollectionAddress.String()))
 	return []byte(code)
 }
 

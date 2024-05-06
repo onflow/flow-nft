@@ -1,18 +1,12 @@
-/// This transaction is what an account would run
-/// to unlink its collection from public storage
+/// This transaction unlinks signer's public Capability at canonical public path
 
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
-import NFTForwarding from "NFTForwarding"
+import "MetadataViews"
+import "ExampleNFT"
 
 transaction {
-
-    prepare(signer: AuthAccount) {
-
-        if signer.getCapability(ExampleNFT.CollectionPublicPath).check<&{ExampleNFT.ExampleNFTCollectionPublic}>() {
-            log("Unlinking ExampleNFTCollectionPublic from PublicPath")
-            signer.unlink(ExampleNFT.CollectionPublicPath)
-        }
-
+    prepare(signer: auth(UnpublishCapabilty) &Account) {
+        let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+            ?? panic("ViewResolver does not resolve NFTCollectionData view")
+        signer.capabilities.unpublish(ExampleNFT.CollectionPublicPath)
     }
 }

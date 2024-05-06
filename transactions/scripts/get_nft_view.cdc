@@ -1,6 +1,3 @@
-/// This script checks the NFTView from MetadataViews for
-/// a given NFT. Used for testing only.
-
 import "ExampleNFT"
 import "MetadataViews"
 import "ViewResolver"
@@ -66,19 +63,19 @@ access(all) struct NFTView {
     }
 }
 
-access(all) fun main(address: Address, id: UInt64): Bool {
+access(all) fun main(address: Address, id: UInt64): NFTView {
     let account = getAccount(address)
 
     let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
         ?? panic("ViewResolver does not resolve NFTCollectionData view")
-    
-    let collection = account.capabilities.borrow<&{ViewResolver.ResolverCollection}>(
+
+    let collection = account.capabilities.borrow<&ExampleNFT.Collection>(
             collectionData.publicPath
         ) ?? panic("Could not borrow a reference to the collection")
 
-    let viewResolver = collection.borrowViewResolver(id: id)!
+    let viewResolver = collection.borrowViewResolver(id: id) ?? panic("Could not borrow resolver with given id")
 
-    let nftView = MetadataViews.getNFTView(id: id, viewResolver: viewResolver)
+    let nftView = MetadataViews.getNFTView(id: id, viewResolver : viewResolver)
 
     let collectionSocials: {String: String} = {}
     for key in nftView.collectionDisplay!.socials.keys {
@@ -86,7 +83,7 @@ access(all) fun main(address: Address, id: UInt64): Bool {
     }
 
 
-    let nftViewResult = NFTView(
+    return NFTView(
         id: nftView.id,
         uuid: nftView.uuid,
         name: nftView.display!.name,
@@ -106,29 +103,4 @@ access(all) fun main(address: Address, id: UInt64): Bool {
         collectionSocials: collectionSocials,
         traits: nftView.traits!,
     )
-
-    // assert((0 as UInt64) == nftViewResult.id)
-    assert(nil != nftViewResult.uuid)
-    assert("NFT Name" == nftViewResult.name)
-    assert("NFT Description" == nftViewResult.description)
-    assert("NFT Thumbnail" == nftViewResult.thumbnail)
-    assert("Creator Royalty" == nftViewResult.royalties[0].description)
-    assert(Address(0x0000000000000007) == nftViewResult.royalties[0].receiver.address)
-    assert(0.05 == nftViewResult.royalties[0].cut)
-    //assert("https://example-nft.onflow.org" == nftViewResult.externalURL)
-    assert(/public/exampleNFTCollection == nftViewResult.collectionPublicPath)
-    assert(/storage/exampleNFTCollection == nftViewResult.collectionStoragePath)
-    assert("&A.0000000000000007.ExampleNFT.Collection" == nftViewResult.collectionPublic)
-    assert("&A.0000000000000007.ExampleNFT.Collection" == nftViewResult.collectionPublicLinkedType)
-    assert("The Example Collection" == nftViewResult.collectionName)
-    assert("This collection is used as an example to help you develop your next Flow NFT." == nftViewResult.collectionDescription)
-    assert("https://example-nft.onflow.org" == nftViewResult.collectionExternalURL)
-    assert("https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg" == nftViewResult.collectionSquareImage)
-    assert("https://assets.website-files.com/5f6294c0c7a8cdd643b1c820/5f6294c0c7a8cda55cb1c936_Flow_Wordmark.svg" == nftViewResult.collectionBannerImage)
-    assert({"twitter": "https://twitter.com/flow_blockchain"} == nftViewResult.collectionSocials)
-    assert("Common" == nftViewResult.traits.traits[2]!.rarity!.description)
-    assert(10.0 == nftViewResult.traits.traits[2]!.rarity!.score)
-    assert(100.0 == nftViewResult.traits.traits[2]!.rarity!.max)
-
-    return true
 }

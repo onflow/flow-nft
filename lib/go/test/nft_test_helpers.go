@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/onflow/cadence"
@@ -10,12 +11,68 @@ import (
 	"github.com/onflow/flow-emulator/emulator"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
+	sdktemplates "github.com/onflow/flow-go-sdk/templates"
 	"github.com/onflow/flow-go-sdk/test"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/onflow/flow-nft/lib/go/contracts"
 	"github.com/onflow/flow-nft/lib/go/templates"
 )
+
+// Deploys the NonFungibleToken, MetadataViews, and ExampleNFT contracts to new accounts
+// and returns their addresses
+func deployNFTContracts(
+	t *testing.T,
+	b emulator.Emulator,
+	adapter *adapters.SDKAdapter,
+	accountKeys *test.AccountKeys,
+	exampleNFTAccountKey *flow.AccountKey,
+) (flow.Address, flow.Address, flow.Address, flow.Address) {
+
+	nftAccountKey, _ := accountKeys.NewWithSigner()
+
+	resolverAddress := deploy(t, b, adapter, "ViewResolver", contracts.ViewResolver(), nftAccountKey)
+
+	// Deploy the NonFungibleToken contract interface
+	nftAddress, err := adapter.CreateAccount(context.Background(), []*flow.AccountKey{nftAccountKey}, []sdktemplates.Contract{
+		{
+			Name:   "NonFungibleToken",
+			Source: string(contracts.NonFungibleToken(resolverAddress.String())),
+		},
+	})
+	if !assert.NoError(t, err) {
+		t.Log(err.Error())
+	}
+	_, err = b.CommitBlock()
+	assert.NoError(t, err)
+
+	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(emulatorFTAddress, nftAddress.String(), resolverAddress.String()), nftAccountKey)
+
+	exampleNFTAddress := deploy(
+		t, b, adapter,
+		"ExampleNFT",
+		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress),
+		exampleNFTAccountKey,
+	)
+
+	// Saving the UniversalCollection and Basic NFT for a different PR
+
+	// universalCollectionAddress := deploy(
+	// 	t, b, adapter,
+	// 	"UniversalCollection",
+	// 	contracts.UniversalCollection(nftAddress, resolverAddress, metadataAddress),
+	// 	nftAccountKey,
+	// )
+
+	// deploy(
+	// 	t, b, adapter,
+	// 	"BasicNFT",
+	// 	contracts.BasicNFT(nftAddress, resolverAddress, metadataAddress, universalCollectionAddress),
+	// 	exampleNFTAccountKey,
+	// )
+
+	return nftAddress, metadataAddress, exampleNFTAddress, resolverAddress
+}
 
 // Mints a single NFT from the ExampleNFT contract
 // with standard metadata fields and royalty cuts
@@ -67,55 +124,28 @@ func mintExampleNFT(
 	tx.AddArgument(cadence.NewArray(royaltyDescriptions))
 	tx.AddArgument(cadence.NewArray(royaltyBeneficiaries))
 
-	serviceSigner, _ := b.ServiceKey().Signer()
-
 	signAndSubmit(
 		t, b, tx,
 		[]flow.Address{
-			b.ServiceKey().Address,
 			exampleNFTAddress,
 		},
 		[]crypto.Signer{
-			serviceSigner,
 			exampleNFTSigner,
 		},
 		false,
 	)
 }
 
-// Deploys the NonFungibleToken, MetadataViews, and ExampleNFT contracts to new accounts
-// and returns their addresses
-func deployNFTContracts(
-	t *testing.T,
-	b emulator.Emulator,
-	adapter *adapters.SDKAdapter,
-	exampleNFTAccountKey *flow.AccountKey,
-) (flow.Address, flow.Address, flow.Address, flow.Address) {
-
-	nftAddress := deploy(t, b, adapter, "NonFungibleToken", contracts.NonFungibleToken())
-	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(flow.HexToAddress(emulatorFTAddress), nftAddress))
-	resolverAddress := deploy(t, b, adapter, "ViewResolver", contracts.Resolver())
-
-	exampleNFTAddress := deploy(
-		t, b, adapter,
-		"ExampleNFT",
-		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress),
-		exampleNFTAccountKey,
-	)
-
-	return nftAddress, metadataAddress, exampleNFTAddress, resolverAddress
-}
-
-// Assers that the ExampleNFT collection in the specified user's account
+// Asserts that the ExampleNFT collection in the specified user's account
 // is the expected length
 func assertCollectionLength(
 	t *testing.T,
 	b emulator.Emulator,
-	nftAddress flow.Address, exampleNFTAddress flow.Address,
+	nftAddress flow.Address, exampleNFTAddress flow.Address, metadataAddress flow.Address,
 	collectionAddress flow.Address,
 	expectedLength int,
 ) {
-	script := templates.GenerateGetCollectionLengthScript(nftAddress, exampleNFTAddress)
+	script := templates.GenerateGetCollectionLengthScript(nftAddress, exampleNFTAddress, metadataAddress)
 	actualLength := executeScriptAndCheck(t, b, script, [][]byte{jsoncdc.MustEncode(cadence.NewAddress(collectionAddress))})
 	assert.Equal(t, cadence.NewInt(expectedLength), actualLength)
 }
@@ -135,16 +165,12 @@ func setupRoyaltyReceiver(
 	vaultPath := cadence.Path{Domain: common.PathDomainStorage, Identifier: "flowTokenVault"}
 	tx.AddArgument(vaultPath)
 
-	serviceSigner, _ := b.ServiceKey().Signer()
-
 	signAndSubmit(
 		t, b, tx,
 		[]flow.Address{
-			b.ServiceKey().Address,
 			authorizerAddress,
 		},
 		[]crypto.Signer{
-			serviceSigner,
 			authorizerSigner,
 		},
 		false,
