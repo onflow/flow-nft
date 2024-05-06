@@ -19,7 +19,7 @@ transaction(newRecipientAddress: Address, collectionPublicPath: PublicPath) {
         // get Collection Capability from the recipientAddress account
         self.newRecipientCollection = getAccount(newRecipientAddress).capabilities.get<&{NonFungibleToken.Collection}>(
                 collectionPublicPath
-            ) ?? panic("Could not get Collection capability from recipient")
+            )
 
     }
 

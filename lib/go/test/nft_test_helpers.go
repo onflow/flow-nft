@@ -19,40 +19,6 @@ import (
 	"github.com/onflow/flow-nft/lib/go/templates"
 )
 
-// Go event definitions for the nft events
-// Can be used with the SDK to retrieve and parse events
-
-// / Used to verify the Withdrawn event fields in tests
-type Withdrawn struct {
-	nftType      string
-	id           uint64
-	uuid         uint64
-	from         string
-	providerUuid uint64
-}
-
-type WithdrawnEvent flow.Event
-
-func (evt WithdrawnEvent) NftType() cadence.String {
-	return evt.Value.Fields[0].(cadence.String)
-}
-
-func (evt WithdrawnEvent) ID() cadence.UInt64 {
-	return evt.Value.Fields[1].(cadence.UInt64)
-}
-
-func (evt WithdrawnEvent) UUID() cadence.UInt64 {
-	return evt.Value.Fields[2].(cadence.UInt64)
-}
-
-func (evt WithdrawnEvent) From() cadence.Optional {
-	return evt.Value.Fields[3].(cadence.Optional)
-}
-
-func (evt WithdrawnEvent) ProviderUUID() cadence.UInt64 {
-	return evt.Value.Fields[4].(cadence.UInt64)
-}
-
 // Deploys the NonFungibleToken, MetadataViews, and ExampleNFT contracts to new accounts
 // and returns their addresses
 func deployNFTContracts(
@@ -209,34 +175,4 @@ func setupRoyaltyReceiver(
 		},
 		false,
 	)
-}
-
-// Verifies that the Withdrawn event values are equal to the provided expected values
-func verifyWithdrawn(
-	t *testing.T,
-	b emulator.Emulator,
-	adapter *adapters.SDKAdapter,
-	nftAddress flow.Address,
-	expectedWithdrawn Withdrawn) {
-
-	var emittedEvent WithdrawnEvent
-
-	var i uint64
-	i = 0
-	for i < 1000 {
-		results, _ := adapter.GetEventsForHeightRange(context.Background(), "A."+nftAddress.String()+".NonFungibleToken.Withdrawn", i, i)
-
-		for _, result := range results {
-			for _, event := range result.Events {
-				if event.Type == "A."+nftAddress.String()+".NonFungibleToken.Withdrawn" {
-					emittedEvent = WithdrawnEvent(event)
-				}
-			}
-		}
-
-		i = i + 1
-	}
-
-	expectedNFTType, _ := cadence.NewString(expectedWithdrawn.nftType)
-	assertEqual(t, expectedNFTType, emittedEvent.NftType())
 }

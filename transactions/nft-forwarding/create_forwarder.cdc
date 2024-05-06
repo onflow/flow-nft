@@ -11,8 +11,12 @@ transaction(recipientAddress: Address, collectionPublicPath: PublicPath) {
         
         // get Collection Capability from the recipientAddress account
         let recipientCollectionCap = getAccount(recipientAddress).capabilities.get<&{NonFungibleToken.Collection}>(
-                collectionPublicPath
-            ) ?? panic("Recipient is not configured with NFT Collection at the given path")
+            collectionPublicPath
+        )
+
+        if !recipientCollectionCap.check() {
+            panic("Recipient is not configured with NFT Collection at the given path")
+        }
 
         // create a new NFTForwarder resource & save in storage, forwarding to the recipient's Collection
         let forwarder <- NFTForwarding.createNewNFTForwarder(recipient: recipientCollectionCap)

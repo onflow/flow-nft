@@ -32,7 +32,6 @@ transaction(contractAddress: Address, contractName: String, recipient: Address, 
 
         // borrow a public reference to the receivers collection
         let receiverCap = recipient.capabilities.get<&{NonFungibleToken.Receiver}>(collectionData.publicPath)
-            ?? panic("Could not get the recipient's Receiver Capability")
 
         self.receiverRef = receiverCap.borrow()
             ?? panic("Could not borrow reference to the recipient's receiver")

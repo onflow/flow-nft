@@ -11,7 +11,7 @@ transaction(collectionStoragePath: StoragePath, receiverPublicPath: PublicPath) 
     prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, UnpublishCapability) &Account) {
         
         // a collection is already published, do nothing - remember .NFTForwarder only conforms to NFT.Receiver
-        if signer.capabilities.get<&{NonFungibleToken.Collection}>(receiverPublicPath) != nil {
+        if signer.capabilities.get<&{NonFungibleToken.Collection}>(receiverPublicPath).check() {
             return
         }
 

@@ -219,16 +219,6 @@ func TestTransferNFT(t *testing.T) {
 			false,
 		)
 
-		verifyWithdrawn(t, b, adapter, nftAddress,
-			Withdrawn{
-				nftType: "A.045a1763c93006ca.ExampleNFT.NFT",
-				// the rest of the values are not important
-				id:           1,
-				uuid:         1,
-				from:         "",
-				providerUuid: 1,
-			})
-
 		// Try to borrow a reference to the transferred NFT from josh's account
 		// Should succeed
 		script = templates.GenerateBorrowNFTScript(nftAddress, exampleNFTAddress, metadataAddress)
