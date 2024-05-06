@@ -8,6 +8,17 @@ The interface that all Non-Fungible Token contracts should conform to.
 If a user wants to deploy a new NFT contract, their contract should implement
 The types defined here
 
+/// Contributors (please add to this list if you contribute!):
+/// - Joshua Hannan - https://github.com/joshuahannan
+/// - Bastian Müller - https://twitter.com/turbolent
+/// - Dete Shirley - https://twitter.com/dete73
+/// - Bjarte Karlsen - https://twitter.com/0xBjartek
+/// - Austin Kline - https://twitter.com/austin_flowty
+/// - Giovanni Sanchez - https://twitter.com/gio_incognito
+/// - Deniz Edincik - https://twitter.com/bluesign
+///
+/// Repo reference: https://github.com/onflow/flow-nft
+
 ## `NFT` resource interface
 
 The core resource type that represents an NFT in the smart contract.
