@@ -26,8 +26,6 @@ Provides access to a set of metadata views. A struct or
 resource (e.g. an NFT) can implement this interface to provide access to
 the views that it supports.
 
-[More...](MetadataViews_Resolver.md)
-
 ---
     
 ### `ResolverCollection`
@@ -37,8 +35,6 @@ pub resource interface ResolverCollection {
 }
 ```
 A group of view resolvers indexed by ID.
-
-[More...](MetadataViews_ResolverCollection.md)
 
 ---
     
@@ -50,8 +46,6 @@ pub struct interface File {
 ```
 Generic interface that represents a file stored on or off chain. Files
 can be used to references images, videos and other media.
-
-[More...](MetadataViews_File.md)
 
 ---
 ## Structs & Resources
@@ -82,8 +76,6 @@ NFTView wraps all Core views along `id` and `uuid` fields, and is used
 to give a complete picture of an NFT. Most NFTs should implement this
 view.
 
-[More...](MetadataViews_NFTView.md)
-
 ---
 
 ### `Display`
@@ -101,8 +93,6 @@ pub struct Display {
 Display is a basic view that includes the name, description and
 thumbnail for an object. Most objects should implement this view.
 
-[More...](MetadataViews_Display.md)
-
 ---
 
 ### `HTTPFile`
@@ -114,8 +104,6 @@ pub struct HTTPFile {
 }
 ```
 View to expose a file that is accessible at an HTTP (or HTTPS) URL.
-
-[More...](MetadataViews_HTTPFile.md)
 
 ---
 
@@ -134,8 +122,6 @@ IPFS images are referenced by their content identifier (CID)
 rather than a direct URI. A client application can use this CID
 to find and load the image via an IPFS gateway.
 
-[More...](MetadataViews_IPFSFile.md)
-
 ---
 
 ### `URI`
@@ -151,8 +137,6 @@ pub struct URI {
 View to represent a generic URI. May be used to represent the URI of
 the NFT where the type of URI is not able to be determined (i.e. HTTP,
 IPFS, etc.).
-
-[More...](MetadataViews_URI.md)
 
 ---
 
@@ -174,8 +158,6 @@ information is useful for wallets and marketplaces.
 An NFT might be part of multiple editions, which is why the edition
 information is returned as an arbitrary sized array
 
-[More...](MetadataViews_Edition.md)
-
 ---
 
 ### `Editions`
@@ -187,8 +169,6 @@ pub struct Editions {
 }
 ```
 Wrapper view for multiple Edition views
-
-[More...](MetadataViews_Editions.md)
 
 ---
 
@@ -205,8 +185,6 @@ Projects have different definitions for what a serial number should be
 Some may use the NFTs regular ID and some may use a different
 classification system. The serial number is expected to be unique among
 other NFTs within that project
-
-[More...](MetadataViews_Serial.md)
 
 ---
 
@@ -225,8 +203,6 @@ pub struct Royalty {
 View that defines the composable royalty standard that gives marketplaces a
 unified interface to support NFT royalties.
 
-[More...](MetadataViews_Royalty.md)
-
 ---
 
 ### `Royalties`
@@ -240,8 +216,6 @@ pub struct Royalties {
 Wrapper view for multiple Royalty views.
 Marketplaces can query this `Royalties` struct from NFTs
 and are expected to pay royalties based on these specifications.
-
-[More...](MetadataViews_Royalties.md)
 
 ---
 
@@ -257,8 +231,6 @@ pub struct Media {
 ```
 View to represent, a file with an correspoiding mediaType.
 
-[More...](MetadataViews_Media.md)
-
 ---
 
 ### `Medias`
@@ -270,8 +242,6 @@ pub struct Medias {
 }
 ```
 Wrapper view for multiple media views
-
-[More...](MetadataViews_Medias.md)
 
 ---
 
@@ -286,8 +256,6 @@ pub struct License {
 View to represent a license according to https://spdx.org/licenses/
 This view can be used if the content of an NFT is licensed.
 
-[More...](MetadataViews_License.md)
-
 ---
 
 ### `ExternalURL`
@@ -301,8 +269,6 @@ pub struct ExternalURL {
 View to expose a URL to this item on an external site.
 This can be used by applications like .find and Blocto to direct users
 to the original link for an NFT.
-
-[More...](MetadataViews_ExternalURL.md)
 
 ---
 
@@ -330,8 +296,6 @@ View to expose the information needed store and retrieve an NFT.
 This can be used by applications to setup a NFT collection with proper
 storage and public capabilities.
 
-[More...](MetadataViews_NFTCollectionData.md)
-
 ---
 
 ### `NFTCollectionDisplay`
@@ -356,8 +320,6 @@ View to expose the information needed to showcase this NFT's
 collection. This can be used by applications to give an overview and
 graphics of the NFT collection this NFT belongs to.
 
-[More...](MetadataViews_NFTCollectionDisplay.md)
-
 ---
 
 ### `Rarity`
@@ -375,8 +337,6 @@ pub struct Rarity {
 View to expose rarity information for a single rarity
 Note that a rarity needs to have either score or description but it can
 have both
-
-[More...](MetadataViews_Rarity.md)
 
 ---
 
@@ -398,8 +358,6 @@ View to represent a single field of metadata on an NFT.
 This is used to get traits of individual key/value pairs along with some
 contextualized data about the trait
 
-[More...](MetadataViews_Trait.md)
-
 ---
 
 ### `Traits`
@@ -413,8 +371,6 @@ pub struct Traits {
 Wrapper view to return all the traits on an NFT.
 This is used to return traits as individual key/value pairs along with
 some contextualized data about each trait.
-
-[More...](MetadataViews_Traits.md)
 
 ---
 
@@ -437,8 +393,6 @@ and symbol values to define assets as well as contract- & token-level
 metadata view `tokenURI(uint256)` and `contractURI()` methods. This
 view enables Cadence projects to define in their own contracts how
 they would like their metadata to be defined when bridged to EVM.
-
-[More...](MetadataViews_EVMBridgedMetadata.md)
 
 ---
 ## Functions
