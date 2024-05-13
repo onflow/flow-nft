@@ -116,7 +116,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
 
         /// Gets all the NFTs that this NFT directly owns
         /// @return A dictionary of all subNFTS keyed by type
-        access(all) view fun getAvailableSubNFTS(): {Type: UInt64} {
+        access(all) view fun getAvailableSubNFTS(): {Type: [UInt64]} {
             return {}
         }
 
@@ -225,7 +225,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
             post {
                 (result == nil) || (result?.id == id): 
-                    "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
+                "Cannot borrow NFT reference: The ID of the returned reference does not match the ID that was specified"
             }
         }
 
