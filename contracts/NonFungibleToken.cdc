@@ -116,7 +116,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
 
         /// Gets all the NFTs that this NFT directly owns
         /// @return A dictionary of all subNFTS keyed by type
-        access(all) view fun getAvailableSubNFTS(): {Type: UInt64} {
+        access(all) view fun getAvailableSubNFTS(): {Type: [UInt64]} {
             return {}
         }
 
