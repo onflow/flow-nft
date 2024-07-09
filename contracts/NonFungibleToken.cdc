@@ -49,8 +49,8 @@ Collection to complete the transfer.
 
 import "ViewResolver"
 
-/// The main NFT contract. Other NFT contracts will
-/// import and implement the interfaces defined in this contract
+/// The main NFT contract interface. Other NFT contracts will import
+/// and implement this interface as well the interfaces defined in this interface
 ///
 access(all) contract interface NonFungibleToken: ViewResolver {
 
@@ -62,7 +62,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
 
     /// Event that contracts should emit when the metadata of an NFT is updated
     /// It can only be emitted by calling the `emitNFTUpdated` function
-    /// with an `Updatable` entitled reference to the NFT that was updated
+    /// with an `Update` entitled reference to the NFT that was updated
     /// The entitlement prevents spammers from calling this from other users' collections
     /// because only code within a collection or that has special entitled access
     /// to the collections methods will be able to get the entitled reference
@@ -106,7 +106,9 @@ access(all) contract interface NonFungibleToken: ViewResolver {
 
         /// createEmptyCollection creates an empty Collection that is able to store the NFT
         /// and returns it to the caller so that they can own NFTs
+        ///
         /// @return A an empty collection that can store this NFT
+        ///
         access(all) fun createEmptyCollection(): @{Collection} {
             post {
                 result.getLength() == 0: "The created collection must be empty!"
@@ -115,7 +117,9 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         }
 
         /// Gets all the NFTs that this NFT directly owns
+        ///
         /// @return A dictionary of all subNFTS keyed by type
+        ///
         access(all) view fun getAvailableSubNFTS(): {Type: [UInt64]} {
             return {}
         }
@@ -146,7 +150,10 @@ access(all) contract interface NonFungibleToken: ViewResolver {
 
         /// withdraw removes an NFT from the collection and moves it to the caller
         /// It does not specify whether the ID is UUID or not
+        ///
         /// @param withdrawID: The id of the NFT to withdraw from the collection
+        /// @return @{NFT}: The NFT that was withdrawn
+        ///
         access(Withdraw) fun withdraw(withdrawID: UInt64): @{NFT} {
             post {
                 result.id == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
@@ -184,11 +191,14 @@ access(all) contract interface NonFungibleToken: ViewResolver {
         access(all) view fun borrowNFT(_ id: UInt64): &{NFT}?
     }
 
-    /// Requirement for the concrete resource type
-    /// to be declared in the implementing contract
+    /// Requirement for the concrete resource type in the implementing contract
+    /// to implement this interface. Since this interface inherits from
+    /// all the other necessary interfaces, resources that implement it do not 
+    /// also need to include the other interfaces in their conformance lists
     ///
     access(all) resource interface Collection: Provider, Receiver, CollectionPublic, ViewResolver.ResolverCollection {
 
+        /// Field that contains all the NFTs that the collection owns
         access(all) var ownedNFTs: @{UInt64: {NonFungibleToken.NFT}}
 
         /// deposit takes a NFT as an argument and stores it in the collection

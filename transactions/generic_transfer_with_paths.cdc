@@ -1,10 +1,24 @@
 import "NonFungibleToken"
 
+#interaction (
+  version: "1.0.0",
+	title: "Generic NFT Transfer with Paths",
+	description: "Transfer any Non-Fungible Token by providing the paths for the source Collection and destination Collection",
+	language: "en-US",
+)
+
 /// Can pass in any storage path and receiver path instead of just the default.
 /// This lets you choose the token you want to send as well the capability you want to send it to.
 ///
 /// Any token path can be passed as an argument here, so wallets should
 /// should check argument values to make sure the intended token path is passed in
+///
+/// @param to: The address to transfer the token to
+/// @param id: The id of the token to transfer
+/// @param senderPathIdentifier: The string identifier of the storage path
+///        where the token should be withdrawn from
+/// @param receiverPathIdentifier: The string identifier of the public path
+///        where the token should be deposited to
 ///
 transaction(to: Address, id: UInt64, senderPathIdentifier: String, receiverPathIdentifier: String) {
 

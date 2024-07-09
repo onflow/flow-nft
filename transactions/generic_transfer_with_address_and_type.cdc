@@ -4,11 +4,11 @@ import "MetadataViews"
 #interaction (
   version: "1.0.0",
 	title: "Generic NFT Transfer with Contract Address and Name",
-	description: "Transfer any Non-Fungible Token by providing the contract address and name",
+	description: "Transfer any Non-Fungible Token by providing the contract address and name and type name",
 	language: "en-US",
 )
 
-/// Can pass in any contract address and name
+/// Can pass in any contract address and name and NFT type name
 /// This lets you choose the token you want to send because
 /// the transaction gets the metadata from the provided contract.
 ///
@@ -16,11 +16,10 @@ import "MetadataViews"
 /// @param id: The id of token to transfer
 /// @param contractAddress: The address of the contract that defines the token being transferred
 /// @param contractName: The name of the contract that defines the token being transferred. Ex: "ExampleNFT"
+/// @param nftTypeName: The type name of the NFT that the user wants to transfer
+///                 Ex: "NFT"
 ///
-/// This transaction only works with NFTs that have the type name "NFT"
-/// A different transaction is required for NFTs with a different type name
-///
-transaction(to: Address, id: UInt64, contractAddress: Address, contractName: String) {
+transaction(to: Address, id: UInt64, contractAddress: Address, contractName: String, nftTypeName: String) {
 
     // The NFT resource to be transferred
     let tempNFT: @{NonFungibleToken.NFT}
@@ -52,7 +51,7 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
         if addressString.length == 18 {
             addressString = addressString.slice(from: 2, upTo: 18)
         }
-        let typeString: String = "A.".concat(addressString).concat(".").concat(contractName).concat(".NFT")
+        let typeString: String = "A.".concat(addressString).concat(".").concat(contractName).concat(".").concat(nftTypeName)
         let type = CompositeType(typeString)
         assert(
             type != nil,

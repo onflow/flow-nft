@@ -1,10 +1,20 @@
+import "NonFungibleToken"
+import "MetadataViews"
+
+#interaction (
+  version: "1.0.0",
+	title: "Generic FT Transfer with Contract Address and Name",
+	description: "Transfer any Fungible Token by providing the contract address and name",
+	language: "en-US",
+)
+
 /// This transaction is what an account would run
 /// to set itself up to receive NFTs. This function
 /// uses views to know where to set up the collection
 /// in storage and to create the empty collection.
-
-import "NonFungibleToken"
-import "MetadataViews"
+///
+/// @param contractAddress: The address of the contract that defines the token being initialized
+/// @param contractName: The name of the contract that defines the token being initialized. Ex: "ExampleNFT"
 
 transaction(contractAddress: Address, contractName: String) {
 

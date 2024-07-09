@@ -15,6 +15,7 @@ fun setup() {
     deploy("NonFungibleToken", "../contracts/NonFungibleToken.cdc")
     deploy("MetadataViews", "../contracts/MetadataViews.cdc")
     deploy("ExampleNFT", "../contracts/ExampleNFT.cdc")
+    deploy("MaliciousNFT", "../contracts/test/MaliciousNFT.cdc")
 }
 
 access(all)
@@ -175,6 +176,45 @@ fun testTransferNFT() {
         recipient
     )
     Test.expect(txResult, Test.beSucceeded())
+
+    // Other generic transfer transactions should succeed
+    txResult = executeTransaction(
+        "../transactions/generic_transfer_with_address.cdc",
+        [recipient.address, nftID, admin.address, "ExampleNFT"],
+        admin
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    txResult = executeTransaction(
+        "../transactions/generic_transfer_with_address_and_type.cdc",
+        [admin.address, nftID, admin.address, "ExampleNFT", "NFT"],
+        recipient
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    // Should not be able to transfer an NFT from a malicious contract
+    // that tries to trick the generic transaction
+    txResult = executeTransaction(
+        "../transactions/generic_transfer_with_address.cdc",
+        [recipient.address, nftID, admin.address, "MaliciousNFT"],
+        admin
+    )
+    Test.expect(txResult, Test.beFailed())
+    Test.assertError(
+        txResult,
+        errorMessage: "The NFT that was withdrawn to transfer is not the type that was requested!"
+    )
+
+    txResult = executeTransaction(
+        "../transactions/generic_transfer_with_address_and_type.cdc",
+        [recipient.address, nftID, admin.address, "MaliciousNFT", "NFT"],
+        admin
+    )
+    Test.expect(txResult, Test.beFailed())
+    Test.assertError(
+        txResult,
+        errorMessage: "The NFT that was withdrawn to transfer is not the type that was requested!"
+    )
 }
 
 access(all)
