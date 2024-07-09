@@ -33,6 +33,12 @@
         "testing": "0x0000000000000007"
       }
     },
+    "MaliciousNFT": {
+        "source": "./contracts/MaliciousNFT.cdc",
+        "aliases": {
+          "testing": "0x0000000000000007"
+        }
+      },
     "UniversalCollection": {
       "source": "./contracts/UniversalCollection.cdc",
       "aliases": {

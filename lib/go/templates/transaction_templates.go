@@ -11,15 +11,16 @@ import (
 )
 
 const (
-	filenameSetupAccount                 = "transactions/setup_account.cdc"
-	filenameSetupFromAddress             = "transactions/setup_account_from_address.cdc"
-	filenameMintNFT                      = "transactions/mint_nft.cdc"
-	filenameTransferNFT                  = "transactions/transfer_nft.cdc"
-	filenameTransferNFTWithPaths         = "transactions/generic_transfer_with_paths.cdc"
-	filenameTransferNFTWithAddress       = "transactions/generic_transfer_with_address.cdc"
-	filenameDestroyNFT                   = "transactions/destroy_nft.cdc"
-	filenameSetupRoyalty                 = "transactions/setup_account_to_receive_royalty.cdc"
-	filenameSetupAccountFromNftReference = "transactions/setup_account_from_nft_reference.cdc"
+	filenameSetupAccount                  = "transactions/setup_account.cdc"
+	filenameSetupFromAddress              = "transactions/setup_account_from_address.cdc"
+	filenameMintNFT                       = "transactions/mint_nft.cdc"
+	filenameTransferNFT                   = "transactions/transfer_nft.cdc"
+	filenameTransferNFTWithPaths          = "transactions/generic_transfer_with_paths.cdc"
+	filenameTransferNFTWithAddress        = "transactions/generic_transfer_with_address.cdc"
+	filenameTransferNFTWithAddressAndType = "transactions/generic_transfer_with_address_and_type.cdc"
+	filenameDestroyNFT                    = "transactions/destroy_nft.cdc"
+	filenameSetupRoyalty                  = "transactions/setup_account_to_receive_royalty.cdc"
+	filenameSetupAccountFromNftReference  = "transactions/setup_account_from_nft_reference.cdc"
 )
 
 // GenerateSetupAccountScript returns a script that instantiates a new
@@ -85,6 +86,24 @@ func GenerateTransferGenericNFTWithPathsScript(nftAddress string) []byte {
 // The sender needs to send the contract address and name of the token being transferred
 func GenerateTransferGenericNFTWithAddressScript(nftAddress, metadataViewsAddress string) []byte {
 	code := assets.MustAssetString(filenameTransferNFTWithAddress)
+
+	code = strings.ReplaceAll(
+		code,
+		placeholderNonFungibleTokenString,
+		nonFungibleTokenImport+withHexPrefix(nftAddress),
+	)
+
+	code = strings.ReplaceAll(
+		code,
+		placeholderMetadataViewsString,
+		metadataViewsImport+withHexPrefix(metadataViewsAddress),
+	)
+
+	return []byte(code)
+}
+
+func GenerateTransferGenericNFTWithAddressAndTypeScript(nftAddress, metadataViewsAddress string) []byte {
+	code := assets.MustAssetString(filenameTransferNFTWithAddressAndType)
 
 	code = strings.ReplaceAll(
 		code,
