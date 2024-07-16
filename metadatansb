@@ -1,0 +1,110 @@
+// Add this import!
+import "MetadataViews"
+
+access(all) contract FooBar: NonFungibleToken {
+
+    // ...other FooBar contract code
+
+    access(all) resource NFT: NonFungibleToken.NFT {
+
+        // ...other NFT code
+
+        /// Gets a list of views specific to the individual NFT
+        access(all) view fun getViews(): [Type] {
+            return [
+                Type<MetadataViews.Display>(),
+                Type<MetadataViews.Editions>(),
+                Type<MetadataViews.NFTCollectionData>(),
+                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<MetadataViews.Serial>()
+            ]
+        }
+
+        /// Resolves a view for this specific NFT
+        access(all) fun resolveView(_ view: Type): AnyStruct? {
+            switch view {
+                case Type<MetadataViews.Display>():
+                    return MetadataViews.Display(
+                        name: "FooBar Example Token",
+                        description: "An Example NFT Contract from the Flow NFT Guide",
+                        thumbnail: MetadataViews.HTTPFile(
+                            url: "Fill this in with a URL to a thumbnail of the NFT"
+                        )
+                    )
+                case Type<MetadataViews.Editions>():
+                    // There is no max number of NFTs that can be minted from this contract
+                    // so the max edition field value is set to nil
+                    let editionInfo = MetadataViews.Edition(name: "FooBar Edition", number: self.id, max: nil)
+                    let editionList: [MetadataViews.Edition] = [editionInfo]
+                    return MetadataViews.Editions(
+                        editionList
+                    )
+                case Type<MetadataViews.Serial>():
+                    return MetadataViews.Serial(
+                        self.id
+                    )
+                case Type<MetadataViews.NFTCollectionData>():
+                    return FooBar.resolveContractView(resourceType: Type<@FooBar.NFT>(), viewType: Type<MetadataViews.NFTCollectionData>())
+                case Type<MetadataViews.NFTCollectionDisplay>():
+                    return FooBar.resolveContractView(resourceType: Type<@FooBar.NFT>(), viewType: Type<MetadataViews.NFTCollectionDisplay>())
+            }
+            return nil
+        }
+    }
+
+    access(all) resource Collection: NonFungibleToken.Vault {
+
+        // ...[getIDs code]...
+
+        /// Allows a caller to borrow a reference to a specific NFT
+        /// so that they can get the metadata views for the specific NFT
+        access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
+            return (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)
+        }
+
+        // ...[rest of code]...
+    }
+
+    /// Gets a list of views for all the NFTs defined by this contract
+    access(all) view fun getContractViews(resourceType: Type?): [Type] {
+        return [
+            Type<MetadataViews.NFTCollectionData>(),
+            Type<MetadataViews.NFTCollectionDisplay>()
+        ]
+    }
+
+    /// Resolves a view that applies to all the NFTs defined by this contract
+    access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
+        switch viewType {
+            case Type<MetadataViews.NFTCollectionData>():
+                let collectionData = MetadataViews.NFTCollectionData(
+                    storagePath: self.CollectionStoragePath,
+                    publicPath: self.CollectionPublicPath,
+                    publicCollection: Type<&FooBar.Collection>(),
+                    publicLinkedType: Type<&FooBar.Collection>(),
+                    createEmptyCollectionFunction: (fun(): @{NonFungibleToken.Collection} {
+                        return <-FooBar.createEmptyCollection(nftType: Type<@FooBar.NFT>())
+                    })
+                )
+                return collectionData
+            case Type<MetadataViews.NFTCollectionDisplay>():
+                let media = MetadataViews.Media(
+                    file: MetadataViews.HTTPFile(
+                        url: "Add your own SVG+XML link here"
+                    ),
+                    mediaType: "image/svg+xml"
+                )
+                return MetadataViews.NFTCollectionDisplay(
+                    name: "The FooBar Example Collection",
+                    description: "This collection is used as an example to help you develop your next Flow NFT.",
+                    externalURL: MetadataViews.ExternalURL("Add your own link here"),
+                    squareImage: media,
+                    bannerImage: media,
+                    socials: {
+                        "twitter": MetadataViews.ExternalURL("Add a link to your project's twitter")
+                    }
+                )
+        }
+        return nil
+    }
+}
