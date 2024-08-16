@@ -18,13 +18,15 @@
     "MetadataViews": {
       "source": "./contracts/MetadataViews.cdc",
       "aliases": {
-        "testing": "0x0000000000000007"
+        "testing": "0x0000000000000007",
+        "testnet": "0x631e88ae7f1d7c20"
       }
     },
     "ViewResolver": {
       "source": "./contracts/ViewResolver.cdc",
       "aliases": {
-        "testing": "0x0000000000000007"
+        "testing": "0x0000000000000007",
+        "testnet": "0x631e88ae7f1d7c20"
       }
     },
     "ExampleNFT": {
