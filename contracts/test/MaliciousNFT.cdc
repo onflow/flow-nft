@@ -183,7 +183,9 @@ access(all) contract MaliciousNFT: NonFungibleToken {
         /// withdraw removes an NFT from the collection and moves it to the caller
         access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
-                ?? panic("Could not withdraw an NFT with the provided ID from the collection")
+                ?? panic("MaliciousNFT.Collection.withdraw: Could not withdraw an NFT with the ID="
+                        .concat(withdrawID.toString())
+                        .concat(". Check the submitted ID to make sure it is one that this collection owns"))
 
             return <-token
         }

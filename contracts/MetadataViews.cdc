@@ -278,7 +278,11 @@ access(all) contract MetadataViews {
 
         view init(receiver: Capability<&{FungibleToken.Receiver}>, cut: UFix64, description: String) {
             pre {
-                cut >= 0.0 && cut <= 1.0 : "Cut value should be in valid range i.e [0,1]"
+                cut >= 0.0 && cut <= 1.0 :
+                    "MetadataViews.Royalty.init: The provided royalty cut value ("
+                    .concat(cut.toString())
+                    .concat(") is invalid.")
+                    .concat(" It should be within the valid range between 0 and 1. i.e [0,1]")
             }
             self.receiver = receiver
             self.cut = cut
@@ -301,7 +305,13 @@ access(all) contract MetadataViews {
             for royalty in cutInfos {
                 totalCut = totalCut + royalty.cut
             }
-            assert(totalCut <= 1.0, message: "Sum of cutInfos multipliers should not be greater than 1.0")
+            assert(
+                totalCut <= 1.0,
+                message:
+                    "MetadataViews.Royalties.init: Sum of cutInfos multipliers ("
+                    .concat(totalCut.toString())
+                    .concat(") should not be greater than 1.0")
+            )
             // Assign the cutInfos
             self.cutInfos = cutInfos
         }
@@ -454,7 +464,15 @@ access(all) contract MetadataViews {
 
         view init(name: String?, number: UInt64, max: UInt64?) {
             if max != nil {
-                assert(number <= max!, message: "The number cannot be greater than the max number!")
+                assert(
+                    number <= max!,
+                    message:
+                        "MetadataViews.Edition.init: The provided edition number for the NFT ("
+                        .concat(number.toString())
+                        .concat(") cannot be greater than the max edition number (")
+                        .concat(max!.toString())
+                        .concat(")!")
+                )
             }
             self.name = name
             self.number = number
@@ -535,7 +553,8 @@ access(all) contract MetadataViews {
 
         view init(score: UFix64?, max: UFix64?, description: String?) {
             if score == nil && description == nil {
-                panic("A Rarity needs to set score, description or both")
+                panic("MetadataViews.Rarity.init: The provided score and description are both `nil`."
+                      .concat(" A Rarity needs to set score, description, or both"))
             }
 
             self.score = score
@@ -648,7 +667,10 @@ access(all) contract MetadataViews {
             createEmptyCollectionFunction: fun(): @{NonFungibleToken.Collection}
         ) {
             pre {
-                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.Collection}>()): "Public type must be a subtype of NonFungibleToken.Collection interface."
+                publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.Collection}>()):
+                    "MetadataViews.NFTCollectionData.init: The Public linked type <"
+                    .concat(publicLinkedType.identifier)
+                    .concat("> is incorrect. It must be a subtype of the NonFungibleToken.Collection interface.")
             }
             self.storagePath=storagePath
             self.publicPath=publicPath
