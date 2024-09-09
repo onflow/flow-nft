@@ -128,8 +128,6 @@ access(all) fun main(address: Address, id: UInt64): NFT {
 
     let bridgedMetadata = MetadataViews.getEVMBridgedMetadata(nft)!
 
-    let bridgedMetadata = MetadataViews.getEVMBridgedMetadata(nft)!
-
     return NFT(
         name: display.name,
         description: display.description,

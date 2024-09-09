@@ -133,7 +133,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
                             resourceType: nil,
                             viewType: Type<MetadataViews.EVMBridgedMetadata>()
                         ) as! MetadataViews.EVMBridgedMetadata?
-                        ?? panic("Could not resolve contract-level EVMBridgedMetadata")
+                        ?? panic("Could not resolve contract-level EVMBridgedMetadata.")
                     // Compose the token-level URI based on a base URI and the token ID, pointing to a JSON file. This
                     // would be a file you've uploaded and are hosting somewhere - in this case HTTP, but this could be
                     // IPFS, S3, a data URL containing the JSON directly, etc.
@@ -182,7 +182,9 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// withdraw removes an NFT from the collection and moves it to the caller
         access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
-                ?? panic("Could not withdraw an NFT with the provided ID from the collection")
+                ?? panic("ExampleNFT.Collection.withdraw: Could not withdraw an NFT with the ID="
+                        .concat(withdrawID.toString())
+                        .concat(". Check the submitted ID to make sure it is one that this collection owns"))
 
             return <-token
         }

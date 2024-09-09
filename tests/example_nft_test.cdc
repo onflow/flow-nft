@@ -232,7 +232,7 @@ fun testTransferMissingNFT() {
     Test.expect(txResult, Test.beFailed())
     Test.assertError(
         txResult,
-        errorMessage: "Could not withdraw an NFT with the provided ID from the collection",
+        errorMessage: "ExampleNFT.Collection.withdraw: Could not withdraw an NFT with the ID=10. Check the submitted ID to make sure it is one that this collection owns",
     )
 }
 
