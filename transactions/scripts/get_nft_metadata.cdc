@@ -90,14 +90,16 @@ access(all) fun main(address: Address, id: UInt64): NFT {
     let account = getAccount(address)
 
     let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-        ?? panic("ViewResolver does not resolve NFTCollectionData view")
+            ?? panic("Could not resolve NFTCollectionData view. The ExampleNFT contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction")
     
     let collection = account.capabilities.borrow<&ExampleNFT.Collection>(
             collectionData.publicPath
-        ) ?? panic("Could not borrow a reference to the collection")
+    ) ?? panic("The account ".concat(address.toString()).concat(" does not have a NonFungibleToken Collection at ")
+                .concat(collectionData.publicPath.toString())
+                .concat("The account must initialize their account with this collection first!"))
 
     let nft = collection.borrowNFT(id)
-        ?? panic("Could not borrow a reference to an NFT with the given ID")
+        ?? panic("Could not borrow a reference to an ExampleNFT NFT with the id=".concat(id.toString()))
 
     // Get the basic display information for this NFT
     let display = MetadataViews.getDisplay(nft)!

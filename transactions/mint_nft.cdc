@@ -28,16 +28,20 @@ transaction(
     prepare(signer: auth(BorrowValue) &Account) {
 
         let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("ViewResolver does not resolve NFTCollectionData view")
+            ?? panic("Could not resolve NFTCollectionData view. The ExampleNFT contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction")
         
         // borrow a reference to the NFTMinter resource in storage
         self.minter = signer.storage.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
-            ?? panic("Account does not store an object at the specified path")
+            ?? panic("The signer does not store an ExampleNFT.Minter object at the path "
+                     .concat(ExampleNFT.MinterStoragePath.toString())
+                     .concat("The signer must initialize their account with this minter resource first!"))
 
         // Borrow the recipient's public NFT collection reference
-        self.recipientCollectionRef = getAccount(recipient).capabilities.borrow<&{NonFungibleToken.Receiver}>(
-                collectionData.publicPath
-            ) ?? panic("Could not get receiver reference to the NFT Collection")
+        self.recipientCollectionRef = getAccount(recipient).capabilities.borrow<&{NonFungibleToken.Receiver}>(collectionData.publicPath)
+            ?? panic("The recipient does not have a NonFungibleToken Receiver at "
+                    .concat(collectionData.publicPath.toString())
+                    .concat(" that is capable of receiving an NFT.")
+                    .concat("The recipient must initialize their account with this collection and receiver first!"))
     }
 
     pre {
@@ -56,7 +60,11 @@ transaction(
             )
 
             if !beneficiaryCapability.check() {
-                panic("Beneficiary does not have Receiver configured at RoyaltyReceiverPublicPath")
+                panic("The royalty beneficiary "
+                       .concat(beneficiary.toString())
+                       .concat(" does not have a FungibleToken Receiver configured at")
+                       .concat(MetadataViews.getRoyaltyReceiverPublicPath().toString())
+                       .concat(". They should set up a FungibleTokenSwitchboard receiver at this path to receive any type of Fungible Token"))
             }
 
             royalties.append(

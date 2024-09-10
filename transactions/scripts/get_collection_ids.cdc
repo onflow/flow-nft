@@ -1,14 +1,15 @@
 /// Script to get NFT IDs in an account's collection
 
 import "NonFungibleToken"
-import "ExampleNFT"
 
 access(all) fun main(address: Address, collectionPublicPath: PublicPath): [UInt64] {
     let account = getAccount(address)
 
     let collectionRef = account.capabilities.borrow<&{NonFungibleToken.Collection}>(
             collectionPublicPath
-        ) ?? panic("Could not borrow capability from collection at specified path")
+    ) ?? panic("The account ".concat(address.toString()).concat(" does not have a NonFungibleToken Collection at ")
+                .concat(collectionPublicPath.toString())
+                .concat("The account must initialize their account with this collection first!"))
 
     return collectionRef.getIDs()
 }

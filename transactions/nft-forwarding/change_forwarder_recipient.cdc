@@ -14,7 +14,7 @@ transaction(newRecipientAddress: Address, collectionPublicPath: PublicPath) {
         // borrow reference to NFTForwarder resource
         self.forwarderRef = signer.storage.borrow<auth(NFTForwarding.Mutable) &NFTForwarding.NFTForwarder>(
                 from: NFTForwarding.StoragePath
-            ) ?? panic("Could not borrow reference to NFTForwarder")
+            ) ?? panic("Could not borrow reference to NFTForwarder in the signer's account at path=".concat(NFTForwarding.StoragePath.toString()))
 
         // get Collection Capability from the recipientAddress account
         self.newRecipientCollection = getAccount(newRecipientAddress).capabilities.get<&{NonFungibleToken.Collection}>(
