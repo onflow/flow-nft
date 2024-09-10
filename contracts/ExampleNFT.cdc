@@ -133,22 +133,25 @@ access(all) contract ExampleNFT: NonFungibleToken {
                             resourceType: nil,
                             viewType: Type<MetadataViews.EVMBridgedMetadata>()
                         ) as! MetadataViews.EVMBridgedMetadata?
-                        ?? panic("Could not resolve contract-level EVMBridgedMetadata.")
-                    // Compose the token-level URI based on a base URI and the token ID, pointing to a JSON file. This
-                    // would be a file you've uploaded and are hosting somewhere - in this case HTTP, but this could be
-                    // IPFS, S3, a data URL containing the JSON directly, etc.
-                    let baseURI = "https://example-nft.onflow.org/token-metadata/"
-                    let uriValue = self.id.toString().concat(".json")
 
-                    return MetadataViews.EVMBridgedMetadata(
-                        name: contractLevel.name,
-                        symbol: contractLevel.symbol,
-                        uri: MetadataViews.URI(
-                            baseURI: baseURI, // defining baseURI results in a concatenation of baseURI and value
-                            value: self.id.toString().concat(".json")
+                    if let contractMetadata = contractLevel {
+                        // Compose the token-level URI based on a base URI and the token ID, pointing to a JSON file. This
+                        // would be a file you've uploaded and are hosting somewhere - in this case HTTP, but this could be
+                        // IPFS, S3, a data URL containing the JSON directly, etc.
+                        let baseURI = "https://example-nft.onflow.org/token-metadata/"
+                        let uriValue = self.id.toString().concat(".json")
+
+                        return MetadataViews.EVMBridgedMetadata(
+                            name: contractMetadata.name,
+                            symbol: contractMetadata.symbol,
+                            uri: MetadataViews.URI(
+                                baseURI: baseURI, // defining baseURI results in a concatenation of baseURI and value
+                                value: self.id.toString().concat(".json")
+                            )
                         )
-                    )
-
+                    } else {
+                        return nil
+                    }
             }
             return nil
         }
