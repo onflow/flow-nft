@@ -65,7 +65,15 @@
       "aliases": {
         "testing": "0x0000000000000007"
       }
-    }
+    },
+    "Burner": {
+        "source": "./contracts/utility/Burner.cdc",
+        "aliases": {
+          "emulator": "0xf8d6e0586b0a20c7",
+          "testing": "0x0000000000000001",
+          "testnet": "0x9a0766d93b6608b7"
+        }
+      }
   },
   "networks": {
     "emulator": "127.0.0.1:3569",

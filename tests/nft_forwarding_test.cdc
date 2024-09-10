@@ -23,7 +23,7 @@ access(all) fun setup() {
 
 access(all) fun testCreateForwarderFails() {
 
-    let expectedErrorMessage = "Recipient is not configured with NFT Collection at the given path"
+    let expectedErrorMessage = "The Recipient has not configured their account with an NFT Collection at the given public path=/public/exampleNFTCollection"
     let expectedErrorType = ErrorType.TX_PANIC
     
     // Setup Collection in forwarder

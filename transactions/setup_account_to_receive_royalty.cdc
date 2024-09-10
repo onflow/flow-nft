@@ -17,7 +17,9 @@ transaction(vaultPath: StoragePath) {
 
         // Return early if the account doesn't have a FungibleToken Vault
         if signer.storage.borrow<&{FungibleToken.Vault}>(from: vaultPath) == nil {
-            panic("A vault for the specified fungible token path does not exist")
+            panic("Cannot setup the signer account to receive royalties: A vault for the specified fungible token path ("
+                   .concat(vaultPath.toString())
+                   .concat(") does not exist. The account should initialize that FungibleToken in their storage first!"))
         }
 
         if signer.storage.type(at: vaultPath) == nil {

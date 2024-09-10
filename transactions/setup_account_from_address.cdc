@@ -22,11 +22,12 @@ transaction(contractAddress: Address, contractName: String) {
         // Borrow a reference to the nft contract deployed to the passed account
         let resolverRef = getAccount(contractAddress)
             .contracts.borrow<&{NonFungibleToken}>(name: contractName)
-            ?? panic("Could not borrow a reference to the non-fungible token contract")
+                ?? panic("Could not borrow NonFungibleToken reference to the contract. Make sure the provided contract name ("
+                         .concat(contractName).concat(") and address (").concat(contractAddress.toString()).concat(") are correct!"))
 
         // Use that reference to retrieve the NFTCollectionData view 
         let collectionData = resolverRef.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("Could not resolve the NFTCollectionData view for the given non-fungible token contract")
+            ?? panic("Could not resolve NFTCollectionData view. The ".concat(contractName).concat(" contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction"))
 
         // Create a new empty collections
         let emptyCollection <- collectionData.createEmptyCollection()

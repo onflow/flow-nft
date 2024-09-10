@@ -33,21 +33,28 @@ transaction(to: Address, id: UInt64, senderPathIdentifier: String, receiverPathI
         // borrow a reference to the signer's NFT collection
         let withdrawRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>(
                 from: storagePath
-            ) ?? panic("Account does not store a collection object at the specified path")
+            ) ?? panic("The signer does not store a {NonFungibleToken.Collection} object at the path "
+                        .concat(storagePath.toString())
+                        .concat("The signer must initialize their account with this collection first!"))
 
         self.tempNFT <- withdrawRef.withdraw(withdrawID: id)
     }
 
     execute {
         let publicPath = PublicPath(identifier: receiverPathIdentifier)
-            ?? panic("Could not construct a public path from the provided path identifier string")
+            ?? panic("Could not construct a public path from the provided path identifier string ("
+                      .concat(receiverPathIdentifier)
+                      .concat(")"))
 
         // get the recipients public account object
         let recipient = getAccount(to)
 
         // borrow a public reference to the receivers collection
         let receiverRef = recipient.capabilities.borrow<&{NonFungibleToken.Receiver}>(publicPath)
-            ?? panic("Could not borrow reference to the recipient's receiver")
+            ?? panic("The recipient does not have a NonFungibleToken Receiver at "
+                        .concat(publicPath.toString())
+                        .concat(" that is capable of receiving a NFT.")
+                        .concat("The recipient must initialize their account with this collection and receiver first!"))
 
         // Deposit the NFT to the receiver
         receiverRef.deposit(token: <-self.tempNFT)

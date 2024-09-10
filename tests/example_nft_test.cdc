@@ -271,7 +271,7 @@ fun testBorrowMissingNFT() {
     Test.expect(scriptResult, Test.beFailed())
     Test.assertError(
         scriptResult,
-        errorMessage: "NFT does not exist in the collection!"
+        errorMessage: "The NFT with id=10 does not exist in the collection!"
     )
 }
 
@@ -326,7 +326,7 @@ fun testGetMissingContractStoragePath() {
     Test.expect(scriptResult, Test.beFailed())
     Test.assertError(
         scriptResult,
-        errorMessage: "contract could not be borrowed"
+        errorMessage: "Could not borrow ViewResolver reference to the contract. Make sure the provided contract name (ContractOne) and address (0x0000000000000007) are correct!"
     )
 }
 
@@ -429,4 +429,27 @@ fun testResolveExampleNFTViews() {
         []
     )
     Test.expect(scriptResult, Test.beSucceeded())
+}
+
+access(all)
+fun testBurnNFT() {
+    var scriptResult = executeScript(
+        "../transactions/scripts/get_collection_ids.cdc",
+        [
+            admin.address,
+            /public/exampleNFTCollection
+        ]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
+
+    let collectionIDs = scriptResult.returnValue! as! [UInt64]
+
+    let txResult = executeTransaction(
+        "../transactions/destroy_nft.cdc",
+        [
+            collectionIDs[0]
+        ],
+        admin
+    )
+    Test.expect(txResult, Test.beSucceeded())
 }

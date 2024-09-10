@@ -3,6 +3,7 @@
 import "NonFungibleToken"
 import "MetadataViews"
 import "ExampleNFT"
+import "Burner"
 
 transaction(id: UInt64) {
 
@@ -11,12 +12,14 @@ transaction(id: UInt64) {
 
     prepare(signer: auth(BorrowValue) &Account) {
         let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("ViewResolver does not resolve NFTCollectionData view")
+            ?? panic("Could not resolve NFTCollectionData view. The ExampleNFT contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction")
             
         // borrow a reference to the owner's collection
         self.collectionRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &ExampleNFT.Collection>(
                 from: collectionData.storagePath
-            ) ?? panic("Account does not store an object at the specified path")
+            ) ?? panic("The signer does not store an ExampleNFT.Collection object at the path "
+                        .concat(collectionData.storagePath.toString())
+                        .concat("The signer must initialize their account with this collection first!"))
 
     }
 
@@ -25,7 +28,7 @@ transaction(id: UInt64) {
         // withdraw the NFT from the owner's collection
         let nft <- self.collectionRef.withdraw(withdrawID: id)
 
-        destroy nft
+        Burner.burn(<-nft)
     }
 
     post {

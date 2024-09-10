@@ -15,7 +15,7 @@ transaction(recipientAddress: Address, collectionPublicPath: PublicPath) {
         )
 
         if !recipientCollectionCap.check() {
-            panic("Recipient is not configured with NFT Collection at the given path")
+            panic("The Recipient has not configured their account with an NFT Collection at the given public path=".concat(collectionPublicPath.toString()))
         }
 
         // create a new NFTForwarder resource & save in storage, forwarding to the recipient's Collection
