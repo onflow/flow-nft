@@ -19,6 +19,6 @@ access(all) fun main(address: Address, id: UInt64): [Type] {
 
     // Borrow a reference to a specific NFT in the collection
     let nft = collectionRef.borrowNFT(id)
-        ?? panic("Could not get a reference to the ExampleNFT NFT with id=".concat(id.toString()))
+        ?? panic("Could not get a reference to the ExampleNFT NFT with id ".concat(id.toString()))
     return nft.getViews()
 }

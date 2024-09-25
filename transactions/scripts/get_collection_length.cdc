@@ -12,7 +12,7 @@ access(all) fun main(address: Address): Int {
             collectionData.publicPath
     ) ?? panic("The account ".concat(address.toString()).concat(" does not have a NonFungibleToken Collection at ")
                 .concat(collectionData.publicPath.toString())
-                .concat("The account must initialize their account with this collection first!"))
+                .concat(". The account must initialize their account with this collection first!"))
 
     return collectionRef.getLength()
 }

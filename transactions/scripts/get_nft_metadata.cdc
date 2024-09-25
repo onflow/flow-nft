@@ -96,10 +96,10 @@ access(all) fun main(address: Address, id: UInt64): NFT {
             collectionData.publicPath
     ) ?? panic("The account ".concat(address.toString()).concat(" does not have a NonFungibleToken Collection at ")
                 .concat(collectionData.publicPath.toString())
-                .concat("The account must initialize their account with this collection first!"))
+                .concat(". The account must initialize their account with this collection first!"))
 
     let nft = collection.borrowNFT(id)
-        ?? panic("Could not borrow a reference to an ExampleNFT NFT with the id=".concat(id.toString()))
+        ?? panic("Could not borrow a reference to an ExampleNFT NFT with id ".concat(id.toString()))
 
     // Get the basic display information for this NFT
     let display = MetadataViews.getDisplay(nft)!

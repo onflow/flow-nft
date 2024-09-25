@@ -23,7 +23,7 @@ access(all) fun setup() {
 
 access(all) fun testCreateForwarderFails() {
 
-    let expectedErrorMessage = "The Recipient has not configured their account with an NFT Collection at the given public path=/public/exampleNFTCollection"
+    let expectedErrorMessage = "The recipient with address 0x000000000000001b has not configured their account with an NFT Collection at the given public path /public/exampleNFTCollection."
     let expectedErrorType = ErrorType.TX_PANIC
     
     // Setup Collection in forwarder
@@ -43,6 +43,7 @@ access(all) fun testCreateForwarderFails() {
 access(all) fun testCreateForwarder() {
     // Setup Collection in recipient
     let recipientSetupSuccess: Bool = txExecutor("setup_account.cdc", [recipient], [], nil, nil)
+    Test.assertEqual(true, recipientSetupSuccess)
 
     // Create forwarder in forwarding account
     let forwarderSetupSuccess: Bool = txExecutor(

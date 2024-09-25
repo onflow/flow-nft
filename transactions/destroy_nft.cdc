@@ -19,7 +19,7 @@ transaction(id: UInt64) {
                 from: collectionData.storagePath
             ) ?? panic("The signer does not store an ExampleNFT.Collection object at the path "
                         .concat(collectionData.storagePath.toString())
-                        .concat("The signer must initialize their account with this collection first!"))
+                        .concat(". The signer must initialize their account with this collection first!"))
 
     }
 
@@ -32,6 +32,6 @@ transaction(id: UInt64) {
     }
 
     post {
-        !self.collectionRef.getIDs().contains(id): "The NFT with the specified ID should have been deleted"
+        !self.collectionRef.getIDs().contains(id): "The NFT with the specified ID should have been deleted."
     }
 }

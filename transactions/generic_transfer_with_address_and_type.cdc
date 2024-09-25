@@ -32,8 +32,8 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
         // Borrow a reference to the nft contract deployed to the passed account
         let resolverRef = getAccount(contractAddress)
             .contracts.borrow<&{NonFungibleToken}>(name: contractName)
-                ?? panic("Could not borrow NonFungibleToken reference to the contract. Make sure the provided contract name ("
-                          .concat(contractName).concat(") and address (").concat(contractAddress.toString()).concat(") are correct!"))
+                ?? panic("Could not borrow NonFungibleToken reference to the contract. Make sure the provided contract name "
+                          .concat(contractName).concat(" and address ").concat(contractAddress.toString()).concat(" are correct!"))
 
         // Use that reference to retrieve the NFTCollectionData view 
         self.collectionData = resolverRef.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
@@ -45,7 +45,7 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
                 from: self.collectionData.storagePath
             ) ?? panic("The signer does not store a "
                         .concat(contractName)
-                        .concat(".Collection object at the path ")
+                        .concat(" Collection object at the path ")
                         .concat(self.collectionData.storagePath.toString())
                         .concat("The signer must initialize their account with this collection first!"))
 
@@ -60,16 +60,17 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
         let type = CompositeType(typeString)
         assert(
             type != nil,
-            message: "Could not create a type out of the contract name ("
+            message: "Could not create a type out of the contract name "
                       .concat(contractName)
-                      .concat(") and address (")
+                      .concat(" and address ")
                       .concat(addressString)
-                      .concat(")!")
+                      .concat("!")
         )
 
         assert(
             self.tempNFT.getType() == type!,
-            message: "The NFT that was withdrawn to transfer is not the type that was requested!"
+            message: "The NFT that was withdrawn to transfer is not the type that was requested <"
+                     .concat(typeString).concat(">.")
         )
     }
 

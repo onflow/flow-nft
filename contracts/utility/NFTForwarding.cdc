@@ -35,7 +35,8 @@ access(all) contract NFTForwarding {
         /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
         access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
             let recipientRef = self.borrowRecipientCollection()
-                ?? panic("Could not borrow reference to recipient's Collection!")
+                ?? panic("NFTForwarding.NFTForwarder.getSupportedNFTTypes: "
+                        .concat("Could not borrow a reference to the recipient's NFT Collection!"))
             return recipientRef.getSupportedNFTTypes()
         }
 
@@ -56,7 +57,10 @@ access(all) contract NFTForwarding {
         ///
         access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
             post {
-                recipientRef.getIDs().contains(id): "Could not forward deposited NFT!"
+                recipientRef.getIDs().contains(id): 
+                    "NFTForwarding.NFTForwarder.deposit: Could not forward deposited NFT! "
+                    .concat("The recipient's collection did not contain the transferred NFT with ID ")
+                    .concat(id.toString()).concat(" after function execution.")
             }
 
             let recipientRef = self.borrowRecipientCollection()
@@ -84,7 +88,7 @@ access(all) contract NFTForwarding {
         ///
         access(Mutable) fun changeRecipient(_ newRecipient: Capability<&{NonFungibleToken.Collection}>) {
             pre {
-                newRecipient.check(): "Could not borrow Collection reference from the given Capability"
+                newRecipient.check(): "NFTForwarding.NFTForwarder.changeRecipient: Could not borrow NFT Collection reference from the given Capability."
             }
 
             self.recipient = newRecipient
@@ -94,7 +98,7 @@ access(all) contract NFTForwarding {
 
         init(_ recipient: Capability<&{NonFungibleToken.Collection}>) {
             pre {
-                recipient.check(): "Could not borrow Collection reference from the given Capability"
+                recipient.check(): "NFTForwarding.NFTForwarder.init: Could not borrow NFT Collection reference from the given Capability"
             }
             self.recipient = recipient
             let recipientRef = self.recipient.borrow()!

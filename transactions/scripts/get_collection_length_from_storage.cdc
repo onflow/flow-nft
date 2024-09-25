@@ -13,7 +13,7 @@ access(all) fun main(address: Address): Int {
             ) ?? panic("The account ".concat(address.toString())
                         .concat(" does not store an ExampleNFT.Collection object at the path ")
                         .concat(collectionData.storagePath.toString())
-                        .concat("The account must initialize their account with this collection first!"))
+                        .concat(". The account must initialize their account with this collection first!"))
 
     return collectionRef.getLength()
 }
