@@ -20,8 +20,8 @@ transaction(
 
         // get the collection data from the NFT contract
         let nftContract = getAccount(contractAddress).contracts.borrow<&{ViewResolver}>(name: contractName)
-            ?? panic("Could not borrow ViewResolver reference to the contract. Make sure the provided contract name ("
-                      .concat(contractName).concat(") and address (").concat(contractAddress.toString()).concat(") are correct!"))
+            ?? panic("Could not borrow ViewResolver reference to the contract. Make sure the provided contract name "
+                      .concat(contractName).concat(" and address ").concat(contractAddress.toString()).concat(" are correct!"))
             
         let collectionData = nftContract.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as MetadataViews.NFTCollectionData?
             ?? panic("Could not resolve NFTCollectionData view. The ".concat(contractName).concat(" contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction"))

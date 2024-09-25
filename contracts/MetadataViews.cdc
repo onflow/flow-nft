@@ -279,10 +279,10 @@ access(all) contract MetadataViews {
         view init(receiver: Capability<&{FungibleToken.Receiver}>, cut: UFix64, description: String) {
             pre {
                 cut >= 0.0 && cut <= 1.0 :
-                    "MetadataViews.Royalty.init: The provided royalty cut value ("
-                    .concat(cut.toString())
-                    .concat(") is invalid.")
-                    .concat(" It should be within the valid range between 0 and 1. i.e [0,1]")
+                    "MetadataViews.Royalty.init: Cannot initialize the Royalty Metadata View! "
+                    .concat("The provided royalty cut value of ").concat(cut.toString())
+                    .concat(" is invalid. ")
+                    .concat("It should be within the valid range between 0 and 1. i.e [0,1]")
             }
             self.receiver = receiver
             self.cut = cut
@@ -308,9 +308,10 @@ access(all) contract MetadataViews {
             assert(
                 totalCut <= 1.0,
                 message:
-                    "MetadataViews.Royalties.init: Sum of cutInfos multipliers ("
+                    "MetadataViews.Royalties.init: Cannot initialize Royalties Metadata View! "
+                    .concat(" The sum of cutInfos multipliers is ")
                     .concat(totalCut.toString())
-                    .concat(") should not be greater than 1.0")
+                    .concat(" but it should not be greater than 1.0")
             )
             // Assign the cutInfos
             self.cutInfos = cutInfos
@@ -467,11 +468,12 @@ access(all) contract MetadataViews {
                 assert(
                     number <= max!,
                     message:
-                        "MetadataViews.Edition.init: The provided edition number for the NFT ("
+                        "MetadataViews.Edition.init: Cannot intialize the Edition Metadata View! "
+                        .concat("The provided edition number of ")
                         .concat(number.toString())
-                        .concat(") cannot be greater than the max edition number (")
+                        .concat(" cannot be greater than the max edition number of ")
                         .concat(max!.toString())
-                        .concat(")!")
+                        .concat(".")
                 )
             }
             self.name = name
@@ -553,7 +555,8 @@ access(all) contract MetadataViews {
 
         view init(score: UFix64?, max: UFix64?, description: String?) {
             if score == nil && description == nil {
-                panic("MetadataViews.Rarity.init: The provided score and description are both `nil`."
+                panic("MetadataViews.Rarity.init: Cannot initialize the Rarity Metadata View! "
+                      .concat("The provided score and description are both `nil`. ")
                       .concat(" A Rarity needs to set score, description, or both"))
             }
 
@@ -668,7 +671,8 @@ access(all) contract MetadataViews {
         ) {
             pre {
                 publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.Collection}>()):
-                    "MetadataViews.NFTCollectionData.init: The Public linked type <"
+                    "MetadataViews.NFTCollectionData.init: Cannot initialize the NFTCollectionData Metadata View! "
+                    .concat("The Public linked type <")
                     .concat(publicLinkedType.identifier)
                     .concat("> is incorrect. It must be a subtype of the NonFungibleToken.Collection interface.")
             }

@@ -10,14 +10,14 @@ transaction(address: Address, publicPath: PublicPath, id: UInt64) {
 
     prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
         let collection = getAccount(address).capabilities.borrow<&{NonFungibleToken.Collection}>(publicPath)
-            ?? panic("Could not borrow a reference to the NonFungibleToken collection for the account with Address "
+            ?? panic("Could not borrow a reference to the NonFungibleToken Collection for the account with Address "
                       .concat(address.toString())
                       .concat(" at path ")
                       .concat(publicPath.toString())
                       .concat(". The account needs to set up their collection first"))
 
         let nftRef = collection.borrowNFT(id)
-            ?? panic("Could not borrow a reference to the desired NFT with id="
+            ?? panic("Could not borrow a reference to the desired NFT with id "
                       .concat(id.toString()))
         
         let collectionData = nftRef.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData

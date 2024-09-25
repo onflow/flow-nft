@@ -73,10 +73,10 @@ access(all) fun main(address: Address, id: UInt64): NFTView {
             collectionData.publicPath
     ) ?? panic("The account ".concat(address.toString()).concat(" does not have a NonFungibleToken Collection at ")
                 .concat(collectionData.publicPath.toString())
-                .concat("The account must initialize their account with this collection first!"))
+                .concat(". The account must initialize their account with this collection first!"))
 
     let viewResolver = collection.borrowViewResolver(id: id) 
-        ?? panic("Could not borrow resolver with given id")
+        ?? panic("Could not borrow resolver with given id ".concat(id.toString()))
 
     let nftView = MetadataViews.getNFTView(id: id, viewResolver : viewResolver)
 

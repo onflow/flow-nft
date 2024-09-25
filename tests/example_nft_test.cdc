@@ -202,7 +202,7 @@ fun testTransferNFT() {
     Test.expect(txResult, Test.beFailed())
     Test.assertError(
         txResult,
-        errorMessage: "The NFT that was withdrawn to transfer is not the type that was requested!"
+        errorMessage: "The NFT that was withdrawn to transfer is not the type that was requested <A.0000000000000007.MaliciousNFT.NFT>."
     )
 
     txResult = executeTransaction(
@@ -213,7 +213,7 @@ fun testTransferNFT() {
     Test.expect(txResult, Test.beFailed())
     Test.assertError(
         txResult,
-        errorMessage: "The NFT that was withdrawn to transfer is not the type that was requested!"
+        errorMessage: "The NFT that was withdrawn to transfer is not the type that was requested <A.0000000000000007.MaliciousNFT.NFT>."
     )
 }
 
@@ -232,7 +232,7 @@ fun testTransferMissingNFT() {
     Test.expect(txResult, Test.beFailed())
     Test.assertError(
         txResult,
-        errorMessage: "ExampleNFT.Collection.withdraw: Could not withdraw an NFT with the ID=10. Check the submitted ID to make sure it is one that this collection owns",
+        errorMessage: "ExampleNFT.Collection.withdraw: Could not withdraw an NFT with ID 10. Check the submitted ID to make sure it is one that this collection owns.",
     )
 }
 
@@ -271,7 +271,7 @@ fun testBorrowMissingNFT() {
     Test.expect(scriptResult, Test.beFailed())
     Test.assertError(
         scriptResult,
-        errorMessage: "The NFT with id=10 does not exist in the collection!"
+        errorMessage: "The NFT with id 10 does not exist in the collection!"
     )
 }
 
@@ -326,7 +326,7 @@ fun testGetMissingContractStoragePath() {
     Test.expect(scriptResult, Test.beFailed())
     Test.assertError(
         scriptResult,
-        errorMessage: "Could not borrow ViewResolver reference to the contract. Make sure the provided contract name (ContractOne) and address (0x0000000000000007) are correct!"
+        errorMessage: "Could not borrow ViewResolver reference to the contract. Make sure the provided contract name ContractOne and address 0x0000000000000007 are correct!"
     )
 }
 

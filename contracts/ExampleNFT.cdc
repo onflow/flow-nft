@@ -185,9 +185,9 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// withdraw removes an NFT from the collection and moves it to the caller
         access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
-                ?? panic("ExampleNFT.Collection.withdraw: Could not withdraw an NFT with the ID="
+                ?? panic("ExampleNFT.Collection.withdraw: Could not withdraw an NFT with ID "
                         .concat(withdrawID.toString())
-                        .concat(". Check the submitted ID to make sure it is one that this collection owns"))
+                        .concat(". Check the submitted ID to make sure it is one that this collection owns."))
 
             return <-token
         }
@@ -223,7 +223,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
         }
 
         access(all) view fun borrowNFT(_ id: UInt64): &{NonFungibleToken.NFT}? {
-            return (&self.ownedNFTs[id] as &{NonFungibleToken.NFT}?)
+            return &self.ownedNFTs[id]
         }
 
         /// Borrow the view resolver for the specified NFT ID

@@ -62,9 +62,9 @@ transaction(
             if !beneficiaryCapability.check() {
                 panic("The royalty beneficiary "
                        .concat(beneficiary.toString())
-                       .concat(" does not have a FungibleToken Receiver configured at")
+                       .concat(" does not have a FungibleToken Receiver configured at ")
                        .concat(MetadataViews.getRoyaltyReceiverPublicPath().toString())
-                       .concat(". They should set up a FungibleTokenSwitchboard receiver at this path to receive any type of Fungible Token"))
+                       .concat(". They should set up a FungibleTokenSwitchboard Receiver at this path to receive any type of Fungible Token"))
             }
 
             royalties.append(

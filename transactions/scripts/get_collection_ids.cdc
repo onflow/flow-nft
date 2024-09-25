@@ -9,7 +9,7 @@ access(all) fun main(address: Address, collectionPublicPath: PublicPath): [UInt6
             collectionPublicPath
     ) ?? panic("The account ".concat(address.toString()).concat(" does not have a NonFungibleToken Collection at ")
                 .concat(collectionPublicPath.toString())
-                .concat("The account must initialize their account with this collection first!"))
+                .concat(". The account must initialize their account with this collection first!"))
 
     return collectionRef.getIDs()
 }

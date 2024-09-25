@@ -14,9 +14,9 @@ access(all) fun main(address: Address, id: UInt64) {
             collectionData.publicPath
             ) ?? panic("The account ".concat(address.toString()).concat(" does not have a NonFungibleToken Collection at ")
                         .concat(collectionData.publicPath.toString())
-                        .concat("The account must initialize their account with this collection first!"))
+                        .concat(". The account must initialize their account with this collection first!"))
 
     // Borrow a reference to a specific NFT in the collection
     let _ = collectionRef.borrowNFT(id)
-        ?? panic("The NFT with id=".concat(id.toString()).concat(" does not exist in the collection!"))
+        ?? panic("The NFT with id ".concat(id.toString()).concat(" does not exist in the collection!"))
 }
