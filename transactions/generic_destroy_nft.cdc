@@ -1,8 +1,19 @@
 /// This transaction withdraws an NFT from the signers collection and destroys it
 
+/// Imports to replace with "from {Address}"
 import "NonFungibleToken"
 import "MetadataViews"
 import "Burner"
+
+/// @param contractAddress: The address of the contract for the NFT you want to destroy
+///                         Example: For Top Shot on mainnet, 0x0b2a3299cc857e29
+/// @param contractName: The name of the contract for the NFT you want to destroy.
+///                      Example: "TopShot", "AllDay", etc
+/// @param nftTypeName: The name of the NFT type you want to destroy.
+///                     99% of the time it is "NFT"
+/// @param id: The ID of the NFT you would like to destroy
+
+/// Replace each instance of the params above with the values that you want to use
 
 transaction(contractAddress: Address, contractName: String, nftTypeName: String, id: UInt64) {
 
