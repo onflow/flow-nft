@@ -1,104 +1,115 @@
 {
-  "emulators": {
-    "default": {
-      "port": 3569,
-      "serviceAccount": "emulator-account"
-    }
-  },
-  "contracts": {
-    "NonFungibleToken": {
-      "source": "./contracts/NonFungibleToken.cdc",
-      "aliases": {
-        "emulator": "0xf8d6e0586b0a20c7",
-        "testing": "0x0000000000000007",
-        "testnet": "0x631e88ae7f1d7c20",
-        "mainnet": "0x1d7e57aa55817448"
-      }
-    },
-    "MetadataViews": {
-      "source": "./contracts/MetadataViews.cdc",
-      "aliases": {
-        "testing": "0x0000000000000007",
-        "testnet": "0x631e88ae7f1d7c20"
-      }
-    },
-    "ViewResolver": {
-      "source": "./contracts/ViewResolver.cdc",
-      "aliases": {
-        "testing": "0x0000000000000007",
-        "testnet": "0x631e88ae7f1d7c20"
-      }
-    },
-    "ExampleNFT": {
-      "source": "./contracts/ExampleNFT.cdc",
-      "aliases": {
-        "testing": "0x0000000000000007"
-      }
-    },
-    "MaliciousNFT": {
-        "source": "./contracts/MaliciousNFT.cdc",
-        "aliases": {
-          "testing": "0x0000000000000007"
-        }
-      },
-    "UniversalCollection": {
-      "source": "./contracts/UniversalCollection.cdc",
-      "aliases": {
-        "testing": "0x0000000000000007"
-      }
-    },
-    "BasicNFT": {
-      "source": "./contracts/BasicNFT.cdc",
-      "aliases": {
-        "testing": "0x0000000000000007"
-      }
-    },
-    "FungibleToken": {
-      "source": "./contracts/utility/FungibleToken.cdc",
-      "aliases": {
-        "testing": "0x0000000000000002",
-        "emulator": "0xee82856bf20e2aa6"
-      }
-    },
-    "NFTForwarding": {
-      "source": "./contracts/utility/NFTForwarding.cdc",
-      "aliases": {
-        "testing": "0x0000000000000007"
-      }
-    },
-    "Burner": {
-        "source": "./contracts/utility/Burner.cdc",
-        "aliases": {
-          "emulator": "0xf8d6e0586b0a20c7",
-          "testing": "0x0000000000000001",
-          "testnet": "0x9a0766d93b6608b7"
-        }
-      }
-  },
-  "networks": {
-    "emulator": "127.0.0.1:3569",
-    "testing": "127.0.0.1:3569",
-    "mainnet": "access.mainnet.nodes.onflow.org:9000",
-    "testnet": "access.devnet.nodes.onflow.org:9000"
-  },
-  "accounts": {
-    "emulator-account": {
-      "address": "0xf8d6e0586b0a20c7",
-      "key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
-    }
-  },
-  "deployments": {
-    "emulator": {
-      "emulator-account": [
-        "ViewResolver",
-        "NonFungibleToken",
-        "FungibleToken",
-        "MetadataViews",
-        "ExampleNFT",
-        "NFTForwarding",
-        "UniversalCollection",
-        "BasicNFT"
-      ]
-    }
-  }
+	"contracts": {
+		"BasicNFT": {
+			"source": "./contracts/BasicNFT.cdc",
+			"aliases": {
+				"testing": "0000000000000007"
+			}
+		},
+		"Burner": {
+			"source": "./contracts/utility/Burner.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"testing": "0000000000000001",
+				"testnet": "9a0766d93b6608b7"
+			}
+		},
+		"ExampleNFT": {
+			"source": "./contracts/ExampleNFT.cdc",
+			"aliases": {
+				"testing": "0000000000000007"
+			}
+		},
+		"FungibleToken": {
+			"source": "./contracts/utility/FungibleToken.cdc",
+			"aliases": {
+				"emulator": "ee82856bf20e2aa6",
+				"mainnet": "f233dcee88fe0abe",
+				"testing": "0000000000000002",
+				"testnet": "9a0766d93b6608b7"
+			}
+		},
+		"MaliciousNFT": {
+			"source": "./contracts/MaliciousNFT.cdc",
+			"aliases": {
+				"testing": "0000000000000007"
+			}
+		},
+		"MetadataViews": {
+			"source": "./contracts/MetadataViews.cdc",
+			"aliases": {
+				"testing": "0000000000000007",
+				"testnet": "631e88ae7f1d7c20"
+			}
+		},
+		"NFTForwarding": {
+			"source": "./contracts/utility/NFTForwarding.cdc",
+			"aliases": {
+				"testing": "0000000000000007"
+			}
+		},
+		"NonFungibleToken": {
+			"source": "./contracts/NonFungibleToken.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "1d7e57aa55817448",
+				"testing": "0000000000000007",
+				"testnet": "631e88ae7f1d7c20"
+			}
+		},
+		"UniversalCollection": {
+			"source": "./contracts/UniversalCollection.cdc",
+			"aliases": {
+				"testing": "0000000000000007"
+			}
+		},
+		"ViewResolver": {
+			"source": "./contracts/ViewResolver.cdc",
+			"aliases": {
+				"mainnet": "1d7e57aa55817448",
+				"testing": "0000000000000007",
+				"testnet": "631e88ae7f1d7c20"
+			}
+		}
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testing": "127.0.0.1:3569",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "1a05ba433be5af2988e814d1e4fa08f1574140e6cb5649a861cc6377718c51be"
+		},
+		"mainnet-nft": {
+			"address": "1d7e57aa55817448",
+			"key": {
+				"type": "google-kms",
+				"hashAlgorithm": "SHA2_256",
+				"resourceID": "projects/dl-flow/locations/global/keyRings/mainnet/cryptoKeys/service-account/cryptoKeyVersions/1"
+			}
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-account": [
+				"ViewResolver",
+				"NonFungibleToken",
+				"FungibleToken",
+				"MetadataViews",
+				"ExampleNFT",
+				"NFTForwarding",
+				"UniversalCollection",
+				"BasicNFT"
+			]
+		},
+		"mainnet": {
+			"mainnet-nft": [
+				"MetadataViews",
+				"NonFungibleToken"
+			]
+		}
+	}
 }
