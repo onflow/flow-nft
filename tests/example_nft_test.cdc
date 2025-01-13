@@ -9,6 +9,19 @@ import "MetadataViews"
 access(all) let admin = Test.getAccount(0x0000000000000007)
 access(all) let recipient = Test.createAccount()
 
+access(all) fun getCollectionIDs(from: Address, path: PublicPath): [UInt64] {
+    var scriptResult = executeScript(
+        "../transactions/scripts/get_collection_ids.cdc",
+        [
+            from,
+            path
+        ]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
+
+    return scriptResult.returnValue! as! [UInt64]
+}
+
 access(all)
 fun setup() {
     deploy("ViewResolver", "../contracts/ViewResolver.cdc")
@@ -85,31 +98,13 @@ fun testMintNFT() {
     let depositEvent = events[0] as! NonFungibleToken.Deposited
     Test.assertEqual(recipient.address, depositEvent.to!)
 
-    let scriptResult = executeScript(
-        "../transactions/scripts/get_collection_ids.cdc",
-        [
-            recipient.address,
-            /public/exampleNFTCollection
-        ]
-    )
-    Test.expect(scriptResult, Test.beSucceeded())
-
-    let collectionIDs = scriptResult.returnValue! as! [UInt64]
+    var collectionIDs = getCollectionIDs(from: recipient.address, path: /public/exampleNFTCollection)
     Test.assertEqual(1, collectionIDs.length)
 }
 
 access(all)
 fun testTransferNFT() {
-    var scriptResult = executeScript(
-        "../transactions/scripts/get_collection_ids.cdc",
-        [
-            recipient.address,
-            /public/exampleNFTCollection
-        ]
-    )
-    Test.expect(scriptResult, Test.beSucceeded())
-
-    var collectionIDs = scriptResult.returnValue! as! [UInt64]
+    var collectionIDs = getCollectionIDs(from: recipient.address, path: /public/exampleNFTCollection)
     Test.assertEqual(1, collectionIDs.length)
 
     let nftID: UInt64 = collectionIDs[0]
@@ -141,16 +136,7 @@ fun testTransferNFT() {
     Test.assertEqual(nftID, depositEvent.id)
     Test.assertEqual(admin.address, depositEvent.to!)
 
-    scriptResult = executeScript(
-        "../transactions/scripts/get_collection_ids.cdc",
-        [
-            admin.address,
-            /public/exampleNFTCollection
-        ]
-    )
-    Test.expect(scriptResult, Test.beSucceeded())
-
-    collectionIDs = scriptResult.returnValue! as! [UInt64]
+    collectionIDs = getCollectionIDs(from: admin.address, path: /public/exampleNFTCollection)
     Test.assertEqual([nftID] as [UInt64], collectionIDs)
 
     txResult = executeTransaction(
@@ -238,18 +224,9 @@ fun testTransferMissingNFT() {
 
 access(all)
 fun testBorrowNFT() {
+    var collectionIDs = getCollectionIDs(from: admin.address, path: /public/exampleNFTCollection)
+
     var scriptResult = executeScript(
-        "../transactions/scripts/get_collection_ids.cdc",
-        [
-            admin.address,
-            /public/exampleNFTCollection
-        ]
-    )
-    Test.expect(scriptResult, Test.beSucceeded())
-
-    let collectionIDs = scriptResult.returnValue! as! [UInt64]
-
-    scriptResult = executeScript(
         "../transactions/scripts/borrow_nft.cdc",
         [
             admin.address,
@@ -332,17 +309,9 @@ fun testGetMissingContractStoragePath() {
 
 access(all)
 fun testGetNFTView() {
-    var scriptResult = executeScript(
-        "../transactions/scripts/get_collection_ids.cdc",
-        [
-            admin.address,
-            /public/exampleNFTCollection
-        ]
-    )
-    Test.expect(scriptResult, Test.beSucceeded())
-    let collectionIDs = scriptResult.returnValue! as! [UInt64]
+    var collectionIDs = getCollectionIDs(from: admin.address, path: /public/exampleNFTCollection)
 
-    scriptResult = executeScript(
+    var scriptResult = executeScript(
         "scripts/get_nft_view.cdc",
         [
             admin.address,
@@ -371,17 +340,9 @@ fun testGetMissingNFTView() {
 
 access(all)
 fun testGetViews() {
-    var scriptResult = executeScript(
-        "../transactions/scripts/get_collection_ids.cdc",
-        [
-            admin.address,
-            /public/exampleNFTCollection
-        ]
-    )
-    Test.expect(scriptResult, Test.beSucceeded())
-    let collectionIDs = scriptResult.returnValue! as! [UInt64]
+    var collectionIDs = getCollectionIDs(from: admin.address, path: /public/exampleNFTCollection)
 
-    scriptResult = executeScript(
+    var scriptResult = executeScript(
         "../transactions/scripts/get_views.cdc",
         [
             admin.address,
@@ -433,18 +394,41 @@ fun testResolveExampleNFTViews() {
 
 access(all)
 fun testBurnNFT() {
-    var scriptResult = executeScript(
-        "../transactions/scripts/get_collection_ids.cdc",
+
+    var txResult = executeTransaction(
+        "../transactions/mint_nft.cdc",
         [
             admin.address,
-            /public/exampleNFTCollection
-        ]
+            "NFT Name",
+            "NFT Description",
+            "NFT Thumbnail",
+            [0.05],
+            ["Creator Royalty"],
+            [admin.address]
+        ],
+        admin
     )
-    Test.expect(scriptResult, Test.beSucceeded())
+    Test.expect(txResult, Test.beSucceeded())
 
-    let collectionIDs = scriptResult.returnValue! as! [UInt64]
+    txResult = executeTransaction(
+        "../transactions/mint_nft.cdc",
+        [
+            admin.address,
+            "NFT Name",
+            "NFT Description",
+            "NFT Thumbnail",
+            [0.05],
+            ["Creator Royalty"],
+            [admin.address]
+        ],
+        admin
+    )
+    Test.expect(txResult, Test.beSucceeded())
 
-    let txResult = executeTransaction(
+    var collectionIDs = getCollectionIDs(from: admin.address, path: /public/exampleNFTCollection)
+    Test.assertEqual(3, collectionIDs.length)
+
+    txResult = executeTransaction(
         "../transactions/destroy_nft.cdc",
         [
             collectionIDs[0]
@@ -452,4 +436,16 @@ fun testBurnNFT() {
         admin
     )
     Test.expect(txResult, Test.beSucceeded())
+
+    txResult = executeTransaction(
+        "../transactions/generic_destroy_nft.cdc",
+        [
+            admin.address, "ExampleNFT", "NFT", collectionIDs
+        ],
+        admin
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    collectionIDs = getCollectionIDs(from: admin.address, path: /public/exampleNFTCollection)
+    Test.assertEqual(0, collectionIDs.length)
 }
