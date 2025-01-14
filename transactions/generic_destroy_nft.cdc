@@ -49,28 +49,28 @@ transaction(contractAddress: Address, contractName: String, nftTypeName: String,
 
     execute {
 
+        // Get the string representation of the address without the 0x
+        var addressString = contractAddress.toString()
+        if addressString.length == 18 {
+            addressString = addressString.slice(from: 2, upTo: 18)
+        }
+        let typeString: String = "A.".concat(addressString).concat(".").concat(contractName).concat(".").concat(nftTypeName)
+        let type = CompositeType(typeString)
+        assert(
+            type != nil,
+            message: "Could not create a type out of the contract name "
+                    .concat(contractName)
+                    .concat(" and address ")
+                    .concat(addressString)
+                    .concat("!")
+        )
+
         // iterate through the ids and burn each one
         for id in ids {
 
             if self.withdrawRef.borrowNFT(id) == nil { continue }
 
             let tempNFT <- self.withdrawRef.withdraw(withdrawID: id)
-
-            // Get the string representation of the address without the 0x
-            var addressString = contractAddress.toString()
-            if addressString.length == 18 {
-                addressString = addressString.slice(from: 2, upTo: 18)
-            }
-            let typeString: String = "A.".concat(addressString).concat(".").concat(contractName).concat(".").concat(nftTypeName)
-            let type = CompositeType(typeString)
-            assert(
-                type != nil,
-                message: "Could not create a type out of the contract name "
-                        .concat(contractName)
-                        .concat(" and address ")
-                        .concat(addressString)
-                        .concat("!")
-            )
 
             assert(
                 tempNFT.getType() == type!,
