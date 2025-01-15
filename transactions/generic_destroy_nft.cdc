@@ -20,6 +20,12 @@ import "Burner"
 
 transaction(contractAddress: Address, contractName: String, nftTypeName: String, ids: [UInt64]) {
 
+    /// The string representation of the NFT type
+    let typeString: String
+
+    /// The NFT type to be destroyed
+    let type: Type?
+
     /// NFTCollectionData struct to get paths from
     let collectionData: MetadataViews.NFTCollectionData
 
@@ -33,8 +39,26 @@ transaction(contractAddress: Address, contractName: String, nftTypeName: String,
                 ?? panic("Could not borrow NonFungibleToken reference to the contract. Make sure the provided contract name "
                           .concat(contractName).concat(" and address ").concat(contractAddress.toString()).concat(" are correct!"))
 
+        // Get the string representation of the address without the 0x
+        var addressString = contractAddress.toString()
+        if addressString.length == 18 {
+            addressString = addressString.slice(from: 2, upTo: 18)
+        }
+
+        self.typeString = "A.".concat(addressString).concat(".").concat(contractName).concat(".").concat(nftTypeName)
+        self.type = CompositeType(self.typeString)
+        
+        assert(
+            self.type != nil,
+            message: "Could not create a type out of the contract name "
+                    .concat(contractName)
+                    .concat(" and address ")
+                    .concat(addressString)
+                    .concat("!")
+        )
+
         // Use that reference to retrieve the NFTCollectionData view 
-        self.collectionData = resolverRef.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+        self.collectionData = resolverRef.resolveContractView(resourceType: self.type!, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
             ?? panic("Could not resolve NFTCollectionData view. The ".concat(contractName).concat(" contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction"))
 
         // borrow a reference to the signer's NFT collection
@@ -49,22 +73,6 @@ transaction(contractAddress: Address, contractName: String, nftTypeName: String,
 
     execute {
 
-        // Get the string representation of the address without the 0x
-        var addressString = contractAddress.toString()
-        if addressString.length == 18 {
-            addressString = addressString.slice(from: 2, upTo: 18)
-        }
-        let typeString: String = "A.".concat(addressString).concat(".").concat(contractName).concat(".").concat(nftTypeName)
-        let type = CompositeType(typeString)
-        assert(
-            type != nil,
-            message: "Could not create a type out of the contract name "
-                    .concat(contractName)
-                    .concat(" and address ")
-                    .concat(addressString)
-                    .concat("!")
-        )
-
         // iterate through the ids and burn each one
         for id in ids {
 
@@ -73,11 +81,11 @@ transaction(contractAddress: Address, contractName: String, nftTypeName: String,
             let tempNFT <- self.withdrawRef.withdraw(withdrawID: id)
 
             assert(
-                tempNFT.getType() == type!,
+                tempNFT.getType() == self.type!,
                 message: "The type NFT that was withdrawn to destroy <"
                         .concat(tempNFT.getType().identifier)
                         .concat("> is not the type that was requested <")
-                        .concat(typeString).concat(">.")
+                        .concat(self.typeString).concat(">.")
             )
 
             Burner.burn(<-tempNFT)
