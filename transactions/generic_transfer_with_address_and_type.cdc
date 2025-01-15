@@ -34,23 +34,7 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
             .contracts.borrow<&{NonFungibleToken}>(name: contractName)
                 ?? panic("Could not borrow NonFungibleToken reference to the contract. Make sure the provided contract name "
                           .concat(contractName).concat(" and address ").concat(contractAddress.toString()).concat(" are correct!"))
-
-        // Use that reference to retrieve the NFTCollectionData view 
-        self.collectionData = resolverRef.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("Could not resolve NFTCollectionData view. The ".concat(contractName).concat(" contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction"))
-
-
-        // borrow a reference to the signer's NFT collection
-        let withdrawRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>(
-                from: self.collectionData.storagePath
-            ) ?? panic("The signer does not store a "
-                        .concat(contractName)
-                        .concat(" Collection object at the path ")
-                        .concat(self.collectionData.storagePath.toString())
-                        .concat("The signer must initialize their account with this collection first!"))
-
-        self.tempNFT <- withdrawRef.withdraw(withdrawID: id)
-
+        
         // Get the string representation of the address without the 0x
         var addressString = contractAddress.toString()
         if addressString.length == 18 {
@@ -66,6 +50,21 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
                       .concat(addressString)
                       .concat("!")
         )
+
+        // Use that reference to retrieve the NFTCollectionData view 
+        self.collectionData = resolverRef.resolveContractView(resourceType: type, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+            ?? panic("Could not resolve NFTCollectionData view. The ".concat(contractName).concat(" contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction"))
+
+        // borrow a reference to the signer's NFT collection
+        let withdrawRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>(
+                from: self.collectionData.storagePath
+            ) ?? panic("The signer does not store a "
+                        .concat(contractName)
+                        .concat(" Collection object at the path ")
+                        .concat(self.collectionData.storagePath.toString())
+                        .concat("The signer must initialize their account with this collection first!"))
+
+        self.tempNFT <- withdrawRef.withdraw(withdrawID: id)
 
         assert(
             self.tempNFT.getType() == type!,
