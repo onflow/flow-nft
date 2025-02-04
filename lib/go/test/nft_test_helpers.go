@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/onflow/cadence"
+	"github.com/onflow/cadence/common"
 	jsoncdc "github.com/onflow/cadence/encoding/json"
-	"github.com/onflow/cadence/runtime/common"
 	"github.com/onflow/flow-emulator/adapters"
 	"github.com/onflow/flow-emulator/emulator"
 	"github.com/onflow/flow-go-sdk"
