@@ -14,27 +14,30 @@ import (
 )
 
 var (
-	placeholderNonFungibleToken    = regexp.MustCompile(`"NonFungibleToken"`)
-	nonFungibleTokenImport         = "NonFungibleToken from "
-	placeholderMetadataViews       = regexp.MustCompile(`"MetadataViews"`)
-	metadataViewsImport            = "MetadataViews from "
-	placeholderFungibleToken       = regexp.MustCompile(`"FungibleToken"`)
-	fungibleTokenImport            = "FungibleToken from "
-	placeholderResolver            = regexp.MustCompile(`"ViewResolver"`)
-	viewResolverImport             = "ViewResolver from "
-	placeholderUniversalCollection = regexp.MustCompile(`"UniversalCollection"`)
-	universalCollectionImport      = "UniversalCollection from "
+	placeholderNonFungibleToken     = regexp.MustCompile(`"NonFungibleToken"`)
+	nonFungibleTokenImport          = "NonFungibleToken from "
+	placeholderMetadataViews        = regexp.MustCompile(`"MetadataViews"`)
+	metadataViewsImport             = "MetadataViews from "
+	placeholderFungibleToken        = regexp.MustCompile(`"FungibleToken"`)
+	fungibleTokenImport             = "FungibleToken from "
+	placeholderResolver             = regexp.MustCompile(`"ViewResolver"`)
+	viewResolverImport              = "ViewResolver from "
+	placeholderUniversalCollection  = regexp.MustCompile(`"UniversalCollection"`)
+	universalCollectionImport       = "UniversalCollection from "
+	placeholderCrossVMMetadataViews = regexp.MustCompile(`"CrossVMMetadataViews"`)
+	crossVMMetadataViewsImport      = "CrossVMMetadataViews from "
 )
 
 const (
-	filenameNonFungibleToken    = "NonFungibleToken.cdc"
-	filenameExampleNFT          = "ExampleNFT.cdc"
-	filenameMetadataViews       = "MetadataViews.cdc"
-	filenameNFTMetadataViews    = "NFTMetadataViews.cdc"
-	filenameViewResolver        = "ViewResolver.cdc"
-	filenameUniversalCollection = "UniversalCollection.cdc"
-	filenameBasicNFT            = "BasicNFT.cdc"
-	filenameFungibleToken       = "utility/FungibleToken.cdc"
+	filenameNonFungibleToken     = "NonFungibleToken.cdc"
+	filenameExampleNFT           = "ExampleNFT.cdc"
+	filenameMetadataViews        = "MetadataViews.cdc"
+	filenameCrossVMMetadataViews = "CrossVMMetadataViews.cdc"
+	filenameNFTMetadataViews     = "NFTMetadataViews.cdc"
+	filenameViewResolver         = "ViewResolver.cdc"
+	filenameUniversalCollection  = "UniversalCollection.cdc"
+	filenameBasicNFT             = "BasicNFT.cdc"
+	filenameFungibleToken        = "utility/FungibleToken.cdc"
 )
 
 func withHexPrefix(address string) string {
@@ -81,6 +84,14 @@ func MetadataViews(ftAddress, nftAddress, resolverAddress string) []byte {
 
 func ViewResolver() []byte {
 	code := assets.MustAssetString(filenameViewResolver)
+	return []byte(code)
+}
+
+func CrossVMMetadataViews(evmAddress string) []byte {
+	code := assets.MustAssetString(filenameCrossVMMetadataViews)
+
+	code = placeholderFungibleToken.ReplaceAllString(code, fungibleTokenImport+withHexPrefix(evmAddress))
+
 	return []byte(code)
 }
 
