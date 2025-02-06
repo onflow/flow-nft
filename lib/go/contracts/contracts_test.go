@@ -35,3 +35,8 @@ func TestMetadataViewsContract(t *testing.T) {
 	contract := contracts.MetadataViews(addrA, addrA, addrA)
 	assert.NotNil(t, contract)
 }
+
+func TestCrossVMMetadataViewsContract(t *testing.T) {
+	contract := contracts.CrossVMMetadataViews(addrA)
+	assert.NotNil(t, contract)
+}
