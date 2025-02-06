@@ -1,5 +1,11 @@
 {
 	"contracts": {
+		"CrossVMMetadataViews": {
+			"source": "contracts/CrossVMMetadataViews.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
 		"ExampleNFT": {
 			"source": "./contracts/ExampleNFT.cdc",
 			"aliases": {
@@ -133,7 +139,8 @@
 				"FungibleToken",
 				"MetadataViews",
 				"ExampleNFT",
-				"NFTForwarding"
+				"NFTForwarding",
+				"CrossVMMetadataViews"
 			]
 		},
 		"mainnet": {
