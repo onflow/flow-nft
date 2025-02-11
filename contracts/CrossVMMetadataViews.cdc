@@ -1,3 +1,4 @@
+import "ViewResolver"
 import "EVM"
 
 /// This contract implements views originally proposed in FLIP-318 supporting NFT collections
@@ -44,21 +45,39 @@ access(all) contract CrossVMMetadataViews {
         }
     }
 
+    access(all) fun getEVMPointer(_ viewResolver: &{ViewResolver.Resolver}): EVMPointer? {
+        if let view = viewResolver.resolveView(Type<EVMPointer>()) {
+            if let v = view as? EVMPointer {
+                return v
+            }
+        }
+        return nil
+    }
+
     /// View resolved at resource level denoting any metadata to be passed to the associated EVM
-    /// contract at the time of / bridging. This optional view would allow EVM side metadata to be
-    /// updated based on current Cadence state. If the / view is not supported, no bytes will be
+    /// contract at the time of bridging. This optional view would allow EVM side metadata to be
+    /// updated based on current Cadence state. If the view is not supported, no bytes will be
     /// passed into EVM when bridging.
     ///
     access(all) struct EVMBytesMetadata {
         /// Returns the bytes to be passed to the EVM contract on `fulfillToEVM` call, allowing the
-        /// EVM contract to update / the metadata associated with the NFT. The corresponding Solidity
-        /// `bytes` type allows the implementer greater / flexibility by enabling them to pass
+        /// EVM contract to update the metadata associated with the NFT. The corresponding Solidity
+        /// `bytes` type allows the implementer greater flexibility by enabling them to pass
         /// arbitrary data between VMs.
-        access(all) let bytes: EVM.EVMBytes?
+        access(all) let bytes: EVM.EVMBytes
 
-        init(bytes: EVM.EVMBytes?) {
+        init(bytes: EVM.EVMBytes) {
             self.bytes = bytes
         }
+    }
+
+    access(all) fun getEVMBytesMetadata(_ viewResolver: &{ViewResolver.Resolver}): EVMBytesMetadata? {
+        if let view = viewResolver.resolveView(Type<EVMBytesMetadata>()) {
+            if let v = view as? EVMBytesMetadata {
+                return v
+            }
+        }
+        return nil
     }
 
 }

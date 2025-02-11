@@ -13,6 +13,9 @@
 import "NonFungibleToken"
 import "ViewResolver"
 import "MetadataViews"
+import "CrossVMMetadataViews"
+import "SerializeMetadata"
+import "EVM"
 
 access(all) contract ExampleNFT: NonFungibleToken {
 
@@ -127,6 +130,11 @@ access(all) contract ExampleNFT: NonFungibleToken {
                 case Type<MetadataViews.EVMBridgedMetadata>():
                     // Implementing this view gives the project control over how the bridged NFT is represented as an
                     // ERC721 when bridged to EVM on Flow via the public infrastructure bridge.
+                    // NOTE: If your NFT is a cross-VM NFT, meaning you control both your Cadence & EVM contracts and
+                    //      registered your custom association with the VM bridge, it's recommended you use the 
+                    //      CrossVMMetadata.EVMBytesMetadata view to define and pass metadata as EVMBytes into your
+                    //      EVM contract at the time of bridging into EVM. For more information about cross-VM NFTs,
+                    //      see FLIP-318: https://github.com/onflow/flips/issues/318
 
                     // Get the contract-level name and symbol values
                     let contractLevel = ExampleNFT.resolveContractView(
@@ -152,6 +160,27 @@ access(all) contract ExampleNFT: NonFungibleToken {
                     } else {
                         return nil
                     }
+                case Type<CrossVMMetadataViews.EVMPointer>():
+                    // This view is intended for NFT projects with corresponding NFT implementations in both Cadence and
+                    // EVM. Resolving EVMPointer indicates the associated EVM implementation. Fully validating the
+                    // cross-VM association would involve inspecting the associated EVM contract and ensuring that
+                    // contract also points to the resolved Cadence type and contract address. For more information
+                    // about cross-VM NFTs, see FLIP-318: https://github.com/onflow/flips/issues/318
+
+                    return ExampleNFT.resolveContractView(resourceType: self.getType(), viewType: view)
+                case Type<CrossVMMetadataViews.EVMBytesMetadata>():
+                    // This view is intended for Cadence-native NFTs with corresponding ERC721 implementations. By
+                    // resolving, you're able to pass arbitrary metadata into your EVM contract whenever an NFT is
+                    // bridged which can be useful for Cadence NFTs with dynamic metadata values.
+                    // See FLIP-318 for more information about cross-VM NFTs: https://github.com/onflow/flips/issues/318
+
+                    // Here we serialize the NFT's metadata and encode the string as EVM bytes, but you could pass any
+                    // Cadence values that can be abi encoded and decode them in your EVM contract as you wish. Within
+                    // your EVM contract, you can abi decode the bytes and update metadata as you see fit.
+                    let serializedAsDataURI = SerializeMetadata.serializeNFTMetadataAsURI(&self as &{NonFungibleToken.NFT})
+                    let encodedURI = EVM.encodeABI([serializedAsDataURI])
+                    let evmBytes = EVM.EVMBytes(value: encodedURI)
+                    return CrossVMMetadataViews.EVMBytesMetadata(bytes: evmBytes)
             }
             return nil
         }
@@ -309,6 +338,27 @@ access(all) contract ExampleNFT: NonFungibleToken {
                         baseURI: nil, // setting baseURI as nil sets the given value as the uri field value
                         value: "https://example-nft.onflow.org/contract-metadata.json"
                     )
+                )
+            case Type<CrossVMMetadataViews.EVMPointer>():
+                // This view is intended for NFT projects with corresponding NFT implementations in both Cadence and
+                // EVM. Resolving EVMPointer indicates the associated EVM implementation. Fully validating the
+                // cross-VM association would involve inspecting the associated EVM contract and ensuring that contract
+                // also points to the resolved Cadence type and contract address. For more information about cross-VM
+                // NFTs, see FLIP-318: https://github.com/onflow/flips/issues/318
+
+                // Assigning a dummy EVM address and deserializing. Implementations would want to declare the actual
+                // EVM address corresponding to their corresponding ERC721. If using a proxy in your EVM contracts, this
+                // address should be your proxy's address.
+                let evmContractAddress = EVM.addressFromString(
+                        "0x1234565789012345657890123456578901234565"
+                    )
+                // Since this NFT is distributed in Cadence, it's declared as Cadence-native
+                let nativeVM = CrossVMMetadataViews.VM.Cadence
+                return CrossVMMetadataViews.EVMPointer(
+                    cadenceType: Type<@ExampleNFT.NFT>(),
+                    cadenceContractAddress: self.account.address,
+                    evmContractAddress: evmContractAddress,
+                    nativeVM: nativeVM
                 )
         }
         return nil
