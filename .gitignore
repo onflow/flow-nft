@@ -4,3 +4,5 @@ node_modules
 coverage.json
 *.pkey
 imports/
+coverage.lcov
+coverage.json
