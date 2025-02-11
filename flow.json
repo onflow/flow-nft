@@ -3,7 +3,8 @@
 		"CrossVMMetadataViews": {
 			"source": "contracts/CrossVMMetadataViews.cdc",
 			"aliases": {
-				"emulator": "f8d6e0586b0a20c7"
+				"emulator": "f8d6e0586b0a20c7",
+				"testing": "0000000000000007"
 			}
 		},
 		"ExampleNFT": {
@@ -95,20 +96,23 @@
 				"testnet": "9a0766d93b6608b7"
 			}
 		},
-		"MetadataViews": {
-			"source": "mainnet://1d7e57aa55817448.MetadataViews",
-			"hash": "10a239cc26e825077de6c8b424409ae173e78e8391df62750b6ba19ffd048f51",
-			"aliases": {}
+		"Serialize": {
+			"source": "mainnet://1e4aa0b87d10b141.Serialize",
+			"hash": "50bf2599bac68e3fb0e426a262e7db2eed91b90c0a5ad57e70688cbf93282b4f",
+			"aliases": {
+				"mainnet": "1e4aa0b87d10b141",
+				"testing": "0000000000000007",
+				"testnet": "dfc20aee650fcbdf"
+			}
 		},
-		"NonFungibleToken": {
-			"source": "mainnet://1d7e57aa55817448.NonFungibleToken",
-			"hash": "b63f10e00d1a814492822652dac7c0574428a200e4c26cb3c832c4829e2778f0",
-			"aliases": {}
-		},
-		"ViewResolver": {
-			"source": "mainnet://1d7e57aa55817448.ViewResolver",
-			"hash": "374a1994046bac9f6228b4843cb32393ef40554df9bd9907a702d098a2987bde",
-			"aliases": {}
+		"SerializeMetadata": {
+			"source": "mainnet://1e4aa0b87d10b141.SerializeMetadata",
+			"hash": "7be42ac4e42fd3019ab6771f205abeb80ded5a461649a010b1a0668533909012",
+			"aliases": {
+				"mainnet": "1e4aa0b87d10b141",
+				"testing": "0000000000000007",
+				"testnet": "dfc20aee650fcbdf"
+			}
 		}
 	},
 	"networks": {
@@ -140,7 +144,9 @@
 				"MetadataViews",
 				"ExampleNFT",
 				"NFTForwarding",
-				"CrossVMMetadataViews"
+				"CrossVMMetadataViews",
+				"SerializeMetadata",
+				"Serialize"
 			]
 		},
 		"mainnet": {
