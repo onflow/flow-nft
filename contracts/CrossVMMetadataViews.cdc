@@ -2,7 +2,8 @@ import "EVM"
 
 /// This contract implements views originally proposed in FLIP-318 supporting NFT collections
 /// with project-defined implementations across both Cadence & EVM.
-///
+/// The View structs in this contract should be implemented in the same way that views from `MetadataViews` are implemented
+/// 
 access(all) contract CrossVMMetadataViews {
 
     /// An enum denoting a VM. For now, there are only two VMs on Flow, but this enum could be
@@ -20,14 +21,14 @@ access(all) contract CrossVMMetadataViews {
     /// information and context, see FLIP-318: https://github.com/onflow/flips/issues/318
     ///
     access(all) struct EVMPointer {
-        /// The associated Cadence Type
+        /// The associated Cadence Type defined in the contract that this view is returned from
         access(all) let cadenceType: Type
         /// The defining Cadence contract address
         access(all) let cadenceContractAddress: Address
-        /// The associated EVM contract address
+        /// The associated EVM contract address that the Cadence contract will bridge to
         access(all) let evmContractAddress: EVM.EVMAddress
         /// Whether the asset is Cadence- or EVM-native. Native here meaning the VM in which the
-        /// asset is distributed.
+        /// asset is originally distributed.
         access(all) let nativeVM: VM
 
         init(
