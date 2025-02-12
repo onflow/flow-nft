@@ -95,24 +95,6 @@
 				"mainnet": "f233dcee88fe0abe",
 				"testnet": "9a0766d93b6608b7"
 			}
-		},
-		"Serialize": {
-			"source": "mainnet://1e4aa0b87d10b141.Serialize",
-			"hash": "50bf2599bac68e3fb0e426a262e7db2eed91b90c0a5ad57e70688cbf93282b4f",
-			"aliases": {
-				"mainnet": "1e4aa0b87d10b141",
-				"testing": "0000000000000007",
-				"testnet": "dfc20aee650fcbdf"
-			}
-		},
-		"SerializeMetadata": {
-			"source": "mainnet://1e4aa0b87d10b141.SerializeMetadata",
-			"hash": "7be42ac4e42fd3019ab6771f205abeb80ded5a461649a010b1a0668533909012",
-			"aliases": {
-				"mainnet": "1e4aa0b87d10b141",
-				"testing": "0000000000000007",
-				"testnet": "dfc20aee650fcbdf"
-			}
 		}
 	},
 	"networks": {
@@ -144,9 +126,7 @@
 				"MetadataViews",
 				"ExampleNFT",
 				"NFTForwarding",
-				"CrossVMMetadataViews",
-				"SerializeMetadata",
-				"Serialize"
+				"CrossVMMetadataViews"
 			]
 		},
 		"mainnet": {
