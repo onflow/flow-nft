@@ -14,7 +14,6 @@ import "NonFungibleToken"
 import "ViewResolver"
 import "MetadataViews"
 import "CrossVMMetadataViews"
-import "SerializeMetadata"
 import "EVM"
 
 access(all) contract ExampleNFT: NonFungibleToken {
@@ -174,11 +173,13 @@ access(all) contract ExampleNFT: NonFungibleToken {
                     // bridged which can be useful for Cadence NFTs with dynamic metadata values.
                     // See FLIP-318 for more information about cross-VM NFTs: https://github.com/onflow/flips/issues/318
 
-                    // Here we serialize the NFT's metadata and encode the string as EVM bytes, but you could pass any
+                    // Here we encoded the EVMBridgedMetadata URI and encode the string as EVM bytes, but you could pass any
                     // Cadence values that can be abi encoded and decode them in your EVM contract as you wish. Within
-                    // your EVM contract, you can abi decode the bytes and update metadata as you see fit.
-                    let serializedAsDataURI = SerializeMetadata.serializeNFTMetadataAsURI(&self as &{NonFungibleToken.NFT})
-                    let encodedURI = EVM.encodeABI([serializedAsDataURI])
+                    // your EVM contract, you can abi decode the bytes and update metadata in your ERC721 contract as
+                    // you see fit.
+                    let bridgedMetadata = (self.resolveView(Type<MetadataViews.EVMBridgedMetadata>()) as! MetadataViews.EVMBridgedMetadata?)!
+                    let uri = bridgedMetadata.uri.uri()
+                    let encodedURI = EVM.encodeABI([uri])
                     let evmBytes = EVM.EVMBytes(value: encodedURI)
                     return CrossVMMetadataViews.EVMBytesMetadata(bytes: evmBytes)
             }

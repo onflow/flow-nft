@@ -29,6 +29,7 @@ var _ = chainhash.Hash{}
 
 const (
 	emulatorFTAddress = "ee82856bf20e2aa6"
+	emulatorEVMAddress = "f8d6e0586b0a20c7"
 )
 
 // Sets up testing and emulator objects and initialize the emulator default addresses

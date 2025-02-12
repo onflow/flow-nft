@@ -4,7 +4,6 @@ import "MetadataViews"
 import "CrossVMMetadataViews"
 import "ViewResolver"
 import "EVM"
-import "SerializeMetadata"
 
 access(all) struct NFTView {
     access(all) let id: UInt64
@@ -76,7 +75,7 @@ access(all) fun main(address: Address, id: UInt64): Bool {
 
     let expectedEVMContractAddress = EVM.addressFromString("0x1234565789012345657890123456578901234565")
     let nft = viewResolver as! &{NonFungibleToken.NFT}
-    let expectedDecodedMetadata = SerializeMetadata.serializeNFTMetadataAsURI(nft)
+    let expectedDecodedMetadata = evmBridgedMetadata.uri.uri()
 
     assert("ExampleNFT" == nftViewResult.name)
     assert("XMPL" == nftViewResult.symbol)

@@ -48,10 +48,13 @@ func deployNFTContracts(
 
 	metadataAddress := deploy(t, b, adapter, "MetadataViews", contracts.MetadataViews(emulatorFTAddress, nftAddress.String(), resolverAddress.String()), nftAccountKey)
 
+	evmAddress := flow.HexToAddress(emulatorEVMAddress)
+	crossVMMetadataAddress := deploy(t, b, adapter, "CrossVMMetadataViews", contracts.CrossVMMetadataViews(resolverAddress.String(), evmAddress.String()), nftAccountKey)
+
 	exampleNFTAddress := deploy(
 		t, b, adapter,
 		"ExampleNFT",
-		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress),
+		contracts.ExampleNFT(nftAddress, metadataAddress, resolverAddress, evmAddress, crossVMMetadataAddress),
 		exampleNFTAccountKey,
 	)
 

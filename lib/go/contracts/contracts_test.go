@@ -22,8 +22,10 @@ func TestExampleNFTContract(t *testing.T) {
 	addressA := addresses.New()
 	addressB := addresses.New()
 	addressC := addresses.New()
+	addressD := addresses.New()
+	addressE := addresses.New()
 
-	contract := contracts.ExampleNFT(addressA, addressB, addressC)
+	contract := contracts.ExampleNFT(addressA, addressB, addressC, addressD, addressE)
 	assert.NotNil(t, contract)
 
 	assert.Contains(t, string(contract), addressA.String())
@@ -37,6 +39,16 @@ func TestMetadataViewsContract(t *testing.T) {
 }
 
 func TestCrossVMMetadataViewsContract(t *testing.T) {
-	contract := contracts.CrossVMMetadataViews(addrA)
+	addresses := test.AddressGenerator()
+	addressA := addresses.New()
+	addressB := addresses.New()
+
+	contract := contracts.CrossVMMetadataViews(addressA.String(), addressB.String())
 	assert.NotNil(t, contract)
 }
+
+/**
+have ("github.com/onflow/flow-go-sdk".Address, "github.com/onflow/flow-go-sdk".Address, "github.com/onflow/flow-go-sdk".Address)
+want ("github.com/onflow/flow-go-sdk".Address, "github.com/onflow/flow-go-sdk".Address, "github.com/onflow/flow-go-sdk".Address, "github.com/onflow/flow-go-sdk".Address, "github.com/onflow/flow-go-sdk".Address, "github.com/onflow/flow-go-sdk".Address
+
+*/

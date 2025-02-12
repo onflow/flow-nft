@@ -5,8 +5,6 @@ import "ViewResolver"
 import "NonFungibleToken"
 import "ExampleNFT"
 import "MetadataViews"
-import "CrossVMMetadataViews"
-import "EVM"
 
 access(all) let admin = Test.getAccount(0x0000000000000007)
 access(all) let recipient = Test.createAccount()
@@ -29,8 +27,6 @@ fun setup() {
     deploy("ViewResolver", "../contracts/ViewResolver.cdc")
     deploy("NonFungibleToken", "../contracts/NonFungibleToken.cdc")
     deploy("MetadataViews", "../contracts/MetadataViews.cdc")
-    deploy("Serialize", "../imports/1e4aa0b87d10b141/Serialize.cdc")
-    deploy("SerializeMetadata", "../imports/1e4aa0b87d10b141/SerializeMetadata.cdc")
     deploy("CrossVMMetadataViews", "../contracts/CrossVMMetadataViews.cdc")
     deploy("ExampleNFT", "../contracts/ExampleNFT.cdc")
     deploy("MaliciousNFT", "../contracts/test/MaliciousNFT.cdc")

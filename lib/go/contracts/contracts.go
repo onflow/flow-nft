@@ -25,7 +25,9 @@ var (
 	placeholderUniversalCollection  = regexp.MustCompile(`"UniversalCollection"`)
 	universalCollectionImport       = "UniversalCollection from "
 	placeholderCrossVMMetadataViews = regexp.MustCompile(`"CrossVMMetadataViews"`)
-	crossVMMetadataViewsImport      = "CrossVMMetadataViews from "
+	crossVMMetadataImport           = "CrossVMMetadataViews from "
+	placeholderEVM                  = regexp.MustCompile(`"EVM"`)
+	evmImport                       = "EVM from "
 )
 
 const (
@@ -62,12 +64,14 @@ func NonFungibleToken(resolverAddress string) []byte {
 // ExampleNFT returns the ExampleNFT contract.
 //
 // The returned contract will import the NonFungibleToken contract from the specified address.
-func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byte {
+func ExampleNFT(nftAddress, metadataAddress, resolverAddress, evmAddress, crossVMMetadataAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
 	code = placeholderNonFungibleToken.ReplaceAllString(code, nonFungibleTokenImport+withHexPrefix(nftAddress.String()))
 	code = placeholderMetadataViews.ReplaceAllString(code, metadataViewsImport+withHexPrefix(metadataAddress.String()))
 	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress.String()))
+	code = placeholderEVM.ReplaceAllString(code, evmImport+withHexPrefix(evmAddress.String()))
+	code = placeholderCrossVMMetadataViews.ReplaceAllString(code, crossVMMetadataImport+withHexPrefix(crossVMMetadataAddress.String()))
 
 	return []byte(code)
 }
@@ -87,10 +91,11 @@ func ViewResolver() []byte {
 	return []byte(code)
 }
 
-func CrossVMMetadataViews(evmAddress string) []byte {
+func CrossVMMetadataViews(resolverAddress, evmAddress string) []byte {
 	code := assets.MustAssetString(filenameCrossVMMetadataViews)
 
-	code = placeholderFungibleToken.ReplaceAllString(code, fungibleTokenImport+withHexPrefix(evmAddress))
+	code = placeholderFungibleToken.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress))
+	code = placeholderFungibleToken.ReplaceAllString(code, evmImport+withHexPrefix(evmAddress))
 
 	return []byte(code)
 }
