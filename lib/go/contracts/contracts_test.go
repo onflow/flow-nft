@@ -22,10 +22,10 @@ func TestExampleNFTContract(t *testing.T) {
 	addressA := addresses.New()
 	addressB := addresses.New()
 	addressC := addresses.New()
-	addressD := addresses.New()
-	addressE := addresses.New()
+	// addressD := addresses.New()
+	// addressE := addresses.New()
 
-	contract := contracts.ExampleNFT(addressA, addressB, addressC, addressD, addressE)
+	contract := contracts.ExampleNFT(addressA, addressB, addressC)
 	assert.NotNil(t, contract)
 
 	assert.Contains(t, string(contract), addressA.String())

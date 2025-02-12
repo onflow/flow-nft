@@ -1,6 +1,6 @@
 package contracts
 
-//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../contracts -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../contracts
+//go:generate go run github.com/kevinburke/go-bindata/go-bindata -prefix ../../../contracts -o internal/assets/assets.go -pkg assets -nometadata -nomemcopy ../../../contracts/...
 
 import (
 	"fmt"
@@ -39,7 +39,6 @@ const (
 	filenameViewResolver         = "ViewResolver.cdc"
 	filenameUniversalCollection  = "UniversalCollection.cdc"
 	filenameBasicNFT             = "BasicNFT.cdc"
-	filenameFungibleToken        = "utility/FungibleToken.cdc"
 )
 
 func withHexPrefix(address string) string {
@@ -64,7 +63,18 @@ func NonFungibleToken(resolverAddress string) []byte {
 // ExampleNFT returns the ExampleNFT contract.
 //
 // The returned contract will import the NonFungibleToken contract from the specified address.
-func ExampleNFT(nftAddress, metadataAddress, resolverAddress, evmAddress, crossVMMetadataAddress flow.Address) []byte {
+func ExampleNFT(nftAddress, metadataAddress, resolverAddress flow.Address) []byte {
+	code := assets.MustAssetString("test/ExampleNFT_preCrossVMPointer.cdc")
+
+	code = placeholderNonFungibleToken.ReplaceAllString(code, nonFungibleTokenImport+withHexPrefix(nftAddress.String()))
+	code = placeholderMetadataViews.ReplaceAllString(code, metadataViewsImport+withHexPrefix(metadataAddress.String()))
+	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress.String()))
+
+	return []byte(code)
+}
+
+// ExampleNFTWithCrossVMPointers returns the ExampleNFT contract with cross VM pointers views.
+func ExampleNFTWithCrossVMPointers(nftAddress, metadataAddress, resolverAddress, evmAddress, crossVMMetadataAddress flow.Address) []byte {
 	code := assets.MustAssetString(filenameExampleNFT)
 
 	code = placeholderNonFungibleToken.ReplaceAllString(code, nonFungibleTokenImport+withHexPrefix(nftAddress.String()))
@@ -94,8 +104,8 @@ func ViewResolver() []byte {
 func CrossVMMetadataViews(resolverAddress, evmAddress string) []byte {
 	code := assets.MustAssetString(filenameCrossVMMetadataViews)
 
-	code = placeholderFungibleToken.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress))
-	code = placeholderFungibleToken.ReplaceAllString(code, evmImport+withHexPrefix(evmAddress))
+	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress))
+	code = placeholderEVM.ReplaceAllString(code, evmImport+withHexPrefix(evmAddress))
 
 	return []byte(code)
 }
@@ -115,9 +125,4 @@ func BasicNFT(nftAddress, resolverAddress, metadataAddress, universalCollectionA
 	code = placeholderResolver.ReplaceAllString(code, viewResolverImport+withHexPrefix(resolverAddress.String()))
 	code = placeholderUniversalCollection.ReplaceAllString(code, universalCollectionImport+withHexPrefix(universalCollectionAddress.String()))
 	return []byte(code)
-}
-
-// FungibleToken returns the FungibleToken contract interface.
-func FungibleToken() []byte {
-	return assets.MustAsset(filenameFungibleToken)
 }

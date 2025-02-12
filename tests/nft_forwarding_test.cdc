@@ -16,6 +16,7 @@ access(all) fun setup() {
     deploy("ViewResolver", "../contracts/ViewResolver.cdc")
     deploy("NonFungibleToken", "../contracts/NonFungibleToken.cdc")
     deploy("MetadataViews", "../contracts/MetadataViews.cdc")
+    deploy("CrossVMMetadataViews", "../contracts/CrossVMMetadataViews.cdc")
     deploy("ExampleNFT", "../contracts/ExampleNFT.cdc")
     deploy("NFTForwarding", "../contracts/utility/NFTForwarding.cdc")
     
