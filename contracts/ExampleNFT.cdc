@@ -26,6 +26,17 @@ access(all) contract ExampleNFT: NonFungibleToken {
     /// The standard paths for the collection are stored in the collection resource type
     access(all) let MinterStoragePath: StoragePath
 
+    /// Event to show when an NFT is minted
+    access(all) event Minted(
+        type: String,
+        id: UInt64,
+        uuid: UInt64,
+        minterAddress: Address?,
+        minterUUID: UInt64,
+        name: String,
+        description: String
+    )
+
     /// We choose the name NFT here, but this type can have any name now
     /// because the interface does not require it to have a specific name any more
     access(all) resource NFT: NonFungibleToken.NFT {
@@ -395,6 +406,14 @@ access(all) contract ExampleNFT: NonFungibleToken {
                 royalties: royalties,
                 metadata: metadata,
             )
+
+            emit Minted(type: newNFT.getType().identifier,
+                        id: newNFT.id,
+                        uuid: newNFT.uuid,
+                        minterAddress: self.owner?.address,
+                        minterUUID: self.uuid,
+                        name: name,
+                        description: description)
 
             return <-newNFT
         }
