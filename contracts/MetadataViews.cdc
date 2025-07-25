@@ -14,6 +14,32 @@ import "ViewResolver"
 ///
 access(all) contract MetadataViews {
 
+    /// Function to resolve a contract view based on a type identifier String
+    /// and view type. Borrows the contract as &{ViewResolver} and 
+    /// then calls resolveContractView for the specified type and view.
+    ///
+    /// @param resourceType: An optional resource type to return views for
+    /// @param viewType: The Type of the desired view.
+    /// @return A structure representing the requested view. If anything failed, returns nil
+    ///
+    access(all) fun resolveContractViewFromTypeIdentifier(
+        resourceTypeIdentifier: String,
+        viewType: Type
+    ): AnyStruct? {
+        if let resourceType = CompositeType(resourceTypeIdentifier) {
+            if let viewResolverRef = getAccount(resourceType.address!).contracts.borrow<&{ViewResolver}>(
+                name: resourceType.contractName!
+            ) {
+                return viewResolverRef.resolveContractView(resourceType: resourceType, viewType: viewType)
+            } else {
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+
+
     /// Display is a basic view that includes the name, description and
     /// thumbnail for an object. Most objects should implement this view.
     ///
@@ -119,10 +145,10 @@ access(all) contract MetadataViews {
         ///
         access(all) view fun uri(): String {
             if let path = self.path {
-                return "ipfs://".concat(self.cid).concat("/").concat(path)
+                return "ipfs://\(self.cid)/\(path)"
             }
 
-            return "ipfs://".concat(self.cid)
+            return "ipfs://\(self.cid)"
         }
     }
 
@@ -280,8 +306,7 @@ access(all) contract MetadataViews {
             pre {
                 cut >= 0.0 && cut <= 1.0 :
                     "MetadataViews.Royalty.init: Cannot initialize the Royalty Metadata View! "
-                    .concat("The provided royalty cut value of ").concat(cut.toString())
-                    .concat(" is invalid. ")
+                    .concat("The provided royalty cut value of \(cut) is invalid. ")
                     .concat("It should be within the valid range between 0 and 1. i.e [0,1]")
             }
             self.receiver = receiver
@@ -309,9 +334,7 @@ access(all) contract MetadataViews {
                 totalCut <= 1.0,
                 message:
                     "MetadataViews.Royalties.init: Cannot initialize Royalties Metadata View! "
-                    .concat(" The sum of cutInfos multipliers is ")
-                    .concat(totalCut.toString())
-                    .concat(" but it should not be greater than 1.0")
+                    .concat(" The sum of cutInfos multipliers is \(totalCut) but it should not be greater than 1.0")
             )
             // Assign the cutInfos
             self.cutInfos = cutInfos
@@ -469,11 +492,7 @@ access(all) contract MetadataViews {
                     number <= max!,
                     message:
                         "MetadataViews.Edition.init: Cannot intialize the Edition Metadata View! "
-                        .concat("The provided edition number of ")
-                        .concat(number.toString())
-                        .concat(" cannot be greater than the max edition number of ")
-                        .concat(max!.toString())
-                        .concat(".")
+                        .concat("The provided edition number of \(number) cannot be greater than the max edition number of \(max!).")
                 )
             }
             self.name = name
@@ -556,8 +575,7 @@ access(all) contract MetadataViews {
         view init(score: UFix64?, max: UFix64?, description: String?) {
             if score == nil && description == nil {
                 panic("MetadataViews.Rarity.init: Cannot initialize the Rarity Metadata View! "
-                      .concat("The provided score and description are both `nil`. ")
-                      .concat(" A Rarity needs to set score, description, or both"))
+                      .concat("The provided score and description are both `nil`. A Rarity needs to set score, description, or both"))
             }
 
             self.score = score
@@ -672,9 +690,7 @@ access(all) contract MetadataViews {
             pre {
                 publicLinkedType.isSubtype(of: Type<&{NonFungibleToken.Collection}>()):
                     "MetadataViews.NFTCollectionData.init: Cannot initialize the NFTCollectionData Metadata View! "
-                    .concat("The Public linked type <")
-                    .concat(publicLinkedType.identifier)
-                    .concat("> is incorrect. It must be a subtype of the NonFungibleToken.Collection interface.")
+                    .concat("The Public linked type <\(publicLinkedType.identifier)> is incorrect. It must be a subtype of the NonFungibleToken.Collection interface.")
             }
             self.storagePath=storagePath
             self.publicPath=publicPath

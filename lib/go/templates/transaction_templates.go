@@ -16,7 +16,6 @@ const (
 	filenameMintNFT                       = "transactions/mint_nft.cdc"
 	filenameTransferNFT                   = "transactions/transfer_nft.cdc"
 	filenameTransferNFTWithPaths          = "transactions/generic_transfer_with_paths.cdc"
-	filenameTransferNFTWithAddress        = "transactions/generic_transfer_with_address.cdc"
 	filenameTransferNFTWithAddressAndType = "transactions/generic_transfer_with_address_and_type.cdc"
 	filenameDestroyNFT                    = "transactions/destroy_nft.cdc"
 	filenameSetupRoyalty                  = "transactions/setup_account_to_receive_royalty.cdc"
@@ -81,11 +80,9 @@ func GenerateTransferGenericNFTWithPathsScript(nftAddress string) []byte {
 	return []byte(code)
 }
 
-// GenerateTransferGenericNFTWithAddressScript returns a script that withdraws a generic NFT token
-// from a collection and deposits it into another collection.
-// The sender needs to send the contract address and name of the token being transferred
+// No longer recommended to be used
 func GenerateTransferGenericNFTWithAddressScript(nftAddress, metadataViewsAddress string) []byte {
-	code := assets.MustAssetString(filenameTransferNFTWithAddress)
+	code := assets.MustAssetString(filenameTransferNFTWithAddressAndType)
 
 	code = strings.ReplaceAll(
 		code,

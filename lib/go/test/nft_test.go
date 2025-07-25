@@ -118,9 +118,8 @@ func TestTransferNFT(t *testing.T) {
 		script := templates.GenerateSetupAccountFromAddressScript(nftAddress.String(), metadataAddress.String())
 		tx := createTxWithTemplateAndAuthorizer(b, script, joshAddress)
 
-		// Specify ExampleNFT contract address & name
-		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.String("ExampleNFT"))
+		// Specify ExampleNFT type identifier
+		tx.AddArgument(cadence.String("A." + exampleNFTAddress.Hex() + ".ExampleNFT.NFT"))
 
 		signAndSubmit(
 			t, b, tx,
@@ -147,15 +146,14 @@ func TestTransferNFT(t *testing.T) {
 		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress, metadataAddress, viewResolverAddress)
 		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
-		// Specify ExampleNFT contract address & name
-		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.String("ExampleNFT"))
-
 		// Transfer it to joshAddress
 		tx.AddArgument(cadence.NewAddress(joshAddress))
 
 		// This ID does not exist in the authorizer's collection, so this will fail
 		tx.AddArgument(cadence.NewUInt64(3))
+
+		// Specify ExampleNFT type identifier
+		tx.AddArgument(cadence.String("A." + exampleNFTAddress.Hex() + ".ExampleNFT.NFT"))
 
 		signAndSubmit(
 			t, b, tx,
@@ -199,14 +197,13 @@ func TestTransferNFT(t *testing.T) {
 		script := templates.GenerateTransferNFTScript(nftAddress, exampleNFTAddress, metadataAddress, viewResolverAddress)
 		tx := createTxWithTemplateAndAuthorizer(b, script, exampleNFTAddress)
 
-		// Specify ExampleNFT contract address & name
-		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.String("ExampleNFT"))
-
 		// Add the recipient's address
 		tx.AddArgument(cadence.NewAddress(joshAddress))
 		// The ID does exist in the authorizer's transaction, so the transfer will succeed
 		tx.AddArgument(mintedID)
+
+		// Specify ExampleNFT type identifier
+		tx.AddArgument(cadence.String("A." + exampleNFTAddress.Hex() + ".ExampleNFT.NFT"))
 
 		signAndSubmit(
 			t, b, tx,
@@ -244,7 +241,7 @@ func TestTransferNFT(t *testing.T) {
 		)
 
 		// Use the generic transfer transaction with contract address and name
-		script = templates.GenerateTransferGenericNFTWithAddressScript(nftAddress.String(), metadataAddress.String())
+		script = templates.GenerateTransferGenericNFTWithAddressAndTypeScript(nftAddress.String(), metadataAddress.String())
 		tx = createTxWithTemplateAndAuthorizer(b, script, joshAddress)
 
 		// Add the recipient's address
@@ -252,9 +249,8 @@ func TestTransferNFT(t *testing.T) {
 		// The ID does exist in the authorizer's transaction, so the transfer will succeed
 		tx.AddArgument(mintedID)
 
-		// Specify ExampleNFT contract address & name
-		tx.AddArgument(cadence.NewAddress(exampleNFTAddress))
-		tx.AddArgument(cadence.String("ExampleNFT"))
+		// Specify ExampleNFT type identifier
+		tx.AddArgument(cadence.String("A." + exampleNFTAddress.Hex() + ".ExampleNFT.NFT"))
 
 		signAndSubmit(
 			t, b, tx,
