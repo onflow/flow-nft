@@ -4,7 +4,9 @@
 			"source": "contracts/CrossVMMetadataViews.cdc",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
-				"testing": "0000000000000007"
+				"mainnet": "1d7e57aa55817448",
+				"testing": "0000000000000007",
+				"testnet": "631e88ae7f1d7c20"
 			}
 		},
 		"ExampleNFT": {
@@ -22,6 +24,8 @@
 		"MetadataViews": {
 			"source": "./contracts/MetadataViews.cdc",
 			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "1d7e57aa55817448",
 				"testing": "0000000000000007",
 				"testnet": "631e88ae7f1d7c20"
 			}
@@ -62,7 +66,7 @@
 		},
 		"EVM": {
 			"source": "mainnet://e467b9dd11fa00df.EVM",
-			"hash": "5c69921fa06088b477e2758e122636b39d3d3eb5316807c206c5680d9ac74c7e",
+			"hash": "df2065d3eebc1e690e0b52a3f293bdf6c22780c7a9e7ef48a708a651b87abdf0",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
 				"mainnet": "e467b9dd11fa00df",
@@ -80,7 +84,7 @@
 		},
 		"FungibleToken": {
 			"source": "mainnet://f233dcee88fe0abe.FungibleToken",
-			"hash": "050328d01c6cde307fbe14960632666848d9b7ea4fef03ca8c0bbfb0f2884068",
+			"hash": "23c1159cf99b2b039b6b868d782d57ae39b8d784045d81597f100a4782f0285b",
 			"aliases": {
 				"emulator": "ee82856bf20e2aa6",
 				"mainnet": "f233dcee88fe0abe",

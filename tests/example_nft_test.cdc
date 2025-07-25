@@ -53,7 +53,7 @@ fun testSetupAccount() {
     let newAccount = Test.createAccount()
     txResult = executeTransaction(
         "../transactions/setup_account_from_address.cdc",
-        [admin.address, "ExampleNFT"],
+        ["A.0000000000000007.ExampleNFT.NFT"],
         newAccount
     )
     Test.expect(txResult, Test.beSucceeded())
@@ -113,9 +113,8 @@ fun testTransferNFT() {
         "../transactions/transfer_nft.cdc",
         [
             admin.address,
-            "ExampleNFT",
-            admin.address,
-            nftID
+            nftID,
+            "A.0000000000000007.ExampleNFT.NFT"
         ],
         recipient
     )
@@ -156,9 +155,8 @@ fun testTransferNFT() {
         "../transactions/transfer_nft.cdc",
         [
             admin.address,
-            "ExampleNFT",
-            admin.address,
-            nftID
+            nftID,
+            "A.0000000000000007.ExampleNFT.NFT"
         ],
         recipient
     )
@@ -166,15 +164,15 @@ fun testTransferNFT() {
 
     // Other generic transfer transactions should succeed
     txResult = executeTransaction(
-        "../transactions/generic_transfer_with_address.cdc",
-        [recipient.address, nftID, admin.address, "ExampleNFT"],
+        "../transactions/generic_transfer_with_address_and_type.cdc",
+        [recipient.address, nftID, "A.0000000000000007.ExampleNFT.NFT"],
         admin
     )
     Test.expect(txResult, Test.beSucceeded())
 
     txResult = executeTransaction(
         "../transactions/generic_transfer_with_address_and_type.cdc",
-        [admin.address, nftID, admin.address, "ExampleNFT", "NFT"],
+        [admin.address, nftID, "A.0000000000000007.ExampleNFT.NFT"],
         recipient
     )
     Test.expect(txResult, Test.beSucceeded())
@@ -182,8 +180,8 @@ fun testTransferNFT() {
     // Should not be able to transfer an NFT from a malicious contract
     // that tries to trick the generic transaction
     txResult = executeTransaction(
-        "../transactions/generic_transfer_with_address.cdc",
-        [recipient.address, nftID, admin.address, "MaliciousNFT"],
+        "../transactions/generic_transfer_with_address_and_type.cdc",
+        [recipient.address, nftID, "A.0000000000000007.MaliciousNFT.NFT"],
         admin
     )
     Test.expect(txResult, Test.beFailed())
@@ -194,7 +192,7 @@ fun testTransferNFT() {
 
     txResult = executeTransaction(
         "../transactions/generic_transfer_with_address_and_type.cdc",
-        [recipient.address, nftID, admin.address, "MaliciousNFT", "NFT"],
+        [recipient.address, nftID, "A.0000000000000007.MaliciousNFT.NFT"],
         admin
     )
     Test.expect(txResult, Test.beFailed())
@@ -210,9 +208,8 @@ fun testTransferMissingNFT() {
         "../transactions/transfer_nft.cdc",
         [
             admin.address,
-            "ExampleNFT",
-            admin.address,
-            10 as UInt64
+            10 as UInt64,
+            "A.0000000000000007.ExampleNFT.NFT"
         ],
         recipient
     )
@@ -455,7 +452,7 @@ fun testBurnNFT() {
     txResult = executeTransaction(
         "../transactions/generic_destroy_nft.cdc",
         [
-            admin.address, "ExampleNFT", "NFT", collectionIDs
+            "A.0000000000000007.ExampleNFT.NFT", collectionIDs
         ],
         admin
     )

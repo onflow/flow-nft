@@ -13,21 +13,17 @@ import "MetadataViews"
 /// uses views to know where to set up the collection
 /// in storage and to create the empty collection.
 ///
-/// @param contractAddress: The address of the contract that defines the token being initialized
-/// @param contractName: The name of the contract that defines the token being initialized. Ex: "ExampleNFT"
+/// @param nftTypeIdentifier: The type identifier name of the NFT type you want to create a collection for
+            /// Ex: "A.0b2a3299cc857e29.TopShot.NFT"
 
-transaction(contractAddress: Address, contractName: String) {
+transaction(nftTypeIdentifier: String) {
 
     prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
-        // Borrow a reference to the nft contract deployed to the passed account
-        let resolverRef = getAccount(contractAddress)
-            .contracts.borrow<&{NonFungibleToken}>(name: contractName)
-                ?? panic("Could not borrow NonFungibleToken reference to the contract. Make sure the provided contract name ("
-                         .concat(contractName).concat(") and address (").concat(contractAddress.toString()).concat(") are correct!"))
-
-        // Use that reference to retrieve the NFTCollectionData view 
-        let collectionData = resolverRef.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("Could not resolve NFTCollectionData view. The ".concat(contractName).concat(" contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction"))
+        let collectionData = MetadataViews.resolveContractViewFromTypeIdentifier(
+            resourceTypeIdentifier: nftTypeIdentifier,
+            viewType: Type<MetadataViews.NFTCollectionData>()
+        ) as? MetadataViews.NFTCollectionData
+            ?? panic("Could not construct valid NFT type and view from identifier \(nftTypeIdentifier)")
 
         // Create a new empty collections
         let emptyCollection <- collectionData.createEmptyCollection()

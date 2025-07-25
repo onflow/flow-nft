@@ -127,7 +127,7 @@ access(all) fun testChangeForwarderRecipient() {
     let transferSuccess: Bool = txExecutor(
         "transfer_nft.cdc",
         [recipient],
-        [admin.address, "ExampleNFT", forwarder.address, transferID],
+        [forwarder.address, transferID, "A.0000000000000007.ExampleNFT.NFT"],
         nil,
         nil
     )

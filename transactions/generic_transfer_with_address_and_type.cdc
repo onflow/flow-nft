@@ -2,7 +2,7 @@ import "NonFungibleToken"
 import "MetadataViews"
 
 #interaction (
-  version: "1.0.0",
+  version: "1.1.0",
 	title: "Generic NFT Transfer with Contract Address and Name",
 	description: "Transfer any Non-Fungible Token by providing the contract address and name and type name",
 	language: "en-US",
@@ -14,12 +14,10 @@ import "MetadataViews"
 ///
 /// @param to: The address to transfer the token to
 /// @param id: The id of token to transfer
-/// @param contractAddress: The address of the contract that defines the token being transferred
-/// @param contractName: The name of the contract that defines the token being transferred. Ex: "ExampleNFT"
-/// @param nftTypeName: The type name of the NFT that the user wants to transfer
-///                 Ex: "NFT"
+/// @param nftTypeIdentifier: The type identifier name of the NFT type you want to transfer
+            /// Ex: "A.0b2a3299cc857e29.TopShot.NFT"
 ///
-transaction(to: Address, id: UInt64, contractAddress: Address, contractName: String, nftTypeName: String) {
+transaction(to: Address, id: UInt64, nftTypeIdentifier: String) {
 
     // The NFT resource to be transferred
     let tempNFT: @{NonFungibleToken.NFT}
@@ -29,47 +27,23 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
 
     prepare(signer: auth(BorrowValue) &Account) {
 
-        // Borrow a reference to the nft contract deployed to the passed account
-        let resolverRef = getAccount(contractAddress)
-            .contracts.borrow<&{NonFungibleToken}>(name: contractName)
-                ?? panic("Could not borrow NonFungibleToken reference to the contract. Make sure the provided contract name "
-                          .concat(contractName).concat(" and address ").concat(contractAddress.toString()).concat(" are correct!"))
-        
-        // Get the string representation of the address without the 0x
-        var addressString = contractAddress.toString()
-        if addressString.length == 18 {
-            addressString = addressString.slice(from: 2, upTo: 18)
-        }
-        let typeString: String = "A.".concat(addressString).concat(".").concat(contractName).concat(".").concat(nftTypeName)
-        let type = CompositeType(typeString)
-        assert(
-            type != nil,
-            message: "Could not create a type out of the contract name "
-                      .concat(contractName)
-                      .concat(" and address ")
-                      .concat(addressString)
-                      .concat("!")
-        )
-
-        // Use that reference to retrieve the NFTCollectionData view 
-        self.collectionData = resolverRef.resolveContractView(resourceType: type, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("Could not resolve NFTCollectionData view. The ".concat(contractName).concat(" contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction"))
+        self.collectionData = MetadataViews.resolveContractViewFromTypeIdentifier(
+            resourceTypeIdentifier: nftTypeIdentifier,
+            viewType: Type<MetadataViews.NFTCollectionData>()
+        ) as? MetadataViews.NFTCollectionData
+            ?? panic("Could not construct valid NFT type and view from identifier \(nftTypeIdentifier)")
 
         // borrow a reference to the signer's NFT collection
         let withdrawRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>(
                 from: self.collectionData.storagePath
-            ) ?? panic("The signer does not store a "
-                        .concat(contractName)
-                        .concat(" Collection object at the path ")
-                        .concat(self.collectionData.storagePath.toString())
+            ) ?? panic("The signer does not store a NFT Collection object at the path \(self.collectionData.storagePath)"
                         .concat("The signer must initialize their account with this collection first!"))
 
         self.tempNFT <- withdrawRef.withdraw(withdrawID: id)
 
         assert(
-            self.tempNFT.getType() == type!,
-            message: "The NFT that was withdrawn to transfer is not the type that was requested <"
-                     .concat(typeString).concat(">.")
+            self.tempNFT.getType().identifier == nftTypeIdentifier,
+            message: "The NFT that was withdrawn to transfer is not the type that was requested <\(nftTypeIdentifier)>."
         )
     }
 
@@ -79,12 +53,8 @@ transaction(to: Address, id: UInt64, contractAddress: Address, contractName: Str
 
         // borrow a public reference to the receivers collection
         let receiverRef = recipient.capabilities.borrow<&{NonFungibleToken.Receiver}>(self.collectionData.publicPath)
-            ?? panic("The recipient does not have a NonFungibleToken Receiver at "
-                        .concat(self.collectionData.publicPath.toString())
-                        .concat(" that is capable of receiving a ")
-                        .concat(contractName)
-                        .concat(" NFT.")
-                        .concat("The recipient must initialize their account with this collection and receiver first!"))
+            ?? panic("The recipient does not have a NonFungibleToken Receiver at \(self.collectionData.publicPath.toString())"
+                        .concat(" that is capable of receiving a \(nftTypeIdentifier)."))
 
         // Deposit the NFT to the receiver
         receiverRef.deposit(token: <-self.tempNFT)
