@@ -18,7 +18,7 @@ access(all) contract MetadataViews {
     /// and view type. Borrows the contract as &{ViewResolver} and 
     /// then calls resolveContractView for the specified type and view.
     ///
-    /// @param resourceType: An optional resource type to return views for
+    /// @param resourceTypeIdentifier: The type identifier of the resource
     /// @param viewType: The Type of the desired view.
     /// @return A structure representing the requested view. If anything failed, returns nil
     ///
