@@ -4,11 +4,6 @@ This standard defines the minimum functionality required to
 implement a safe, secure, and easy-to-use non-fungible token
 contract on the [Flow blockchain](https://flow.com/)
 
-The version of the contracts in the `master` branch is the
-Cadence 1.0 version of the contracts and is not the same
-as the ones that are currently deployed to testnet and mainnet.
-See the `cadence-0.42` branch for the currently deployed versions.
-
 ## What is Cadence?
 
 [Cadence is the resource-oriented programming language](https://cadence-lang.org/)
