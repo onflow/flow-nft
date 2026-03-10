@@ -86,7 +86,9 @@ access(all) contract ExampleNFT: NonFungibleToken {
                 Type<MetadataViews.NFTCollectionDisplay>(),
                 Type<MetadataViews.Serial>(),
                 Type<MetadataViews.Traits>(),
-                Type<MetadataViews.EVMBridgedMetadata>()
+                Type<MetadataViews.EVMBridgedMetadata>(),
+                Type<CrossVMMetadataViews.EVMPointer>(),
+                Type<CrossVMMetadataViews.EVMBytesMetadata>()
             ]
         }
 
@@ -188,7 +190,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
                     // Cadence values that can be abi encoded and decode them in your EVM contract as you wish. Within
                     // your EVM contract, you can abi decode the bytes and update metadata in your ERC721 contract as
                     // you see fit.
-                    let bridgedMetadata = (self.resolveView(Type<MetadataViews.EVMBridgedMetadata>()) as! MetadataViews.EVMBridgedMetadata?)!
+                    let bridgedMetadata = self.resolveView(Type<MetadataViews.EVMBridgedMetadata>()) as? MetadataViews.EVMBridgedMetadata
+                        ?? panic("ExampleNFT.NFT.resolveView: Could not resolve EVMBridgedMetadata view when constructing EVMBytesMetadata")
                     let uri = bridgedMetadata.uri.uri()
                     let encodedURI = EVM.encodeABI([uri])
                     let evmBytes = EVM.EVMBytes(value: encodedURI)
@@ -298,7 +301,8 @@ access(all) contract ExampleNFT: NonFungibleToken {
         return [
             Type<MetadataViews.NFTCollectionData>(),
             Type<MetadataViews.NFTCollectionDisplay>(),
-            Type<MetadataViews.EVMBridgedMetadata>()
+            Type<MetadataViews.EVMBridgedMetadata>(),
+            Type<CrossVMMetadataViews.EVMPointer>()
         ]
     }
 
