@@ -40,6 +40,10 @@ cd lib/go/test && go mod tidy
 ```
 Note: `lib/go/test/go.mod` pins `github.com/ethereum/go-ethereum` to v1.16.8→v1.17.0 due to a `trie/utils` package removal.
 
+### Tests
+
+All new tests should be written in Cadence unless an old Go test can be easily modified.
+
 ## Architecture
 
 ### Repository Structure
