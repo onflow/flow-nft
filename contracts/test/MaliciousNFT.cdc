@@ -267,6 +267,12 @@ access(all) contract MaliciousNFT: NonFungibleToken {
     access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
         switch viewType {
             case Type<MetadataViews.NFTCollectionData>():
+                // INTENTIONALLY MALICIOUS: This contract deliberately returns ExampleNFT's
+                // storage/public paths and ExampleNFT.Collection as the publicCollection and
+                // publicLinkedType. This tests that wallets and marketplaces do NOT blindly
+                // trust NFTCollectionData metadata from an arbitrary contract to determine
+                // where to store or find NFTs. Applications should validate that the collection
+                // type in storage matches the NFT type being handled before depositing.
                 let collectionData = MetadataViews.NFTCollectionData(
                     storagePath: /storage/exampleNFTCollection,
                     publicPath: /public/exampleNFTCollection,

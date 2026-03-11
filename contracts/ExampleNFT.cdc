@@ -247,13 +247,13 @@ access(all) contract ExampleNFT: NonFungibleToken {
 
             destroy oldToken
 
-            // This code is for testing purposes only
-            // Do not add to your contract unless you have a specific
-            // reason to want to emit the NFTUpdated event somewhere
-            // in your contract
-            let authTokenRef = (&self.ownedNFTs[id] as auth(NonFungibleToken.Update) &{NonFungibleToken.NFT}?)!
-            //authTokenRef.updateTransferDate(date: getCurrentBlock().timestamp)
-            ExampleNFT.emitNFTUpdated(authTokenRef)
+            // The following shows how to emit the NFTUpdated event. Uncomment
+            // and adapt if your contract needs to signal metadata changes on deposit.
+            // Do not use this pattern by default - only emit Updated when metadata
+            // actually changes, not on every deposit.
+            // let authTokenRef = (&self.ownedNFTs[id] as auth(NonFungibleToken.Update) &{NonFungibleToken.NFT}?)!
+            // authTokenRef.updateTransferDate(date: getCurrentBlock().timestamp)
+            // ExampleNFT.emitNFTUpdated(authTokenRef)
         }
 
         /// getIDs returns an array of the IDs that are in the collection
@@ -289,6 +289,11 @@ access(all) contract ExampleNFT: NonFungibleToken {
     /// createEmptyCollection creates an empty Collection for the specified NFT type
     /// and returns it to the caller so that they can own NFTs
     access(all) fun createEmptyCollection(nftType: Type): @{NonFungibleToken.Collection} {
+        if nftType != Type<@ExampleNFT.NFT>() {
+            panic("ExampleNFT.createEmptyCollection: The requested nftType <"
+                .concat(nftType.identifier)
+                .concat("> is not supported by this contract. Only ExampleNFT.NFT tokens are supported."))
+        }
         return <- create Collection()
     }
 
