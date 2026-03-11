@@ -26,7 +26,7 @@ transaction(nftTypeIdentifier: String) {
             ?? panic("Could not construct valid NFT type and view from identifier \(nftTypeIdentifier)")
 
         // Return early if the account already has a collection at this storage path
-        if signer.storage.borrow<&{NonFungibleToken.Collection}>(from: collectionData.storagePath) != nil {
+        if signer.storage.check<@{NonFungibleToken.Collection}>(from: collectionData.storagePath) {
             return
         }
 
