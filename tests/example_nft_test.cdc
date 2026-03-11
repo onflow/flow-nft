@@ -465,3 +465,47 @@ fun testBurnNFT() {
     collectionIDs = getCollectionIDs(from: admin.address, path: /public/exampleNFTCollection)
     Test.assertEqual(0, collectionIDs.length)
 }
+
+/// Verify that setup_account_from_address.cdc is idempotent: calling it a second time
+/// on an account that already has a collection should succeed without panicking.
+access(all)
+fun testSetupAccountFromAddressIsIdempotent() {
+    let newAccount = Test.createAccount()
+
+    // First call — should set up the collection
+    var txResult = executeTransaction(
+        "../transactions/setup_account_from_address.cdc",
+        ["A.0000000000000007.ExampleNFT.NFT"],
+        newAccount
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    // Second call on same account — must not panic even though storage path is occupied
+    txResult = executeTransaction(
+        "../transactions/setup_account_from_address.cdc",
+        ["A.0000000000000007.ExampleNFT.NFT"],
+        newAccount
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    let scriptResult = executeScript(
+        "../transactions/scripts/get_collection_length.cdc",
+        [newAccount.address]
+    )
+    Test.expect(scriptResult, Test.beSucceeded())
+    Test.assertEqual(0, scriptResult.returnValue! as! Int)
+}
+
+/// Verify that createEmptyCollection rejects an unsupported NFT type.
+access(all)
+fun testCreateEmptyCollectionRejectsWrongType() {
+    let scriptResult = executeScript(
+        "scripts/create_empty_collection_wrong_type.cdc",
+        []
+    )
+    Test.expect(scriptResult, Test.beFailed())
+    Test.assertError(
+        scriptResult,
+        errorMessage: "ExampleNFT.createEmptyCollection: The requested nftType"
+    )
+}

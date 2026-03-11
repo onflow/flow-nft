@@ -78,7 +78,7 @@ access(all) contract NFTForwarding {
         /// @return a reference to the recipient's Collection or nil if the Capability is no longer valid
         ///
         access(all) view fun borrowRecipientCollection(): &{NonFungibleToken.Collection}? {
-            return self.recipient.borrow() ?? nil
+            return self.recipient.borrow()
         }
 
         /// Function that allows resource owner to change the recipient of

@@ -18,20 +18,26 @@ import "MetadataViews"
 
 transaction(nftTypeIdentifier: String) {
 
-    prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
+    prepare(signer: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
         let collectionData = MetadataViews.resolveContractViewFromTypeIdentifier(
             resourceTypeIdentifier: nftTypeIdentifier,
             viewType: Type<MetadataViews.NFTCollectionData>()
         ) as? MetadataViews.NFTCollectionData
             ?? panic("Could not construct valid NFT type and view from identifier \(nftTypeIdentifier)")
 
-        // Create a new empty collections
+        // Return early if the account already has a collection at this storage path
+        if signer.storage.borrow<&{NonFungibleToken.Collection}>(from: collectionData.storagePath) != nil {
+            return
+        }
+
+        // Create a new empty collection
         let emptyCollection <- collectionData.createEmptyCollection()
 
         // save it to the account
         signer.storage.save(<-emptyCollection, to: collectionData.storagePath)
 
         // create a public capability for the collection
+        signer.capabilities.unpublish(collectionData.publicPath)
         let collectionCap = signer.capabilities.storage.issue<&{NonFungibleToken.Collection}>(
                 collectionData.storagePath
             )
