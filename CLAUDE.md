@@ -44,6 +44,8 @@ Note: `lib/go/test/go.mod` pins `github.com/ethereum/go-ethereum` to v1.16.8→v
 
 All new tests should be written in Cadence unless an old Go test can be easily modified.
 
+If any changes are made to any of the Cadence code, all the tests in `make test` should pass before finishing.
+
 ## Architecture
 
 ### Repository Structure
@@ -84,10 +86,8 @@ The `flow.json` defines aliases mapping contract names to addresses for each net
 
 ## Workflow Orchestration
 
-### 1. Plan Mode Default
-- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+### 1. Planning
 - If something goes sideways, STOP and re-plan immediately - don't keep pushing
-- Use plan mode for verification steps, not just building
 - Write detailed specs upfront to reduce ambiguity
 
 ### 2. Subagent Strategy to keep main context window clean
@@ -130,5 +130,4 @@ The `flow.json` defines aliases mapping contract names to addresses for each net
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
 - **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
-
 
