@@ -71,7 +71,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
 
         /// createEmptyCollection creates an empty Collection
         /// and returns it to the caller so that they can own NFTs
-        /// @{NonFungibleToken.Collection}
+        /// @return An empty collection that can store this NFT type
         access(all) fun createEmptyCollection(): @{NonFungibleToken.Collection} {
             return <-ExampleNFT.createEmptyCollection(nftType: Type<@ExampleNFT.NFT>())
         }
@@ -130,7 +130,13 @@ access(all) contract ExampleNFT: NonFungibleToken {
                     let traitsView = MetadataViews.dictToTraits(dict: self.metadata, excludedNames: excludedTraits)
 
                     // mintedTime is a unix timestamp, we should mark it with a displayType so platforms know how to show it.
-                    let mintedTimeTrait = MetadataViews.Trait(name: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
+                    let mintedTimeTrait = MetadataViews.Trait(
+                        name: "mintedTime",
+                        value: self.metadata["mintedTime"]
+                            ?? panic("ExampleNFT.NFT.resolveView: Missing required metadata key \"mintedTime\""),
+                        displayType: "Date",
+                        rarity: nil
+                    )
                     traitsView.addTrait(mintedTimeTrait)
 
                     // foo is a trait with its own rarity
@@ -143,35 +149,31 @@ access(all) contract ExampleNFT: NonFungibleToken {
                     // Implementing this view gives the project control over how the bridged NFT is represented as an
                     // ERC721 when bridged to EVM on Flow via the public infrastructure bridge.
                     // NOTE: If your NFT is a cross-VM NFT, meaning you control both your Cadence & EVM contracts and
-                    //      registered your custom association with the VM bridge, it's recommended you use the 
+                    //      registered your custom association with the VM bridge, it's recommended you use the
                     //      CrossVMMetadata.EVMBytesMetadata view to define and pass metadata as EVMBytes into your
                     //      EVM contract at the time of bridging into EVM. For more information about cross-VM NFTs,
                     //      see FLIP-318: https://github.com/onflow/flips/issues/318
 
-                    // Get the contract-level name and symbol values
-                    let contractLevel = ExampleNFT.resolveContractView(
+                    // Get the contract-level name and symbol values; panic rather than return nil
+                    // because the contract-level EVMBridgedMetadata is always present in resolveContractView.
+                    let contractMetadata = ExampleNFT.resolveContractView(
                             resourceType: nil,
                             viewType: Type<MetadataViews.EVMBridgedMetadata>()
-                        ) as! MetadataViews.EVMBridgedMetadata?
+                        ) as? MetadataViews.EVMBridgedMetadata
+                        ?? panic("ExampleNFT.NFT.resolveView: Could not resolve contract-level EVMBridgedMetadata")
 
-                    if let contractMetadata = contractLevel {
-                        // Compose the token-level URI based on a base URI and the token ID, pointing to a JSON file. This
-                        // would be a file you've uploaded and are hosting somewhere - in this case HTTP, but this could be
-                        // IPFS, S3, a data URL containing the JSON directly, etc.
-                        let baseURI = "https://example-nft.onflow.org/token-metadata/"
-                        let uriValue = self.id.toString().concat(".json")
-
-                        return MetadataViews.EVMBridgedMetadata(
-                            name: contractMetadata.name,
-                            symbol: contractMetadata.symbol,
-                            uri: MetadataViews.URI(
-                                baseURI: baseURI, // defining baseURI results in a concatenation of baseURI and value
-                                value: self.id.toString().concat(".json")
-                            )
+                    // Compose the token-level URI based on a base URI and the token ID, pointing to a JSON file. This
+                    // would be a file you've uploaded and are hosting somewhere - in this case HTTP, but this could be
+                    // IPFS, S3, a data URL containing the JSON directly, etc.
+                    let tokenURI = self.id.toString().concat(".json")
+                    return MetadataViews.EVMBridgedMetadata(
+                        name: contractMetadata.name,
+                        symbol: contractMetadata.symbol,
+                        uri: MetadataViews.URI(
+                            baseURI: "https://example-nft.onflow.org/token-metadata/", // defining baseURI results in a concatenation of baseURI and value
+                            value: tokenURI
                         )
-                    } else {
-                        return nil
-                    }
+                    )
                 case Type<CrossVMMetadataViews.EVMPointer>():
                     // This view is intended for NFT projects with corresponding NFT implementations in both Cadence and
                     // EVM. Resolving EVMPointer indicates the associated EVM implementation. Fully validating the
@@ -215,9 +217,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
 
         /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
         access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
-            let supportedTypes: {Type: Bool} = {}
-            supportedTypes[Type<@ExampleNFT.NFT>()] = true
-            return supportedTypes
+            return {Type<@ExampleNFT.NFT>(): true}
         }
 
         /// Returns whether or not the given type is accepted by the collection
@@ -367,6 +367,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
                 // also points to the resolved Cadence type and contract address. For more information about cross-VM
                 // NFTs, see FLIP-318: https://github.com/onflow/flips/issues/318
 
+                // TODO: Replace with your actual EVM contract address before deploying to production.
                 // Assigning a dummy EVM address and deserializing. Implementations would want to declare the actual
                 // EVM address corresponding to their corresponding ERC721. If using a proxy in your EVM contracts, this
                 // address should be your proxy's address.
@@ -408,7 +409,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
             metadata["foo"] = "bar"
 
             // create a new NFT
-            var newNFT <- create NFT(
+            let newNFT <- create NFT(
                 name: name,
                 description: description,
                 thumbnail: thumbnail,
