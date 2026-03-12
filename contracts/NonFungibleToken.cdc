@@ -1,13 +1,11 @@
-/**
-
-## The Flow Non-Fungible Token standard
-
-## `NonFungibleToken` contract
-
-The interface that all Non-Fungible Token contracts should conform to.
-If a user wants to deploy a new NFT contract, their contract should implement
-The types defined here
-
+/// The Flow Non-Fungible Token standard
+///
+/// ## `NonFungibleToken` contract
+///
+/// The interface that all Non-Fungible Token contracts should conform to.
+/// If a user wants to deploy a new NFT contract, their contract should implement
+/// the types defined here.
+///
 /// Contributors (please add to this list if you contribute!):
 /// - Joshua Hannan - https://github.com/joshuahannan
 /// - Bastian Müller - https://twitter.com/turbolent
@@ -18,34 +16,32 @@ The types defined here
 /// - Deniz Edincik - https://twitter.com/bluesign
 ///
 /// Repo reference: https://github.com/onflow/flow-nft
-
-## `NFT` resource interface
-
-The core resource type that represents an NFT in the smart contract.
-
-## `Collection` Resource interface
-
-The resource that stores a user's NFT collection.
-It includes a few functions to allow the owner to easily
-move tokens in and out of the collection.
-
-## `Provider` and `Receiver` resource interfaces
-
-These interfaces declare functions with some pre and post conditions
-that require the Collection to follow certain naming and behavior standards.
-
-They are separate because it gives developers the ability to define functions
-that can use any type that implements these interfaces
-
-By using resources and interfaces, users of NFT smart contracts can send
-and receive tokens peer-to-peer, without having to interact with a central ledger
-smart contract.
-
-To send an NFT to another user, a user would simply withdraw the NFT
-from their Collection, then call the deposit function on another user's
-Collection to complete the transfer.
-
-*/
+///
+/// ## `NFT` resource interface
+///
+/// The core resource type that represents an NFT in the smart contract.
+///
+/// ## `Collection` Resource interface
+///
+/// The resource that stores a user's NFT collection.
+/// It includes a few functions to allow the owner to easily
+/// move tokens in and out of the collection.
+///
+/// ## `Provider` and `Receiver` resource interfaces
+///
+/// These interfaces declare functions with some pre and post conditions
+/// that require the Collection to follow certain naming and behavior standards.
+///
+/// They are separate because it gives developers the ability to define functions
+/// that can use any type that implements these interfaces.
+///
+/// By using resources and interfaces, users of NFT smart contracts can send
+/// and receive tokens peer-to-peer, without having to interact with a central ledger
+/// smart contract.
+///
+/// To send an NFT to another user, a user would simply withdraw the NFT
+/// from their Collection, then call the deposit function on another user's
+/// Collection to complete the transfer.
 
 import "ViewResolver"
 
@@ -153,7 +149,7 @@ access(all) contract interface NonFungibleToken: ViewResolver {
     ///
     access(all) resource interface Provider {
 
-        // We emit withdraw events from the provider interface because conficting withdraw
+        // We emit withdraw events from the provider interface because conflicting withdraw
         // events aren't as confusing to event listeners as conflicting deposit events
 
         /// withdraw removes an NFT from the collection and moves it to the caller
