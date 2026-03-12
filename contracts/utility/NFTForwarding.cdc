@@ -89,8 +89,8 @@ access(all) contract NFTForwarding {
         access(Mutable) fun changeRecipient(_ newRecipient: Capability<&{NonFungibleToken.Collection}>) {
             pre {
                 newRecipient.check():
-                    "NFTForwarding.NFTForwarder.init: Could not borrow NFT Collection reference from the given Capability."
-                    .concat(" Ensure the Capability is valid before initializing with recipient.check().")
+                    "NFTForwarding.NFTForwarder.changeRecipient: Could not borrow NFT Collection reference from the given Capability."
+                    .concat(" Ensure the Capability is valid before calling changeRecipient.")
             }
 
             self.recipient = newRecipient

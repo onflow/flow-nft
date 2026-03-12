@@ -2,7 +2,7 @@
 /// It must be run with the account that has the minter resource
 /// stored in /storage/NFTMinter
 ///
-/// The royalty arguments indicies must be aligned
+/// The royalty arguments indices must be aligned
 
 import "NonFungibleToken"
 import "ExampleNFT"
@@ -29,7 +29,7 @@ transaction(
 
         let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
             ?? panic("Could not resolve NFTCollectionData view. The ExampleNFT contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction")
-        
+
         // borrow a reference to the NFTMinter resource in storage
         self.minter = signer.storage.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
             ?? panic("The signer does not store an ExampleNFT.Minter object at the path "
@@ -45,7 +45,9 @@ transaction(
     }
 
     pre {
-        cuts.length == royaltyDescriptions.length && cuts.length == royaltyBeneficiaries.length: "Array length should be equal for royalty related details"
+        cuts.length == royaltyDescriptions.length && cuts.length == royaltyBeneficiaries.length:
+            "mint_nft: cuts, royaltyDescriptions, and royaltyBeneficiaries must all have the same length. "
+            .concat("Got cuts=\(cuts.length), descriptions=\(royaltyDescriptions.length), beneficiaries=\(royaltyBeneficiaries.length)")
     }
 
     execute {
