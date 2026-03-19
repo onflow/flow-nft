@@ -29,9 +29,7 @@ transaction(nftTypeIdentifier: String, ids: [UInt64]) {
         // borrow a reference to the signer's NFT collection
         self.withdrawRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}>(
                 from: collectionData.storagePath
-            ) ?? panic("The signer does not store an NFT Collection object at the path "
-                        .concat(collectionData.storagePath.toString())
-                        .concat("The signer must initialize their account with this collection first!"))
+            ) ?? panic("generic_destroy_nft: The signer does not store an NFT Collection object at the path \(collectionData.storagePath). The signer must initialize their account with this collection first!")
     }
 
     execute {
@@ -45,8 +43,7 @@ transaction(nftTypeIdentifier: String, ids: [UInt64]) {
 
             assert(
                 tempNFT.getType().identifier == nftTypeIdentifier,
-                message: "The type NFT that was withdrawn to destroy <\(tempNFT.getType().identifier)"
-                        .concat("> is not the type that was requested <\(nftTypeIdentifier)>.")
+                message: "generic_destroy_nft: The NFT that was withdrawn to destroy is type <\(tempNFT.getType().identifier)> but the requested type was <\(nftTypeIdentifier)>."
             )
 
             Burner.burn(<-tempNFT)

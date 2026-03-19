@@ -26,9 +26,7 @@ access(all) fun scriptExecutor(_ scriptName: String, _ arguments: [AnyStruct]): 
     let scriptResult = Test.executeScript(scriptCode, arguments)
 
     if let failureError = scriptResult.error {
-        panic(
-            "Failed to execute the script because -:  ".concat(failureError.message)
-        )
+        panic("Failed to execute the script \(scriptName): \(failureError.message)")
     }
 
     return scriptResult.returnValue
@@ -63,18 +61,14 @@ access(all) fun txExecutor(_ txName: String, _ signers: [Test.TestAccount], _ ar
             let ptr = getErrorMessagePointer(errorType: expectedErrorType!)
             let errMessage = err.message
             let hasEmittedCorrectMessage = contains(errMessage, expectedErrorMessage)
-            let failureMessage = "Expecting - "
-                .concat(expectedErrorMessage)
-                .concat("\n")
-                .concat("But received - ")
-                .concat(err.message)
+            let failureMessage = "Expecting - \(expectedErrorMessage)\nBut received - \(err.message)"
             assert(hasEmittedCorrectMessage, message: failureMessage)
             return true
         }
         panic(err.message)
     } else {
         if let expectedErrorMessage = expectedError {
-            panic("Expecting error - ".concat(expectedErrorMessage).concat(". While no error triggered"))
+            panic("Expecting error - \(expectedErrorMessage). While no error triggered")
         }
     }
 

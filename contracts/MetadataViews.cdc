@@ -574,8 +574,7 @@ access(all) contract MetadataViews {
 
         view init(score: UFix64?, max: UFix64?, description: String?) {
             if score == nil && description == nil {
-                panic("MetadataViews.Rarity.init: Cannot initialize the Rarity Metadata View! "
-                      .concat("The provided score and description are both `nil`. A Rarity needs to set score, description, or both"))
+                panic("MetadataViews.Rarity.init: Cannot initialize the Rarity Metadata View! The provided score and description are both nil. A Rarity needs to set score, description, or both")
             }
 
             self.score = score

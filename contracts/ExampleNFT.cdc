@@ -229,9 +229,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
         /// withdraw removes an NFT from the collection and moves it to the caller
         access(NonFungibleToken.Withdraw) fun withdraw(withdrawID: UInt64): @{NonFungibleToken.NFT} {
             let token <- self.ownedNFTs.remove(key: withdrawID)
-                ?? panic("ExampleNFT.Collection.withdraw: Could not withdraw an NFT with ID "
-                        .concat(withdrawID.toString())
-                        .concat(". Check the submitted ID to make sure it is one that this collection owns."))
+                ?? panic("ExampleNFT.Collection.withdraw: Could not withdraw an NFT with ID \(withdrawID). Check the submitted ID to make sure it is one that this collection owns.")
 
             return <-token
         }
@@ -290,9 +288,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
     /// and returns it to the caller so that they can own NFTs
     access(all) fun createEmptyCollection(nftType: Type): @{NonFungibleToken.Collection} {
         if nftType != Type<@ExampleNFT.NFT>() {
-            panic("ExampleNFT.createEmptyCollection: The requested nftType <"
-                .concat(nftType.identifier)
-                .concat("> is not supported by this contract. Only ExampleNFT.NFT tokens are supported."))
+            panic("ExampleNFT.createEmptyCollection: The requested nftType <\(nftType.identifier)> is not supported by this contract. Only ExampleNFT.NFT tokens are supported.")
         }
         return <- create Collection()
     }
