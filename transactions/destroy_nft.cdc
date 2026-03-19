@@ -12,14 +12,12 @@ transaction(id: UInt64) {
 
     prepare(signer: auth(BorrowValue) &Account) {
         let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("Could not resolve NFTCollectionData view. The ExampleNFT contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction")
+            ?? panic("Could not resolve the NFTCollectionData view for ExampleNFT. The ExampleNFT contract needs to implement the NFTCollectionData metadata view in order to execute this transaction")
             
         // borrow a reference to the owner's collection
         self.collectionRef = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &ExampleNFT.Collection>(
                 from: collectionData.storagePath
-            ) ?? panic("The signer does not store an ExampleNFT.Collection object at the path "
-                        .concat(collectionData.storagePath.toString())
-                        .concat(". The signer must initialize their account with this collection first!"))
+            ) ?? panic("The signer does not store an ExampleNFT.Collection object at the path \(collectionData.storagePath). The signer must initialize their account with this collection first!")
 
     }
 
