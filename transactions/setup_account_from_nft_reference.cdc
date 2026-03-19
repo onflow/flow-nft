@@ -10,13 +10,13 @@ transaction(address: Address, publicPath: PublicPath, id: UInt64) {
 
     prepare(signer: auth(IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
         let collection = getAccount(address).capabilities.borrow<&{NonFungibleToken.Collection}>(publicPath)
-            ?? panic("setup_account_from_nft_reference: Could not borrow a reference to the NonFungibleToken Collection for the account \(address) at the path \(publicPath). The account needs to set up their collection first")
+            ?? panic("Could not borrow a reference to the NonFungibleToken Collection for the account \(address) at the path \(publicPath). The account needs to set up their collection first")
 
         let nftRef = collection.borrowNFT(id)
-            ?? panic("setup_account_from_nft_reference: Could not borrow a reference to the NFT with ID \(id) from the collection at \(publicPath)")
+            ?? panic("Could not borrow a reference to the NFT with ID \(id) from the collection at \(publicPath)")
 
         let collectionData = nftRef.resolveView(Type<MetadataViews.NFTCollectionData>()) as? MetadataViews.NFTCollectionData
-            ?? panic("setup_account_from_nft_reference: The NFT with ID \(id) does not support the NFTCollectionData metadata view")
+            ?? panic("The NFT with ID \(id) does not support the NFTCollectionData metadata view")
 
         // Return early if the account already has a collection at this storage path
         if signer.storage.check<@{NonFungibleToken.Collection}>(from: collectionData.storagePath) {

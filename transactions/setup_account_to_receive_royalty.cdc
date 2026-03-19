@@ -17,7 +17,7 @@ transaction(vaultPath: StoragePath) {
 
         // Return early if the account doesn't have a FungibleToken Vault
         if signer.storage.borrow<&{FungibleToken.Vault}>(from: vaultPath) == nil {
-            panic("setup_account_to_receive_royalty: A FungibleToken Vault does not exist at the path \(vaultPath). The account should initialize that Fungible Token in their storage first!")
+            panic("A FungibleToken Vault does not exist at the path \(vaultPath). The account should initialize that Fungible Token in their storage first!")
         }
 
         // Create a public capability to the Vault that only exposes
