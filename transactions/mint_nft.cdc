@@ -28,26 +28,20 @@ transaction(
     prepare(signer: auth(BorrowValue) &Account) {
 
         let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("Could not resolve NFTCollectionData view. The ExampleNFT contract needs to implement the NFTCollectionData Metadata view in order to execute this transaction")
+            ?? panic("mint_nft: Could not resolve the NFTCollectionData view for ExampleNFT. The ExampleNFT contract needs to implement the NFTCollectionData metadata view in order to execute this transaction")
 
         // borrow a reference to the NFTMinter resource in storage
         self.minter = signer.storage.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
-            ?? panic("The signer does not store an ExampleNFT.Minter object at the path "
-                     .concat(ExampleNFT.MinterStoragePath.toString())
-                     .concat("The signer must initialize their account with this minter resource first!"))
+            ?? panic("mint_nft: The signer does not store an ExampleNFT.NFTMinter object at the path \(ExampleNFT.MinterStoragePath). The signer must initialize their account with this minter resource first!")
 
         // Borrow the recipient's public NFT collection reference
         self.recipientCollectionRef = getAccount(recipient).capabilities.borrow<&{NonFungibleToken.Receiver}>(collectionData.publicPath)
-            ?? panic("The recipient does not have a NonFungibleToken Receiver at "
-                    .concat(collectionData.publicPath.toString())
-                    .concat(" that is capable of receiving an NFT.")
-                    .concat("The recipient must initialize their account with this collection and receiver first!"))
+            ?? panic("mint_nft: The recipient \(recipient) does not have a NonFungibleToken Receiver at the path \(collectionData.publicPath) that is capable of receiving an NFT. The recipient must initialize their account with this collection and receiver first!")
     }
 
     pre {
         cuts.length == royaltyDescriptions.length && cuts.length == royaltyBeneficiaries.length:
-            "mint_nft: cuts, royaltyDescriptions, and royaltyBeneficiaries must all have the same length. "
-            .concat("Got cuts=\(cuts.length), descriptions=\(royaltyDescriptions.length), beneficiaries=\(royaltyBeneficiaries.length)")
+            "mint_nft: cuts, royaltyDescriptions, and royaltyBeneficiaries must all have the same length. Got cuts=\(cuts.length), descriptions=\(royaltyDescriptions.length), beneficiaries=\(royaltyBeneficiaries.length)"
     }
 
     execute {
@@ -62,11 +56,7 @@ transaction(
             )
 
             if !beneficiaryCapability.check() {
-                panic("The royalty beneficiary "
-                       .concat(beneficiary.toString())
-                       .concat(" does not have a FungibleToken Receiver configured at ")
-                       .concat(MetadataViews.getRoyaltyReceiverPublicPath().toString())
-                       .concat(". They should set up a FungibleTokenSwitchboard Receiver at this path to receive any type of Fungible Token"))
+                panic("mint_nft: The royalty beneficiary \(beneficiary) does not have a FungibleToken Receiver configured at \(MetadataViews.getRoyaltyReceiverPublicPath()). They should set up a FungibleTokenSwitchboard Receiver at this path to receive any type of Fungible Token")
             }
 
             royalties.append(

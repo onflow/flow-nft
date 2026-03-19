@@ -35,8 +35,7 @@ access(all) contract NFTForwarding {
         /// getSupportedNFTTypes returns a list of NFT types that this receiver accepts
         access(all) view fun getSupportedNFTTypes(): {Type: Bool} {
             let recipientRef = self.borrowRecipientCollection()
-                ?? panic("NFTForwarding.NFTForwarder.getSupportedNFTTypes: "
-                        .concat("Could not borrow a reference to the recipient's NFT Collection!"))
+                ?? panic("NFTForwarding.NFTForwarder.getSupportedNFTTypes: Could not borrow a reference to the recipient's NFT Collection!")
             return recipientRef.getSupportedNFTTypes()
         }
 
@@ -57,14 +56,12 @@ access(all) contract NFTForwarding {
         ///
         access(all) fun deposit(token: @{NonFungibleToken.NFT}) {
             post {
-                recipientRef.getIDs().contains(id): 
-                    "NFTForwarding.NFTForwarder.deposit: Could not forward deposited NFT! "
-                    .concat("The recipient's collection did not contain the transferred NFT with ID ")
-                    .concat(id.toString()).concat(" after function execution.")
+                recipientRef.getIDs().contains(id):
+                    "NFTForwarding.NFTForwarder.deposit: Could not forward deposited NFT! The recipient's collection did not contain the transferred NFT with ID \(id) after function execution."
             }
 
             let recipientRef = self.borrowRecipientCollection()
-                ?? panic("Could not borrow reference to recipient's Collection!")
+                ?? panic("NFTForwarding.NFTForwarder.deposit: Could not borrow reference to recipient's Collection!")
             let id = token.id
             let uuid = token.uuid
 
