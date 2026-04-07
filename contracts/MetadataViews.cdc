@@ -454,7 +454,7 @@ access(all) contract MetadataViews {
         }
 
         let traits: [Trait] = []
-        for k in dict.keys {
+        for k in dict {
             let trait = Trait(name: k, value: dict[k]!, displayType: nil, rarity: nil)
             traits.append(trait)
         }
