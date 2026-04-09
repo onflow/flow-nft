@@ -51,7 +51,7 @@ require (
 	github.com/emicklei/dot v1.6.2 // indirect
 	github.com/ethereum/c-kzg-4844/v2 v2.1.5 // indirect
 	github.com/ethereum/go-bigmodexpfix v0.0.0-20250911101455-f9e208c548ab // indirect
-	github.com/ethereum/go-ethereum v1.17.0 // indirect
+	github.com/ethereum/go-ethereum v1.16.8 // indirect
 	github.com/ethereum/go-verkle v0.2.2 // indirect
 	github.com/ferranbt/fastssz v0.1.4 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
@@ -224,7 +224,3 @@ require (
 replace github.com/onflow/flow-nft/lib/go/contracts => ../contracts
 
 replace github.com/onflow/flow-nft/lib/go/templates => ../templates
-
-// ethereum/go-ethereum v1.17.0 removed trie/utils which is still imported by
-// flow-go; pin to the last version that includes it.
-replace github.com/ethereum/go-ethereum => github.com/ethereum/go-ethereum v1.16.8
