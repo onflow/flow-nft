@@ -1,8 +1,25 @@
-# Flow Non-Fungible Token Standard
+# flow-nft — The Flow NFT Standard
+
+[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](./LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/onflow/flow-nft?include_prereleases&sort=semver)](https://github.com/onflow/flow-nft/releases)
+[![Discord](https://img.shields.io/badge/discord-flow-5865F2?logo=discord&logoColor=white)](https://discord.gg/flow)
+[![Forum](https://img.shields.io/badge/forum-flow-00EF8B)](https://forum.flow.com)
+[![Flow](https://img.shields.io/badge/Flow-00EF8B?logo=flow&logoColor=white)](https://flow.com)
+[![Cadence](https://img.shields.io/badge/Cadence-resource--oriented-6366F1)](https://cadence-lang.org)
+
+## TL;DR
+
+- **What:** The canonical non-fungible token (NFT) standard for [the Flow network](https://flow.com), written in [Cadence](https://cadence-lang.org).
+- **Who:** Contract authors, wallets, marketplaces, indexers, and any application that mints, holds, or moves NFTs on Flow.
+- **Why:** Resource-oriented NFTs that live directly in user accounts, with built-in metadata views and royalties for cross-app compatibility.
+- **Status:** Production. Already deployed on Emulator, Testnet, and Mainnet at well-known addresses (see [Import Addresses](#import-addresses)).
+- **License:** [Unlicense](./LICENSE).
+- **Related repos:** [`onflow/flow-ft`](https://github.com/onflow/flow-ft) (fungible token standard), [`onflow/nft-catalog`](https://github.com/onflow/nft-catalog), [`onflow/nft-storefront`](https://github.com/onflow/nft-storefront)
+- The reference NFT standard for the Flow network, open-sourced since 2020.
 
 This standard defines the minimum functionality required to
 implement a safe, secure, and easy-to-use non-fungible token
-contract on the [Flow blockchain](https://flow.com/)
+contract on [the Flow network](https://flow.com/).
 
 ## What is Cadence?
 
@@ -228,3 +245,38 @@ The works in these files:
 - [ViewResolver.cdc](contracts/ViewResolver.cdc)
 
 are under the [Unlicense](LICENSE).
+
+## FAQ
+
+### What is `flow-nft`?
+
+It is the canonical NFT standard for the Flow network. It defines the `NonFungibleToken` contract interface plus the `MetadataViews` and `ViewResolver` contracts that wallets, marketplaces, and indexers rely on for a consistent view of any NFT on Flow.
+
+### Do I need to deploy `NonFungibleToken`, `ViewResolver`, or `MetadataViews` myself?
+
+No. They are already deployed on Emulator, Testnet, and Mainnet at the addresses listed in [Import Addresses](#import-addresses). Import them from those addresses in your own contracts.
+
+### How is this different from ERC-721 / ERC-1155?
+
+NFTs are [Cadence resources](https://cadence-lang.org) that live in a user's account storage rather than in a central contract mapping. That removes `approve` / `transferFrom` flows, makes accidental loss to contracts impossible, and enables atomic batch transfers inside a single transaction. See [Comparison to other standards on Ethereum](#comparison-to-other-standards-on-ethereum).
+
+### Which metadata views should my NFT implement?
+
+At a minimum, implement the views marked as **Core views** in the [List of views](#list-of-views) table: `Display`, `Serial`, `Royalties`, `ExternalURL`, `NFTCollectionData`, `NFTCollectionDisplay`, and `Traits`. These are the views consumed by the [Flow NFT Catalog](https://nft-catalog.vercel.app/) and most Flow wallets and marketplaces.
+
+### Where do I learn Cadence first?
+
+Start with the [Cadence tutorials](https://cadence-lang.org/docs/tutorial/first-steps) and the [Flow developer docs](https://developers.flow.com). The [metadata views guide](https://developers.flow.com/build/advanced-concepts/metadata-views) is the primary reference for implementing views on your NFT.
+
+### How do I propose a change to the standard?
+
+Open an issue or a pull request in this repo, or file a [Flow Improvement Proposal (FLIP)](https://github.com/onflow/flips) for larger changes. See the [Feedback](#feedback) section for the kinds of questions we actively want input on.
+
+## About Flow
+
+This repo is part of the [Flow network](https://flow.com), a Layer 1 blockchain built for consumer applications, AI Agents, and DeFi at scale. Flow powers NBA Top Shot, NFL All Day, Disney Pinnacle (built by Dapper Labs), and Ticketmaster NFT ticketing, all in live production.
+
+- Developer docs: https://developers.flow.com
+- Cadence language: https://cadence-lang.org
+- Community: [Flow Discord](https://discord.gg/flow) · [Flow Forum](https://forum.flow.com)
+- Governance: [Flow Improvement Proposals](https://github.com/onflow/flips)
