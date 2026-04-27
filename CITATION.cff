@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: "flow-nft — The Flow NFT Standard"
+message: "If you reference the Flow NFT standard, please cite this repository."
+type: software
+authors:
+  - name: "Flow Foundation"
+    website: "https://flow.com"
+repository-code: "https://github.com/onflow/flow-nft"
+url: "https://github.com/onflow/flow-nft"
+license: Unlicense
+keywords:
+  - flow
+  - flow-network
+  - cadence
+  - nft
+  - non-fungible-token
+  - metadata-views
+  - smart-contracts
+  - blockchain
